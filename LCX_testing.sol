@@ -223,7 +223,7 @@ contract Lescovex is Ownable {
 
     
     ///if(block.number-holded[msg.sender]>172800){ //1 month
-      if(block.number-holded[msg.sender]>10){
+    if(block.number-holded[msg.sender]>10){
 
       holded[msg.sender]=block.number;
 
