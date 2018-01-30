@@ -159,8 +159,12 @@ contract Lescovex is Ownable {
 
     // Contract variables and constants
     uint256 public constant minPrice = 10e12;
-    uint256 public constant blockEndICO = 4000000;
+    uint256 public blockEndICO = block.number + uint256(259200);
     uint256 public buyPrice = minPrice;
+
+    uint256 constant initialSupply=1000000000000000;, 
+    string constant tokenName="Lescovex Shareholder's";
+    string constant tokenSymbol="LCX";
 
     uint256 public tokenReward = 0;
     // constant to simplify conversion of token amounts into integer form
@@ -174,12 +178,11 @@ contract Lescovex is Ownable {
     event LogDeposit(address sender, uint amount);
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function Lescovex(uint256 initialSupply, string tokenName, string tokenSymbol) public {
+    function Lescovex() public {
         balances[msg.sender] = initialSupply; // Give the creator all initial tokens
         totalSupply = initialSupply;  // Update total supply
         name = tokenName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-
     }
 
     function () public payable {
@@ -223,7 +226,7 @@ contract Lescovex is Ownable {
 
     
     ///if(block.number-holded[msg.sender]>172800){ //1 month
-    if(block.number-holded[msg.sender]>100){
+    if(block.number-holded[msg.sender]>10){
 
       holded[msg.sender]=block.number;
 
