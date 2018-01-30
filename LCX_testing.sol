@@ -162,7 +162,7 @@ contract Lescovex is Ownable {
     uint256 public blockEndICO = block.number + uint256(259200);
     uint256 public buyPrice = minPrice;
 
-    uint256 constant initialSupply=1000000000000000;, 
+    uint256 constant initialSupply=1000000000000000;
     string constant tokenName="Lescovex Shareholder's";
     string constant tokenSymbol="LCX";
 
