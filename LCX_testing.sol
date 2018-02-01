@@ -85,7 +85,7 @@ contract Lescovex is Ownable {
   function transfer(address _to, uint256 _value) public returns (bool) {
     require(_to != address(0));
     require(_value <= balances[msg.sender]);
-    if(block.number>blockEndICO || msg.sender==owner){
+    if(block.timestamp>blockEndICO || msg.sender==owner){
     // SafeMath.sub will throw if there is not enough balance.
     balances[msg.sender] = balances[msg.sender].sub(_value);
     holded[_to]=block.number;
@@ -159,7 +159,7 @@ contract Lescovex is Ownable {
 
     // Contract variables and constants
     uint256 public constant minPrice = 10e12;
-    uint256 public blockEndICO = block.number + uint256(259200);
+    uint256 public constant blockEndICO = 1524182460;
     uint256 public buyPrice = minPrice;
 
     uint256 constant initialSupply=0;
