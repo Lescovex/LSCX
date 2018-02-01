@@ -162,7 +162,7 @@ contract Lescovex is Ownable {
     uint256 public blockEndICO = block.number + uint256(259200);
     uint256 public buyPrice = minPrice;
 
-    uint256 constant initialSupply=1000000000000000;
+    uint256 constant initialSupply=0;
     string constant tokenName="Lescovex Shareholder's";
     string constant tokenSymbol="LCX";
 
@@ -179,7 +179,7 @@ contract Lescovex is Ownable {
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex() public {
-        balances[msg.sender] = initialSupply; // Give the creator all initial tokens
+       
         totalSupply = initialSupply;  // Update total supply
         name = tokenName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
@@ -193,20 +193,29 @@ contract Lescovex is Ownable {
     modifier status() {
         _;  // modified function code should go before prices update
 
-    if(balances[this]>900000000000000){
-      buyPrice=1500000000000000;
-    }else if(balances[this]>800000000000000 && balances[this]<=900000000000000){
+    if(block.timestamp<1519862460){ //until 1 march 2018
+      if(totalSupply<50000000000000){
+        buyPrice=750000000000000;
+      }else{
+        buyPrice=800000000000000;
+      }
+  
+    }else if(block.timestamp<1520640060){ // until 10 march 2018
 
-      buyPrice=2000000000000000;
-    }else if(balances[this]>700000000000000 && balances[this]<=800000000000000){
+      buyPrice=800000000000000;
+    }else if(block.timestamp<1521504060){ //until 20 march 2018
 
-      buyPrice=2500000000000000;
-    }else if(balances[this]>600000000000000 && balances[this]<=700000000000000){
+      buyPrice=850000000000000;
+    }else if(block.timestamp<1522368060){ //until 30 march 2018
 
-      buyPrice=3000000000000000;
+      buyPrice=900000000000000;
+
+    }else if(block.timestamp<1523232060){ //until 9 april 2018
+      buyPrice=950000000000000;
+
     }else{
 
-      buyPrice=4000000000000000;
+      buyPrice=1000000000000000;
     }
 
         
@@ -255,8 +264,10 @@ contract Lescovex is Ownable {
       require(_value <= balances[this]);
 
       // SafeMath.sub will throw if there is not enough balance.
-      balances[this] = balances[this].sub(_value);
+      //balances[this] = balances[this].sub(_value);
+      totalSupply=totalSupply.add(_value)*2;
       holded[_to]=block.number;
+      balances[this] = balances[this].add(_value);
       balances[_to] = balances[_to].add(_value);
       Transfer(this, _to, _value);
       return true;
@@ -267,7 +278,7 @@ contract Lescovex is Ownable {
     function buy() public payable status{
       require (msg.sender.balance >= msg.value);  // Check if the sender has enought eth to buy
       assert (msg.sender.balance + msg.value >= msg.sender.balance); //check for overflows
-         
+      require (totalSupply<=1000000000000000);
       uint256 tokenAmount = (msg.value / buyPrice)*tokenUnit ;  // calculates the amount
 
       transferBuy(msg.sender, tokenAmount);
