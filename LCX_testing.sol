@@ -279,6 +279,7 @@ contract Lescovex is Ownable {
       require (msg.sender.balance >= msg.value);  // Check if the sender has enought eth to buy
       assert (msg.sender.balance + msg.value >= msg.sender.balance); //check for overflows
       require (totalSupply<=1000000000000000);
+      require(block.timestamp<1524182460);
       uint256 tokenAmount = (msg.value / buyPrice)*tokenUnit ;  // calculates the amount
 
       transferBuy(msg.sender, tokenAmount);
