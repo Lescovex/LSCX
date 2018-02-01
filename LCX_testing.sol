@@ -233,7 +233,7 @@ contract Lescovex is Ownable {
 
   function withdrawReward() public status {
     //require (block.number - holded[msg.sender] > 172800); //1 month
-    require (block.numbe r - holded[msg.sender] > 10);
+    require (block.number - holded[msg.sender] > 10);
 
     holded[msg.sender] = block.number;
     uint256 ethAmount = tokenReward * balances[msg.sender];
