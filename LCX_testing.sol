@@ -231,21 +231,18 @@ contract Lescovex is Ownable {
         return true;
     }
 
-  function withdrawReward() public status{
+  function withdrawReward() public status {
+    //require (block.number - holded[msg.sender] > 172800); //1 month
+    require (block.numbe r - holded[msg.sender] > 10);
 
-    
-    ///if(block.number-holded[msg.sender]>172800){ //1 month
-    if(block.number-holded[msg.sender]>10){
+    holded[msg.sender] = block.number;
+    uint256 ethAmount = tokenReward * balances[msg.sender];
 
-      holded[msg.sender]=block.number;
-
-      //send eth to owner address
-      msg.sender.transfer(tokenReward*balances[msg.sender]);
+    //send eth to owner address
+    msg.sender.transfer(ethAmount);
       
-      //executes event ro register the changes
-      LogWithdrawal(msg.sender, tokenReward*balances[msg.sender]);
-
-    }
+    //executes event ro register the changes
+    LogWithdrawal(msg.sender, ethAmount);
   }
 
 
