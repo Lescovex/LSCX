@@ -212,7 +212,7 @@ contract Lescovex is Ownable {
       buyPrice=8500000000000000;
     }else if(block.timestamp<1522368060){ //until 30 march 2018
 
-      buyPrice=900000000000000;
+      buyPrice=9000000000000000;
 
     }else if(block.timestamp<1523232060){ //until 9 april 2018
       buyPrice=9500000000000000;
@@ -236,9 +236,8 @@ contract Lescovex is Ownable {
     }
 
   function withdrawReward() public status {
-    //require (block.number - holded[msg.sender] > 172800); //1 month
-    require (block.number - holded[msg.sender] > 10);
-
+    require (block.number - holded[msg.sender] > 172800); //1 month
+    
     holded[msg.sender] = block.number;
     uint256 ethAmount = tokenReward * balances[msg.sender];
 
@@ -304,6 +303,6 @@ contract Lescovex is Ownable {
 }
 
 
-contract tokenRecipient {
+interface tokenRecipient {
     function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public ; 
 }
