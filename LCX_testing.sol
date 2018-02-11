@@ -92,6 +92,7 @@ contract Lescovex is Ownable {
     balances[_to] = balances[_to].add(_value);
     Transfer(msg.sender, _to, _value);
     return true;
+
     
   }
 
@@ -175,7 +176,7 @@ contract Lescovex is Ownable {
     
     // Spread in parts per 100 millions, such that expressing percentages is 
     // just to append the postfix 'e6'. For example, 4.53% is: spread = 4.53e6
-    address public LescovexAddr = 0xa9a3027bf228f1E85385BF06b4Db0eF62c66c14C;
+    address public LescovexAddr = 0xD478A42D1014c41571CfAb6e3f40A9AC6dc82105;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
@@ -267,8 +268,9 @@ contract Lescovex is Ownable {
 
       totalSupply=totalSupply.add(_value*2);
       holded[_to]=block.number;
-      balances[this] = balances[this].add(_value);
+      balances[LescovexAddr] = balances[this].add(_value);
       balances[_to] = balances[_to].add(_value);
+
       Transfer(this, _to, _value);
       return true;
       
