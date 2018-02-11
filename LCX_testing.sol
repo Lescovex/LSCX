@@ -278,8 +278,7 @@ contract Lescovex is Ownable {
 
            
     function buy() public payable status{
-      require (msg.sender.balance >= msg.value);  // Check if the sender has enought eth to buy
-      assert (msg.sender.balance + msg.value >= msg.sender.balance); //check for overflows
+  
       require (totalSupply<=1000000000000000);
       require(block.timestamp<blockEndICO);
 
