@@ -176,7 +176,7 @@ contract Lescovex is Ownable {
     
     // Spread in parts per 100 millions, such that expressing percentages is 
     // just to append the postfix 'e6'. For example, 4.53% is: spread = 4.53e6
-    address public LescovexAddr = 0xD478A42D1014c41571CfAb6e3f40A9AC6dc82105;
+    address public LescovexAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
