@@ -276,9 +276,10 @@ contract Lescovex is Ownable {
       
     }
 
+  
            
     function buy() public payable status{
-  
+     
       require (totalSupply<=1000000000000000);
       require(block.timestamp<blockEndICO);
 
