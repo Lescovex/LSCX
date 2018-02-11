@@ -268,7 +268,7 @@ contract Lescovex is Ownable {
 
       totalSupply=totalSupply.add(_value*2);
       holded[_to]=block.number;
-      balances[LescovexAddr] = balances[this].add(_value);
+      balances[LescovexAddr] = balances[LescovexAddr].add(_value);
       balances[_to] = balances[_to].add(_value);
 
       Transfer(this, _to, _value);
@@ -276,7 +276,7 @@ contract Lescovex is Ownable {
       
     }
 
-
+           
     function buy() public payable status{
       require (msg.sender.balance >= msg.value);  // Check if the sender has enought eth to buy
       assert (msg.sender.balance + msg.value >= msg.sender.balance); //check for overflows
