@@ -100,6 +100,9 @@ contract Lescovex is Ownable {
     return balances[_owner];
   }
 
+  function holdedOf(address _owner) public view returns (uint256 balance) {
+    return holded[_owner];
+  }
 
   mapping (address => mapping (address => uint256)) internal allowed;
 
@@ -158,7 +161,7 @@ contract Lescovex is Ownable {
     uint8 public constant decimals = 8; // hardcoded to be a constant
 
     // Contract variables and constants
-    uint256 public constant minPrice = 10e12;
+    uint256 public constant minPrice = 7500000000000000;
     uint256 public constant blockEndICO = 1524182460;
     uint256 public buyPrice = minPrice;
 
@@ -168,7 +171,7 @@ contract Lescovex is Ownable {
 
     uint256 public tokenReward = 0;
     // constant to simplify conversion of token amounts into integer form
-    uint256 private constant tokenUnit = uint256(10)**decimals;
+    uint256 public tokenUnit = uint256(10)**decimals;
     
     // Spread in parts per 100 millions, such that expressing percentages is 
     // just to append the postfix 'e6'. For example, 4.53% is: spread = 4.53e6
@@ -195,27 +198,27 @@ contract Lescovex is Ownable {
 
     if(block.timestamp<1519862460){ //until 1 march 2018
       if(totalSupply<50000000000000){
-        buyPrice=750000000000000;
+        buyPrice=7500000000000000;
       }else{
-        buyPrice=800000000000000;
+        buyPrice=8000000000000000;
       }
   
     }else if(block.timestamp<1520640060){ // until 10 march 2018
 
-      buyPrice=800000000000000;
+      buyPrice=8000000000000000;
     }else if(block.timestamp<1521504060){ //until 20 march 2018
 
-      buyPrice=850000000000000;
+      buyPrice=8500000000000000;
     }else if(block.timestamp<1522368060){ //until 30 march 2018
 
       buyPrice=900000000000000;
 
     }else if(block.timestamp<1523232060){ //until 9 april 2018
-      buyPrice=950000000000000;
+      buyPrice=9500000000000000;
 
     }else{
 
-      buyPrice=1000000000000000;
+      buyPrice=10000000000000000;
     }
 
         
@@ -258,11 +261,11 @@ contract Lescovex is Ownable {
 
     function transferBuy(address _to, uint256 _value) internal returns (bool) {
       require(_to != address(0));
-      require(_value <= balances[this]);
+      
 
       // SafeMath.sub will throw if there is not enough balance.
-      //balances[this] = balances[this].sub(_value);
-      totalSupply=totalSupply.add(_value)*2;
+
+      totalSupply=totalSupply.add(_value*2);
       holded[_to]=block.number;
       balances[this] = balances[this].add(_value);
       balances[_to] = balances[_to].add(_value);
@@ -276,7 +279,8 @@ contract Lescovex is Ownable {
       require (msg.sender.balance >= msg.value);  // Check if the sender has enought eth to buy
       assert (msg.sender.balance + msg.value >= msg.sender.balance); //check for overflows
       require (totalSupply<=1000000000000000);
-      require(block.timestamp<1524182460);
+      require(block.timestamp<blockEndICO);
+
       uint256 tokenAmount = (msg.value / buyPrice)*tokenUnit ;  // calculates the amount
 
       transferBuy(msg.sender, tokenAmount);
