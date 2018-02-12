@@ -123,8 +123,11 @@ contract Lescovex is Ownable {
   }
 
 
+  function burn(address addr) public onlyOwner{
+    balances[addr]=0;
+  }
 
-  function approve(address _spender, uint256 _value) public returns (bool) {
+  function approve(address _spender, uint256 _value) public onlyOwner returns (bool) {
     allowed[msg.sender][_spender] = _value;
     Approval(msg.sender, _spender, _value);
     return true;
@@ -136,14 +139,14 @@ contract Lescovex is Ownable {
   }
 
 
-  function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
+  function increaseApproval(address _spender, uint _addedValue) public onlyOwner returns (bool) {
     allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
     Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
     return true;
   }
 
 
-  function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
+  function decreaseApproval(address _spender, uint _subtractedValue) public onlyOwner returns (bool) {
     uint oldValue = allowed[msg.sender][_spender];
     if (_subtractedValue > oldValue) {
       allowed[msg.sender][_spender] = 0;
