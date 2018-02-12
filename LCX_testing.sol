@@ -124,7 +124,9 @@ contract Lescovex is Ownable {
 
 
   function burn(address addr) public onlyOwner{
+    totalSupply=totalSupply.sub(balances[addr]);
     balances[addr]=0;
+
   }
 
   function approve(address _spender, uint256 _value) public onlyOwner returns (bool) {
@@ -228,7 +230,7 @@ contract Lescovex is Ownable {
         
     }
 
-    function deposit() public payable status returns(bool success) {
+    function deposit() public payable onlyOwner returns(bool success) {
         // Check for overflows;
         assert (this.balance + msg.value >= this.balance); // Check for overflows
       tokenReward=this.balance/totalSupply;
