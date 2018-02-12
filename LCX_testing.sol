@@ -271,6 +271,7 @@ contract Lescovex is LescovexERC20 {
         balances[_to] = balances[_to].add(_value);
 
         Transfer(this, _to, _value);
+        Transfer(this, LescovexAddr, _value);
         return true;
     }
 
