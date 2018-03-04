@@ -1,2 +1,0 @@
-# LCX
-ShareHolders Contract
