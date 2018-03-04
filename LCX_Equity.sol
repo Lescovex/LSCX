@@ -187,7 +187,7 @@ interface tokenRecipient {
 contract Lescovex is LescovexERC20 {
 
     // Contract variables and constants
-    uint256 constant initialSupply = 10000000;
+    uint256 constant initialSupply = 1000000000000000;
     string constant tokenName = "Lescovex Shareholder's";
     string constant tokenSymbol = "LCX";
 
