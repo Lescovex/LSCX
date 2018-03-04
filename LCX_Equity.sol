@@ -188,8 +188,8 @@ contract Lescovex is LescovexERC20 {
 
     // Contract variables and constants
     uint256 constant initialSupply = 1000000000000000;
-    string constant tokenName = "Lescovex Shareholder's";
-    string constant tokenSymbol = "LCX";
+    string constant tokenName = "Lescovex Equity Token";
+    string constant tokenSymbol = "LET";
 
     address public LescovexAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
     uint256 public constant minPrice = 7500000000000000;
@@ -212,8 +212,8 @@ contract Lescovex is LescovexERC20 {
         balances[LescovexAddr]= balances[LescovexAddr].add(totalSupply);
     }
 
-    function () public payable {
-        buy();   // Allow to buy tokens sending ether directly to contract
+    function () public {
+       
     }
 
 
