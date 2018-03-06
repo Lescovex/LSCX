@@ -32,36 +32,67 @@ contract LCX_Certificates_x509 {
     
 
 
-    mapping (address => Cert) Certificates;
+    mapping (address => mapping (address => Cert)) Certificates;
+
+    mapping (address => ownerCerts) OwnerCertificates;
 
     struct Cert{
-        address[] owner;
+        
+        string certIssuer;
+        string certAltNames;
+        string certSubject;
+        string signature;
+        string fingerprint;
+        string publicKey;
+        
+    }
+
+    struct ownerCerts{
+        
+        address[] contractAddr;
         string[] certIssuer;
         string[] certAltNames;
         string[] certSubject;
+        string[] fingerprint;
+        string[] publicKey;
         string[] signature;
-        uint256 length;
+        uint256 lenght;
     }
 
-    event addCert(string issuer,string altnames, string subject,address contractAddress, string signature);
+    event AddCertificate(address owner,string issuer,string altnames, string subject,address contractAddress, string signature);
 
 
-    function addCertificate(string issuer,string altnames, string subject,address contractAddr, string signature) public {
+    function addCertificate(string issuer,string altnames, string subject,address contractAddr, string signature, string fingerprint, string pubkey) public {
       
-        uint256 n= Certificates[contractAddr].length;
-        Certificates[contractAddr].owner[n]=msg.sender;
-        Certificates[contractAddr].certIssuer[n]=issuer;
-        Certificates[contractAddr].certAltNames[n]=altnames;
-        Certificates[contractAddr].certSubject[n]=subject;
-        Certificates[contractAddr].signature[n]=signature;
-        Certificates[contractAddr].length++;
-        addCert(issuer, altnames, subject,contractAddr, signature);
+        uint256 n = OwnerCertificates[msg.sender].lenght;
+
+        Certificates[contractAddr][msg.sender].certIssuer=issuer;
+        Certificates[contractAddr][msg.sender].certAltNames=altnames;
+        Certificates[contractAddr][msg.sender].certSubject=subject;
+        Certificates[contractAddr][msg.sender].fingerprint=fingerprint;
+        Certificates[contractAddr][msg.sender].publicKey=pubkey;
+        Certificates[contractAddr][msg.sender].signature=signature;
+        
+        OwnerCertificates[msg.sender].contractAddr[n]=contractAddr;
+        OwnerCertificates[msg.sender].certIssuer[n]=issuer;
+        OwnerCertificates[msg.sender].certAltNames[n]=altnames;
+        OwnerCertificates[msg.sender].certSubject[n]=subject;
+        OwnerCertificates[msg.sender].fingerprint[n]=fingerprint;
+        OwnerCertificates[msg.sender].publicKey[n]=pubkey;
+        OwnerCertificates[msg.sender].signature[n]=signature;        
+        OwnerCertificates[msg.sender].lenght++;
+
+        AddCertificate(msg.sender, issuer, altnames, subject,contractAddr, signature);
     
     }
     
    
-    function getCertificate(address contractAddr, uint256 n) public view returns(address,string,string,string,string) {
-        return (Certificates[contractAddr].owner[n],Certificates[contractAddr].certIssuer[n],Certificates[contractAddr].certAltNames[n],Certificates[contractAddr].certSubject[n], Certificates[contractAddr].signature[n]);
+    function getCertificate(address contractAddr, address owner) public view returns(Cert) {
+        return Certificates[contractAddr][owner];
+    }
+
+    function getOwnerCertificates(address owner) public view returns (ownerCerts){
+        return OwnerCertificates[owner];
     }
 
 
