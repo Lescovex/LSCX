@@ -3,7 +3,7 @@ pragma solidity ^0.4.19;
 
 
 /*
-    Copyright 2016, Vicent Nos & Enrique Santos
+    Copyright 2018, Vicent Nos & Enrique Santos
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ contract LCX_Certificates_x509 {
     mapping (address => Cert) Certificates;
 
     struct Cert{
+        address[] owner;
         string[] certIssuer;
         string[] certAltNames;
         string[] certSubject;
@@ -46,7 +47,9 @@ contract LCX_Certificates_x509 {
 
 
     function addCertificate(string issuer,string altnames, string subject,address contractAddr, string signature) public {
+      
         uint256 n= Certificates[contractAddr].length;
+        Certificates[contractAddr].owner[n]=msg.sender;
         Certificates[contractAddr].certIssuer[n]=issuer;
         Certificates[contractAddr].certAltNames[n]=altnames;
         Certificates[contractAddr].certSubject[n]=subject;
@@ -57,7 +60,9 @@ contract LCX_Certificates_x509 {
     }
     
    
-
+    function getCertificate(address contractAddr, uint256 n) public view returns(address,string,string,string,string) {
+        return (Certificates[contractAddr].owner[n],Certificates[contractAddr].certIssuer[n],Certificates[contractAddr].certAltNames[n],Certificates[contractAddr].certSubject[n], Certificates[contractAddr].signature[n]);
+    }
 
 
 

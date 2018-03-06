@@ -1,7 +1,7 @@
 pragma solidity ^0.4.19;
 
 /*
-    Copyright 2016, Vicent Nos & Enrique Santos
+    Copyright 2018, Vicent Nos & Enrique Santos
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
