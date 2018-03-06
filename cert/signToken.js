@@ -6,9 +6,5 @@ var older_token = jwt.sign({ foo: 'bar', iat: Math.floor(Date.now() / 1000) - 30
 
 // sign with RSA SHA256
 var cert = fs.readFileSync('privkey.pem');  // get private key
-var token = jwt.sign({ foo: 'bar' }, cert, { algorithm: 'RS256'});
-
-// sign asynchronously
-jwt.sign({ foo: 'bar' }, cert, { algorithm: 'RS256' }, function(err, token) {
-  console.log(token);
-});
+var token = jwt.sign({ foo: 'bar' }, {key : cert,passphrase:'12345'}, { algorithm: 'RS256'});
+console.log(token);
