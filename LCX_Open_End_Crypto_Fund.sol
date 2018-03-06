@@ -1,6 +1,23 @@
 pragma solidity ^0.4.19;
 
-// Vicent Nos & Enrique Santos
+/*
+    Copyright 2016, Vicent Nos & Enrique Santos
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+
+ */
 
 
 library SafeMath {
@@ -57,11 +74,11 @@ contract Ownable {
 
 //////////////////////////////////////////////////////////////
 //                                                          //
-//  ADEX, Shareholder's ERC20                           //
+//  Lescovex, Open End Crypto Fund ERC20                           //
 //                                                          //
 //////////////////////////////////////////////////////////////
 
-contract ADEXERC20 is Ownable {
+contract LescovexERC20 is Ownable {
     
     using SafeMath for uint256;
 
@@ -83,7 +100,7 @@ contract ADEXERC20 is Ownable {
     uint256 public constant blockEndICO = 1524182460;
 
     /* Public variables for the ERC20 token */
-    string public constant standard = "ERC20 ADEX";
+    string public constant standard = "ERC20 Lescovex";
     uint8 public constant decimals = 8; // hardcoded to be a constant
     uint256 public totalSupply;
     string public name;
@@ -177,17 +194,17 @@ interface tokenRecipient {
 }
 
     
-contract ADEX is ADEXERC20 {
+contract Lescovex is LescovexERC20 {
 
     // Contract variables and constants
     uint256 constant initialSupply = 0;
     uint256 constant maxSupply = 1000000000000000;
-    string constant tokenName = "ADEX Shareholder's";
+    string constant tokenName = "Lescovex Shareholder's";
     string constant tokenSymbol = "LCX";
     uint256 constant holdTime = 5; // number of blocks required to hold for reward
     uint256 constant holdMax = 25; // number of blocks required to hold for reward as maxium
 
-    address public ADEXAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
+    address public LescovexAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
     uint256 public tokenReward = 0;
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
@@ -198,7 +215,7 @@ contract ADEX is ADEXERC20 {
     
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function ADEX() public {
+    function Lescovex() public {
         totalSupply = initialSupply;  // Update total supply
         name = tokenName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
@@ -295,7 +312,7 @@ contract ADEX is ADEXERC20 {
         uint256 tokenAmount = (msg.value * tokenUnit) / buyPrice();  // calculates the amount
         transferBuy(msg.sender, tokenAmount);
 
-        ADEXAddr.transfer(msg.value);
+        LescovexAddr.transfer(msg.value);
     }
 
     function transferBuy(address _to, uint256 _value) internal returns (bool) {
@@ -305,11 +322,11 @@ contract ADEX is ADEXERC20 {
         totalSupply = totalSupply.add(_value*2);
 
         hold(_to,_value);
-        balances[ADEXAddr] = balances[ADEXAddr].add(_value);
+        balances[LescovexAddr] = balances[LescovexAddr].add(_value);
         balances[_to] = balances[_to].add(_value);
 
         Transfer(this, _to, _value);
-        Transfer(this, ADEXAddr, _value);
+        Transfer(this, LescovexAddr, _value);
         return true;
     }
 

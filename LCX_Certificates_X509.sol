@@ -1,99 +1,89 @@
 pragma solidity ^0.4.19;
 
-// Vicent Nos & Enrique Santos
 
 
-library SafeMath {
-    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        if (a == 0) {
-            return 0;
-        }
-        uint256 c = a * b;
-        assert(c / a == b);
-        return c;
-    }
+/*
+    Copyright 2016, Vicent Nos & Enrique Santos
 
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        // assert(b > 0); // Solidity automatically throws when dividing by 0
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-        return c;
-    }
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        assert(b <= a);
-        return a - b;
-    }
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        assert(c >= a);
-        return c;
-    }
-}
-
-
-contract Ownable {
-    address public owner;
-
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-    function Ownable() internal {
-        owner = msg.sender;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner);
-        _;
-    }
-
-    function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0));
-        OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
-    }
-}
-
-
-//////////////////////////////////////////////////////////////
-//                                                          //
-//  Lescovex, KYC x509 Signature                           //
-//                                                          //
-//////////////////////////////////////////////////////////////
-
-contract LCX_KYC_x509 is Ownable {
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    using SafeMath for uint256;
+
+ */
+
+
+//////////////////////////////////////////////////////////////
+//                                                          //
+//  Lescovex, Certificates x509 Signature                           //
+//                                                          //
+//////////////////////////////////////////////////////////////
+
+contract LCX_Certificates_x509 {
+    
 
 
     mapping (address => Cert) Certificates;
 
     struct Cert{
-        string certIssuer;
-        string certAltNames;
-        string certSubject;
-        mapping (address => string) contractAddress;
+        string[] certIssuer;
+        string[] certAltNames;
+        string[] certSubject;
+        string[] signature;
+        uint256 length;
     }
 
     event addCert(string issuer,string altnames, string subject,address contractAddress, string signature);
 
 
     function addCertificate(string issuer,string altnames, string subject,address contractAddr, string signature) public {
-        Certificates[msg.sender].certIssuer=issuer;
-        Certificates[msg.sender].certAltNames=altnames;
-        Certificates[msg.sender].certSubject=subject;
-        Certificates[msg.sender].contractAddress[contractAddr]=signature;
-
+        uint256 n= Certificates[contractAddr].length;
+        Certificates[contractAddr].certIssuer[n]=issuer;
+        Certificates[contractAddr].certAltNames[n]=altnames;
+        Certificates[contractAddr].certSubject[n]=subject;
+        Certificates[contractAddr].signature[n]=signature;
+        Certificates[contractAddr].length++;
         addCert(issuer, altnames, subject,contractAddr, signature);
+    
     }
     
    
+
+
+
+
+/*
+    Copyright 2016, Adrià Massanet
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
+    Checked results with FIPS test vectors
+    https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/dss/186-3rsatestvectors.zip
+    file SigVer15_186-3.rsp
+    
+ */
 
-}
 
-
-contract SolRsaVerify {
 
     function memcpy(uint dest, uint src, uint len) private pure{
         // Copy word-length chunks while possible
