@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.20;
 
 
 
@@ -87,13 +87,14 @@ contract LCX_Certificates_x509 {
     }
     
    
-    function getCertificate(address contractAddr, address owner) public view returns(Cert) {
-        return Certificates[contractAddr][owner];
+    function getCertificate(address contractAddr, address owner) public view returns(string,string,string,string,string,string) {
+        return (Certificates[contractAddr][owner].certIssuer,Certificates[contractAddr][owner].certAltNames, Certificates[contractAddr][owner].certSubject,Certificates[contractAddr][owner].fingerprint, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
     }
 
-    function getOwnerCertificates(address owner) public view returns (ownerCerts){
-        return OwnerCertificates[owner];
-    }
+//    function getOwnerCertificates(address _of, uint256 n) public returns (address,string,string,string,string,string,string){
+//        return (OwnerCertificates[_of].contractAddr[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certAltNames[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
+//    }
+
 
 
 
