@@ -127,6 +127,7 @@ contract LescovexERC20 is Ownable {
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
         delete holded[msg.sender];
+        hold(msg.sender,balances[msg.sender]);
         hold(_to,_value);
         
         balances[_to] = balances[_to].add(_value);
@@ -142,6 +143,7 @@ contract LescovexERC20 is Ownable {
         balances[_from] = balances[_from].sub(_value);
         
         delete holded[msg.sender];
+        hold(msg.sender,balances[_from]);
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
