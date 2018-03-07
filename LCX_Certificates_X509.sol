@@ -28,71 +28,104 @@ pragma solidity ^0.4.20;
 //                                                          //
 //////////////////////////////////////////////////////////////
 
-contract LCX_Certificates_x509 {
+contract Ownable {
+    address public owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    function Ownable() internal {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function transferOwnership(address newOwner) public onlyOwner {
+        require(newOwner != address(0));
+        OwnershipTransferred(owner, newOwner);
+        owner = newOwner;
+    }
+}
+
+contract LCX_Certificates_x509 is Ownable{
     
 
 
     mapping (address => mapping (address => Cert)) Certificates;
 
     mapping (address => ownerCerts) OwnerCertificates;
+    mapping (uint256 => CA) certificateAuthority;
+
 
     struct Cert{
         
-        string certIssuer;
-        string certAltNames;
+        uint256 CA;
         string certSubject;
         string signature;
-        string fingerprint;
         string publicKey;
         
     }
 
     struct ownerCerts{
         
-        
-        string[] certIssuer;
+        uint256[] CA;
         string[] certSubject;
-        string[] fingerprint;
         string[] publicKey;
         string[] signature;
-        uint256 length;
         address[] contractAddress;
+        uint256 length;
     }
 
-    event AddCertificate(address owner,string issuer, string subject,address contractAddress, string signature);
+    struct CA{
 
+        string issuer;
+        string publicKey;
+        string webPage;
+       
+    
+    }
 
-    function addCertificate(string issuer, string subject,address contractAddr, string signature, string fingerprint, string pubkey) public {
+    event AddCertificate(address owner,uint256 CA, string subject,address contractAddress, string signature);
+
+    function addCA(string issuer, uint256 fingerprint, string pubkey, string webpage) public onlyOwner{
+        
+        certificateAuthority[fingerprint].issuer=issuer;
+        certificateAuthority[fingerprint].publicKey=pubkey;
+        certificateAuthority[fingerprint].webPage=webpage;
+
+    }
+
+    function addCertificate(uint256 ca, string subject, address contractAddr, string signature, string pubkey) public {
       
         uint256 n = OwnerCertificates[msg.sender].length;
 
-        Certificates[contractAddr][msg.sender].certIssuer=issuer;
+        Certificates[contractAddr][msg.sender].CA=ca;
      
         Certificates[contractAddr][msg.sender].certSubject=subject;
-        Certificates[contractAddr][msg.sender].fingerprint=fingerprint;
         Certificates[contractAddr][msg.sender].publicKey=pubkey;
         Certificates[contractAddr][msg.sender].signature=signature;
         
-        OwnerCertificates[msg.sender].contractAddress[n]=contractAddr;
-        OwnerCertificates[msg.sender].certIssuer[n]=issuer;
-     
+        
+        OwnerCertificates[msg.sender].CA[n]=ca;
         OwnerCertificates[msg.sender].certSubject[n]=subject;
-        OwnerCertificates[msg.sender].fingerprint[n]=fingerprint;
         OwnerCertificates[msg.sender].publicKey[n]=pubkey;
         OwnerCertificates[msg.sender].signature[n]=signature;        
+        OwnerCertificates[msg.sender].contractAddress[n]=contractAddr;
         OwnerCertificates[msg.sender].length++;
 
-        AddCertificate(msg.sender, issuer, subject,contractAddr, signature);
+        AddCertificate(msg.sender, ca, subject,contractAddr, signature);
     
     }
     
    
-    function getCertificate(address contractAddr, address owner) public view returns(string,string,string,string,string) {
-        return (Certificates[contractAddr][owner].certIssuer, Certificates[contractAddr][owner].certSubject,Certificates[contractAddr][owner].fingerprint, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
+    function getCertificate(address contractAddr, address owner) public view returns(uint256,string,string,string) {
+        return (Certificates[contractAddr][owner].CA, Certificates[contractAddr][owner].certSubject, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
     }
 
-    function getOwnerCertificate(address _of, uint256 n) public view returns(address,string,string,string,string,string) { 
-        return (OwnerCertificates[_of].contractAddress[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
+    function getOwnerCertificate(address _of, uint256 n) public view returns(address,uint256,string,string,string) { 
+        return (OwnerCertificates[_of].contractAddress[n],OwnerCertificates[_of].CA[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
     }
 
 
