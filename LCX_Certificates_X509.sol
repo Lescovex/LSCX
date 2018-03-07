@@ -49,55 +49,52 @@ contract LCX_Certificates_x509 {
 
     struct ownerCerts{
         
-        mapping(address => uint256) contractAddr;
+        
         string[] certIssuer;
-        string[] certAltNames;
         string[] certSubject;
         string[] fingerprint;
         string[] publicKey;
         string[] signature;
-        uint256 lenght;
+        uint256 length;
+        address[] contractAddress;
     }
 
-    event AddCertificate(address owner,string issuer,string altnames, string subject,address contractAddress, string signature);
+    event AddCertificate(address owner,string issuer, string subject,address contractAddress, string signature);
 
 
-    function addCertificate(string issuer,string altnames, string subject,address contractAddr, string signature, string fingerprint, string pubkey) public {
+    function addCertificate(string issuer, string subject,address contractAddr, string signature, string fingerprint, string pubkey) public {
       
         uint256 n = OwnerCertificates[msg.sender].length;
 
         Certificates[contractAddr][msg.sender].certIssuer=issuer;
-        Certificates[contractAddr][msg.sender].certAltNames=altnames;
+     
         Certificates[contractAddr][msg.sender].certSubject=subject;
         Certificates[contractAddr][msg.sender].fingerprint=fingerprint;
         Certificates[contractAddr][msg.sender].publicKey=pubkey;
         Certificates[contractAddr][msg.sender].signature=signature;
         
-        OwnerCertificates[msg.sender].contractAddr[n]=contractAddr;
+        OwnerCertificates[msg.sender].contractAddress[n]=contractAddr;
         OwnerCertificates[msg.sender].certIssuer[n]=issuer;
-        OwnerCertificates[msg.sender].certAltNames[n]=altnames;
+     
         OwnerCertificates[msg.sender].certSubject[n]=subject;
         OwnerCertificates[msg.sender].fingerprint[n]=fingerprint;
         OwnerCertificates[msg.sender].publicKey[n]=pubkey;
         OwnerCertificates[msg.sender].signature[n]=signature;        
         OwnerCertificates[msg.sender].length++;
 
-        AddCertificate(msg.sender, issuer, altnames, subject,contractAddr, signature);
+        AddCertificate(msg.sender, issuer, subject,contractAddr, signature);
     
     }
     
    
-    function getCertificate(address contractAddr, address owner) public view returns(string,string,string,string,string,string) {
-        return (Certificates[contractAddr][owner].certIssuer,Certificates[contractAddr][owner].certAltNames, Certificates[contractAddr][owner].certSubject,Certificates[contractAddr][owner].fingerprint, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
+    function getCertificate(address contractAddr, address owner) public view returns(string,string,string,string,string) {
+        return (Certificates[contractAddr][owner].certIssuer, Certificates[contractAddr][owner].certSubject,Certificates[contractAddr][owner].fingerprint, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
     }
 
-    function getCertificate(address _of, uint256 n) public view returns(string,string,string,string,string,string) {
-            return (OwnerCertificates[_of].contractAddr[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certAltNames[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
+    function getOwnerCertificate(address _of, uint256 n) public view returns(address,string,string,string,string,string) { 
+        return (OwnerCertificates[_of].contractAddress[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
     }
 
-//    function getOwnerCertificates(address _of, uint256 n) public returns (address,string,string,string,string,string,string){
-  //      return (OwnerCertificates[_of].contractAddr[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certAltNames[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
-//    }
 
 
 
