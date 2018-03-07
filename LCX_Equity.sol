@@ -96,7 +96,7 @@ contract LescovexERC20 is Ownable {
         uint256 length;
     }
 
-    uint256 public constant blockEndICO = 1524182460;
+    
 
     /* Public variables for the ERC20 token */
     string public constant standard = "ERC20 Lescovex";
@@ -120,7 +120,7 @@ contract LescovexERC20 is Ownable {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
-        require(block.timestamp > blockEndICO || msg.sender == owner);
+       
         require(_to != address(0));
         require(_value <= balances[msg.sender]);
         // SafeMath.sub will throw if there is not enough balance.
