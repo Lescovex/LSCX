@@ -122,7 +122,7 @@ contract LescovexERC20 is Ownable {
     function transfer(address _to, uint256 _value) public returns (bool) {
         require(block.timestamp > blockEndICO || msg.sender == owner);
         require(_to != address(0));
-        require(_value <= balances[_from]);
+        require(_value <= balances[msg.sender]);
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
@@ -198,8 +198,7 @@ interface tokenRecipient {
 contract Lescovex is LescovexERC20 {
 
     // Contract variables and constants
-    uint256 constant initialSupply = 0;
-    uint256 constant maxSupply = 1000000000000000;
+    uint256 constant initialSupply = 1000000000000000;
     string constant tokenName = "Lescovex Shareholder's";
     string constant tokenSymbol = "LCX";
     uint256 constant holdTime = 5; // number of blocks required to hold for reward
@@ -220,7 +219,7 @@ contract Lescovex is LescovexERC20 {
         totalSupply = initialSupply;  // Update total supply
         name = tokenName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        balances[LescovexAddr]= balances[LescovexAddr].add(totalSupply);
+        balances[LescovexAddr]= balances[msg.sender].add(totalSupply);
 
     }
 
