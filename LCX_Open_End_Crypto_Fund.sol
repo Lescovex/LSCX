@@ -123,8 +123,7 @@ contract LescovexERC20 is Ownable {
     function transfer(address _to, uint256 _value) public returns (bool) {
         require(block.timestamp > blockEndICO || msg.sender == owner);
         require(_to != address(0));
-        require(_value <= balances[_from]);
-        require(_value <= allowed[_from][msg.sender]); 
+         
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
@@ -140,7 +139,6 @@ contract LescovexERC20 is Ownable {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(_to != address(0));
         
-        require(_value <= balances[_from]);
         require(_value <= allowed[_from][msg.sender]); 
 
         balances[_from] = balances[_from].sub(_value);
@@ -148,8 +146,9 @@ contract LescovexERC20 is Ownable {
         delete holded[msg.sender];
         hold(_to,_value);
 
-        balances[_to] = balances[_to].add(_value);
+        
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+        balances[_to] = balances[_to].add(_value);
 
         Transfer(_from, _to, _value);
         return true;
@@ -204,7 +203,7 @@ contract Lescovex is LescovexERC20 {
     // Contract variables and constants
     uint256 constant initialSupply = 0;
     uint256 constant maxSupply = 1000000000000000;
-    string constant tokenName = "Lescovex Shareholder's";
+    string constant tokenName = "Lescovex OECF";
     string constant tokenSymbol = "LCX";
     uint256 constant holdTime = 5; // number of blocks required to hold for reward
     uint256 constant holdMax = 25; // number of blocks required to hold for reward as maxium
@@ -278,7 +277,7 @@ contract Lescovex is LescovexERC20 {
         }
 
         delete holded[msg.sender];
-
+        hold(msg.sender,balances[msg.sender]);
         require(ethAmount > 0);
         //send eth to owner address
          msg.sender.transfer(ethAmount*requestWithdraws[msg.sender]);
