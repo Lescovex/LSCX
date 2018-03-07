@@ -49,7 +49,7 @@ contract LCX_Certificates_x509 {
 
     struct ownerCerts{
         
-        address[] contractAddr;
+        mapping(address => uint256) contractAddr;
         string[] certIssuer;
         string[] certAltNames;
         string[] certSubject;
@@ -64,7 +64,7 @@ contract LCX_Certificates_x509 {
 
     function addCertificate(string issuer,string altnames, string subject,address contractAddr, string signature, string fingerprint, string pubkey) public {
       
-        uint256 n = OwnerCertificates[msg.sender].lenght;
+        uint256 n = OwnerCertificates[msg.sender].length;
 
         Certificates[contractAddr][msg.sender].certIssuer=issuer;
         Certificates[contractAddr][msg.sender].certAltNames=altnames;
@@ -80,7 +80,7 @@ contract LCX_Certificates_x509 {
         OwnerCertificates[msg.sender].fingerprint[n]=fingerprint;
         OwnerCertificates[msg.sender].publicKey[n]=pubkey;
         OwnerCertificates[msg.sender].signature[n]=signature;        
-        OwnerCertificates[msg.sender].lenght++;
+        OwnerCertificates[msg.sender].length++;
 
         AddCertificate(msg.sender, issuer, altnames, subject,contractAddr, signature);
     
@@ -91,8 +91,12 @@ contract LCX_Certificates_x509 {
         return (Certificates[contractAddr][owner].certIssuer,Certificates[contractAddr][owner].certAltNames, Certificates[contractAddr][owner].certSubject,Certificates[contractAddr][owner].fingerprint, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
     }
 
+    function getCertificate(address _of, uint256 n) public view returns(string,string,string,string,string,string) {
+            return (OwnerCertificates[_of].contractAddr[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certAltNames[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
+    }
+
 //    function getOwnerCertificates(address _of, uint256 n) public returns (address,string,string,string,string,string,string){
-//        return (OwnerCertificates[_of].contractAddr[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certAltNames[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
+  //      return (OwnerCertificates[_of].contractAddr[n],OwnerCertificates[_of].certIssuer[n],OwnerCertificates[_of].certAltNames[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].fingerprint[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
 //    }
 
 
