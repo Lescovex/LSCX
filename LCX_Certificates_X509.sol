@@ -62,7 +62,7 @@ contract LCX_Certificates_x509 is Ownable{
     struct Cert{
         
         uint256 CA;
-        string certSubject;
+        string certSerialNumber;
         string signature;
         string publicKey;
         
@@ -71,7 +71,7 @@ contract LCX_Certificates_x509 is Ownable{
     struct ownerCerts{
         
         uint256[] CA;
-        string[] certSubject;
+        string[] certSerialNumber;
         string[] publicKey;
         string[] signature;
         address[] contractAddress;
@@ -97,62 +97,41 @@ contract LCX_Certificates_x509 is Ownable{
 
     }
 
-    function addCertificate(uint256 ca, string subject, address contractAddr, string signature, string pubkey) public {
+    function addCertificate(uint256 ca, string serialNumber, address contractAddr, string signature, string pubkey) public {
       
         uint256 n = OwnerCertificates[msg.sender].length;
 
         Certificates[contractAddr][msg.sender].CA=ca;
      
-        Certificates[contractAddr][msg.sender].certSubject=subject;
+        Certificates[contractAddr][msg.sender].certSerialNumber=serialNumber;
         Certificates[contractAddr][msg.sender].publicKey=pubkey;
         Certificates[contractAddr][msg.sender].signature=signature;
         
         
         OwnerCertificates[msg.sender].CA[n]=ca;
-        OwnerCertificates[msg.sender].certSubject[n]=subject;
+        OwnerCertificates[msg.sender].certSerialNumber[n]=serialNumber;
         OwnerCertificates[msg.sender].publicKey[n]=pubkey;
         OwnerCertificates[msg.sender].signature[n]=signature;        
         OwnerCertificates[msg.sender].contractAddress[n]=contractAddr;
         OwnerCertificates[msg.sender].length++;
 
-        AddCertificate(msg.sender, ca, subject,contractAddr, signature);
+        AddCertificate(msg.sender, ca, serialNumber,contractAddr, signature);
     
     }
     
    
     function getCertificate(address contractAddr, address owner) public view returns(uint256,string,string,string) {
-        return (Certificates[contractAddr][owner].CA, Certificates[contractAddr][owner].certSubject, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
+        return (Certificates[contractAddr][owner].CA, Certificates[contractAddr][owner].certSerialNumber, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
     }
 
     function getOwnerCertificate(address _of, uint256 n) public view returns(address,uint256,string,string,string) { 
-        return (OwnerCertificates[_of].contractAddress[n],OwnerCertificates[_of].CA[n],OwnerCertificates[_of].certSubject[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
+        return (OwnerCertificates[_of].contractAddress[n],OwnerCertificates[_of].CA[n],OwnerCertificates[_of].certSerialNumber[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
     }
 
 
 
 
 
-/*
-    Copyright 2016, Adrià Massanet
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Checked results with FIPS test vectors
-    https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/dss/186-3rsatestvectors.zip
-    file SigVer15_186-3.rsp
-    
- */
 
 
 
