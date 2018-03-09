@@ -62,18 +62,14 @@ contract LCX_Certificates_x509 is Ownable{
     struct Cert{
         
         uint256 CA;
-        string certSerialNumber;
+        string subjectKeyIdentifier;
         string signature;
+        string certificate;
         string publicKey;
         
     }
 
     struct ownerCerts{
-        
-        uint256[] CA;
-        string[] certSerialNumber;
-        string[] publicKey;
-        string[] signature;
         address[] contractAddress;
         uint256 length;
     }
@@ -83,35 +79,32 @@ contract LCX_Certificates_x509 is Ownable{
         string issuer;
         string publicKey;
         string webPage;
-       
+        string certificate;
     
     }
 
     event AddCertificate(address owner,uint256 CA, string subject,address contractAddress, string signature);
 
-    function addCA(string issuer, uint256 fingerprint, string pubkey, string webpage) public onlyOwner{
+    function addCA(string issuer, uint256 fingerprint, string pubkey, string webpage, string certificate) public onlyOwner{
         
         certificateAuthority[fingerprint].issuer=issuer;
         certificateAuthority[fingerprint].publicKey=pubkey;
         certificateAuthority[fingerprint].webPage=webpage;
+        certificateAuthority[fingerprint].certificate=certificate;
 
     }
 
-    function addCertificate(uint256 ca, string serialNumber, address contractAddr, string signature, string pubkey) public {
+    function addCertificate(uint256 ca, string serialNumber, address contractAddr, string signature, string pubkey,string certificate) public {
       
         uint256 n = OwnerCertificates[msg.sender].length;
 
         Certificates[contractAddr][msg.sender].CA=ca;
      
-        Certificates[contractAddr][msg.sender].certSerialNumber=serialNumber;
+        Certificates[contractAddr][msg.sender].subjectKeyIdentifier=serialNumber;
         Certificates[contractAddr][msg.sender].publicKey=pubkey;
         Certificates[contractAddr][msg.sender].signature=signature;
+        Certificates[contractAddr][msg.sender].certificate=certificate;
         
-        
-        OwnerCertificates[msg.sender].CA[n]=ca;
-        OwnerCertificates[msg.sender].certSerialNumber[n]=serialNumber;
-        OwnerCertificates[msg.sender].publicKey[n]=pubkey;
-        OwnerCertificates[msg.sender].signature[n]=signature;        
         OwnerCertificates[msg.sender].contractAddress[n]=contractAddr;
         OwnerCertificates[msg.sender].length++;
 
@@ -121,11 +114,11 @@ contract LCX_Certificates_x509 is Ownable{
     
    
     function getCertificate(address contractAddr, address owner) public view returns(uint256,string,string,string) {
-        return (Certificates[contractAddr][owner].CA, Certificates[contractAddr][owner].certSerialNumber, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
+        return (Certificates[contractAddr][owner].CA, Certificates[contractAddr][owner].subjectKeyIdentifier, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
     }
 
-    function getOwnerCertificate(address _of, uint256 n) public view returns(address,uint256,string,string,string) { 
-        return (OwnerCertificates[_of].contractAddress[n],OwnerCertificates[_of].CA[n],OwnerCertificates[_of].certSerialNumber[n],OwnerCertificates[_of].publicKey[n],OwnerCertificates[_of].signature[n]);
+    function getOwnerCertificate(address _of, uint256 n) public view returns(address) { 
+        return (OwnerCertificates[_of].contractAddress[n]);
     }
 
 
@@ -186,6 +179,8 @@ contract LCX_Certificates_x509 is Ownable{
 
         return input;
     }
+
+
 
     function pkcs1Sha256Verify(bytes32 hash, bytes s, bytes e, bytes m) public returns (uint){
         uint i;
