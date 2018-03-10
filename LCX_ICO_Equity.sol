@@ -136,6 +136,7 @@ contract LescovexERC20 is Ownable {
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+        require(block.timestamp > blockEndICO || msg.sender == owner);
         require(_to != address(0));
 
         // SafeMath.sub will throw if there is not enough balance.
