@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>BCA's - Generate</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Site Description Here">
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/stack-interface.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/socicon.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/lightbox.min.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/flickity.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/iconsmind.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/jquery.steps.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/theme.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/font-roboto.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+        <script type="text/javascript" src="js/custom/bundle.js"></script>
+        <script type="text/javascript" src="js/custom-verify/bundle.js"></script>
+
+    </head>
+    <body class=" boxed-layout">
+        <a id="start"></a>
+        <!--end of notification-->
+        <div class="nav-container ">
+            <div class="bar bar--sm visible-xs">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 col-md-2">
+                            <a href="index.html">
+                                <img class="logo logo-dark" alt="logo" src="img/logo-navbar.png" />
+                                <img class="logo logo-light" alt="logo" src="img/logo-navbar.png" />
+                            </a>
+                        </div>
+                        <div class="col-9 col-md-10 text-right">
+                            <a href="#" class="hamburger-toggle" data-toggle-class="#menu1;hidden-xs">
+                                <i class="icon icon--sm stack-interface stack-menu"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </div>
+            <!--end bar-->
+            <nav id="menu1" class="bar bar--sm bar-1 hidden-xs bar--absolute bar--transparent">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-2 hidden-xs">
+                            <div class="bar__module">
+                                <a href="index.html">
+                                    <img class="logo logo-light" alt="logo" src="img/logo-navbar.png" />
+                                </a>
+                            </div>
+                            <!--end module-->
+                        </div>
+                        <div class="col-lg-11 col-md-12 text-right text-left-xs text-left-sm">
+                            <div class="bar__module">
+                                <ul class="menu-horizontal text-right">
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="index.html">Generate</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="verify.html">Verify</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </nav>
+            <!--end bar-->
+        </div>
+        <div class="main-container">
+            <section class="cover switchable bg--tertiary text-center-xs banner">
+                <div class="background-home-slide1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <h1 lang="en">BCA's - Generate</h1>
+                                <p class="lead home-banner-description" lang="en">Blockchain Certification Authority</p>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end of row-->
+            </section>
+            <section class="text-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tab__title">
+                                <span class="h5">Generate</span>
+                            </div>
+                            <div class="tab__content">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="boxed boxed--border">
+                                            <h5>NOTE</h5>
+                                            <p>PKIjs supports many different combinations of PKCS#12. Most clients only support one combination. Clients typically only support a combination where the same password is used for protection and integrity.</p>
+
+                                            <p>PKIjs, also only supports creation of AES-CBC and AES-GCM protected PKCS#12’s which will not be readable by Windows which only supports weak ciphers in PKCS#12 files.</p>
+
+                                            <p>You can parse the Password-Based Privacy Protection variant PKIjs creates using this command:</p>
+
+                                            <p>openssl pkcs12 -in pkijs_pkcs12.p12 -nomacver</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="boxed boxed--border">
+                                            <h5>PKCS#12 With OpenSSL-like Internal Structure</h5>
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-8 text-justify">
+                                                        <label>Password:</label>
+                                                        <input type="password" name="password" id="password1" placeholder="Password">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="openSSLLike();">
+                                                                        <span class="btn__text color--white" lang="en">
+                                                                            Create
+                                                                        </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <h5>PKCS#12 With Password-Based Integrity Protection And No Privacy Protection</h5>
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        <a class="btn btn--xs btn--green-primary type--uppercase" href="#" onclick="passwordBasedIntegrity();">
+                                                                        <span class="btn__text color--white" lang="en">
+                                                                            Create
+                                                                        </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <h5>PKCS#12 With Certificate-Based Integrity Protection And No Privacy Protection</h5>
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        <a class="btn btn--xs btn--green-primary type--uppercase" href="#" onclick="certificateBasedIntegrity();">
+                                                                        <span class="btn__text color--white" lang="en">
+                                                                            Create
+                                                                        </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <h5>PKCS#12 With No Privacy Protection and Password-Based Integrity Protection</h5>
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-8 text-justify">
+                                                        <label>Password:</label>
+                                                        <input type="password" name="password" id="password3" placeholder="Password">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="noPrivacy();">
+                                                                        <span class="btn__text color--white" lang="en">
+                                                                            Create
+                                                                        </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <h5>PKCS#12 With Password-Based Privacy And Inegrity Protection</h5>
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-8 text-justify">
+                                                        <label>Password:</label>
+                                                        <input type="password" name="password" id="password4" placeholder="Password">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="passwordPrivacy();">
+                                                                        <span class="btn__text color--white" lang="en">
+                                                                            Create
+                                                                        </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <h5>PKCS#12 With Certificate-Based Privacy And Password-Based Integrity Protection</h5>
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-8 text-justify">
+                                                        <label>Password:</label>
+                                                        <input type="password" name="password" id="password5" placeholder="Password">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="certificatePrivacy();">
+                                                                        <span class="btn__text color--white" lang="en">
+                                                                            Create
+                                                                        </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="boxed boxed--border">
+                                            <h5>Parse OpenSSL-like PKCS#12 data</h5>
+                                            <span>NOTE</span>
+                                            <p>Unfortunately current versions of Windows and OpenSSL only support using weak cryptographic primitives in PKCS#12. WebCrypto does not support these weaker mechanisms so we can not fully parse files all files created by them.</p>
+                                            <p>With that said OpenSSL does support some stronger options, specifically it allows creation of PKCS#12’s using AES-CBC. You can create such a file with this command:</p>
+                                            <p>openssl pkcs12 -export -inkey key.pem -in test.cer -out test.p12 -certpbe AES-256-CBC -keypbe AES-256-CBC</p>
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-8 text-justify">
+                                                        <label>Password:</label>
+                                                        <input type="password" name="password" id="password" placeholder="Password">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="certificatePrivacy();">
+                                                                        <span class="btn__text color--white" lang="en">
+                                                                            Create
+                                                                        </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group text-justify">
+                                                            <label for="exampleInputFile">Select binary PKCS#12 file:</label>
+                                                            <input type="file" id="exampleInputFile" class="add-file">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-justify">
+                                                        <label>BASE-64 decoded certificate + PKCS#8 private key:</label>
+                                                        <textarea id="parsing_result" class="form-control" rows="3" placeholder="< PKCS#12 parsing result will be stored here >"></textarea>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </section>
+
+            <footer class="text-center-xs space--xs bg--dark ">
+                <div class="container">
+                    <!--end of row-->
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <span class="type--fine-print">&copy;
+                                <span class="update-year"></span> Lescovex</span>
+                        </div>
+                        <div class="col-sm-5 text-right text-center-xs">
+
+                            <ul class="social-list list-inline list--hover">
+                                <li>
+                                    <a href="https://t.me/Lescovex" target="_blank">
+                                        <i class="socicon socicon-telegram icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://discord.gg/Mux55Pc" target="_blank">
+                                        <i class="socicon socicon-discord icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://bitcointalk.org/index.php?topic=2346407.0" target="_blank">
+                                        <img src="img/social/bitcoin-talk-footer.png" alt="">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://medium.com/@lescovex" target="_blank">
+                                        <i class="socicon socicon-medium icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://twitter.com/lescovex" target="_blank">
+                                        <i class="socicon socicon-twitter icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.facebook.com/lescovex/?ref=br_rs" target="_blank">
+                                        <i class="socicon socicon-facebook icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/company/11356980/" target="_blank">
+                                        <i class="socicon socicon-linkedin icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/Lescovex/LCX/" target="_blank">
+                                        <i class="socicon socicon-github icon icon--xs"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </footer>
+
+        </div>
+        <!--<div class="loader"></div>-->
+        <a class="back-to-top inner-link" href="#start" data-scroll-class="100vh:active">
+            <i class="stack-interface stack-up-open-big"></i>
+        </a>
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/flickity.min.js"></script>
+        <script src="js/easypiechart.min.js"></script>
+        <script src="js/parallax.js"></script>
+        <script src="js/typed.min.js"></script>
+        <script src="js/datepicker.js"></script>
+        <script src="js/isotope.min.js"></script>
+        <script src="js/ytplayer.min.js"></script>
+        <script src="js/lightbox.min.js"></script>
+        <script src="js/granim.min.js"></script>
+        <script src="js/jquery.steps.min.js"></script>
+        <script src="js/countdown.min.js"></script>
+        <script src="js/twitterfetcher.min.js"></script>
+        <script src="js/spectragram.min.js"></script>
+        <script src="js/smooth-scroll.min.js"></script>
+        <script src="js/scripts.js"></script>
+
+
+
+        <script>
+            document.getElementById('cert-file').addEventListener('change', handleFileBrowse, false);
+            document.getElementById('inter_certs').addEventListener('change', handleInterCertsFile, false);
+            document.getElementById('trusted_certs').addEventListener('change', handleTrustedCertsFile, false);
+            document.getElementById('crls').addEventListener('change', handleCRLsFile, false);
+            document.getElementById('ca_bundle').addEventListener('change', handleCABundle, false);
+        </script>
+
+    </body>
+</html>
