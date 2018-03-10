@@ -94,7 +94,6 @@ contract LescovexERC20 is Ownable {
     struct timeHold{
         uint256[] amount;
         uint256[] time;
-        uint256 length;
     }
 
     uint256 public constant blockEndICO = 1524182460;
@@ -117,7 +116,6 @@ contract LescovexERC20 is Ownable {
     function hold(address _to, uint256 _value) internal {
         holded[_to].amount.push(_value);
         holded[_to].time.push(block.number);
-        holded[_to].length++;
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
@@ -275,7 +273,7 @@ contract Lescovex is LescovexERC20 {
 
         uint i = 0;
         uint256 ethAmount = 0;
-        uint256 len = holded[msg.sender].length;
+        uint256 len = holded[msg.sender].amount.length;
 
         while (i <= len - 1){
             if (block.number -  holded[msg.sender].time[i] > holdTime){
