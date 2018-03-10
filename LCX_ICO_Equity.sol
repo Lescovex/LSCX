@@ -123,12 +123,13 @@ contract LescovexERC20 is Ownable {
     function transfer(address _to, uint256 _value) public returns (bool) {
         require(block.timestamp > blockEndICO || msg.sender == owner);
         require(_to != address(0));
+        require(_value <= balances[msg.sender]);
 
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
         delete holded[msg.sender];
-        hold(msg.sender,balances[msg.sender]); // Resetting hold
+        hold(msg.sender,balances[msg.sender]);
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
@@ -142,13 +143,13 @@ contract LescovexERC20 is Ownable {
         require(_value <= balances[_from]);
         require(_value <= allowed[_from][msg.sender]);
         balances[_from] = balances[_from].sub(_value);
-        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
 
-        delete holded[_from];
-        hold(_from,balances[_from]); // Resetting hold
+        delete holded[msg.sender];
+        hold(_from,balances[_from]);
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
+        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
 
         Transfer(_from, _to, _value);
         return true;
