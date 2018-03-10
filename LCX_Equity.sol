@@ -221,7 +221,7 @@ contract Lescovex is LescovexERC20 {
         totalSupply = initialSupply;  // Update total supply
         name = tokenName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        balances[LescovexAddr]= balances[msg.sender].add(totalSupply);
+        balances[msg.sender]= balances[msg.sender].add(totalSupply);
 
     }
 
