@@ -205,7 +205,7 @@ contract Lescovex is LescovexERC20 {
     string constant tokenSymbol = "LCX";
     uint256 constant holdTime = 5; // number of blocks required to hold for reward
 
-    address public LescovexAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
+   
     uint256 public tokenReward = 0;
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;

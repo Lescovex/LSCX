@@ -52,76 +52,73 @@ contract Ownable {
 contract LCX_Certificates_x509 is Ownable{
     
 
-
-    mapping (address => mapping (address => Cert)) Certificates;
-
-    mapping (address => ownerCerts) OwnerCertificates;
     mapping (uint256 => CA) certificateAuthority;
+    mapping (address => Entity) entities;
+    mapping (address => mapping (address => Signature)) Signatures;
+    mapping (address => ownerSignatures) OwnerSignatures;
 
-
-    struct Cert{
-        
-        uint256 CA;
-        string subjectKeyIdentifier;
-        string signature;
-        string certificate;
-        string publicKey;
-        
-    }
-
-    struct ownerCerts{
-        address[] contractAddress;
-        uint256 length;
-    }
-
-    struct CA{
-
+   struct CA{
         string issuer;
-        string publicKey;
-        string webPage;
         string certificate;
-    
     }
 
-    event AddCertificate(address owner,uint256 CA, string subject,address contractAddress, string signature);
+    struct Entity{
+        string publicKey;
+        string signature;
+      
+    }
 
-    function addCA(string issuer, uint256 fingerprint, string pubkey, string webpage, string certificate) public onlyOwner{
+    struct Signature{
+       
+        string certificate;
+        string signature;
+    }
+
+    struct ownerSignatures{
+        address contractAddress;
+      
+    }
+
+    event AddCA(address owner ,address contractAddress, string certificate);
+    event AddEntity(address owner, string publicKey ,string signature);
+    event AddSignature(address contractAddr, address owner, string certificate, string signature);
+
+
+    function addCA(string issuer, uint256 fingerprint, string certificate) public onlyOwner{
         
         certificateAuthority[fingerprint].issuer=issuer;
-        certificateAuthority[fingerprint].publicKey=pubkey;
-        certificateAuthority[fingerprint].webPage=webpage;
         certificateAuthority[fingerprint].certificate=certificate;
 
     }
 
-    function addCertificate(uint256 ca, string serialNumber, address contractAddr, string signature, string pubkey,string certificate) public {
+    function addEntity(address addr,string entity, string signature) public {
+       
+        entities[addr].publicKey=entity;
+        entities[addr].signature=signature;
+       
+    }
+
+    function addSignature(address addr,string signature, address contractAddr, string certificate) public {
       
-        uint256 n = OwnerCertificates[msg.sender].length;
-
-        Certificates[contractAddr][msg.sender].CA=ca;
-     
-        Certificates[contractAddr][msg.sender].subjectKeyIdentifier=serialNumber;
-        Certificates[contractAddr][msg.sender].publicKey=pubkey;
-        Certificates[contractAddr][msg.sender].signature=signature;
-        Certificates[contractAddr][msg.sender].certificate=certificate;
         
-        OwnerCertificates[msg.sender].contractAddress[n]=contractAddr;
-        OwnerCertificates[msg.sender].length++;
+        Signatures[contractAddr][addr].certificate=certificate;
+        Signatures[contractAddr][addr].signature=signature;
+        OwnerSignatures[addr].contractAddress=contractAddr;
 
-        AddCertificate(msg.sender, ca, serialNumber,contractAddr, signature);
-    
     }
     
    
-    function getCertificate(address contractAddr, address owner) public view returns(uint256,string,string,string) {
-        return (Certificates[contractAddr][owner].CA, Certificates[contractAddr][owner].subjectKeyIdentifier, Certificates[contractAddr][owner].publicKey, Certificates[contractAddr][owner].signature);
+    function getSignature(address contractAddr, address owner) public view returns(string,string) {
+        return (Signatures[contractAddr][owner].certificate, Signatures[contractAddr][owner].signature);
     }
 
-    function getOwnerCertificate(address _of, uint256 n) public view returns(address) { 
-        return (OwnerCertificates[_of].contractAddress[n]);
+    function getOwnerSignature(address _of) public view returns(address) { 
+        return (OwnerSignatures[_of].contractAddress);
     }
 
-
+    function getEntity(address addr) public view returns(string) {
+        return entities[addr].publicKey;
+    }
 
 
 

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>BCA's - Verify</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Site Description Here">
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/stack-interface.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/socicon.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/lightbox.min.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/flickity.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/iconsmind.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/jquery.steps.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/theme.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/font-roboto.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+
+    </head>
+    <body class=" boxed-layout">
+        <a id="start"></a>
+        <!--end of notification-->
+        <div class="nav-container ">
+            <div class="bar bar--sm visible-xs">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 col-md-2">
+                            <a href="index.html">
+                                <img class="logo logo-dark" alt="logo" src="img/logo-navbar.png" />
+                                <img class="logo logo-light" alt="logo" src="img/logo-navbar.png" />
+                            </a>
+                        </div>
+                        <div class="col-9 col-md-10 text-right">
+                            <a href="#" class="hamburger-toggle" data-toggle-class="#menu1;hidden-xs">
+                                <i class="icon icon--sm stack-interface stack-menu"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </div>
+            <!--end bar-->
+            <nav id="menu1" class="bar bar--sm bar-1 hidden-xs bar--absolute bar--transparent">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-2 hidden-xs">
+                            <div class="bar__module">
+                                <a href="index.html">
+                                    <img class="logo logo-light" alt="logo" src="img/logo-navbar.png" />
+                                </a>
+                            </div>
+                            <!--end module-->
+                        </div>
+                        <div class="col-lg-11 col-md-12 text-right text-left-xs text-left-sm">
+                            <div class="bar__module">
+                                <ul class="menu-horizontal text-right">
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="index.html">BCA</a>
+                                    </li>  
+
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="generate.html">Generate</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="verify.html">Verify</a>
+                                    </li>
+                                  
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </nav>
+            <!--end bar-->
+        </div>
+        <div class="main-container">
+            <section class="cover switchable bg--tertiary text-center-xs banner">
+                <div class="background-home-slide1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <h1 lang="en">BCA's - Contract</h1>
+                                <p class="lead home-banner-description" lang="en">Blockchain Certification Authority</p>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end of row-->
+            </section>
+            <section class="text-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tab__title">
+                                <span class="h5">Verify</span>
+                            </div>
+                            <div class="tab__content">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="boxed boxed--border verify" id="output_div">
+                                            <h5>Create new X.509 certificate</h5>
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <label for="hash_alg">My Ether Accounts :</label>
+                                                    <div class="input-select">
+                                                        <select id="accounts" onchange="getAccount(this.selected);">
+                                                            <option value="alg_SHA1">choose account ...</option>
+
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <label for="sign_alg">Sign Ethereum Contract / Address</label>
+                                                    <div class="input-select">
+                                                        <input type="text" id="addrToSign">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-justify">
+                                                    <label for="new_signed_data">BASE-64 encoded new certificate + PKCS#8 private key:</label>
+                                                    <textarea id="new_signed_data" class="form-control" rows="3" placeholder="< New encoded certificate + PKCS#8 exported private key will be stored here >"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="certificatePrivacy();">
+                                                                    <span class="btn__text color--white" lang="en">
+                                                                        Create
+                                                                    </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="boxed boxed--border verify" id="cert-data-block">
+                                            <h5>Parse loaded/created X.509 certificate</h5>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group text-justify">
+                                                        <label for="cert-file">Select binary X.509 cert file:</label>
+                                                        <input type="file" id="cert-file" class="add-file">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <div id="cert-issuer-div" class="two-col">
+                                                        <p class="subject">Issuer:</p>
+                                                        <table id="cert-issuer-table"><tr><th>OID</th><th>Value</th></tr></table>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <div id="cert-subject-div" class="two-col">
+                                                        <p class="subject">Subject:</p>
+                                                        <table id="cert-subject-table"><tr><th>OID</th><th>Value</th></tr></table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p><span class="type">Serial number:</span> <span id="cert-serial-number"></span></p>
+                                                    <p><span class="type">Issuance date:</span> <span id="cert-not-before"></span></p>
+                                                    <p><span class="type">Expiration date:</span> <span id="cert-not-after"></span></p>
+                                                    <p><span class="type">Public key size (bits):</span> <span id="cert-keysize"></span></p>
+                                                    <p><span class="type">Signature algorithm:</span> <span id="cert-sign-algo"></span></p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div id="cert-extn-div" class="two-col" style="display:none;">
+                                                        <p class="subject">Extensions:</p>
+                                                        <table id="cert-extn-table"><tr><th>OID</th></tr></table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="boxed boxed--border verify"  id="add-cert-block">
+                                            <h5>Verify loaded/created X.509 certificate</h5>
+                                            <div class="row sub-border">
+                                                <div class="col-md-5">
+                                                    <div class="form-group text-justify">
+                                                        <label for="ca_bundle">Load "CA bundle":</label>
+                                                        <input type="file" id="ca_bundle" class="add-file">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group text-justify">
+                                                        <p>OR</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group text-justify">
+                                                        <label for="trusted_certs">Select trusted certs (binary):</label>
+                                                        <input type="file" id="trusted_certs" class="add-file" multiple="multiple">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group text-justify">
+                                                        <label for="inter_certs">Load intermediate certificates (binary):</label>
+                                                        <input type="file" id="inter_certs" class="add-file" multiple="multiple">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group text-justify">
+                                                        <label for="crls">Load CRLs (binary):</label>
+                                                        <input type="file" id="crls" class="add-file" multiple="multiple">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="verifyCertificate()">
+                                                                    <span class="btn__text color--white" lang="en">
+                                                                        Create
+                                                                    </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <footer class="text-center-xs space--xs bg--dark ">
+                <div class="container">
+                    <!--end of row-->
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <span class="type--fine-print">&copy;
+                                <span class="update-year"></span> Lescovex</span>
+                        </div>
+                        <div class="col-sm-5 text-right text-center-xs">
+
+                            <ul class="social-list list-inline list--hover">
+                                <li>
+                                    <a href="https://t.me/Lescovex" target="_blank">
+                                        <i class="socicon socicon-telegram icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://discord.gg/Mux55Pc" target="_blank">
+                                        <i class="socicon socicon-discord icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://bitcointalk.org/index.php?topic=2346407.0" target="_blank">
+                                        <img src="img/social/bitcoin-talk-footer.png" alt="">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://medium.com/@lescovex" target="_blank">
+                                        <i class="socicon socicon-medium icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://twitter.com/lescovex" target="_blank">
+                                        <i class="socicon socicon-twitter icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.facebook.com/lescovex/?ref=br_rs" target="_blank">
+                                        <i class="socicon socicon-facebook icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/company/11356980/" target="_blank">
+                                        <i class="socicon socicon-linkedin icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/Lescovex/LCX/" target="_blank">
+                                        <i class="socicon socicon-github icon icon--xs"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </footer>
+
+        </div>
+        <!--<div class="loader"></div>-->
+        <a class="back-to-top inner-link" href="#start" data-scroll-class="100vh:active">
+            <i class="stack-interface stack-up-open-big"></i>
+        </a>
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/flickity.min.js"></script>
+        <script src="js/easypiechart.min.js"></script>
+        <script src="js/parallax.js"></script>
+        <script src="js/typed.min.js"></script>
+        <script src="js/datepicker.js"></script>
+        <script src="js/isotope.min.js"></script>
+        <script src="js/ytplayer.min.js"></script>
+        <script src="js/lightbox.min.js"></script>
+        <script src="js/granim.min.js"></script>
+        <script src="js/jquery.steps.min.js"></script>
+        <script src="js/countdown.min.js"></script>
+        <script src="js/twitterfetcher.min.js"></script>
+        <script src="js/spectragram.min.js"></script>
+        <script src="js/smooth-scroll.min.js"></script>
+        <script src="js/scripts.js"></script>
+
+
+
+        <script>
+            document.getElementById('cert-file').addEventListener('change', handleFileBrowse, false);
+            document.getElementById('inter_certs').addEventListener('change', handleInterCertsFile, false);
+            document.getElementById('trusted_certs').addEventListener('change', handleTrustedCertsFile, false);
+            document.getElementById('crls').addEventListener('change', handleCRLsFile, false);
+            document.getElementById('ca_bundle').addEventListener('change', handleCABundle, false);
+        </script>
+
+    </body>
+</html>
