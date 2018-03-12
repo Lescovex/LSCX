@@ -20760,6 +20760,9 @@ function parseCertificate()
 	
 	//region Decode existing X.509 certificate
 	const asn1 = fromBER(certificateBuffer);
+		
+	var dataP=JSON.parse(JSON.stringify(asn1.result));
+	document.getElementById('new_signed_data').innerHTML=dataP.valueBeforeDecode;
 	const certificate = new Certificate({ schema: asn1.result });
 	//endregion
 	
@@ -21238,6 +21241,7 @@ function handleFileBrowse(evt)
 		function(event)
 		{
 			certificateBuffer = event.target.result;
+
 			parseCertificate();
 		};
 	

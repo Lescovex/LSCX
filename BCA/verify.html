@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>BCA's - Generate</title>
+        <title>BCA's - Verify</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Site Description Here">
         <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
@@ -63,7 +63,10 @@
                             <div class="bar__module">
                                 <ul class="menu-horizontal text-right">
                                     <li>
-                                        <a class="dropdown__trigger" lang="en" href="index.html">Generate</a>
+                                        <a class="dropdown__trigger" lang="en" href="index.html">BCA</a>
+                                    </li>  
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="generate.html">Generate</a>
                                     </li>
                                     <li>
                                         <a class="dropdown__trigger" lang="en" href="verify.html">Verify</a>
@@ -84,7 +87,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-xs-12 col-sm-12">
-                                <h1 lang="en">BCA's - Generate</h1>
+                                <h1 lang="en">BCA's - Verify</h1>
                                 <p class="lead home-banner-description" lang="en">Blockchain Certification Authority</p>
 
 
@@ -99,166 +102,154 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="tab__title">
-                                <span class="h5">Generate</span>
+                                <span class="h5">Verify</span>
                             </div>
                             <div class="tab__content">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="boxed boxed--border">
-                                            <h5>NOTE</h5>
-                                            <p>PKIjs supports many different combinations of PKCS#12. Most clients only support one combination. Clients typically only support a combination where the same password is used for protection and integrity.</p>
-
-                                            <p>PKIjs, also only supports creation of AES-CBC and AES-GCM protected PKCS#12’s which will not be readable by Windows which only supports weak ciphers in PKCS#12 files.</p>
-
-                                            <p>You can parse the Password-Based Privacy Protection variant PKIjs creates using this command:</p>
-
-                                            <p>openssl pkcs12 -in pkijs_pkcs12.p12 -nomacver</p>
+                                        <div class="boxed boxed--border verify" id="output_div">
+                                            <h5>Create new X.509 certificate</h5>
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <label for="hash_alg">Hashing algorithm:</label>
+                                                    <div class="input-select">
+                                                        <select id="hash_alg" onchange="handleHashAlgOnChange()">
+                                                            <option value="alg_SHA1">SHA-1</option>
+                                                            <option value="alg_SHA256">SHA-256</option>
+                                                            <option value="alg_SHA384">SHA-384</option>
+                                                            <option value="alg_SHA512">SHA-512</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <label for="sign_alg">Signature algorithm:</label>
+                                                    <div class="input-select">
+                                                        <select id="sign_alg" onchange="handleSignAlgOnChange()">
+                                                            <option value="alg_RSA15">RSASSA-PKCS1-v1_5</option>
+                                                            <option value="alg_RSA2">RSA-PSS</option>
+                                                            <option value="alg_ECDSA">ECDSA</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-justify">
+                                                    <label for="new_signed_data">BASE-64 encoded new certificate + PKCS#8 private key:</label>
+                                                    <textarea id="new_signed_data" class="form-control" rows="3" placeholder="< New encoded certificate + PKCS#8 exported private key will be stored here >"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="certificatePrivacy();">
+                                                                    <span class="btn__text color--white" lang="en">
+                                                                        Create
+                                                                    </span>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="boxed boxed--border">
-                                            <h5>PKCS#12 With OpenSSL-like Internal Structure</h5>
-                                            <form>
-                                                <div class="row">
-                                                    <div class="col-md-8 text-justify">
-                                                        <label>Password:</label>
-                                                        <input type="password" name="password" id="password1" placeholder="Password">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="openSSLLike();">
-                                                                        <span class="btn__text color--white" lang="en">
-                                                                            Create
-                                                                        </span>
-                                                        </a>
+                                        <div class="boxed boxed--border verify" id="cert-data-block">
+                                            <h5>Parse loaded/created X.509 certificate</h5>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group text-justify">
+                                                        <label for="cert-file">Select binary X.509 cert file:</label>
+                                                        <input type="file" id="cert-file" class="add-file">
                                                     </div>
                                                 </div>
-                                            </form>
-                                            <h5>PKCS#12 With Password-Based Integrity Protection And No Privacy Protection</h5>
-                                            <form>
-                                                <div class="row">
-                                                    <div class="col-md-12 text-center">
-                                                        <a class="btn btn--xs btn--green-primary type--uppercase" href="#" onclick="passwordBasedIntegrity();">
-                                                                        <span class="btn__text color--white" lang="en">
-                                                                            Create
-                                                                        </span>
-                                                        </a>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <div id="cert-issuer-div" class="two-col">
+                                                        <p class="subject">Issuer:</p>
+                                                        <table id="cert-issuer-table"><tr><th>OID</th><th>Value</th></tr></table>
                                                     </div>
                                                 </div>
-                                            </form>
-                                            <h5>PKCS#12 With Certificate-Based Integrity Protection And No Privacy Protection</h5>
-                                            <form>
-                                                <div class="row">
-                                                    <div class="col-md-12 text-center">
-                                                        <a class="btn btn--xs btn--green-primary type--uppercase" href="#" onclick="certificateBasedIntegrity();">
-                                                                        <span class="btn__text color--white" lang="en">
-                                                                            Create
-                                                                        </span>
-                                                        </a>
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <div id="cert-subject-div" class="two-col">
+                                                        <p class="subject">Subject:</p>
+                                                        <table id="cert-subject-table"><tr><th>OID</th><th>Value</th></tr></table>
                                                     </div>
                                                 </div>
-                                            </form>
-                                            <h5>PKCS#12 With No Privacy Protection and Password-Based Integrity Protection</h5>
-                                            <form>
-                                                <div class="row">
-                                                    <div class="col-md-8 text-justify">
-                                                        <label>Password:</label>
-                                                        <input type="password" name="password" id="password3" placeholder="Password">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="noPrivacy();">
-                                                                        <span class="btn__text color--white" lang="en">
-                                                                            Create
-                                                                        </span>
-                                                        </a>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p><span class="type">Serial number:</span> <span id="cert-serial-number"></span></p>
+                                                    <p><span class="type">Issuance date:</span> <span id="cert-not-before"></span></p>
+                                                    <p><span class="type">Expiration date:</span> <span id="cert-not-after"></span></p>
+                                                    <p><span class="type">Public key size (bits):</span> <span id="cert-keysize"></span></p>
+                                                    <p><span class="type">Signature algorithm:</span> <span id="cert-sign-algo"></span></p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div id="cert-extn-div" class="two-col" style="display:none;">
+                                                        <p class="subject">Extensions:</p>
+                                                        <table id="cert-extn-table"><tr><th>OID</th></tr></table>
                                                     </div>
                                                 </div>
-                                            </form>
-                                            <h5>PKCS#12 With Password-Based Privacy And Inegrity Protection</h5>
-                                            <form>
-                                                <div class="row">
-                                                    <div class="col-md-8 text-justify">
-                                                        <label>Password:</label>
-                                                        <input type="password" name="password" id="password4" placeholder="Password">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="passwordPrivacy();">
-                                                                        <span class="btn__text color--white" lang="en">
-                                                                            Create
-                                                                        </span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                            <h5>PKCS#12 With Certificate-Based Privacy And Password-Based Integrity Protection</h5>
-                                            <form>
-                                                <div class="row">
-                                                    <div class="col-md-8 text-justify">
-                                                        <label>Password:</label>
-                                                        <input type="password" name="password" id="password5" placeholder="Password">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="certificatePrivacy();">
-                                                                        <span class="btn__text color--white" lang="en">
-                                                                            Create
-                                                                        </span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="boxed boxed--border">
-                                            <h5>Parse OpenSSL-like PKCS#12 data</h5>
-                                            <span>NOTE</span>
-                                            <p>Unfortunately current versions of Windows and OpenSSL only support using weak cryptographic primitives in PKCS#12. WebCrypto does not support these weaker mechanisms so we can not fully parse files all files created by them.</p>
-                                            <p>With that said OpenSSL does support some stronger options, specifically it allows creation of PKCS#12’s using AES-CBC. You can create such a file with this command:</p>
-                                            <p>openssl pkcs12 -export -inkey key.pem -in test.cer -out test.p12 -certpbe AES-256-CBC -keypbe AES-256-CBC</p>
-                                            <form>
-                                                <div class="row">
-                                                    <div class="col-md-8 text-justify">
-                                                        <label>Password:</label>
-                                                        <input type="password" name="password" id="password" placeholder="Password">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="certificatePrivacy();">
-                                                                        <span class="btn__text color--white" lang="en">
-                                                                            Create
-                                                                        </span>
-                                                        </a>
+                                        <div class="boxed boxed--border verify"  id="add-cert-block">
+                                            <h5>Verify loaded/created X.509 certificate</h5>
+                                            <div class="row sub-border">
+                                                <div class="col-md-5">
+                                                    <div class="form-group text-justify">
+                                                        <label for="ca_bundle">Load "CA bundle":</label>
+                                                        <input type="file" id="ca_bundle" class="add-file">
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group text-justify">
-                                                            <label for="exampleInputFile">Select binary PKCS#12 file:</label>
-                                                            <input type="file" id="exampleInputFile" class="add-file">
-                                                        </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group text-justify">
+                                                        <p>OR</p>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-12 text-justify">
-                                                        <label>BASE-64 decoded certificate + PKCS#8 private key:</label>
-                                                        <textarea id="parsing_result" class="form-control" rows="3" placeholder="< PKCS#12 parsing result will be stored here >"></textarea>
+                                                <div class="col-md-5">
+                                                    <div class="form-group text-justify">
+                                                        <label for="trusted_certs">Select trusted certs (binary):</label>
+                                                        <input type="file" id="trusted_certs" class="add-file" multiple="multiple">
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group text-justify">
+                                                        <label for="inter_certs">Load intermediate certificates (binary):</label>
+                                                        <input type="file" id="inter_certs" class="add-file" multiple="multiple">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group text-justify">
+                                                        <label for="crls">Load CRLs (binary):</label>
+                                                        <input type="file" id="crls" class="add-file" multiple="multiple">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <a class="btn btn--xs btn--green-primary type--uppercase margin-t-30" href="#" onclick="verifyCertificate()">
+                                                                    <span class="btn__text color--white" lang="en">
+                                                                        Create
+                                                                    </span>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--end of row-->
                 </div>
-                <!--end of container-->
             </section>
+
 
             <footer class="text-center-xs space--xs bg--dark ">
                 <div class="container">

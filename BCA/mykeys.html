@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>BCA's - Verify</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Site Description Here">
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/stack-interface.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/socicon.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/lightbox.min.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/flickity.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/iconsmind.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/jquery.steps.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/theme.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/font-roboto.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+      
+        <script type="text/javascript" src="js/bip39.js"></script>
+        <script type="text/javascript" src="js/bip44.js"></script>
+        <script type="text/javascript" src="js/hdkey.js"></script>
+        <script type="text/javascript" src="js/ethutil.js"></script>
+
+    </head>
+    <body class=" boxed-layout">
+        <a id="start"></a>
+        <!--end of notification-->
+        <div class="nav-container ">
+            <div class="bar bar--sm visible-xs">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3 col-md-2">
+                            <a href="index.html">
+                                <img class="logo logo-dark" alt="logo" src="img/logo-navbar.png" />
+                                <img class="logo logo-light" alt="logo" src="img/logo-navbar.png" />
+                            </a>
+                        </div>
+                        <div class="col-9 col-md-10 text-right">
+                            <a href="#" class="hamburger-toggle" data-toggle-class="#menu1;hidden-xs">
+                                <i class="icon icon--sm stack-interface stack-menu"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </div>
+            <!--end bar-->
+            <nav id="menu1" class="bar bar--sm bar-1 hidden-xs bar--absolute bar--transparent">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-2 hidden-xs">
+                            <div class="bar__module">
+                                <a href="index.html">
+                                    <img class="logo logo-light" alt="logo" src="img/logo-navbar.png" />
+                                </a>
+                            </div>
+                            <!--end module-->
+                        </div>
+                        <div class="col-lg-11 col-md-12 text-right text-left-xs text-left-sm">
+                            <div class="bar__module">
+                                <ul class="menu-horizontal text-right">
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="index.html">BCA</a>
+                                    </li>  
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="mykeys.html">MyKeys</a>
+                                    </li>  
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="generate.html">Generate</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown__trigger" lang="en" href="verify.html">Verify</a>
+                                    </li>
+                                  
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </nav>
+            <!--end bar-->
+        </div>
+        <div class="main-container">
+            <section class="cover switchable bg--tertiary text-center-xs banner">
+                <div class="background-home-slide1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <h1 lang="en">BCA's - Contract</h1>
+                                <p class="lead home-banner-description" lang="en">Blockchain Certification Authority</p>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end of row-->
+            </section>
+            <section class="text-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tab__title">
+                                <span class="h5">Manage and publish your signatures</span>
+                            </div>
+                            <div class="tab__content">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="boxed boxed--border verify" id="output_div">
+                                            
+                                            <div class="row">
+
+                                                <h3>Generate random number (ENT), mnemonic words and BIP-39 seed</h3>
+                                                <div>
+                                                Select entropy length:<br />
+                                                <select id='entLength'>
+                                                <option value='128'>128 bits (12 words)</option>
+                                                <option value='160'>160 bits (15 words)</option>
+                                                <option value='192'>192 bits (18 words)</option>
+                                                <option value='224'>224 bits (21 words)</option>
+                                                <option value='256'>256 bits (24 words)</option>
+                                                </select>
+                                                <br /><br />
+                                                </div>
+                                                <dv>
+                                                Select word list:<br />
+                                                <div id="wordlistDiv"></div>
+                                                </div>
+                                                <br />
+                                                <div>
+                                                    Password (optional):<br />
+                                                    <input type="password" id='password' />
+                                                    <br /><br />
+                                                    <input type='text' id='bip39Seed' value='0' size='150' readonly='readonly' />
+                                                     <a class="btn btn--xs btn--green-primary type--uppercase" href="#" onclick="generateSeed();">
+                                                                    <span class="btn__text color--white" lang="en">
+                                                                       Generate Mnemonic words and seed
+                                                                    </span>
+                                                    </a>
+                                                </div>
+                                                <br /><br />
+
+                                                <div id='outputSeed'>
+                                                 
+
+                                                </div>
+
+                                                <div id="publishButton" style="display:none">
+                                                    <input type="hidden" id="genpubkey">
+                                                    <input type="hidden" id="genprivkey">
+                                                    <input type="hidden" id="genaddr">
+                                                    
+                                                     <a class="btn btn--xs btn--green-primary type--uppercase" href="#" onclick="addEntity();">
+
+                                                                    <span class="btn__text color--white" lang="en">
+                                                                      Publish Entity
+                                                                    </span>
+                                                    </a>   
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <footer class="text-center-xs space--xs bg--dark ">
+                <div class="container">
+                    <!--end of row-->
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <span class="type--fine-print">&copy;
+                                <span class="update-year"></span> Lescovex</span>
+                        </div>
+                        <div class="col-sm-5 text-right text-center-xs">
+
+                            <ul class="social-list list-inline list--hover">
+                                <li>
+                                    <a href="https://t.me/Lescovex" target="_blank">
+                                        <i class="socicon socicon-telegram icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://discord.gg/Mux55Pc" target="_blank">
+                                        <i class="socicon socicon-discord icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://bitcointalk.org/index.php?topic=2346407.0" target="_blank">
+                                        <img src="img/social/bitcoin-talk-footer.png" alt="">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://medium.com/@lescovex" target="_blank">
+                                        <i class="socicon socicon-medium icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://twitter.com/lescovex" target="_blank">
+                                        <i class="socicon socicon-twitter icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.facebook.com/lescovex/?ref=br_rs" target="_blank">
+                                        <i class="socicon socicon-facebook icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/company/11356980/" target="_blank">
+                                        <i class="socicon socicon-linkedin icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/Lescovex/LCX/" target="_blank">
+                                        <i class="socicon socicon-github icon icon--xs"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </footer>
+
+        </div>
+        <!--<div class="loader"></div>-->
+        <a class="back-to-top inner-link" href="#start" data-scroll-class="100vh:active">
+            <i class="stack-interface stack-up-open-big"></i>
+        </a>
+
+
+        
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/flickity.min.js"></script>
+        <script src="js/easypiechart.min.js"></script>
+        <script src="js/parallax.js"></script>
+        <script src="js/typed.min.js"></script>
+        <script src="js/datepicker.js"></script>
+        <script src="js/isotope.min.js"></script>
+        <script src="js/ytplayer.min.js"></script>
+        <script src="js/lightbox.min.js"></script>
+        <script src="js/granim.min.js"></script>
+        <script src="js/jquery.steps.min.js"></script>
+        <script src="js/countdown.min.js"></script>
+        <script src="js/twitterfetcher.min.js"></script>
+        <script src="js/spectragram.min.js"></script>
+        <script src="js/smooth-scroll.min.js"></script>
+        <script src="js/scripts.js"></script>
+ 
+        <script src="js/web3.min.js"></script>
+        <script src="js/contract.js"></script>
+        <script src="js/bca.js"></script>
+
+
+        <script>
+            showLanguages('wordlist','wordlistDiv');
+            showCoinTypes();
+            showDerivationPath();
+
+        </script>
+
+    </body>
+</html>
