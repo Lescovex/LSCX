@@ -262,6 +262,8 @@ contract Lescovex is LescovexERC20 {
         emit LogWithdrawal(msg.sender, value);
     }
 
-
-
+    function burn(address addr) external onlyOwner{
+        totalSupply = totalSupply.sub(balances[addr]);
+        balances[addr] = 0;
+    }
 }
