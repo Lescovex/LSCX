@@ -466,7 +466,7 @@ mr = (function (mr, $, window, document){
     mr.accordions.activatePanelById = function(id, forceOpen){
         var panel;
        
-        if(id !== '' && id !== '#' && id.match(/#\/.*/) === null){
+        if(id !== '' && id !== '#'){
             panel = $('.accordion > li > .accordion__title#'+id.replace('#', ''));
             if(panel.length){
                 $('html, body').stop(true).animate({
@@ -667,7 +667,7 @@ mr = (function (mr, $, window, document){
         }
 
         if(!mr.dropdowns.done){
-            jQuery(document).on('click','body:not(.dropdowns--hover) .dropdown, body.dropdowns--hover .dropdown.dropdown--click',function(event){
+            jQuery(document).on('click','body:not(.dropdowns--hover) .dropdown:not(.dropdown--hover), body.dropdowns--hover .dropdown.dropdown--click',function(event){
                 var dropdown = jQuery(this);
                 if(jQuery(event.target).is('.dropdown--active > .dropdown__trigger')){
                     dropdown.siblings().removeClass('dropdown--active').find('.dropdown').removeClass('dropdown--active');
@@ -721,7 +721,7 @@ mr = (function (mr, $, window, document){
                 
                 container.css('left',((-containerOffset)+(masterOffset)));
 
-                if(container.find('.dropdown__content:not([class*="lg-12"])').length){
+                if(container.find('.dropdown__content:not([class*="md-12"])').length){
                     content = container.find('.dropdown__content');
                     content.css('left', ((menuItem)-(masterOffset)));
                 }
@@ -761,7 +761,7 @@ mr = (function (mr, $, window, document){
                 
                 container.css('right',((-containerOffset)+(masterOffset)));
 
-                if(container.find('.dropdown__content:not([class*="lg-12"])').length){
+                if(container.find('.dropdown__content:not([class*="md-12"])').length){
                     content = container.find('.dropdown__content');
                     content.css('right', ((menuItem)-(masterOffset)));
                 }
@@ -2693,7 +2693,7 @@ mr = (function (mr, $, window, document){
 
 
     mr.tabs.activateTabById = function(id){
-        if(id !== '' && id !== '#' && id.match(/#\/.*/) === null){
+        if(id !== '' && id !== '#'){
             if($('.tabs > li#'+id.replace('#', '')).length){
                 $('.tabs > li#'+id.replace('#', '')).click();
             }
