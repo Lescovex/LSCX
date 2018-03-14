@@ -1,4 +1,4 @@
-var Lescovex = artifacts.require("Lescovex");
+var Lescovex = artifacts.require("Lescovex_ISC");
 
 
 contract('Lescovex Test',  async (accounts) => {
@@ -173,8 +173,6 @@ contract('Lescovex Test',  async (accounts) => {
       console.log("balance: "+ balance+" tokenReaward : "+tokenReward);
 
       assert((totalSupply-balance)*tokenReward , contractEth, "total supply must be total (totalSupply-balance) * tokenReward");
-
-
 
     });
     
