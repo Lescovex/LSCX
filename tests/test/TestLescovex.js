@@ -101,7 +101,12 @@ contract('Lescovex Test',  async (accounts) => {
       console.log("Sender Balance End: " + balance_end);
       console.log("Receiver Balance End: " + balance_end_2);
 
+
+      let holded_account_two = await meta.holdedOf(account_two, 1);
       
+      console.log("Holded : "+ holded_account_two);
+
+      assert.equal(amount, holded_account_two, "Holded not is the final amount");      
       assert.equal(balance_end, balance_start - (balance_end_2 - amount), "Amount wasn't correctly sent to the receiver");
 
     
