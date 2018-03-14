@@ -235,10 +235,13 @@ contract Lescovex is LescovexERC20 {
     }
 
   
+  uint256 public contractBalance=0;
+
     function deposit() external payable onlyOwner returns(bool success) {
         // Check for overflows;
 
         assert (this.balance + msg.value >= this.balance); // Check for overflows
+        contractBalance=this.balance;
         tokenReward = this.balance / totalSupply;
 
         //executes event to reflect the changes

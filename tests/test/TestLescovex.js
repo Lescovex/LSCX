@@ -4,6 +4,26 @@ var Lescovex = artifacts.require("Lescovex");
 contract('Lescovex Test',  async (accounts) => {
 
 
+    it("should deposit amount correctly", async () => {
+
+      let amount = 1000000000000000000;
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+      await meta.deposit({value:amount});
+      
+      let contractEth=await meta.contractBalance();
+
+      let tokenReward= await meta.tokenReward();
+
+      let totalSupply= await meta.totalSupply();
+      
+      console.log("Contract ETH: "+ contractEth+" tokenReaward : "+tokenReward);
+
+      assert(totalSupply , contractEth*tokenReward, "total supply must be total Ether * Token Reward");
+
+    });
 
 
     it("should transfer coin correctly", async () => {
@@ -112,5 +132,52 @@ contract('Lescovex Test',  async (accounts) => {
     
     });
 
-  
+
+    it("wait block for withdraw", async () => {
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+      let amount = 1000000000000000000;
+      await meta.deposit({value:amount});
+      await meta.deposit({value:amount});
+      await meta.deposit({value:amount});
+      await meta.deposit({value:amount});
+      await meta.deposit({value:amount});
+      await meta.deposit({value:amount});
+      await meta.deposit({value:amount});
+      await meta.deposit({value:amount});
+
+    });    
+
+
+
+     it("should withdraw reward amount correctly", async () => {
+
+
+      let account_one = accounts[0];
+      let account_two = accounts[1];
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+      await meta.withdrawReward();
+      
+      let contractEth=await meta.contractBalance();
+
+      let tokenReward= await meta.tokenReward();
+
+      let totalSupply= await meta.totalSupply();
+
+      let balance= await meta.balanceOf(account_one);
+      
+
+      console.log("balance: "+ balance+" tokenReaward : "+tokenReward);
+
+      assert((totalSupply-balance)*tokenReward , contractEth, "total supply must be total (totalSupply-balance) * tokenReward");
+
+
+
+    });
+    
+
+
 });
