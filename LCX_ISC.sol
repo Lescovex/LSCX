@@ -1,6 +1,5 @@
 pragma solidity ^0.4.19;
 
-
 /*
     Copyright 2018, Vicent Nos & Enrique Santos
 
@@ -76,7 +75,7 @@ contract Ownable {
 
 //////////////////////////////////////////////////////////////
 //                                                          //
-//  Lescovex, Shareholder's ERC20                           //
+//  Lescovex Equity ERC20                           //
 //                                                          //
 //////////////////////////////////////////////////////////////
 
@@ -97,12 +96,13 @@ contract LescovexERC20 is Ownable {
         uint256 length;
     }
 
-    uint256 public constant blockEndICO = 1524182460;
+    
 
     /* Public variables for the ERC20 token */
-    string public constant standard = "ERC20 Lescovex";
+    string public constant standard = "ERC20 Lescovex ISC Income Smart Contract";
     uint8 public constant decimals = 8; // hardcoded to be a constant
     uint256 public totalSupply;
+    uint256 public holdTime;
     string public name;
     string public symbol;
 
@@ -110,8 +110,13 @@ contract LescovexERC20 is Ownable {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
 
-    function balanceOf(address _owner) public view returns (uint256 balance) {
+    function balanceOf(address _owner) public view returns (uint256) {
         return balances[_owner];
+    }
+
+
+    function holdedOf(address _owner, uint256 n) public view returns (uint256) {
+        return holded[_owner].amount[n];
     }
 
     function hold(address _to, uint256 _value) internal {
@@ -121,10 +126,9 @@ contract LescovexERC20 is Ownable {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
-        require(block.timestamp > blockEndICO || msg.sender == owner);
+       
         require(_to != address(0));
         require(_value <= balances[msg.sender]);
-
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
@@ -141,15 +145,15 @@ contract LescovexERC20 is Ownable {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(_to != address(0));
         require(_value <= balances[_from]);
-        require(_value <= allowed[_from][msg.sender]); 
+        require(_value <= allowed[_from][msg.sender]);       
         balances[_from] = balances[_from].sub(_value);
         
         delete holded[msg.sender];
-        hold(_from,balances[_from]);
+        hold(msg.sender,balances[_from]);
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
-        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+        //allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
 
         Transfer(_from, _to, _value);
         return true;
@@ -199,71 +203,46 @@ interface tokenRecipient {
 }
 
     
-contract Lescovex is LescovexERC20 {
+contract Lescovex_ISC is LescovexERC20 {
 
-    // Contract variables and constants
-    uint256 constant initialSupply = 0;
-    uint256 constant maxSupply = 1000000000000000;
-    string constant tokenName = "Lescovex Shareholder's";
-    string constant tokenSymbol = "LCX";
-    uint256 constant holdTime = 5; // number of blocks required to hold for reward
-
-    address public LescovexAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
     uint256 public tokenReward = 0;
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
-
-
+    
     //Declare logging events
     event LogDeposit(address sender, uint amount);
     event LogWithdrawal(address receiver, uint amount);
   
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function Lescovex() public {
+    function Lescovex_ISC(
+        uint256 initialSupply,
+        string name,
+        string symbol,
+        uint256 holdTime,
+        address owner
+
+        ) public {
         totalSupply = initialSupply;  // Update total supply
-        name = tokenName;             // Set the name for display purposes
-        symbol = tokenSymbol;         // Set the symbol for display purposes
+        name = name;             // Set the name for display purposes
+        symbol = symbol;         // Set the symbol for display purposes
+        holdTime=holdTime;
+        balances[owner]= balances[owner].add(totalSupply);
+        
     }
 
-    function () public payable {
-        buy();   // Allow to buy tokens sending ether directly to contract
+    function () public {
+        
     }
 
-    function buyPrice() public view returns (uint256 price) {
-        uint256 buyTime = block.timestamp; // only one read from state
-
-        // price with the discounts applied on each period
-        if (buyTime < 1519862460){          //until 1 march 2018
-            if (totalSupply < 50000000000000){
-                return 7500000000000000;
-
-            } else {
-                return 8000000000000000;
-            }
-        } else if (buyTime < 1520640060){   // until 10 march 2018
-          return 8000000000000000;
-
-        } else if (buyTime < 1521504060){     //until 20 march 2018
-          return 8500000000000000;
-
-        } else if (buyTime < 1522368060){   //until 30 march 2018
-
-          return 9000000000000000;
-
-        } else if (buyTime < 1523232060){   //until 9 april 2018
-          return 9500000000000000;
-
-        } else {
-
-          return 10000000000000000;
-        }
-    }
+  
+  uint256 public contractBalance=0;
 
     function deposit() external payable onlyOwner returns(bool success) {
         // Check for overflows;
 
         assert (this.balance + msg.value >= this.balance); // Check for overflows
+        contractBalance=this.balance;
         tokenReward = this.balance / totalSupply;
 
         //executes event to reflect the changes
@@ -288,6 +267,7 @@ contract Lescovex is LescovexERC20 {
         delete holded[msg.sender];
         hold(msg.sender,balances[msg.sender]);
         require(ethAmount > 0);
+
         //send eth to owner address
         msg.sender.transfer(ethAmount);
           
@@ -303,34 +283,6 @@ contract Lescovex is LescovexERC20 {
         LogWithdrawal(msg.sender, value);
     }
 
-    function buy() public payable {
-        require(totalSupply <= maxSupply);
-        require(block.timestamp < blockEndICO);
 
-        uint256 tokenAmount = (msg.value * tokenUnit) / buyPrice();  // calculates the amount
-        transferBuy(msg.sender, tokenAmount);
-
-        LescovexAddr.transfer(msg.value);
-    }
-
-    function transferBuy(address _to, uint256 _value) internal returns (bool) {
-        require(_to != address(0));
-
-        // SafeMath.add will throw if there is not enough balance.
-        totalSupply = totalSupply.add(_value*2);
-
-        hold(_to,_value);
-        balances[LescovexAddr] = balances[LescovexAddr].add(_value);
-        balances[_to] = balances[_to].add(_value);
-
-        Transfer(this, _to, _value);
-        Transfer(this, LescovexAddr, _value);
-        return true;
-    }
-
-    function burn(address addr) external onlyOwner{
-        totalSupply = totalSupply.sub(balances[addr]);
-        balances[addr] = 0;
-    }
 
 }
