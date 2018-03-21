@@ -42,7 +42,8 @@ contract('Lescovex Test CIF',  async (accounts) => {
       
       let contractEth=await meta.contractBalance();
 
-      let ownerBalance=await meta.ownerBalance();
+       let owner=await meta.owner();
+      let ownerBalance=balance = await meta.balanceOf.call(owner);
 
       let tokenReward= await meta.tokenPrice();
 
