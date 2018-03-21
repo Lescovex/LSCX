@@ -287,6 +287,15 @@ contract Lescovex_CIF is LescovexERC20 {
         require(ethAmount>=(tokenPrice*requestWithdraws[msg.sender]));
 
         LogWithdrawal(msg.sender, ethAmount);
+ 
+        totalSupply = totalSupply.sub(requestWithdraws[msg.sender]);
+ 
+
+        balances[msg.sender] = balances[msg.sender].sub(requestWithdraws[msg.sender]);
+ 
+
+        Transfer(msg.sender, this, requestWithdraws[msg.sender]);
+ 
         msg.sender.transfer(tokenPrice*requestWithdraws[msg.sender]/tokenUnit);
         
           
@@ -304,19 +313,19 @@ contract Lescovex_CIF is LescovexERC20 {
     event LogWithdrawal(address receiver, uint amount);
 
 
-  function requestWithdraw(uint value) public {
-    require(value <= balances[msg.sender]);
-    delete holded[msg.sender];
-    hold(msg.sender, value);
+      function requestWithdraw(uint value) public {
+        require(value <= balances[msg.sender]);
+        delete holded[msg.sender];
+        hold(msg.sender, value);
 
-    requestWithdraws[msg.sender]=value;
-    //executes event ro register the changes
-    
+        requestWithdraws[msg.sender]=value;
+        //executes event ro register the changes
+        
 
-  }
+      }
 
 
-    uint256 public ownerBalance=0;
+   
 
     function buy() public payable {
         require(totalSupply <= maxSupply);
@@ -324,8 +333,6 @@ contract Lescovex_CIF is LescovexERC20 {
 
         uint256 tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
         transferBuy(msg.sender, tokenAmount);
-
-        ownerBalance=ownerBalance.add(msg.value);
         owner.transfer(msg.value);
 
     }
