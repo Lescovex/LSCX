@@ -228,7 +228,7 @@ contract Lescovex_ISC is LescovexERC20 {
         symbol = symbol2;         // Set the symbol for display purposes
         holdTime=holdTime2;
         owner=owner2;
-        balances[owner]= balances[owner].add(totalSupply);
+        balances[owner2]= balances[owner2].add(totalSupply);
         
     }
 

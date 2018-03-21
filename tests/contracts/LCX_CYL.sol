@@ -105,9 +105,7 @@ contract LescovexERC20 is Ownable {
     string public name;
     string public symbol;
 
-    uint256 public holdTime;
-    uint256 public holdMax;
-    uint256 public maxSupply;
+
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -118,16 +116,6 @@ contract LescovexERC20 is Ownable {
     }
 
 
-    function holdedOf(address _owner, uint256 n) public view returns (uint256) {
-        return holded[_owner].amount[n];
-    }
-
-
-    function hold(address _to, uint256 _value) internal {
-        holded[_to].amount.push(_value);
-        holded[_to].time.push(block.number);
-        holded[_to].length++;
-    }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
        
@@ -137,8 +125,6 @@ contract LescovexERC20 is Ownable {
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
-        delete holded[msg.sender];
-        hold(_to,_value);
         
         balances[_to] = balances[_to].add(_value);
 
@@ -152,9 +138,7 @@ contract LescovexERC20 is Ownable {
         require(_value <= allowed[_from][msg.sender]); 
 
         balances[_from] = balances[_from].sub(_value);
-        
-        delete holded[msg.sender];
-        hold(_to,_value);
+
 
         
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
@@ -208,7 +192,7 @@ interface tokenRecipient {
 }
 
     
-contract Lescovex_CIF is LescovexERC20 {
+contract Lescovex_CYC is LescovexERC20 {
 
     // Contract variables and constants
     
@@ -223,134 +207,21 @@ contract Lescovex_CIF is LescovexERC20 {
     
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function Lescovex_CIF(
+    function Lescovex_CYC(
             uint256 initialSupply,
             string name2,
             string symbol2,
-            uint256 holdTime2,
-            uint256 holdMax2,
-            uint256 maxSupply2,
             address owner2
         ) public {
 
         totalSupply = initialSupply;  // Update total supply
         name = name2;             // Set the name for display purposes
         symbol = symbol2;         // Set the symbol for display purposes
-        holdTime=holdTime2;
-        holdMax=holdMax2;
-        maxSupply=maxSupply2;
         owner=owner2;
         balances[owner2]= balances[owner2].add(totalSupply);
+        
+
     
-    }
-
-    function () public payable {
-        buy();   // Allow to buy tokens sending ether directly to contract
-    }
-
-
-    uint256 public contractBalance=0;
-
-    function deposit() external payable onlyOwner returns(bool success) {
-        // Check for overflows;
-
-        assert (this.balance + msg.value >= this.balance); // Check for overflows
-
-        contractBalance=this.balance;
-
-        //executes event to reflect the changes
-        LogDeposit(msg.sender, msg.value);
-        
-        return true;
-    }
-
-
-    function withdrawReward() external {
-
-        uint i = 0;
-        uint256 ethAmount = 0;
-        uint256 len = holded[msg.sender].length;
-
-        while (i <= len - 1){
-            if (block.number -  holded[msg.sender].time[i] > holdTime && block.number -  holded[msg.sender].time[i] < holdMax){
-                ethAmount += tokenPrice * holded[msg.sender].amount[i];
-            }
-            i++;
-        }
-
-        delete holded[msg.sender];
-        
-        hold(msg.sender,balances[msg.sender]);
-        
-        require(ethAmount > 0);
-        
-        require(ethAmount>=(tokenPrice*requestWithdraws[msg.sender]));
-
-        LogWithdrawal(msg.sender, ethAmount);
- 
-        totalSupply = totalSupply.sub(requestWithdraws[msg.sender]);
- 
-
-        balances[msg.sender] = balances[msg.sender].sub(requestWithdraws[msg.sender]);
- 
-
-        Transfer(msg.sender, this, requestWithdraws[msg.sender]);
- 
-        msg.sender.transfer(tokenPrice*requestWithdraws[msg.sender]/tokenUnit);
-        
-          
-        
-
-    }
-
-
-    function setPrice(uint256 _value) public onlyOwner{
-      tokenPrice=_value;
-    }
-
-
-
-    event LogWithdrawal(address receiver, uint amount);
-
-
-      function requestWithdraw(uint value) public {
-        require(value <= balances[msg.sender]);
-        delete holded[msg.sender];
-        hold(msg.sender, value);
-
-        requestWithdraws[msg.sender]=value;
-        //executes event ro register the changes
-        
-
-      }
-
-
-   
-
-    function buy() public payable {
-        require(totalSupply <= maxSupply);
-        
-
-        uint256 tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
-        transferBuy(msg.sender, tokenAmount);
-        owner.transfer(msg.value);
-
-    }
-
-
-    function transferBuy(address _to, uint256 _value) internal returns (bool) {
-        require(_to != address(0));
-
-        // SafeMath.add will throw if there is not enough balance.
-        totalSupply = totalSupply.add(_value);
-
-        hold(_to,_value);
-       
-        balances[_to] = balances[_to].add(_value);
-
-        Transfer(this, _to, _value);
-       
-        return true;
     }
 
 
