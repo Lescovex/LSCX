@@ -1,7 +1,8 @@
-var Lescovex = artifacts.require("Lescovex_ISC");
+var Lescovex = artifacts.require("Lescovex_CIF");
 
 
-contract('Lescovex Test ISC',  async (accounts) => {
+contract('Lescovex Test CIF',  async (accounts) => {
+
 
 
     it("check contructor params", async () => {
@@ -11,14 +12,45 @@ contract('Lescovex Test ISC',  async (accounts) => {
 
 
       let name=await meta.name();
+
       let symbol=await meta.symbol();
 
-      let owner=await meta.owner();
+    let initialPrice= 1000000000000000;
+    await meta.setPrice(initialPrice);  
 
-   
+      let owner=await meta.owner();
+      let holdTime=await meta.holdTime();
+      let holdMax=await meta.holdMax();
+   //   let tokenReward= await meta.tokenPrice();
+
       let totalSupply= await meta.totalSupply();
       
-      console.log("Contract owner: "+owner+" totalSupply : " + totalSupply + " symbol : "+ symbol) ;      
+      console.log("Contract owner: "+owner+" InitialPrice: "+initialPrice+" totalSupply : " + totalSupply + " symbol : "+ symbol+ " name : "+ name+ " holdTime : "+ holdTime+ " holdMax : "+ holdMax) ;      
+
+    });
+
+
+
+    it("should buy amount correctly", async () => {
+
+      let amount = 1000000000000000000;
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+      await meta.buy({value:amount});
+      
+      let contractEth=await meta.contractBalance();
+
+      let ownerBalance=await meta.ownerBalance();
+
+      let tokenReward= await meta.tokenPrice();
+
+      let totalSupply= await meta.totalSupply();
+      
+      console.log("Contract ETH: "+ contractEth+"Owner Balance: "+ ownerBalance+" tokenReaward : "+tokenReward);
+
+      assert(totalSupply , contractEth*tokenReward, "total supply must be total Ether * Token Price");
 
     });
 
@@ -34,7 +66,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       
       let contractEth=await meta.contractBalance();
 
-      let tokenReward= await meta.tokenReward();
+      let tokenReward= await meta.tokenPrice();
 
       let totalSupply= await meta.totalSupply();
       
@@ -43,6 +75,8 @@ contract('Lescovex Test ISC',  async (accounts) => {
       assert(totalSupply , contractEth*tokenReward, "total supply must be total Ether * Token Reward");
 
     });
+
+
 
 
     it("should transfer coin correctly", async () => {
@@ -152,10 +186,25 @@ contract('Lescovex Test ISC',  async (accounts) => {
     });
 
 
+    it("should request withdraw reward amount correctly", async () => {
+
+      let account_one = accounts[0];
+      let account_two = accounts[1];
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+      let amount = 10000000000;
+
+      await meta.requestWithdraw(amount);
+
+
+    });
+
     it("wait block for withdraw", async () => {
       let instance = await Lescovex.deployed();
       let meta = instance;
       let amount = 1000000000000000000;
+
       await meta.deposit({value:amount});
       await meta.deposit({value:amount});
       await meta.deposit({value:amount});
@@ -178,23 +227,23 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let instance = await Lescovex.deployed();
       let meta = instance;
 
-      await meta.withdrawReward();
+      
       
       let contractEth=await meta.contractBalance();
 
-      let tokenReward= await meta.tokenReward();
+      let tokenReward= await meta.tokenPrice();
 
       let totalSupply= await meta.totalSupply();
 
       let balance= await meta.balanceOf(account_one);
       
+     
 
-      console.log("balance: "+ balance+" tokenReaward : "+tokenReward);
+      console.log("balance: "+ balance+" tokenReaward : "+tokenReward+" REWARD : "+balance*tokenReward);
+      await meta.withdrawReward();
 
-      assert((totalSupply-balance)*tokenReward , contractEth, "total supply must be total (totalSupply-balance) * tokenReward");
+    //  assert(balance*tokenReward , balance*tokenReward, "total supply must be total (totalSupply-balance) * tokenReward");
 
     });
-    
-
 
 });

@@ -56,7 +56,8 @@ contract Ownable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     function Ownable() internal {
-        
+                owner = msg.sender;
+
     }
 
     modifier onlyOwner() {
@@ -115,6 +116,12 @@ contract LescovexERC20 is Ownable {
     function balanceOf(address _owner) public view returns (uint256 balance) {
         return balances[_owner];
     }
+
+
+    function holdedOf(address _owner, uint256 n) public view returns (uint256) {
+        return holded[_owner].amount[n];
+    }
+
 
     function hold(address _to, uint256 _value) internal {
         holded[_to].amount.push(_value);
@@ -216,22 +223,24 @@ contract Lescovex_CIF is LescovexERC20 {
     
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function Lescovex(
+    function Lescovex_CIF(
             uint256 initialSupply,
-            string name,
-            string symbol,
-            uint256 holdTime,
-            uint256 holdMax,
-            string maxSupply,
-            address owner
+            string name2,
+            string symbol2,
+            uint256 holdTime2,
+            uint256 holdMax2,
+            uint256 maxSupply2,
+            address owner2
         ) public {
 
         totalSupply = initialSupply;  // Update total supply
-        name = name;             // Set the name for display purposes
-        symbol = symbol;         // Set the symbol for display purposes
-        holdTime=holdTime;
-        holdMax=holdMax;
-        owner=owner;
+        name = name2;             // Set the name for display purposes
+        symbol = symbol2;         // Set the symbol for display purposes
+        holdTime=holdTime2;
+        holdMax=holdMax2;
+        maxSupply=maxSupply2;
+        owner=owner2;
+        balances[owner]= balances[owner].add(totalSupply);
     
     }
 
@@ -239,12 +248,16 @@ contract Lescovex_CIF is LescovexERC20 {
         buy();   // Allow to buy tokens sending ether directly to contract
     }
 
+
+    uint256 public contractBalance=0;
+
     function deposit() external payable onlyOwner returns(bool success) {
         // Check for overflows;
 
         assert (this.balance + msg.value >= this.balance); // Check for overflows
 
-        
+        contractBalance=this.balance;
+
         //executes event to reflect the changes
         LogDeposit(msg.sender, msg.value);
         
@@ -266,18 +279,23 @@ contract Lescovex_CIF is LescovexERC20 {
         }
 
         delete holded[msg.sender];
+        
         hold(msg.sender,balances[msg.sender]);
+        
         require(ethAmount > 0);
-        //send eth to owner address
-         msg.sender.transfer(ethAmount*requestWithdraws[msg.sender]);
-          
-        //executes event to register the changes
+        
+        require(ethAmount>=(tokenPrice*requestWithdraws[msg.sender]));
+
         LogWithdrawal(msg.sender, ethAmount);
+        msg.sender.transfer(tokenPrice*requestWithdraws[msg.sender]/tokenUnit);
+        
+          
+        
+
     }
 
 
     function setPrice(uint256 _value) public onlyOwner{
-
       tokenPrice=_value;
     }
 
@@ -286,17 +304,19 @@ contract Lescovex_CIF is LescovexERC20 {
     event LogWithdrawal(address receiver, uint amount);
 
 
-      function requestWithdraw(uint value) public {
-        require(value <= balances[msg.sender]);
+  function requestWithdraw(uint value) public {
+    require(value <= balances[msg.sender]);
+    delete holded[msg.sender];
+    hold(msg.sender, value);
 
-        hold(msg.sender, value);
+    requestWithdraws[msg.sender]=value;
+    //executes event ro register the changes
+    
 
-        requestWithdraws[msg.sender]=value;
-        //executes event ro register the changes
-        
+  }
 
-      }
 
+    uint256 public ownerBalance=0;
 
     function buy() public payable {
         require(totalSupply <= maxSupply);
@@ -305,6 +325,7 @@ contract Lescovex_CIF is LescovexERC20 {
         uint256 tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
         transferBuy(msg.sender, tokenAmount);
 
+        ownerBalance=ownerBalance.add(msg.value);
         owner.transfer(msg.value);
 
     }
@@ -321,7 +342,7 @@ contract Lescovex_CIF is LescovexERC20 {
         balances[_to] = balances[_to].add(_value);
 
         Transfer(this, _to, _value);
-        Transfer(this, owner, _value);
+       
         return true;
     }
 

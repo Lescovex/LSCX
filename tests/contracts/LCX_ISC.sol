@@ -217,16 +217,17 @@ contract Lescovex_ISC is LescovexERC20 {
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex_ISC(
         uint256 initialSupply,
-        string name,
-        string symbol,
-        uint256 holdTime,
-        address owner
+        string name2,
+        string symbol2,
+        uint256 holdTime2,
+        address owner2
 
         ) public {
         totalSupply = initialSupply;  // Update total supply
-        name = name;             // Set the name for display purposes
-        symbol = symbol;         // Set the symbol for display purposes
-        holdTime=holdTime;
+        name = name2;             // Set the name for display purposes
+        symbol = symbol2;         // Set the symbol for display purposes
+        holdTime=holdTime2;
+        owner=owner2;
         balances[owner]= balances[owner].add(totalSupply);
         
     }
