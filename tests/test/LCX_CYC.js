@@ -1,10 +1,11 @@
 var Lescovex = artifacts.require("Lescovex_CYC");
+var Lescovex2 = artifacts.require("Lescovex_ISC2");
 
 
 contract('Lescovex Test CYC',  async (accounts) => {
 
 
-    it("check contructor params", async () => {
+    it("check constructor params", async () => {
 
       let instance = await Lescovex.deployed();
       let meta = instance;
@@ -15,10 +16,10 @@ contract('Lescovex Test CYC',  async (accounts) => {
 
       let owner=await meta.owner();
 
-   
+
       let totalSupply= await meta.totalSupply();
-      
-      console.log("Contract owner: "+owner+" totalSupply : " + totalSupply + " symbol : "+ symbol) ;      
+
+      console.log("Contract owner: "+owner+" totalSupply : " + totalSupply + " symbol : "+ symbol) ;
 
     });
 
@@ -41,6 +42,7 @@ contract('Lescovex Test CYC',  async (accounts) => {
 
       balance = await meta.balanceOf.call(account_two);
       let account_two_starting_balance = balance.toNumber();
+
       await meta.transfer(account_two, amount);
 
       balance = await meta.balanceOf.call(account_one);
@@ -55,11 +57,11 @@ contract('Lescovex Test CYC',  async (accounts) => {
       assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
       assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
 
-    
+
     });
 
 
-    it("should aprove amount correctly", async () => {
+    it("should approve amount correctly", async () => {
 
       // Get initial balances of first and second account.
       let account_one = accounts[0];
@@ -82,7 +84,7 @@ contract('Lescovex Test CYC',  async (accounts) => {
 
       assert.equal(amount, allowance, "Allowance needs to be equal than amount");
 
-    
+
     });
 
 
@@ -116,18 +118,97 @@ contract('Lescovex Test CYC',  async (accounts) => {
       console.log("Sender Balance End: " + balance_end);
       console.log("Receiver Balance End: " + balance_end_2);
 
-
-
-
-        
       assert.equal(balance_end, balance_start - (balance_end_2 - amount), "Amount wasn't correctly sent to the receiver");
 
-    
+
     });
 
 
+    it("should increase appproval amount correctly", async () => {
+      let account_one = accounts[0];
+      let account_two = accounts[1];
 
-    
+      let amount = 10000;
 
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+      await meta.approve(account_two, amount);
+
+      let balanceBefore = await meta.allowance(account_one, account_two);
+      let allowanceBefore = balanceBefore.toNumber();
+
+      console.log("Balance before increaseApproval: " + allowanceBefore);
+
+      assert.equal(allowanceBefore, amount, "Allowance must be equal than amount");
+
+      await meta.increaseApproval(account_two, amount);
+
+      amount = amount + amount;
+      let balanceAfter = await meta.allowance(account_one, account_two);
+      let allowanceAfter = balanceAfter.toNumber();
+
+      console.log("Balance after increaseApproval: " + allowanceAfter);
+
+      assert.equal(allowanceAfter, amount, "Allowance must be equal than amount");
+    });
+
+    it("should decrease appproval amount correctly", async () => {
+      let account_one = accounts[0];
+      let account_two = accounts[1];
+
+      let amount = 20000;
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+      await meta.approve(account_two, amount);
+
+      let balanceBefore = await meta.allowance(account_one, account_two);
+      let allowanceBefore = balanceBefore.toNumber();
+
+      console.log("Balance before decreaseApproval: " + allowanceBefore);
+
+      assert.equal(allowanceBefore, amount, "Allowance must be equal than amount");
+
+      amount = amount / 2;
+
+      await meta.decreaseApproval(account_two, amount);
+
+      let balanceAfter = await meta.allowance(account_one, account_two);
+      let allowanceAfter = balanceAfter.toNumber();
+
+      console.log("Balance after decreaseApproval: " + allowanceAfter);
+
+      assert.equal(allowanceAfter, amount, "Allowance must be equal than amount");
+
+    });
+
+
+    it("should approve and communicate the approved correctly", async () => {
+      let account_one = accounts[0];
+
+      let amount = 20000;
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+
+      let instance2 = await Lescovex2.deployed();
+
+      let addressContract = instance2.address;
+
+      let _data = "";
+
+      await meta.approveAndCall(addressContract, amount, _data);
+
+      let balanceAfter = await meta.allowance(account_one, addressContract);
+      let allowanceAfter = balanceAfter.toNumber();
+
+      console.log("Balance allowed after approveAndCall: " + allowanceAfter);
+
+      assert.equal(allowanceAfter, amount, "Allowance must be equal than amount after approveAndCall function");
+
+    });
 
 });

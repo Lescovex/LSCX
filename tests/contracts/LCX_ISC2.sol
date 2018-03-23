@@ -20,6 +20,7 @@ pragma solidity ^0.4.19;
  */
 
 
+
 library SafeMath {
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
         if (a == 0) {
@@ -56,8 +57,7 @@ contract Ownable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     function Ownable() internal {
-                owner = msg.sender;
-
+        owner = msg.sender;
     }
 
     modifier onlyOwner() {
@@ -75,7 +75,7 @@ contract Ownable {
 
 //////////////////////////////////////////////////////////////
 //                                                          //
-//  Lescovex, Open End Crypto Fund ERC20                    //
+//  Lescovex Equity ERC20                                   //
 //                                                          //
 //////////////////////////////////////////////////////////////
 
@@ -85,8 +85,6 @@ contract LescovexERC20 is Ownable {
 
 
     mapping (address => uint256) public balances;
-
-    mapping (address => uint256) public requestWithdraws;
 
     mapping (address => mapping (address => uint256)) internal allowed;
 
@@ -98,36 +96,45 @@ contract LescovexERC20 is Ownable {
         uint256 length;
     }
 
+
+
     /* Public variables for the ERC20 token */
-    string public constant standard = "ERC20 Lescovex CIF";
+    string public constant standard = "ERC20 Lescovex ISC2 Income Smart Contract";
     uint8 public constant decimals = 8; // hardcoded to be a constant
     uint256 public totalSupply;
+    uint256 public holdTime;
     string public name;
     string public symbol;
-
-
-    uint256 public holdTime;
-    uint256 public holdMax;
-    uint256 public maxSupply;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
 
-    function balanceOf(address _owner) public view returns (uint256 balance) {
+    function balanceOf(address _owner) public view returns (uint256) {
         return balances[_owner];
     }
 
 
+    function holdedOf(address _owner, uint256 n) public view returns (uint256) {
+        return holded[_owner].amount[n];
+    }
+
+    function hold(address _to, uint256 _value) internal {
+        holded[_to].amount.push(_value);
+        holded[_to].time.push(block.number);
+        holded[_to].length++;
+    }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
 
         require(_to != address(0));
         require(_value <= balances[msg.sender]);
-
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
+        delete holded[msg.sender];
+        hold(msg.sender,balances[msg.sender]);
+        hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
 
@@ -139,13 +146,14 @@ contract LescovexERC20 is Ownable {
         require(_to != address(0));
         require(_value <= balances[_from]);
         require(_value <= allowed[_from][msg.sender]);
-
         balances[_from] = balances[_from].sub(_value);
 
+        delete holded[msg.sender];
+        hold(msg.sender,balances[_from]);
+        hold(_to,_value);
 
-
-        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
+        //allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
 
         Transfer(_from, _to, _value);
         return true;
@@ -195,37 +203,86 @@ interface tokenRecipient {
 }
 
 
-contract Lescovex_ABT is LescovexERC20 {
+contract Lescovex_ISC2 is LescovexERC20 {
 
-    // Contract variables and constants
-
-
-    uint256 public tokenPrice = 0;
+    uint256 public tokenReward = 0;
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
+    event LogWithdrawal(address receiver, uint amount);
 
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function Lescovex_ABT(
-            uint256 initialSupply,
-            string name2,
-            string symbol2,
-            address owner2,
-            string BCA
+    function Lescovex_ISC2(
+        uint256 initialSupply,
+        string name,
+        string symbol,
+        uint256 holdTime,
+        address owner
+
         ) public {
-
         totalSupply = initialSupply;  // Update total supply
-        name = name2;             // Set the name for display purposes
-        symbol = symbol2;         // Set the symbol for display purposes
-        owner=owner2;
-        balances[owner2]= balances[owner2].add(totalSupply);
-        BCA=BCA;
-
+        name = name;             // Set the name for display purposes
+        symbol = symbol;         // Set the symbol for display purposes
+        holdTime=holdTime;
+        balances[owner]= balances[owner].add(totalSupply);
 
     }
+
+    function () public {
+
+    }
+
+
+  uint256 public contractBalance=0;
+
+    function deposit() external payable onlyOwner returns(bool success) {
+        // Check for overflows;
+
+        assert (this.balance + msg.value >= this.balance); // Check for overflows
+        contractBalance=this.balance;
+        tokenReward = this.balance / totalSupply;
+
+        //executes event to reflect the changes
+        LogDeposit(msg.sender, msg.value);
+
+        return true;
+    }
+
+    function withdrawReward() external {
+
+        uint i = 0;
+        uint256 ethAmount = 0;
+        uint256 len = holded[msg.sender].length;
+
+        while (i <= len - 1){
+            if (block.number -  holded[msg.sender].time[i] > holdTime){
+                ethAmount += tokenReward * holded[msg.sender].amount[i];
+            }
+            i++;
+        }
+
+        delete holded[msg.sender];
+        hold(msg.sender,balances[msg.sender]);
+        require(ethAmount > 0);
+
+        //send eth to owner address
+        msg.sender.transfer(ethAmount);
+
+        //executes event to register the changes
+        LogWithdrawal(msg.sender, ethAmount);
+    }
+
+    function withdraw(uint256 value) external onlyOwner {
+        //send eth to owner address
+        msg.sender.transfer(value);
+
+        //executes event to register the changes
+        LogWithdrawal(msg.sender, value);
+    }
+
 
 
 }
