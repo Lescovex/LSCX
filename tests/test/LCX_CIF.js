@@ -37,11 +37,15 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let instance = await Lescovex.deployed();
       let meta = instance;
 
+      let owner = await meta.owner();
+
+      let ownerBalanceBefore = await meta.balanceOf.call(owner);
+      ownerBalanceBefore = ownerBalanceBefore.toNumber();
+
       await meta.buy({value:amount});
 
       let contractEth=await meta.contractBalance();
-
-      let owner = await meta.owner();
+      contractEth = contractEth.toNumber();
 
       let ownerBalance = await meta.balanceOf.call(owner);
       ownerBalance = ownerBalance.toNumber();
@@ -58,12 +62,9 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let tokenPrice = await meta.tokenPrice();
       tokenPrice = tokenPrice.toNumber();
 
-      let contractEthAfter=await meta.contractBalance();
-
-
-      console.log();
-      console.log("contracteth before: " + contractEth + " contractEth after: "+ contractEthAfter);
       console.log("Contract ETH: " + contractEth + " Owner Balance: "+ ownerBalance+" tokenReaward : "+tokenReward);
+
+      assert.notEqual(ownerBalanceBefore, ownerBalance, "ownerBalance before and after don't have to be equal after buy");
 
       assert.equal(totalSupply , (amount*tokenUnit)/tokenPrice , "total supply must be equal (amount*tokenUnit)/tokenPrice");
       assert.equal(ownerBalance, (amount*tokenUnit)/tokenPrice, "ownerBalance must be equal than (amount*tokenUnit)/tokenPrice")
@@ -80,10 +81,12 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let meta = instance;
 
       let contractEthBefore=await meta.contractBalance();
+      contractEthBefore = contractEthBefore.toNumber();
 
       await meta.deposit({value:amount});
 
       let contractEth=await meta.contractBalance();
+      contractEth = contractEth.toNumber();
 
       let tokenReward= await meta.tokenPrice();
 
@@ -117,6 +120,7 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
       balance = await meta.balanceOf.call(account_two);
       let account_two_starting_balance = balance.toNumber();
+
       await meta.transfer(account_two, amount);
 
       balance = await meta.balanceOf.call(account_one);
@@ -227,6 +231,7 @@ contract('Lescovex Test CIF',  async (accounts) => {
       holded = holded.toNumber();
 
       assert.notEqual(amount , 0, "amount can't be 0");
+      
       assert.equal(amount, holded, "amount holded must be equal than the amount that we've requested to withdraw");
 
     });
