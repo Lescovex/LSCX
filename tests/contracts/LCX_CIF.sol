@@ -292,11 +292,12 @@ contract Lescovex_CIF is LescovexERC20 {
 
         Transfer(msg.sender, this, requestWithdraws[msg.sender]);
 
-        msg.sender.transfer(tokenPrice*requestWithdraws[msg.sender]/tokenUnit);
-
         delete holded[msg.sender];
 
         hold(msg.sender,balances[msg.sender]);
+
+        msg.sender.transfer(tokenPrice*requestWithdraws[msg.sender]/tokenUnit);
+
     }
 
     function setPrice(uint256 _value) public onlyOwner{

@@ -40,7 +40,6 @@ contract('Lescovex Test CIF',  async (accounts) => {
       await meta.buy({value:amount});
 
       let contractEth=await meta.contractBalance();
-      contractEth = contractEth.toNumber();
 
       let owner = await meta.owner();
 
@@ -59,7 +58,11 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let tokenPrice = await meta.tokenPrice();
       tokenPrice = tokenPrice.toNumber();
 
+      let contractEthAfter=await meta.contractBalance();
 
+
+      console.log();
+      console.log("contracteth before: " + contractEth + " contractEth after: "+ contractEthAfter);
       console.log("Contract ETH: " + contractEth + " Owner Balance: "+ ownerBalance+" tokenReaward : "+tokenReward);
 
       assert.equal(totalSupply , (amount*tokenUnit)/tokenPrice , "total supply must be equal (amount*tokenUnit)/tokenPrice");
@@ -76,6 +79,8 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let instance = await Lescovex.deployed();
       let meta = instance;
 
+      let contractEthBefore=await meta.contractBalance();
+
       await meta.deposit({value:amount});
 
       let contractEth=await meta.contractBalance();
@@ -85,6 +90,8 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let totalSupply= await meta.totalSupply();
 
       console.log("Contract ETH: "+ contractEth+" tokenReaward : " + tokenReward + " totalSupply : " + totalSupply);
+
+      assert.notEqual(contractEthBefore, contractEth, "contractEth don't have to be equal before and after deposit");
 
       assert.equal(contractEth , amount, "contractEth must be equal than amount deposited");
 
@@ -124,6 +131,10 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
       console.log("Holded : "+ holded_account_two);
 
+      assert.notEqual(account_one, account_two, "account_one have to be different than account_two");
+      assert.notEqual(account_one_starting_balance, account_one_ending_balance, "account_one starting balance and ending balance don't have to be equal");
+      assert.notEqual(account_two_starting_balance, account_two_ending_balance, "account_two starting balance and ending balance don't have to be equal");
+
       assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
       assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
       assert.equal(amount, holded_account_two, "Holded needs to be equal than amount");
@@ -151,6 +162,7 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
       console.log("Allowance Balance : " + allowance);
 
+      assert.notEqual(account_one, account_two, "account_one have to be different than account_two");
 
       assert.equal(amount, allowance, "Allowance needs to be equal than amount");
 
@@ -189,8 +201,11 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
 
       let holded_account_two = await meta.holdedOf(account_two, 1);
-
       console.log("Holded : "+ holded_account_two);
+
+      assert.notEqual(account_one, account_two, "account_one have to be different than account_two");
+      assert.notEqual(balance_start, balance_end, "account_one starting balance and ending balance don't have to be equal");
+      assert.notEqual(balance_start_2, balance_end_2, "account_two starting balance and ending balance don't have to be equal");
 
       assert.equal(amount, holded_account_two, "Holded not is the final amount");
       assert.equal(balance_end, balance_start - (balance_end_2 - amount), "Amount wasn't correctly sent to the receiver");
@@ -201,7 +216,6 @@ contract('Lescovex Test CIF',  async (accounts) => {
     it("should request withdraw reward amount correctly", async () => {
 
       let account_one = accounts[0];
-      let account_two = accounts[1];
 
       let instance = await Lescovex.deployed();
       let meta = instance;
@@ -212,6 +226,7 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let holded = await meta.holdedOf(account_one, 0);
       holded = holded.toNumber();
 
+      assert.notEqual(amount , 0, "amount can't be 0");
       assert.equal(amount, holded, "amount holded must be equal than the amount that we've requested to withdraw");
 
     });
@@ -244,7 +259,6 @@ contract('Lescovex Test CIF',  async (accounts) => {
       balanceBefore = balanceBefore.toNumber();
 
       let contractEth=await meta.contractBalance();
-      contractEth = contractEth.toNumber();
 
       let tokenPrice= await meta.tokenPrice();
       tokenPrice = tokenPrice.toNumber();
@@ -265,7 +279,10 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
       let amount = 10000000000;
 
-      assert.equal(amount, holdedBefore, "holded amount must be equal than the last amount that we've requested to withdraw")
+      assert.notEqual(balanceBefore, balanceAfter, "balance before and after don't have to be equal");
+      assert.notEqual(holdedBefore, holdedAfter, "holded amount before and after don't have to be equal");
+
+      assert.equal(amount, holdedBefore, "holded amount must be equal than the last amount that we've requested to withdraw");
       assert.equal(balanceAfter, holdedAfter, "holded amount must be equal than the balance after withdraw");
       assert.equal((balanceBefore - balanceAfter), amount, "the difference between balanceBefore and balanceAfter must be equal than amount requested to withdraw");
 
@@ -282,8 +299,8 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
       await meta.approve(account_two, amount);
 
-      let balanceBefore = await meta.allowance(account_one, account_two);
-      let allowanceBefore = balanceBefore.toNumber();
+      let allowanceBefore = await meta.allowance(account_one, account_two);
+      allowanceBefore = allowanceBefore.toNumber();
 
       console.log("Balance allowed before increaseApproval: " + allowanceBefore);
 
@@ -292,10 +309,14 @@ contract('Lescovex Test CIF',  async (accounts) => {
       await meta.increaseApproval(account_two, amount);
 
       amount = amount + amount;
-      let balanceAfter = await meta.allowance(account_one, account_two);
-      let allowanceAfter = balanceAfter.toNumber();
+
+      let allowanceAfter = await meta.allowance(account_one, account_two);
+      allowanceAfter = allowanceAfter.toNumber();
 
       console.log("Balance allowed after increaseApproval: " + allowanceAfter);
+
+      assert.notEqual(account_one, account_two, "account_one have to be different than account_two");
+      assert.notEqual(allowanceBefore, allowanceAfter, "balance allowed before don't have to be equal than balance allowed after");
 
       assert.equal(allowanceAfter, amount, "Allowance must be equal than amount multiplied by two.");
 
@@ -310,8 +331,8 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let instance = await Lescovex.deployed();
       let meta = instance;
 
-      let balanceBefore = await meta.allowance(account_one, account_two);
-      let allowanceBefore = balanceBefore.toNumber();
+      let allowanceBefore = await meta.allowance(account_one, account_two);
+      allowanceBefore = allowanceBefore.toNumber();
 
       console.log("Balance allowed before decreaseApproval: " + allowanceBefore);
 
@@ -321,10 +342,13 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
       await meta.decreaseApproval(account_two, amount);
 
-      let balanceAfter = await meta.allowance(account_one, account_two);
-      let allowanceAfter = balanceAfter.toNumber();
+      let allowanceAfter = await meta.allowance(account_one, account_two);
+      allowanceAfter = allowanceAfter.toNumber();
 
       console.log("Balance allowed after decreaseApproval: " + allowanceAfter);
+
+      assert.notEqual(account_one, account_two, "account_one have to be different than account_two");
+      assert.notEqual(allowanceBefore, allowanceAfter, "balance allowed before don't have to be equal than balance allowed after");
 
       assert.equal(allowanceAfter, amount, "Allowance must be equal than amount");
 
@@ -344,6 +368,9 @@ contract('Lescovex Test CIF',  async (accounts) => {
 
       let addressContract = instance2.address;
 
+      let allowanceBefore = await meta.allowance(account_one, addressContract);
+      allowanceBefore = allowanceBefore.toNumber();
+
       let _data = "";
 
       await meta.approveAndCall(addressContract, amount, _data);
@@ -352,6 +379,9 @@ contract('Lescovex Test CIF',  async (accounts) => {
       let allowanceAfter = balanceAfter.toNumber();
 
       console.log("Balance allowed after approveAndCall: " + allowanceAfter);
+
+      assert.notEqual(account_one, addressContract, "account_one don't have to be equal than addressContract");
+      assert.notEqual(allowanceBefore, allowanceAfter, "allowanceBefore approveAndCall don't have to be equal than allowanceAfter");
 
       assert.equal(allowanceAfter, amount, "Allowance must be equal than amount after approveAndCall function");
 
