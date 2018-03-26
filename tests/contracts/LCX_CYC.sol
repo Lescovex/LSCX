@@ -209,16 +209,16 @@ contract Lescovex_CYC is LescovexERC20 {
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex_CYC(
             uint256 initialSupply,
-            string name2,
-            string symbol2,
-            address owner2
+            string contractName,
+            string tokenSymbol,
+            address contractOwner
         ) public {
 
         totalSupply = initialSupply;  // Update total supply
-        name = name2;             // Set the name for display purposes
-        symbol = symbol2;         // Set the symbol for display purposes
-        owner=owner2;
-        balances[owner2]= balances[owner2].add(totalSupply);
+        name = contractName;             // Set the name for display purposes
+        symbol = tokenSymbol;         // Set the symbol for display purposes
+        owner=contractOwner;
+        balances[contractOwner]= balances[contractOwner].add(totalSupply);
         
 
     

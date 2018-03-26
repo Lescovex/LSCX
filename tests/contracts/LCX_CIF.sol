@@ -224,23 +224,23 @@ contract Lescovex_CIF is LescovexERC20 {
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex_CIF(
             uint256 initialSupply,
-            string name2,
-            string symbol2,
-            uint256 holdTime2,
-            uint256 holdMax2,
-            uint256 maxSupply2,
-            address owner2
+            string contractName,
+            string tokenSymbol,
+            uint256 contractHoldTime,
+            uint256 contractHoldMax,
+            uint256 contractMaxSupply,
+            address contractOwner 
 
         ) public {
 
         totalSupply = initialSupply;  // Update total supply
-        name = name2;             // Set the name for display purposes
-        symbol = symbol2;         // Set the symbol for display purposes
-        holdTime=holdTime2;
-        holdMax=holdMax2;
-        maxSupply=maxSupply2;
-        owner=owner2;
-        balances[owner]= balances[owner].add(totalSupply);
+        name = contractName;             // Set the name for display purposes
+        symbol = tokenSymbol;         // Set the symbol for display purposes
+        holdTime=contractHoldTime;
+        holdMax=contractHoldMax;
+        maxSupply=contractMaxSupply;
+        owner=contractOwner;
+        balances[contractOwner]= balances[contractOwner].add(totalSupply);
 
     }
 
