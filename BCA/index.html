@@ -13,11 +13,16 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
         <script type="text/javascript" src="js/custom-verify/bundle.js"></script>
         <script type="text/javascript" src="js/ethereumjs-all.js"></script>
         <script type="text/javascript" src="js/hdkey.js"></script>
+       
         <script type="text/javascript" src="js/ethutil.js"></script>
+      
+
+        
+  
+    
     </head>
     <body class=" boxed-layout">
         <a id="start"></a>
@@ -180,6 +185,8 @@
                                                 <div class="col-md-12 text-justify">
                                                     <label for="new_signed_data">Encrypt & Publish Certificate</label>
                                                     <textarea id="new_signed_data" class="form-control" rows="3" placeholder="< New Encrypted Certificate >"></textarea>
+                                                    <textarea id="new_cypher" class="form-control" rows="3" placeholder="< New Encrypted Certificate >"></textarea>
+                                                     <textarea id="new_cypher_addr" class="form-control" rows="3" placeholder="< New Encrypted Certificate >"></textarea>
                                                         <a class="btn btn--xs btn--green-primary type--uppercase  margin-t-30" href="#" onclick="signCertificatePublish();">
                                                             <span class="btn__text color--white" lang="en">
                                                                 Create
@@ -273,7 +280,7 @@
         <script src="js/web3.min.js"></script>
         <script src="js/contract.js"></script>
         <script src="js/bca.js"></script>
-
+         <script type="text/javascript" src="js/ethcrypto.js"></script>
 
         <script>
             document.getElementById('cert-file').addEventListener('change', handleFileBrowse, false);

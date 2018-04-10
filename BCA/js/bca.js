@@ -68,13 +68,15 @@ function signCertificatePublish(){
 	var privkey=hdkey.fromExtendedKey(privkeySelected).getWallet().getPrivateKey();
 	var pubKey=EthJS.Util.privateToPublic(privkey);
 	var addrb=EthJS.Util.privateToAddress(privkey);
-	
+
 	var addrOwner=EthJS.Util.bufferToHex(addrb);
 	var addrSignature=EthJS.Util.hashPersonalMessage(pubKey, $("#addrToSign").val());
 	var contractAddr=$("#addrToSign").val();
-	var certificateSigned=EthJS.Util.hashPersonalMessage(pubKey, document.getElementById('new_signed_data').innerHTML);
+	alert(document.getElementById('new_cypher').innerHTML.length);
+	var certificateSigned=document.getElementById('new_cypher').innerHTML.substr(0,5000);
 
-	web3.eth.contract(contractAbi).at(contractAddress).addSignature(addrOwner,web3.toHex(addrSignature),contractAddr,web3.toHex(certificateSigned), function(err,result){
+
+	web3.eth.contract(contractAbi).at(contractAddress).addSignature(addrOwner,web3.toHex(addrSignature),contractAddr,certificateSigned, function(err,result){
 			console.log(result);
 	});
 

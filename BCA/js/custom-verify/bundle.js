@@ -20759,13 +20759,62 @@ function parseCertificate()
 	//endregion
 	
 	//region Decode existing X.509 certificate
+	
 	const asn1 = fromBER(certificateBuffer);
+	//console.log(ethCrypto.hex.compress(web3.toHex(asn1, true)));
 		
-	var dataP=JSON.parse(JSON.stringify(asn1.result));
-	document.getElementById('new_signed_data').innerHTML=dataP.valueBeforeDecode;
+	
+	//document.getElementById('new_signed_data').innerHTML=JSON.stringify(asn1.result);
+
+
+	var privkeySelected=$("#selAccount").val();
+
+	var privkey=hdkey.fromExtendedKey(privkeySelected).getWallet().getPrivateKey();
+	var pubKey=EthJS.Util.privateToPublic(privkey);
+	var addrb=EthJS.Util.privateToAddress(privkey);
+
+	var pubhex=EthJS.Util.bufferToHex(pubKey);
+
+	var prvhex=EthJS.Util.bufferToHex(privkey);
+
+	console.log(prvhex);
+    const signature2 = ethCrypto.sign(
+        prvhex,
+        ethCrypto.hash.keccak256(web3.toHex(ab2str(certificateBuffer)))
+    );
+
+
+    console.log(str2ab(certificateBuffer));
+    const payload2 = {
+        message: web3.toHex(ab2str(certificateBuffer)),
+        signature2
+    };
+
+	var cyphertext=ethCrypto.encryptWithPublicKey(pubhex.replace("0x",""), JSON.stringify(payload2));
+//	console.log(Promise.all(cyphertext));
+	cyphertext.then(d => {
+	     console.log(JSON.stringify(d));
+	     document.getElementById('new_signed_data').innerHTML=web3.toHex(ab2str(certificateBuffer));
+
+	     document.getElementById('new_cypher').innerHTML=JSON.stringify(cyphertext);
+	  
+
+	     var messageD = ethCrypto.decryptWithPrivateKey(prvhex, d);
+
+	     	   messageD.then(e => {
+			     console.log(e);
+			   }, err => {
+			     console.log(err);
+			   });
+
+	   }, err => {
+	     console.log(err);
+	   });
+
 	const certificate = new Certificate({ schema: asn1.result });
 	//endregion
-	
+	document.getElementById("new_cypher_addr").innerHTML=JSON.stringify(certificate);
+	console.log("playa"+certificate);
 	//region Put information about X.509 certificate issuer
 	const rdnmap = {
 		"2.5.4.6": "C",
@@ -21045,6 +21094,7 @@ function createCertificate()
 		document.getElementById("new_signed_data").innerHTML = resultString;
 		
 		alert("Private key exported successfully!");
+		
 	}, error =>
 	{
 		if(error instanceof Object)
@@ -21230,10 +21280,27 @@ function parseCAbundle(buffer)
 		}
 	}
 }
+
+function ab2str(buf) {
+  return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+
+
+function str2ab(str) {
+  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+  var bufView = new Uint16Array(buf);
+  for (var i=0, strLen=str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
+
 //*********************************************************************************
 function handleFileBrowse(evt)
 {
 	const tempReader = new FileReader();
+	
 	
 	const currentFiles = evt.target.files;
 	
@@ -21241,10 +21308,8 @@ function handleFileBrowse(evt)
 		function(event)
 		{
 			certificateBuffer = event.target.result;
-
 			parseCertificate();
 		};
-	
 	tempReader.readAsArrayBuffer(currentFiles[0]);
 }
 //*********************************************************************************
