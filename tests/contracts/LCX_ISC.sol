@@ -75,7 +75,7 @@ contract Ownable {
 
 //////////////////////////////////////////////////////////////
 //                                                          //
-//  Lescovex Equity ERC20                           //
+//  Lescovex Equity ERC20                                   //
 //                                                          //
 //////////////////////////////////////////////////////////////
 
@@ -118,6 +118,11 @@ contract LescovexERC20 is Ownable {
     function holdedOf(address _owner, uint256 n) public view returns (uint256) {
         return holded[_owner].amount[n];
     }
+    //function created for testing reasons
+    //this will be deleted on production
+    function holdedLength(address _owner) public view returns (uint256){
+      return holded[_owner].length;
+    }
 
     function hold(address _to, uint256 _value) internal {
         holded[_to].amount.push(_value);
@@ -142,18 +147,23 @@ contract LescovexERC20 is Ownable {
         return true;
     }
 
+
+
+
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(_to != address(0));
         require(_value <= balances[_from]);
         require(_value <= allowed[_from][msg.sender]);
-        balances[_from] = balances[_from].sub(_value);
 
-        delete holded[msg.sender];
-        hold(msg.sender,balances[_from]);
+        balances[_from] = balances[_from].sub(_value);
+        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+
+        delete holded[_from];
+        hold(_from,balances[_from]);
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
-        //allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+
 
         Transfer(_from, _to, _value);
         return true;
@@ -217,17 +227,17 @@ contract Lescovex_ISC is LescovexERC20 {
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex_ISC(
         uint256 initialSupply,
-        string name,
-        string symbol,
-        uint256 holdTime,
-        address owner
+        string contractName,
+        string tokenSymbol,
+        uint256 contractHoldTime,
+        address contractOwner
 
         ) public {
         totalSupply = initialSupply;  // Update total supply
-        name = name;             // Set the name for display purposes
-        symbol = symbol;         // Set the symbol for display purposes
-        holdTime=holdTime;
-        balances[owner]= balances[owner].add(totalSupply);
+        name = contractName;             // Set the name for display purposes
+        symbol = tokenSymbol;         // Set the symbol for display purposes
+        holdTime = contractHoldTime;
+        balances[contractOwner] = balances[contractOwner].add(totalSupply);
 
     }
 
@@ -280,10 +290,10 @@ contract Lescovex_ISC is LescovexERC20 {
         //send eth to owner address
         msg.sender.transfer(value);
 
+        //LINE ADDED FOR TESTING REASONS
+        contractBalance = contractBalance.sub(value);
+
         //executes event to register the changes
         LogWithdrawal(msg.sender, value);
     }
-
-
-
 }

@@ -75,7 +75,7 @@ contract Ownable {
 
 //////////////////////////////////////////////////////////////
 //                                                          //
-//  Lescovex Equity ERC20                           //
+//  Lescovex Equity ERC20                                   //
 //                                                          //
 //////////////////////////////////////////////////////////////
 
@@ -153,12 +153,12 @@ contract LescovexERC20 is Ownable {
         balances[_from] = balances[_from].sub(_value);
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
 
-        delete holded[msg.sender];
+        delete holded[_from];
         hold(_from,balances[_from]);
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
-        
+
 
         emit Transfer(_from, _to, _value);
         return true;
@@ -222,17 +222,17 @@ contract Lescovex_ISC is LescovexERC20 {
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex_ISC(
         uint256 initialSupply,
-        string name,
-        string symbol,
-        uint256 holdTime,
-        address owner
+        string contractName,
+        string tokenSymbol,
+        uint256 contractHoldTime,
+        address contractOwner
 
         ) public {
         totalSupply = initialSupply;  // Update total supply
-        name = name;             // Set the name for display purposes
-        symbol = symbol;         // Set the symbol for display purposes
-        holdTime=holdTime;
-        balances[owner]= balances[owner].add(totalSupply);
+        name = contractName;             // Set the name for display purposes
+        symbol = tokenSymbol;         // Set the symbol for display purposes
+        holdTime = contractHoldTime;
+        balances[contractOwner] = balances[contractOwner].add(totalSupply);
 
     }
 
@@ -288,7 +288,4 @@ contract Lescovex_ISC is LescovexERC20 {
         //executes event to register the changes
         emit LogWithdrawal(msg.sender, value);
     }
-
-
-
 }
