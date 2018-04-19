@@ -67,7 +67,7 @@ contract Ownable {
 
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
-        OwnershipTransferred(owner, newOwner);
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
 }
@@ -137,11 +137,13 @@ contract LescovexERC20 is Ownable {
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
         delete holded[msg.sender];
+		    hold(msg.sender, balances[msg.sender]);
+
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
 
-        Transfer(msg.sender, _to, _value);
+        emit Transfer(msg.sender, _to, _value);
         return true;
     }
 
@@ -152,20 +154,21 @@ contract LescovexERC20 is Ownable {
 
         balances[_from] = balances[_from].sub(_value);
 
-        delete holded[msg.sender];
+        delete holded[_from];
+		    hold(_from, balances[_from]);
         hold(_to,_value);
 
 
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
 
-        Transfer(_from, _to, _value);
+        emit Transfer(_from, _to, _value);
         return true;
     }
 
     function approve(address _spender, uint256 _value) public returns (bool) {
         allowed[msg.sender][_spender] = _value;
-        Approval(msg.sender, _spender, _value);
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
@@ -175,7 +178,7 @@ contract LescovexERC20 is Ownable {
 
     function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
         allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
-        Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
         return true;
     }
 
@@ -186,7 +189,7 @@ contract LescovexERC20 is Ownable {
         } else {
             allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
         }
-        Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
         return true;
     }
 
@@ -229,7 +232,7 @@ contract Lescovex_CIF is LescovexERC20 {
             uint256 contractHoldTime,
             uint256 contractHoldMax,
             uint256 contractMaxSupply,
-            address contractOwner 
+            address contractOwner
 
         ) public {
 
@@ -259,7 +262,7 @@ contract Lescovex_CIF is LescovexERC20 {
         contractBalance=this.balance;
 
         //executes event to reflect the changes
-        LogDeposit(msg.sender, msg.value);
+        emit LogDeposit(msg.sender, msg.value);
 
         return true;
     }
@@ -283,14 +286,14 @@ contract Lescovex_CIF is LescovexERC20 {
 
         require(ethAmount>=(tokenPrice*requestWithdraws[msg.sender]));
 
-        LogWithdrawal(msg.sender, ethAmount);
+        emit LogWithdrawal(msg.sender, ethAmount);
 
 
         totalSupply = totalSupply.sub(requestWithdraws[msg.sender]);
 
         balances[msg.sender] = balances[msg.sender].sub(requestWithdraws[msg.sender]);
 
-        Transfer(msg.sender, this, requestWithdraws[msg.sender]);
+        emit Transfer(msg.sender, this, requestWithdraws[msg.sender]);
 
         delete holded[msg.sender];
 
@@ -333,7 +336,7 @@ contract Lescovex_CIF is LescovexERC20 {
 
         balances[_to] = balances[_to].add(_value);
 
-        Transfer(this, _to, _value);
+        emit Transfer(this, _to, _value);
 
         return true;
 

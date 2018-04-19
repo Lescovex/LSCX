@@ -137,6 +137,8 @@ contract LescovexERC20 is Ownable {
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
         delete holded[msg.sender];
+        hold(msg.sender, balances[msg.sender]);
+
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
@@ -152,7 +154,8 @@ contract LescovexERC20 is Ownable {
 
         balances[_from] = balances[_from].sub(_value);
 
-        delete holded[msg.sender];
+        delete holded[_from];
+        hold(_from, balances[_from]);
         hold(_to,_value);
 
 
@@ -229,18 +232,18 @@ contract Lescovex_CIF is LescovexERC20 {
             uint256 contractHoldTime,
             uint256 contractHoldMax,
             uint256 contractMaxSupply,
-            address contractOwner 
+            address contractOwner
 
         ) public {
 
         totalSupply = initialSupply;  // Update total supply
         name = contractName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        holdTime=contractHoldTime;
-        holdMax=contractHoldMax;
-        maxSupply=contractMaxSupply;
-        owner=contractOwner;
-        balances[contractOwner]= balances[contractOwner].add(totalSupply);
+        holdTime = contractHoldTime;
+        holdMax = contractHoldMax;
+        maxSupply = contractMaxSupply;
+        owner = contractOwner;
+        balances[contractOwner] = balances[contractOwner].add(initialSupply);
 
     }
 

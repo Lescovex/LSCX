@@ -56,7 +56,7 @@ contract Ownable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     function Ownable() internal {
-                owner = msg.sender;
+        owner = msg.sender;
 
     }
 
@@ -67,7 +67,7 @@ contract Ownable {
 
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
-        OwnershipTransferred(owner, newOwner);
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
 }
@@ -99,12 +99,11 @@ contract LescovexERC20 is Ownable {
     }
 
     /* Public variables for the ERC20 token */
-    string public constant standard = "ERC20 Lescovex CIF";
+    string public constant standard = "ERC20 Lescovex ABT";
     uint8 public constant decimals = 8; // hardcoded to be a constant
     uint256 public totalSupply;
     string public name;
     string public symbol;
-
 
     uint256 public holdTime;
     uint256 public holdMax;
@@ -128,10 +127,9 @@ contract LescovexERC20 is Ownable {
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
-
         balances[_to] = balances[_to].add(_value);
 
-        Transfer(msg.sender, _to, _value);
+        emit Transfer(msg.sender, _to, _value);
         return true;
     }
 
@@ -142,18 +140,16 @@ contract LescovexERC20 is Ownable {
 
         balances[_from] = balances[_from].sub(_value);
 
-
-
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
 
-        Transfer(_from, _to, _value);
+        emit Transfer(_from, _to, _value);
         return true;
     }
 
     function approve(address _spender, uint256 _value) public returns (bool) {
         allowed[msg.sender][_spender] = _value;
-        Approval(msg.sender, _spender, _value);
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
@@ -163,7 +159,7 @@ contract LescovexERC20 is Ownable {
 
     function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
         allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
-        Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
         return true;
     }
 
@@ -174,7 +170,7 @@ contract LescovexERC20 is Ownable {
         } else {
             allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
         }
-        Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
         return true;
     }
 
@@ -204,6 +200,8 @@ contract Lescovex_ABT is LescovexERC20 {
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
 
+    string public BCA;
+
     //Declare logging events
     event LogDeposit(address sender, uint amount);
 
@@ -214,7 +212,7 @@ contract Lescovex_ABT is LescovexERC20 {
             string contractName,
             string tokenSymbol,
             address contractOwner,
-            string BCA
+            string contractBCA
         ) public {
 
         totalSupply = initialSupply;  // Update total supply
@@ -222,10 +220,6 @@ contract Lescovex_ABT is LescovexERC20 {
         symbol = tokenSymbol;         // Set the symbol for display purposes
         owner=contractOwner;
         balances[contractOwner]= balances[contractOwner].add(totalSupply);
-        BCA=BCA;
-
-
+        BCA=contractBCA;
     }
-
-
 }

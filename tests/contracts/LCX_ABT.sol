@@ -99,7 +99,7 @@ contract LescovexERC20 is Ownable {
     }
 
     /* Public variables for the ERC20 token */
-    string public constant standard = "ERC20 Lescovex CIF";
+    string public constant standard = "ERC20 Lescovex ABT";
     uint8 public constant decimals = 8; // hardcoded to be a constant
     uint256 public totalSupply;
     string public name;
@@ -141,8 +141,6 @@ contract LescovexERC20 is Ownable {
         require(_value <= allowed[_from][msg.sender]);
 
         balances[_from] = balances[_from].sub(_value);
-
-
 
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
@@ -198,15 +196,13 @@ interface tokenRecipient {
 contract Lescovex_ABT is LescovexERC20 {
 
     // Contract variables and constants
-
-
     uint256 public tokenPrice = 0;
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
 
+    string public BCA;
     //Declare logging events
     event LogDeposit(address sender, uint amount);
-
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex_ABT(
@@ -214,18 +210,13 @@ contract Lescovex_ABT is LescovexERC20 {
             string contractName,
             string tokenSymbol,
             address contractOwner,
-            string BCA
+            string contractBCA
         ) public {
-
         totalSupply = initialSupply;  // Update total supply
         name = contractName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        owner=contractOwner;
-        balances[contractOwner]= balances[contractOwner].add(totalSupply);
-        BCA=BCA;
-
-
+        owner = contractOwner;
+        balances[contractOwner] = balances[contractOwner].add(totalSupply);
+        BCA = contractBCA;
     }
-
-
 }

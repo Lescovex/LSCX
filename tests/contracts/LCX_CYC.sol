@@ -15,7 +15,7 @@ pragma solidity ^0.4.19;
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
 
  */
 
@@ -80,12 +80,12 @@ contract Ownable {
 //////////////////////////////////////////////////////////////
 
 contract LescovexERC20 is Ownable {
-    
+
     using SafeMath for uint256;
 
 
     mapping (address => uint256) public balances;
-    
+
     mapping (address => uint256) public requestWithdraws;
 
     mapping (address => mapping (address => uint256)) internal allowed;
@@ -99,7 +99,7 @@ contract LescovexERC20 is Ownable {
     }
 
     /* Public variables for the ERC20 token */
-    string public constant standard = "ERC20 Lescovex CIF";
+    string public constant standard = "ERC20 Lescovex CYC";
     uint8 public constant decimals = 8; // hardcoded to be a constant
     uint256 public totalSupply;
     string public name;
@@ -118,14 +118,14 @@ contract LescovexERC20 is Ownable {
 
 
     function transfer(address _to, uint256 _value) public returns (bool) {
-       
+
         require(_to != address(0));
         require(_value <= balances[msg.sender]);
 
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
-        
+
         balances[_to] = balances[_to].add(_value);
 
         Transfer(msg.sender, _to, _value);
@@ -135,12 +135,10 @@ contract LescovexERC20 is Ownable {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(_to != address(0));
         require(_value <= balances[_from]);
-        require(_value <= allowed[_from][msg.sender]); 
+        require(_value <= allowed[_from][msg.sender]);
 
         balances[_from] = balances[_from].sub(_value);
 
-
-        
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
 
@@ -176,7 +174,7 @@ contract LescovexERC20 is Ownable {
     }
 
     /* Approve and then communicate the approved contract in a single tx */
-    function approveAndCall(address _spender, uint256 _value, bytes _extraData) public returns (bool success) {    
+    function approveAndCall(address _spender, uint256 _value, bytes _extraData) public returns (bool success) {
         tokenRecipient spender = tokenRecipient(_spender);
 
         if (approve(_spender, _value)) {
@@ -188,14 +186,14 @@ contract LescovexERC20 is Ownable {
 
 
 interface tokenRecipient {
-    function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external ; 
+    function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external ;
 }
 
-    
+
 contract Lescovex_CYC is LescovexERC20 {
 
     // Contract variables and constants
-    
+
 
     uint256 public tokenPrice = 0;
     // constant to simplify conversion of token amounts into integer form
@@ -204,7 +202,7 @@ contract Lescovex_CYC is LescovexERC20 {
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
-    
+
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Lescovex_CYC(
@@ -217,18 +215,8 @@ contract Lescovex_CYC is LescovexERC20 {
         totalSupply = initialSupply;  // Update total supply
         name = contractName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        owner=contractOwner;
+        owner = contractOwner;
         balances[contractOwner]= balances[contractOwner].add(totalSupply);
-        
 
-    
     }
-
-
 }
-
-
-
-
-
-   
