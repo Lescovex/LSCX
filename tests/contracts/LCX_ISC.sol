@@ -16,10 +16,7 @@ pragma solidity ^0.4.19;
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
  */
-
-
 
 library SafeMath {
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -215,7 +212,7 @@ interface tokenRecipient {
 
 contract Lescovex_ISC is LescovexERC20 {
 
-    uint256 public tokenReward = 0;
+    uint256 public contractBalance = 0;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
@@ -242,10 +239,9 @@ contract Lescovex_ISC is LescovexERC20 {
     function () public {
 
     }
-    address public thisContract = this;
-    uint256 public contractBalance = 0;
+
     function deposit() external payable onlyOwner returns(bool success) {
-        contractBalance = thisContract.balance;
+        contractBalance = this.balance;
         //executes event to reflect the changes
         LogDeposit(msg.sender, msg.value);
 
@@ -279,7 +275,7 @@ contract Lescovex_ISC is LescovexERC20 {
     function withdraw(uint256 value) external onlyOwner {
         //send eth to owner address
         msg.sender.transfer(value);
-        
+        //variable created for testing reasons
         contractBalance = contractBalance.sub(value);
         //executes event to register the changes
         LogWithdrawal(msg.sender, value);
