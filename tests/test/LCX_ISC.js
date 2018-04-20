@@ -1,6 +1,7 @@
 var Lescovex = artifacts.require("Lescovex_ISC");
 var Lescovex2 = artifacts.require("Lescovex_ISC2");
 
+
 contract('Lescovex Test ISC',  async (accounts) => {
 
     it("check constructor params", async () => {
@@ -53,15 +54,10 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let contractEth=await meta.contractBalance();
       contractEth = contractEth.toNumber();
 
-      let tokenReward= await meta.tokenReward();
-
-      let totalSupply= await meta.totalSupply();
-
-      console.log("Contract ETH: "+ contractEth+" tokenReaward : "+tokenReward + " totalSupply : " + totalSupply);
+      console.log("Contract ETH Before: "+ contractEthBefore + " Contract ETH After: " + contractEth);
 
       assert.notEqual(contractEthBefore, contractEth, "contractEth don't have to be equal before and after deposit");
 
-      assert.equal(tokenReward , contractEth/totalSupply, "total supply must be total Ether * Token Reward");
       assert.equal(contractEth, amount, "contractEth must be equal than amount deposited");
 
     });
@@ -218,9 +214,6 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let instance = await Lescovex.deployed();
       let meta = instance;
 
-      let tokenRewardBefore = await meta.tokenReward();
-      tokenRewardBefore = tokenRewardBefore.toNumber();
-
       let contractEthBefore=await meta.contractBalance();
       contractEthBefore = contractEthBefore.toNumber();
 
@@ -229,19 +222,9 @@ contract('Lescovex Test ISC',  async (accounts) => {
 
       let contractEth=await meta.contractBalance();
       contractEth = contractEth.toNumber();
-
-      let balance = await meta.balanceOf.call(account_one);
-      balance = balance.toNumber();
-
-      let totalSupply= await meta.totalSupply();
-      totalSupply = totalSupply.toNumber();
-
-      let tokenReward = await meta.tokenReward();
-      tokenReward = tokenReward.toNumber();
+      console.log("Contract ETH before: " + contractEthBefore + " Contract ETH after : "+contractEth);
 
       assert.notEqual(contractEthBefore, contractEth, "contractEth don't have to be equal before and after deposit");
-
-      assert.equal(totalSupply * tokenRewardBefore , contractEthBefore, "total supply must be total (totalSupply-balance) * tokenReward");
 
     });
 
@@ -268,43 +251,34 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let account_one = accounts[0];
       let account_two = accounts[1];
 
+      let accBalanceBefore = web3.eth.getBalance(account_one);
+      accBalanceBefore = accBalanceBefore.toNumber();
+
       let amount = 1000000000000000000;
 
       let instance = await Lescovex.deployed();
       let meta = instance;
 
-
-      let contractEthBefore = await meta.contractBalance();
-      contractEthBefore = contractEthBefore.toNumber();
-
-      let tokenRewardBefore= await meta.tokenReward();
-      tokenRewardBefore = tokenRewardBefore.toNumber();
+      let contractBalanceBefore = await meta.contractBalance();
+      contractBalanceBefore = contractBalanceBefore.toNumber();
 
       await meta.deposit({value:amount});
       await meta.withdrawReward();
 
-      let tokenReward= await meta.tokenReward();
-      tokenReward = tokenReward.toNumber();
 
-      let totalSupply= await meta.totalSupply();
-      totalSupply = totalSupply.toNumber();
+      let contractBalanceAfter = await meta.contractBalance();
+      contractBalanceAfter = contractBalanceAfter.toNumber();
 
-      let balance= await meta.balanceOf(account_one);
-      balance = balance.toNumber();
+      let accBalanceAfter = web3.eth.getBalance(account_one);
+      accBalanceAfter = accBalanceAfter.toNumber();
 
-      let holded = await meta.holdedOf(account_one, 0);
-      holded = holded.toNumber();
+      console.log("Contract balance before: "+ contractBalanceBefore);
+      console.log("Contract balance after:  " + contractBalanceAfter);
+      console.log("Account Balance Before: " + accBalanceBefore);
+      console.log("Account Balance After:  "+ accBalanceAfter);
 
-      let contractEth=await meta.contractBalance();
-      contractEth = contractEth.toNumber();
-
-      console.log("balance: "+ balance+" tokenReward : "+tokenReward);
-
-      assert.notEqual(tokenRewardBefore, tokenReward, "tokenReward before and after deposit don't have to be equal");
-      assert.notEqual(contractEthBefore, contractEth, "contractEth don't have to be equal before and after deposit");
-
-      assert.equal(totalSupply * tokenRewardBefore , contractEthBefore, "total supply must be total (totalSupply-balance) * tokenReward");
-
+      assert.notEqual(contractBalanceBefore, contractBalanceAfter, "contractEth don't have to be equal before and after deposit");
+      assert.notEqual(accBalanceBefore, accBalanceAfter, "account balance don't have to be equal before and after withdraw");
     });
 
 
@@ -446,6 +420,9 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let contractEthBefore=await meta.contractBalance();
       contractEthBefore = contractEthBefore.toNumber();
 
+      let accBalanceBefore = web3.eth.getBalance(account_one);
+      accBalanceBefore = accBalanceBefore.toNumber();
+
       let withdrawAmount = 500;
       let y=0;
 
@@ -456,6 +433,9 @@ contract('Lescovex Test ISC',  async (accounts) => {
 
       let contractEth=await meta.contractBalance();
       contractEth = contractEth.toNumber();
+
+      let accBalanceAfter = web3.eth.getBalance(account_one);
+      accBalanceAfter = accBalanceAfter.toNumber();
 
       console.log("ContractBalanceBefore: " + contractEthBefore + " ContractBalanceAfter: " + contractEth);
 
@@ -469,8 +449,13 @@ contract('Lescovex Test ISC',  async (accounts) => {
        console.log("ContractBalanceBefore: " + contractEthBefore);
        console.log("contract balance after: " + contractEth);
 
-       console.log((withdrawAmount*transactions)+contractEth);
+       console.log("Must be equal tan contract balance before: "+ ((withdrawAmount*transactions)+contractEth));
+
+       console.log("Account Balance Before: " + accBalanceBefore);
+       console.log("Account Balance After:  "+ accBalanceAfter);
+
        assert.equal(contractEthBefore,(withdrawAmount*transactions)+contractEth, "contract balance plus withdrawAmount must be equal than contract balance before withdraw");
+       assert.notEqual(accBalanceBefore, accBalanceAfter, "account balance don't have to be equal before and after withdraw");
 
     });
 

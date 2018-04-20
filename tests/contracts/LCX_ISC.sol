@@ -216,8 +216,6 @@ interface tokenRecipient {
 contract Lescovex_ISC is LescovexERC20 {
 
     uint256 public tokenReward = 0;
-    // constant to simplify conversion of token amounts into integer form
-    uint256 public tokenUnit = uint256(10)**decimals;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
@@ -237,24 +235,17 @@ contract Lescovex_ISC is LescovexERC20 {
         name = contractName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
         holdTime = contractHoldTime;
-        balances[contractOwner] = balances[contractOwner].add(totalSupply);
+        balances[contractOwner] = totalSupply;
 
     }
 
     function () public {
 
     }
-
-
-  uint256 public contractBalance=0;
-
+    address public thisContract = this;
+    uint256 public contractBalance = 0;
     function deposit() external payable onlyOwner returns(bool success) {
-        // Check for overflows;
-
-        assert (this.balance + msg.value >= this.balance); // Check for overflows
-        contractBalance=this.balance;
-        tokenReward = this.balance / totalSupply;
-
+        contractBalance = thisContract.balance;
         //executes event to reflect the changes
         LogDeposit(msg.sender, msg.value);
 
@@ -264,23 +255,22 @@ contract Lescovex_ISC is LescovexERC20 {
     function withdrawReward() external {
        uint i = 0;
        uint256 ethAmount = 0;
+       uint256 tokenAmount = 0;
        uint256 len = holded[msg.sender].length;
+       uint256 maxHoldStart = block.number - holdTime;
 
-       while (i <= len - 1){
-           if (block.number -  holded[msg.sender].time[i] > holdTime){
-               ethAmount += tokenReward * holded[msg.sender].amount[i];
-           }
-           i++;
+       while (i < len && holded[msg.sender].time[i] < maxHoldStart){
+               tokenAmount += holded[msg.sender].amount[i];
+               i++;
        }
-
+       ethAmount = (tokenAmount * contractBalance) / totalSupply;
 
        require(ethAmount > 0);
 
-       //executes event to register the changes
-       LogWithdrawal(msg.sender, ethAmount);
-
        //send eth to owner address
        msg.sender.transfer(ethAmount);
+       //executes event to register the changes
+       LogWithdrawal(msg.sender, ethAmount);
 
        delete holded[msg.sender];
        hold(msg.sender,balances[msg.sender]);
@@ -289,10 +279,8 @@ contract Lescovex_ISC is LescovexERC20 {
     function withdraw(uint256 value) external onlyOwner {
         //send eth to owner address
         msg.sender.transfer(value);
-
-        //LINE ADDED FOR TESTING REASONS
+        
         contractBalance = contractBalance.sub(value);
-
         //executes event to register the changes
         LogWithdrawal(msg.sender, value);
     }
