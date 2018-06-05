@@ -305,6 +305,7 @@ contract Lescovex_CIF is LescovexERC20 {
 
     function setPrice(uint256 _value) public onlyOwner{
       tokenPrice=_value;
+      delete holded;
     }
 
     event LogWithdrawal(address receiver, uint amount);

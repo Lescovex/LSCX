@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.24;
 
 /*
     Copyright 2018, Vicent Nos & Enrique Santos
@@ -53,7 +53,7 @@ contract Ownable {
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    function Ownable() internal {
+    constructor() internal {
         owner = msg.sender;
     }
 
@@ -64,7 +64,7 @@ contract Ownable {
 
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
-        OwnershipTransferred(owner, newOwner);
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
 }
@@ -111,9 +111,17 @@ contract LescovexERC20 is Ownable {
         return balances[_owner];
     }
 
+    function holdedOf(address _owner) public view returns (uint256) {
+        uint i = 0;
+        uint256 tokenAmount = 0;
+        uint256 len = holded[_owner].length;
+        uint256 maxHoldStart = block.number - holdTime;
 
-    function holdedOf(address _owner, uint256 n) public view returns (uint256) {
-        return holded[_owner].amount[n];
+        while (i < len && holded[_owner].time[i] < maxHoldStart){
+               tokenAmount += holded[_owner].amount[i];
+               i++;
+        }
+        return tokenAmount;
     }
 
     function hold(address _to, uint256 _value) internal {
@@ -135,7 +143,7 @@ contract LescovexERC20 is Ownable {
 
         balances[_to] = balances[_to].add(_value);
 
-        Transfer(msg.sender, _to, _value);
+        emit Transfer(msg.sender, _to, _value);
         return true;
     }
 
@@ -157,13 +165,13 @@ contract LescovexERC20 is Ownable {
         balances[_to] = balances[_to].add(_value);
 
 
-        Transfer(_from, _to, _value);
+        emit Transfer(_from, _to, _value);
         return true;
     }
 
     function approve(address _spender, uint256 _value) public returns (bool) {
         allowed[msg.sender][_spender] = _value;
-        Approval(msg.sender, _spender, _value);
+        emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
@@ -173,7 +181,7 @@ contract LescovexERC20 is Ownable {
 
     function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
         allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
-        Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
         return true;
     }
 
@@ -184,7 +192,7 @@ contract LescovexERC20 is Ownable {
         } else {
             allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
         }
-        Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
         return true;
     }
 
@@ -213,9 +221,10 @@ contract Lescovex_ISC is LescovexERC20 {
     event LogDeposit(address sender, uint amount);
     event LogWithdrawal(address receiver, uint amount);
 
+    address contractAddr = this;
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function Lescovex_ISC(
+    constructor (
         uint256 initialSupply,
         string contractName,
         string tokenSymbol,
@@ -236,41 +245,32 @@ contract Lescovex_ISC is LescovexERC20 {
     }
 
     function deposit() external payable onlyOwner returns(bool success) {
-        contractBalance = this.balance;
+        contractBalance = contractAddr.balance;
         //executes event to reflect the changes
-        LogDeposit(msg.sender, msg.value);
+        emit LogDeposit(msg.sender, msg.value);
 
         return true;
     }
 
     function withdrawReward() external {
-       uint i = 0;
-       uint256 ethAmount = 0;
-       uint256 tokenAmount = 0;
-       uint256 len = holded[msg.sender].length;
-       uint256 maxHoldStart = block.number - holdTime;
+    
+        uint256 ethAmount = (holdedOf(msg.sender) * contractBalance) / totalSupply;
 
-       while (i < len && holded[msg.sender].time[i] < maxHoldStart){
-               tokenAmount += holded[msg.sender].amount[i];
-               i++;
-       }
-       ethAmount = (tokenAmount * contractBalance) / totalSupply;
+        require(ethAmount > 0);
 
-       require(ethAmount > 0);
+        //send eth to owner address
+        msg.sender.transfer(ethAmount);
+        //executes event to register the changes
+        emit LogWithdrawal(msg.sender, ethAmount);
 
-       //send eth to owner address
-       msg.sender.transfer(ethAmount);
-       //executes event to register the changes
-       LogWithdrawal(msg.sender, ethAmount);
-
-       delete holded[msg.sender];
-       hold(msg.sender,balances[msg.sender]);
+        delete holded[msg.sender];
+        hold(msg.sender,balances[msg.sender]);
     }
 
     function withdraw(uint256 value) external onlyOwner {
         //send eth to owner address
         msg.sender.transfer(value);
         //executes event to register the changes
-        LogWithdrawal(msg.sender, value);
+        emit LogWithdrawal(msg.sender, value);
     }
 }
