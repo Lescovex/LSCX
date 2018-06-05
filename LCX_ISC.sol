@@ -258,13 +258,14 @@ contract Lescovex_ISC is LescovexERC20 {
 
         require(ethAmount > 0);
 
-        //send eth to owner address
-        msg.sender.transfer(ethAmount);
+
         //executes event to register the changes
         emit LogWithdrawal(msg.sender, ethAmount);
 
         delete holded[msg.sender];
         hold(msg.sender,balances[msg.sender]);
+        //send eth to owner address
+        msg.sender.transfer(ethAmount);
     }
 
     function withdraw(uint256 value) external onlyOwner {
