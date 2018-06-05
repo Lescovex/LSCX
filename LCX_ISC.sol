@@ -115,18 +115,19 @@ contract LescovexERC20 is Ownable {
         uint i = 0;
         uint256 tokenAmount = 0;
         uint256 len = holded[_owner].length;
-        uint256 maxHoldStart = block.number - holdTime;
+        uint256 maxHoldStart = block.timestamp - holdTime;
 
         while (i < len && holded[_owner].time[i] < maxHoldStart){
                tokenAmount += holded[_owner].amount[i];
                i++;
         }
+        
         return tokenAmount;
     }
 
     function hold(address _to, uint256 _value) internal {
         holded[_to].amount.push(_value);
-        holded[_to].time.push(block.number);
+        holded[_to].time.push(block.timestamp);
         holded[_to].length++;
     }
 
