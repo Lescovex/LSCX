@@ -425,4 +425,50 @@ contract('Lescovex Test ISC',  async (accounts) => {
 
     });
 
+    it("should set holdTime value correctly", async () => {
+      let account_one = accounts[0];
+      let account_two = accounts[1];
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+
+      let holdTimeBefore = await meta.holdTime();
+      holdTimeBefore = holdTimeBefore.toNumber();
+
+      console.log(holdTimeBefore);
+
+      await meta.setHoldTime(10);
+
+      let holdTimeAfter = await meta.holdTime();
+      holdTimeAfter = holdTimeAfter.toNumber();
+
+      console.log(holdTimeAfter);
+
+      assert.notEqual(holdTimeBefore, holdTimeAfter, "hold time don't have to be equal before and after set hold time value");
+    });
+
+    it("should set holdMax value correctly", async () => {
+      let account_one = accounts[0];
+      let account_two = accounts[1];
+
+      let instance = await Lescovex.deployed();
+      let meta = instance;
+
+
+      let holdTimeBefore = await meta.holdMax();
+      holdTimeBefore = holdTimeBefore.toNumber();
+
+      console.log(holdTimeBefore);
+
+      await meta.setHoldMax(1000);
+
+      let holdTimeAfter = await meta.holdMax();
+      holdTimeAfter = holdTimeAfter.toNumber();
+
+      console.log(holdTimeAfter);
+
+      assert.notEqual(holdTimeBefore, holdTimeAfter, "hold time don't have to be equal before and after set hold time value");
+    });
+
 });

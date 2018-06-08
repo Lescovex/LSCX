@@ -94,6 +94,7 @@ contract LescovexERC20 is Ownable {
     /* Public variables for the ERC20 token */
     string public constant standard = "ERC20 Lescovex ISC Income Smart Contract";
     uint8 public constant decimals = 8; // hardcoded to be a constant
+    uint256 public holdMax = 500;
     uint256 public totalSupply;
     uint256 public holdTime;
     string public name;
@@ -118,38 +119,36 @@ contract LescovexERC20 is Ownable {
       return len;
     }
 
-
     function holdedOf(address _owner) public view returns (uint256) {
-        // Returns the valid holded amount of _owner, where valid means
-        // that the amount is holded more than requiredHoldTime.
-        // holded[_owner].amount is sorted from oldest to newest, and
-        // it is the accumulated sum of oldest holded amounts.
-        uint256 requiredHoldTime = block.timestamp - holdTime;
-        uint256 len = holded[_owner].length;
+        // Returns the valid holded amount of _owner (see function hold),
+        // where valid means that the amount is holded more than requiredTime
+        uint256 requiredTime = block.timestamp - holdTime;
 
-        if (len == 0  // empty array of holds
-        || holded[_owner].time[0] >= requiredHoldTime) {  // not any valid holds
+        // Check of the initial values for the search loop.
+        uint256 iValid = 0;                         // low index in test range
+        uint256 iNotValid = holded[_owner].length;  // high index in test range
+        if (iNotValid == 0                          // empty array of holds
+        || holded[_owner].time[iValid] >= requiredTime) { // not any valid holds
             return 0;
         }
 
-        // Binary search of the highest index with a valid hold time,
-        // the oldest hold (index 0) is valid, as it was already checked
-        uint256 highestValid = 0;       // low index in test range
-        uint256 lowestNotValid = len;   // high index in test range
-        uint256 i = len / 2;            // index of pivot element to test
-        do {
-            if (holded[_owner].time[i] < requiredHoldTime) {
-                highestValid = i;   // valid hold
+        // Binary search of the highest index with a valid hold time
+        uint256 i = iNotValid / 2;  // index of pivot element to test
+        while (i > iValid) {  // while there is a higher one valid
+            if (holded[_owner].time[i] < requiredTime) {
+                iValid = i;   // valid hold
             } else {
-                lowestNotValid = i; // not valid hold
+                iNotValid = i; // not valid hold
             }
-            i = (lowestNotValid + highestValid) / 2;
-        } while (i > highestValid);  // it means there is not higher one valid
-
-        return holded[_owner].amount[highestValid];
+            i = (iNotValid + iValid) / 2;
+        }
+        return holded[_owner].amount[iValid];
     }
 
     function hold(address _to, uint256 _value) internal {
+        assert(holded[_to].length < holdMax);
+        // holded[_owner].amount[] is the accumulated sum of holded amounts,
+        // sorted from oldest to newest.
         uint256 len = holded[_to].length;
         uint256 accumulatedValue = (len == 0 ) ?
             _value :
@@ -159,6 +158,14 @@ contract LescovexERC20 is Ownable {
         holded[_to].amount.push(accumulatedValue);
         holded[_to].time.push(block.timestamp);
         holded[_to].length++;
+    }
+
+    function setHoldTime(uint256 _value) external onlyOwner{
+      holdTime = _value;
+    }
+
+    function setHoldMax(uint256 _value) external onlyOwner{
+      holdMax = _value;
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
