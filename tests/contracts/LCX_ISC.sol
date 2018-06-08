@@ -77,9 +77,7 @@ contract Ownable {
 //////////////////////////////////////////////////////////////
 
 contract LescovexERC20 is Ownable {
-
     using SafeMath for uint256;
-
 
     mapping (address => uint256) public balances;
 
@@ -93,12 +91,9 @@ contract LescovexERC20 is Ownable {
         uint256 length;
     }
 
-
-
     /* Public variables for the ERC20 token */
     string public constant standard = "ERC20 Lescovex ISC Income Smart Contract";
     uint8 public constant decimals = 8; // hardcoded to be a constant
-    uint256 public holdMax = 30;
     uint256 public totalSupply;
     uint256 public holdTime;
     string public name;
@@ -123,31 +118,50 @@ contract LescovexERC20 is Ownable {
       return len;
     }
 
+
     function holdedOf(address _owner) public view returns (uint256) {
-        uint i = 0;
-        uint256 tokenAmount = 0;
+        // Returns the valid holded amount of _owner, where valid means
+        // that the amount is holded more than requiredHoldTime.
+        // holded[_owner].amount is sorted from oldest to newest, and
+        // it is the accumulated sum of oldest holded amounts.
+        uint256 requiredHoldTime = block.timestamp - holdTime;
         uint256 len = holded[_owner].length;
 
-        while (i < len ){
-               if(block.timestamp - holded[_owner].time[i] > holdTime){
-                 tokenAmount += holded[_owner].amount[i];
-               }
-               i++;
+        if (len == 0  // empty array of holds
+        || holded[_owner].time[0] >= requiredHoldTime) {  // not any valid holds
+            return 0;
         }
 
-        return tokenAmount;
+        // Binary search of the highest index with a valid hold time,
+        // the oldest hold (index 0) is valid, as it was already checked
+        uint256 highestValid = 0;       // low index in test range
+        uint256 lowestNotValid = len;   // high index in test range
+        uint256 i = len / 2;            // index of pivot element to test
+        do {
+            if (holded[_owner].time[i] < requiredHoldTime) {
+                highestValid = i;   // valid hold
+            } else {
+                lowestNotValid = i; // not valid hold
+            }
+            i = (lowestNotValid + highestValid) / 2;
+        } while (i > highestValid);  // it means there is not higher one valid
+
+        return holded[_owner].amount[highestValid];
     }
 
     function hold(address _to, uint256 _value) internal {
-        assert(holded[_to].length < holdMax);
+        uint256 len = holded[_to].length;
+        uint256 accumulatedValue = (len == 0 ) ?
+            _value :
+            _value + holded[_to].amount[len - 1];
 
-        holded[_to].amount.push(_value);
+        // records the accumulated holded amount
+        holded[_to].amount.push(accumulatedValue);
         holded[_to].time.push(block.timestamp);
         holded[_to].length++;
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
-
         require(_to != address(0));
         require(_value <= balances[msg.sender]);
         // SafeMath.sub will throw if there is not enough balance.
@@ -163,9 +177,6 @@ contract LescovexERC20 is Ownable {
         return true;
     }
 
-
-
-
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(_to != address(0));
         require(_value <= balances[_from]);
@@ -179,7 +190,6 @@ contract LescovexERC20 is Ownable {
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
-
 
         emit Transfer(_from, _to, _value);
         return true;
@@ -269,11 +279,9 @@ contract Lescovex_ISC is LescovexERC20 {
     }
 
     function withdrawReward() external {
-
         uint256 ethAmount = (holdedOf(msg.sender) * contractBalance) / totalSupply;
 
         require(ethAmount > 0);
-
 
         //executes event to register the changes
         emit LogWithdrawal(msg.sender, ethAmount);
@@ -286,7 +294,7 @@ contract Lescovex_ISC is LescovexERC20 {
 
     function withdraw(uint256 value) external onlyOwner {
         //variable created for testing reasons
-        contractBalance = contractBalance - value;
+        contractBalance = contractBalance.sub(value);
         //send eth to owner address
         msg.sender.transfer(value);
         //executes event to register the changes

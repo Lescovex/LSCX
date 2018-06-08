@@ -9,7 +9,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let meta = instance;
 
       //expected values
-      let expectedAmount = 1000000000000000;
+      let expectedAmount = 2000000000000000;
       let expectedName = "Lescovex ISC";
       let expectedSymbol = "LCX";
       let expectedHoldTime = 2;
@@ -17,7 +17,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let expectedContractBalance = 0;
       let expectedStandard = "ERC20 Lescovex ISC Income Smart Contract";
       let expectedDecimals = 8;
-      let expectedHoldMax = 30;
+
 
       let totalSupply = await meta.totalSupply();
       let name = await meta.name();
@@ -29,7 +29,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let contractBalance = await meta.contractBalance();
       let standard = await meta.standard();
       let decimals = await meta.decimals();
-      let holdMax = await meta.holdMax();
+
 
       console.log("Contract owner: " + owner);
       console.log("Contract name: " + name);
@@ -49,7 +49,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       assert.equal(balance, expectedAmount, "Owner balance and expected amount must be equal");
       assert.equal(contractBalance, expectedContractBalance, "contractBalance must be equal to expectedContractBalance");
       assert.equal(standard, expectedStandard, "standard must be equal to expectedStandard");
-      assert.equal(holdMax, expectedHoldMax, "holdMax must be equal to expected value");
+
     });
 
     it("should deposit amount correctly", async () => {
@@ -219,7 +219,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       assert.notEqual(allowanceBefore, allowanceAfter, "allowance before and after transfer don't have to be equal");
 
 
-      assert.equal(amount, holded_end2, "Holded not is the final amount");
+      assert.equal(balance_start_2 + amount, holded_end2, "Holded not is the final amount");
       assert.equal(balance_end, balance_start - amount, "Balance after transfer must to be equal than balance before transfer minus amount transferred");
       assert.equal(balance_start, balance_end + amount, "Balance before transfer must to be equal than balance after transfer plus amount transferred");
       assert.equal(balance_end_2, balance_start_2 + amount, "Balance after transfer must to be equal than balance before transfer minus amount transferred");
@@ -307,6 +307,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
 
       let holdedOf = await meta.holdedOf(account_one);
       holdedOf = holdedOf.toNumber();
+      console.log("Holded Before:" + holdedOf);
 
       let balance = await meta.balanceOf(account_one);
       balance = balance.toNumber();
@@ -315,7 +316,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
 
       let holdedOfAter = await meta.holdedOf(account_one);
       holdedOfAter = holdedOfAter.toNumber();
-      console.log("Holded amount: " + holdedOfAter);
+      console.log("Holded after: " + holdedOfAter);
 
       let accBalanceAfter = web3.eth.getBalance(account_one);
       accBalanceAfter = accBalanceAfter.toNumber();
