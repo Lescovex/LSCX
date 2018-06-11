@@ -239,7 +239,7 @@ contract('Lescovex Test ISC 2',  async (accounts) => {
       assert.notEqual(accBalanceBefore, accBalanceAfter, "account balance don't have to be equal before and after withdraw");
       assert.notEqual(holdedOf, holdedOfAter, "holded amount before withdraw don't have to be equal to the amount holded after");
 
-      assert.equal(balance, holdedOf, "balance before withdraw and amount holded must to be equal");
+      assert.equal(balanceBefore, holdedOf, "balance before withdraw and amount holded must to be equal");
     });
 
 });
