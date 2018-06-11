@@ -17,7 +17,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let expectedContractBalance = 0;
       let expectedStandard = "ERC20 Lescovex ISC Income Smart Contract";
       let expectedDecimals = 8;
-
+      let expectedHoldMax = 100;
 
       let totalSupply = await meta.totalSupply();
       let name = await meta.name();
@@ -29,7 +29,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       let contractBalance = await meta.contractBalance();
       let standard = await meta.standard();
       let decimals = await meta.decimals();
-
+      let holdMax = await meta.holdMax();
 
       console.log("Contract owner: " + owner);
       console.log("Contract name: " + name);
@@ -40,6 +40,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       console.log("Contract balance: " + contractBalance);
       console.log("Standard: " + standard);
       console.log("Decimals: " + decimals);
+      console.log("holdMax: " + holdMax);
 
       assert.equal(name, expectedName, "Name and expectedName must be equal");
       assert.equal(symbol, expectedSymbol, "Symbol and expectedSymbol must be equal");
@@ -49,7 +50,8 @@ contract('Lescovex Test ISC',  async (accounts) => {
       assert.equal(balance, expectedAmount, "Owner balance and expected amount must be equal");
       assert.equal(contractBalance, expectedContractBalance, "contractBalance must be equal to expectedContractBalance");
       assert.equal(standard, expectedStandard, "standard must be equal to expectedStandard");
-
+      assert.equal(holdMax, expectedHoldMax, "holdMax must be equal to expectedHoldMax");
+      
     });
 
     it("should deposit amount correctly", async () => {
