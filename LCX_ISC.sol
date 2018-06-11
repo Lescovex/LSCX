@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 /*
-    Copyright 2018, Vicent Nos & Enrique Santos
+    Copyright 2018, Vicent Nos, Enrique Santos & Mireia Puig
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ contract LescovexERC20 is Ownable {
         holded[_to].time.push(block.timestamp);
         holded[_to].length++;
     }
-    
+
     function setHoldTime(uint256 _value) external onlyOwner{
       holdTime = _value;
     }
@@ -259,10 +259,6 @@ contract Lescovex_ISC is LescovexERC20 {
         symbol = tokenSymbol;         // Set the symbol for display purposes
         holdTime = contractHoldTime;
         balances[contractOwner] = totalSupply;
-
-    }
-
-    function () public {
 
     }
 

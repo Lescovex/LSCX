@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 /*
-    Copyright 2018, Vicent Nos & Enrique Santos
+    Copyright 2018, Vicent Nos, Enrique Santos & Mireia Puig
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ contract LescovexERC20 is Ownable {
     /* Public variables for the ERC20 token */
     string public constant standard = "ERC20 Lescovex ISC Income Smart Contract";
     uint8 public constant decimals = 8; // hardcoded to be a constant
-    uint256 public holdMax = 500;
+    uint256 public holdMax = 100;
     uint256 public totalSupply;
     uint256 public holdTime;
     string public name;
@@ -273,9 +273,6 @@ contract Lescovex_ISC is LescovexERC20 {
 
     }
 
-    function () public {
-
-    }
 
     function deposit() external payable onlyOwner returns(bool success) {
         contractBalance = contractAddr.balance;

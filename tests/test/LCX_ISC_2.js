@@ -57,7 +57,7 @@ contract('Lescovex Test ISC 2',  async (accounts) => {
       holdedBefore = holdedBefore.toNumber();
 
       let i = 0;
-      while(i < 100){
+      while(i < 50){
           await meta.transfer(account_two, amount);
           i++;
       }
@@ -117,7 +117,7 @@ contract('Lescovex Test ISC 2',  async (accounts) => {
       holdedBefore = holdedBefore.toNumber();
 
       let i = 0;
-      while(i < 100){
+      while(i < 50){
           await meta.transfer(account_two, amount);
           i++;
       }
@@ -155,67 +155,6 @@ contract('Lescovex Test ISC 2',  async (accounts) => {
       assert.equal(holded_account_two, (holdedAfter * amount), "holded balance must be equal to holdedAfterLength * amount");
 
     });
-    it("should transfer coin correctly", async () => {
-
-      // Get initial balances of first and second account.
-      let account_one = accounts[0];
-      let account_two = accounts[1];
-
-      let amount = 1000000000000;
-
-
-      let instance = await Lescovex.deployed();
-      let meta = instance;
-
-      let balance = await meta.balanceOf.call(account_one);
-      let account_one_starting_balance = balance.toNumber();
-
-      balance = await meta.balanceOf.call(account_two);
-      let account_two_starting_balance = balance.toNumber();
-
-      let holdedBefore = await meta.holdedLength(account_two);
-      holdedBefore = holdedBefore.toNumber();
-
-      let i = 0;
-      while(i < 100){
-          await meta.transfer(account_two, amount);
-          i++;
-      }
-
-      let holded_account_one = await meta.holdedControl(account_one);
-      holded_account_one = holded_account_one.toNumber();
-
-
-      let holded_account_two = await meta.holdedControl(account_two);
-      holded_account_two = holded_account_two.toNumber();
-
-
-      let holdedAfter = await meta.holdedLength(account_two);
-      holdedAfter = holdedAfter.toNumber();
-      console.log("Holded Length Before: " + holdedBefore);
-      console.log("Holded Length After:  " + holdedAfter);
-
-      balance = await meta.balanceOf.call(account_one);
-      let account_one_ending_balance = balance.toNumber();
-
-      balance = await meta.balanceOf.call(account_two);
-      let account_two_ending_balance = balance.toNumber();
-
-      console.log("Account Balances : " + account_one_ending_balance+" "+account_two_ending_balance);
-
-      console.log("Holded : "+ holded_account_two);
-
-      assert.notEqual(holded_account_one, holded_account_two, "holded amounts of account_one and account_two don't have to be equal");
-      assert.notEqual(account_one, account_two, "account_one have to be different than account_two");
-      assert.notEqual(account_one_starting_balance, account_one_ending_balance, "account_one starting balance and ending balance don't have to be equal");
-      assert.notEqual(account_two_starting_balance, account_two_ending_balance, "account_two starting balance and ending balance don't have to be equal");
-
-
-      assert.equal(account_two_ending_balance, (holdedAfter * amount), "ending balance must be equal to holdedAfterLength * amount");
-      assert.equal(holded_account_two, (holdedAfter * amount), "holded balance must be equal to holdedAfterLength * amount");
-
-    });
-
 
     it("wait block for withdraw", async () => {
       let instance = await Lescovex.deployed();

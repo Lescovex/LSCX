@@ -1,0 +1,79 @@
+Using network 'development'.
+
+
+[0m[0m
+[0m  Contract: Lescovex Test ISC[0m
+Contract owner: 0x627306090abab3a6e1400e9345bc60c78a8bef57
+Contract name: Lescovex ISC
+Tokem symbol: LCX
+Hold time: 2
+Total supply: 2000000000000000
+Owner balance: 2000000000000000
+Contract balance: 0
+Standard: ERC20 Lescovex ISC Income Smart Contract
+Decimals: 8
+  [32m  ✓[0m[90m check constructor params[0m[31m (254ms)[0m
+Contract ETH Before: 0 Contract ETH After: 1000000000000000000
+  [32m  ✓[0m[90m should deposit amount correctly[0m[31m (117ms)[0m
+1999999999990000
+10000
+Account Balances : 1999999999990000 10000
+Holded : 10000
+  [32m  ✓[0m[90m should transfer coin correctly[0m[31m (334ms)[0m
+Allowance Before: 0
+Allowance After: 20000
+  [32m  ✓[0m[90m should approve amount correctly[0m[31m (235ms)[0m
+Sender Balance Start: 1999999999990000
+Receiver Balance Start: 10000
+Sender Balance End: 1999999999970000
+Receiver Balance End: 30000
+  [32m  ✓[0m[90m should transferFrom amount correctly[0m[31m (417ms)[0m
+Contract ETH before: 1000000000000000000 Contract ETH after : 0
+  [32m  ✓[0m[90m should withdraw amount correctly[0m[31m (115ms)[0m
+  [32m  ✓[0m[90m wait block for withdraw[0m[31m (2823ms)[0m
+Holded Before:1999999999970000
+Holded after: 0
+Account Balance Before: 93306329400000000000
+Account Balance After:  93329686799999520000
+  [32m  ✓[0m[90m should withdraw reward amount correctly[0m[31m (1068ms)[0m
+Balance before increaseApproval: 10000
+Balance after increaseApproval: 20000
+  [32m  ✓[0m[90m should increase appproval amount correctly[0m[31m (330ms)[0m
+Balance before decreaseApproval: 20000
+Balance after decreaseApproval: 10000
+  [32m  ✓[0m[90m should decrease appproval amount correctly[0m[31m (178ms)[0m
+Balance allowed after approveAndCall: 20000
+  [32m  ✓[0m[90m should approve and communicate the approved correctly[0m[31m (310ms)[0m
+2
+10
+  [32m  ✓[0m[90m should set holdTime value correctly[0m[31m (83ms)[0m
+100
+1000
+  [32m  ✓[0m[90m should set holdMax value correctly[0m[31m (77ms)[0m
+
+[0m  Contract: Lescovex Test ISC 2[0m
+balanceAccOne: 2000000000000000
+Contract ETH Before: 0 Contract ETH After: 3000000000000000000
+  [32m  ✓[0m[90m should deposit amount correctly[0m[31m (177ms)[0m
+Holded Length Before: 0
+Holded Length After:  50
+Account Balances : 1950000000000000 50000000000000
+Holded : 50000000000000
+  [32m  ✓[0m[90m should transfer coin correctly[0m[31m (5578ms)[0m
+Holded Length Before: 50
+Holded Length After:  100
+Account Balances : 1900000000000000 100000000000000
+Holded : 100000000000000
+  [32m  ✓[0m[90m should transfer coin correctly[0m[31m (6673ms)[0m
+  [32m  ✓[0m[90m wait block for withdraw[0m[31m (2243ms)[0m
+Holded Before:100000000000000
+balance: 100000000000000
+Holded after: 0
+balance: 100000000000000
+Account Balance Before: 100091293600000000000
+Account Balance After:  100184609800000000000
+  [32m  ✓[0m[90m should withdraw reward amount correctly[0m[31m (1669ms)[0m
+
+
+[92m [0m[32m 18 passing[0m[90m (24s)[0m
+
