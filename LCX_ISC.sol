@@ -135,7 +135,7 @@ contract LescovexERC20 is Ownable {
     }
 
     function hold(address _to, uint256 _value) internal {
-        assert(holded[_to].length < holdMax);
+        require(holded[_to].length < holdMax);
         // holded[_owner].amount[] is the accumulated sum of holded amounts,
         // sorted from oldest to newest.
         uint256 len = holded[_to].length;
