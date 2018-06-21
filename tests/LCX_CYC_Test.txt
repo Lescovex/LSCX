@@ -1,0 +1,37 @@
+Using network 'development'.
+
+
+[0m[0m
+[0m  Contract: Lescovex Test CYC[0m
+Contract owner: 0x627306090abab3a6e1400e9345bc60c78a8bef57
+Contract name: Lescovex CYC
+Token symbol: LCX
+Total supply: 1000000000000
+Owner balance: 1000000000000
+Standard: ERC20 Lescovex CYC
+Decimals: 18
+  [32m  ✓[0m[90m check constructor params[0m[31m (274ms)[0m
+Account Balances : 999999990000 10000
+  [32m  ✓[0m[90m should transfer coin correctly[0m[31m (176ms)[0m
+Allowance Before: 0
+Allowance After: 10000
+  [32m  ✓[0m[90m should approve amount correctly[0m[31m (308ms)[0m
+Allowance before transfer: 10000
+Allowance after transfer: 0
+Sender Balance Start: 999999990000
+Receiver Balance Start: 10000
+Sender Balance End: 999999980000
+Receiver Balance End: 20000
+  [32m  ✓[0m[90m should transferFrom amount correctly[0m[31m (412ms)[0m
+Balance before increaseApproval: 10000
+Balance after increaseApproval: 20000
+  [32m  ✓[0m[90m should increase appproval amount correctly[0m[31m (357ms)[0m
+Balance before decreaseApproval: 20000
+Balance after decreaseApproval: 10000
+  [32m  ✓[0m[90m should decrease appproval amount correctly[0m[31m (282ms)[0m
+Balance allowed after approveAndCall: 20000
+  [32m  ✓[0m[90m should approve and communicate the approved correctly[0m[31m (268ms)[0m
+
+
+[92m [0m[32m 7 passing[0m[90m (2s)[0m
+

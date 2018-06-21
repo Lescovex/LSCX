@@ -15,6 +15,8 @@ contract('Lescovex Test CYC',  async (accounts) => {
       let expectedSymbol = "LCX";
       let expectedOwner = 0x627306090abaB3A6e1400e9345bC60c78a8BEf57;
       let expectedAmount = 1000000000000;
+      let expectedStandard = "ERC20 Lescovex CYC";
+      let expectedDecimals = 18;
 
       let name=await meta.name();
       let symbol=await meta.symbol();
@@ -22,19 +24,26 @@ contract('Lescovex Test CYC',  async (accounts) => {
       let totalSupply= await meta.totalSupply();
       let balance = await meta.balanceOf(owner);
       balance = balance.toNumber();
+      let standard = await meta.standard();
+      let decimals = await meta.decimals();
+      decimals = decimals.toNumber();
 
       console.log("Contract owner: " + owner);
       console.log("Contract name: " + name);
       console.log("Token symbol: " + symbol);
       console.log("Total supply: " + totalSupply);
       console.log("Owner balance: " + balance);
+      console.log("Standard: " + standard);
+      console.log("Decimals: " + decimals);
 
       assert.equal(name, expectedName, "Name must be equal than expectedName");
       assert.equal(symbol, expectedSymbol, "Symbol must be equal than expectedSymbol");
       assert.equal(owner, expectedOwner, "Owner must be equal than expectedOwner");
       assert.equal(totalSupply, expectedAmount, "Total Supply must be equal than expectedAmount");
       assert.equal(balance, expectedAmount, "Owner balance must be equal than expectedAmount");
-
+      assert.equal(standard, expectedStandard, "Standard must be equal to expectedStandard");
+      assert.equal(decimals, expectedDecimals, "Decimals must be equal to expectedDecimals");
+      
     });
 
     it("should transfer coin correctly", async () => {

@@ -51,7 +51,7 @@ contract('Lescovex Test ISC',  async (accounts) => {
       assert.equal(contractBalance, expectedContractBalance, "contractBalance must be equal to expectedContractBalance");
       assert.equal(standard, expectedStandard, "standard must be equal to expectedStandard");
       assert.equal(holdMax, expectedHoldMax, "holdMax must be equal to expectedHoldMax");
-      
+
     });
 
     it("should deposit amount correctly", async () => {
