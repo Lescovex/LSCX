@@ -1,0 +1,30 @@
+<div class="scroll scrollbar" style="height: 62vh" >
+    <ng-container *ngFor="let tx of items, index as  i">
+      <p class="title" *ngIf="i==0 ||(i>0 && tx.date != items[i-1].date)">{{tx.date}}</p>
+      <ul class="list round" *ngIf="i==0 ||(i>0 && tx.date != items[i-1].date)">
+        <ng-container *ngFor="let transaction of items, index as j">
+          <li *ngIf="(i==0  || (i>0 && tx.date != items[i-1].date )) && transaction.date == tx.date"
+              [ngClass]="((j+1)%2 == 0) ? 'even' : 'odd'">
+            <a *ngIf="transaction.blockNumber!= null" href="https://ropsten.etherscan.io/tx/{{tx.hash}}" target="_blank">
+              <span class="left" *ngIf="transaction.from == address.toLowerCase()"><img src="~icons/send_icon.svg"> ETH sended</span>
+              <span class="left" *ngIf="transaction.to == address.toLowerCase()"><img src="~icons/receive_icon.svg"> ETH received</span>
+              <span class="right" [ngClass]="(transaction.from == address.toLowerCase())?'red':'green'"> {{transaction.value | converter:'fromWei':'ether'}} ETH</span>
+            </a>
+            <a *ngIf="transaction.blockNumber==null" href="https://ropsten.etherscan.io/tx/{{tx.hash}}" target="_blank" class="pending">
+              <span *ngIf="transaction.from == address.toLowerCase()"><img src="~icons/send_inactive_icon.svg"> ETH sended</span>
+              <span *ngIf="transaction.to == address.toLowerCase()"><img src="~icons/receive_inactive_icon.svg"> ETH received</span>
+                (Pending...)
+              <span class="right"> {{transaction.value | converter:'fromWei':'ether'}} ETH</span>
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+    </ng-container> 
+</div>
+
+<app-paginator 
+  (goPage)="goToPage($event)"
+  [currentPage]="page"
+  [perPage]="limit"
+  [count]="totalPages"></app-paginator>
+

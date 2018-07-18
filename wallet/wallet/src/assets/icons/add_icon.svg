@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="19px" viewBox="0 0 19 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="xplodde-symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.5" stroke-linecap="round" stroke-linejoin="round">
+        <g id="off-token---general-copy-2" transform="translate(-177.000000, -30.000000)" stroke="#0D264F">
+            <g id="Group" transform="translate(178.000000, 31.000000)">
+                <path d="M17,8.5 C17,13.194 13.194,17 8.5,17 C3.806,17 0,13.194 0,8.5 C0,3.806 3.806,0 8.5,0 C13.194,0 17,3.806 17,8.5 Z" id="Stroke-7"></path>
+                <path d="M8.5,2.83333333 L8.5,14.1666667" id="Stroke-3"></path>
+                <path d="M14.1666667,8.5 L2.83333333,8.5" id="Stroke-3"></path>
+            </g>
+        </g>
+    </g>
+</svg>

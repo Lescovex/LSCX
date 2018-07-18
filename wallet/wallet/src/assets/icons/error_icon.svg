@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>check error</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="check-error" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill="#E66978">
+            <circle id="Oval-2" cx="10" cy="10" r="10"></circle>
+        </g>
+        <g id="Group-2" transform="translate(5.000000, 5.000000)" stroke="#FFFFFF" stroke-width="2">
+            <path d="M9.20854048,0.60990767 L0.285154713,9.53329344" id="Path-3" transform="translate(4.746848, 5.071601) scale(-1, 1) translate(-4.746848, -5.071601) "></path>
+            <path d="M9.20854048,0.60990767 L0.285154713,9.53329344" id="Path-3"></path>
+        </g>
+    </g>
+</svg>

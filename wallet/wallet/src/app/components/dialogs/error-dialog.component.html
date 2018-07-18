@@ -1,0 +1,18 @@
+<div>
+    <h1 class="text-center">
+        <img *ngIf="data.error ==''" src='~icons/correct_icon.svg'>
+        <img *ngIf="data.error !=''" src='~icons/error_icon.svg'>
+        {{data.title}}<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class="text-center">
+    <p class="dist black">{{data.message}}<span *ngIf="data.error!=''" class="black">. Error: {{data.error}}</span></p>
+    
+</div>
+
+<div class="dist text-center">
+    <button [ngClass]="(data.error != '')? 'btn-black' : 'btn-solid'"  [md-dialog-close]="data.action" >OK</button>
+</div>
+
+
+
+

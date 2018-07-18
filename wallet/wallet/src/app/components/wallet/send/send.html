@@ -1,0 +1,16 @@
+    <div>
+        <label class="title" for="receiverAddr">Receiver Address</label>
+        <input class="block" [ngClass]="{'error': errors.receiver !==''}" required id="receiverAddr" type="text" value=""  name="receiverAddr" [(ngModel)]="receiverAddr" #rec="ngModel"/>
+        <p *ngIf="errors.receiver !== ''" class="error">{{errors.receiver}}</p>
+    </div>
+    <div class="clear">
+        <label class="title" for="amount">Amount</label>
+        <input class="block" [ngClass]="{'error': errors.amount !== ''}"required id="amount" type="number" min="0" value="0.0" step="any" placeholder="Amount" name="amount" [(ngModel)]="amount"/>
+        <p *ngIf="errors.amount !== ''" class="error">{{errors.amount}}</p>
+    </div>
+    <button type="button" class="btn-solid right" (click)="sendEth(receiverAddr,amount, trasn_data)" > Send </button>
+    <div class="clear">
+        <label class="title" for="transData">Transaction data (optional)</label>
+        <input class="block" id="transData" type="text" value=""  name="transData" placeholder="e.g. Market supplys payment" [(ngModel)]="transData"/>
+    </div>
+    

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="31px" height="30px" viewBox="0 0 31 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>general settings icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="xplodde-symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="menu-settings" transform="translate(-29.000000, -185.000000)" stroke="#FFFFFF">
+            <g id="general-settings-icon" transform="translate(30.000000, 186.000000)">
+                <path d="M29.3328,3.9312 L11.60768,3.9312" id="Shape"></path>
+                <path d="M5.27744,3.9312 L0.2128,3.9312" id="Shape"></path>
+                <path d="M29.3328,14.05936 L25.53488,14.05936" id="Shape"></path>
+                <path d="M19.20464,14.05936 L0.2128,14.05936" id="Shape"></path>
+                <path d="M29.3328,24.18864 L7.80976,24.18864" id="Shape"></path>
+                <path d="M1.47952,24.18864 L0.2128,24.18864" id="Shape"></path>
+                <path d="M7.17696,7.72912 L7.17696,7.72912 C6.12864,7.72912 5.27744,6.87904 5.27744,5.8296 L5.27744,2.03168 C5.27744,0.98336 6.12752,0.13216 7.17696,0.13216 L7.17696,0.13216 C8.22528,0.13216 9.07648,0.98224 9.07648,2.03168 L9.07648,5.8296 C9.07648,6.87904 8.22528,7.72912 7.17696,7.72912 Z" id="Shape"></path>
+                <path d="M21.10416,17.8584 L21.10416,17.8584 C20.05584,17.8584 19.20464,17.00832 19.20464,15.95888 L19.20464,12.16096 C19.20464,11.11264 20.05472,10.26144 21.10416,10.26144 L21.10416,10.26144 C22.15248,10.26144 23.00368,11.11152 23.00368,12.16096 L23.00368,15.95888 C23.00256,17.0072 22.15248,17.8584 21.10416,17.8584 Z" id="Shape"></path>
+                <path d="M3.37904,27.98656 L3.37904,27.98656 C2.33072,27.98656 1.47952,27.13648 1.47952,26.08704 L1.47952,22.28912 C1.47952,21.2408 2.3296,20.3896 3.37904,20.3896 L3.37904,20.3896 C4.42736,20.3896 5.27856,21.23968 5.27856,22.28912 L5.27856,26.08704 C5.27744,27.13648 4.42736,27.98656 3.37904,27.98656 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

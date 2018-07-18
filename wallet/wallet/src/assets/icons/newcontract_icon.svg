@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="19px" viewBox="0 0 15 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 3</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="xplodde-symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linejoin="round">
+        <g id="on-contract--new-contract" transform="translate(-118.000000, -27.000000)" stroke="#32445E">
+            <g id="Group-4" transform="translate(83.000000, 28.000000)">
+                <g id="Group-3" transform="translate(36.000000, 0.000000)">
+                    <path d="M3.33333333,5 L0,5 L4,1 L4,4.33333333 C4,4.70133333 3.702,5 3.33333333,5 Z" id="Shape" stroke-linecap="round"></path>
+                    <path d="M12,11.8528203 L12,16.3108148 C12,16.691245 11.7170526,17 11.3684211,17 L0.631578947,17 C0.282947368,17 3.31444145e-13,16.691245 3.31444145e-13,16.3108148 L0,7" id="Shape" stroke-linecap="round"></path>
+                    <path d="M6,0 L11.3336144,0 C11.7014592,0 12,0.368568014 12,0.82269646 L12,4" id="Shape" stroke-linecap="round"></path>
+                    <g id="Group" transform="translate(5.000000, 6.000000)">
+                        <polygon id="Shape" stroke-linecap="round" points="2.56545455 7.49666667 0.09 8.67466667 1.21509091 6.082 6.61527273 0.425333333 7.965 1.83933333"></polygon>
+                        <path d="M6.90736364,2.94666667 L5.55190909,1.53333333" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

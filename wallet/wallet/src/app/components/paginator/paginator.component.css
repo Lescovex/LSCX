@@ -1,0 +1,23 @@
+ul{
+    width: 400px;
+    display:block;
+    list-style-type: none;
+    text-align: center;
+    position: fixed;
+    bottom:15px;
+    left: 50%;
+    margin-left: -70px;
+}
+li{
+    display: inline-block;
+}
+button{
+    border: none;
+    
+}
+p, button{
+    padding: 5px 15px;
+}
+p{
+    background-color: #fff;
+}

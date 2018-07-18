@@ -1,0 +1,18 @@
+<ul>
+    <li (click)="onPage(1, $event)" >
+      <button title="Go to first page" [disabled]="currentPage == 1">First</button>
+    </li>
+    <li (click)="onPage(currentPage - 1, $event)">
+      <button title="Go to previous page" [disabled]="currentPage == 1">Prev</button>
+    </li>
+    <li>
+        <p>{{currentPage}} de  {{count}}</p>
+    </li>
+    <li (click)="onPage(currentPage + 1, $event)" >
+      <button title="Go to next page"[disabled]="currentPage == count" >Next</button>
+    </li>
+    <li (click)="onPage(count, $event)">
+      <button title="Go to last page" [disabled]="currentPage == count" >Last</button>
+    </li>
+</ul>
+  

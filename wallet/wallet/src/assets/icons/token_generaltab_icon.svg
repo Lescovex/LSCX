@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Page 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="xplodde-symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.5" stroke-linecap="round" stroke-linejoin="round">
+        <g id="off-token---general-copy" transform="translate(-179.000000, -28.000000)" stroke="#0D264F">
+            <g id="Page-1" transform="translate(179.000000, 28.000000)">
+                <path d="M7.1522,11.587 C7.1522,11.587 7.1522,13.065 9.2292,13.065 C11.8312,13.065 11.8302,9.526 9.2292,9 C6.6272,8.474 6.6272,4.935 9.2292,4.935 C10.8482,4.935 10.8482,6.413 10.8482,6.413" id="Stroke-1"></path>
+                <path d="M9.3696,3.4565 L9.3696,4.9345" id="Stroke-3"></path>
+                <path d="M9.3696,13.0652 L9.3696,14.5432" id="Stroke-5"></path>
+                <path d="M17.5,9 C17.5,13.694 13.694,17.5 9,17.5 C4.306,17.5 0.5,13.694 0.5,9 C0.5,4.306 4.306,0.5 9,0.5 C13.694,0.5 17.5,4.306 17.5,9 Z" id="Stroke-7"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,39 @@
+<nav class="flex-row">
+    
+    <a routerLink = "general" routerLinkActive="active" #general="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="general.isActive" src='~icons/token_generaltab_icon.svg'>
+                <img *ngIf="!general.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">General</p>
+        </div>
+    </a>  
+
+    <a routerLink = "send-tokens" routerLinkActive="active" #sendTokens="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="sendTokens.isActive" src='~icons/send_icon.svg'>
+                 <img *ngIf="!sendTokens.isActive" src='~icons/send_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Send</p>
+        </div>
+    </a>   
+    
+    <a routerLink = "add" routerLinkActive="active" #add="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="add.isActive" src='~icons/add_icon.svg'>
+                <img *ngIf="!add.isActive" src='~icons/add_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Add</p>
+        </div>
+    </a>
+</nav>
+<div class="content flex-inside">
+  <p *ngIf="!_account.account?.address; else content" style="text-align: center">Select and account</p>
+  <ng-template #content>
+    <router-outlet></router-outlet>
+  </ng-template>
+</div>
+  

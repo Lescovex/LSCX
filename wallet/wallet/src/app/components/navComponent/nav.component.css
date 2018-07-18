@@ -1,0 +1,45 @@
+*{  font-family: 'Lato-Bold'}
+#account{
+  height:65px;
+  width: 100%;
+  background-color: #fff;
+}
+#account div p{
+  padding-top: 30px;
+  margin-left: 30px;
+}
+.link {
+    height:65px;
+    width: 100%;
+    padding-left: 30px;
+    text-align: left;
+    text-decoration: none;
+    border: none;
+    color: #abb0b2;
+    background-color: #272d33;
+}
+.link img{
+  margin-right: 10px;
+}
+.link.active, link:focus {
+  background-color: #30D67F;
+  border: none;
+  color: #fff;
+}
+.bottom{
+  text-align: center;
+  position:fixed;
+  bottom:30px;
+  margin: auto;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.bottom button{
+  display: block;
+  margin-top: 15px;
+}
+.title-button-left {
+    position: relative;
+    top: -6px;
+    color: white;
+}

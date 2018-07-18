@@ -1,0 +1,33 @@
+#selectList .selected{
+    background-color: #d3d3d3;
+    margin:0;
+}
+
+#selectList .selected p, .selected .title{
+    color:white
+} 
+.title{
+    color:#000;
+    padding-left: 0;
+}
+
+#selectList{
+    list-style: none;
+    font-family: 'Lato-Regular';
+    width:80%;
+    max-height: 250px;
+    margin: 10px auto;
+    padding:0;
+}
+#selectList ul{
+    background-color: #fff;
+    min-height: 250px;
+}
+
+#selectList li{
+    border:1px solid transparent;
+    border-color: transparent transparent #eee transparent;
+    padding:10px 20px;
+    margin:0;
+}
+
