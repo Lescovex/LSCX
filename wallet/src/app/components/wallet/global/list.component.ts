@@ -23,12 +23,17 @@ export class ListComponent implements OnInit, OnChanges {
         this.getItmes();
         console.log(this.items.length)
     }
+    
     ngOnChanges(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         if(this.page==1){
             this.getItmes();
         }
   
+    }
+    openExternal(txHash){
+        const shell = require('electron').shell;
+        shell.openExternal('https://ropsten.etherscan.io/tx/'+txHash);
     }
 
     getItmes(): void {

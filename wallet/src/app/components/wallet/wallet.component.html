@@ -1,6 +1,6 @@
 <nav class="flex-row">
-    
-    <a routerLink = "global" routerLinkActive="active" #global="routerLinkActive">
+
+    <a routerLink="global" routerLinkActive="active" #global="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="global.isActive" src='~icons/global_icon.svg'>
@@ -8,9 +8,9 @@
             </span>
             <p class="title-button-navbar">Global</p>
         </div>
-    </a>  
+    </a>
 
-    <a routerLink = "send" routerLinkActive="active" #send="routerLinkActive">
+    <a routerLink="send" routerLinkActive="active" #send="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="send.isActive" src='~icons/send_icon.svg'>
@@ -18,9 +18,9 @@
             </span>
             <p class="title-button-navbar">Send</p>
         </div>
-    </a>   
-    
-    <a routerLink = "receive" routerLinkActive="active" #rec="routerLinkActive">
+    </a>
+
+    <a routerLink="receive" routerLinkActive="active" #rec="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="rec.isActive" src='~icons/receive_icon.svg'>
@@ -29,8 +29,8 @@
             <p class="title-button-navbar">Receive</p>
         </div>
     </a>
-    
-    <a routerLink = "wsettings" routerLinkActive="active" #sett="routerLinkActive">
+
+    <a routerLink="wsettings" routerLinkActive="active" #sett="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="sett.isActive" src='~icons/walletsettings_icon.svg'>
@@ -41,9 +41,8 @@
     </a>
 </nav>
 <div class="content flex-inside">
-  <p *ngIf="!_account.account?.address; else content" style="text-align: center">Select and account</p>
+  <p *ngIf="!_account.account?.address; else content" class="text-center">Select an account</p>
   <ng-template #content>
     <router-outlet></router-outlet>
   </ng-template>
 </div>
-  

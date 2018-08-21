@@ -14,6 +14,12 @@ import { GeneralPage } from './components/tokens/general/general.page'
 import { SendTokensPage } from './components/tokens/send/send-tokens.page'
 import { AddTokenPage } from './components/tokens/add/add.page'
 
+import { ContractsComponent } from './components/contracts/contracts.component'
+import { AddContractPage } from './components/contracts/add/add-contract.component'
+import { ContractPage } from './components/contracts/contracts/contract.component'
+
+import { SettingsComponent } from './components/settings/settings.component'
+
 const routes: Routes = [
   { path: 'wallet', component: WalletComponent,
     children: [
@@ -32,6 +38,15 @@ const routes: Routes = [
       { path: 'add', component: AddTokenPage },
     ]
   },
+  { path: 'contracts', component: ContractsComponent,
+    children: [
+      { path: '', redirectTo: 'add', pathMatch: 'full' },
+      { path: 'add', component: AddContractPage },
+      { path: 'contractPage', component: ContractPage },
+
+    ]
+  },
+  { path: 'settings', component: SettingsComponent },
   { path: '', redirectTo: '/wallet/global', pathMatch: 'full' },
   { path: '**', redirectTo: '/wallet/global', pathMatch: 'full' },
 ];

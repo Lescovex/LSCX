@@ -1,9 +1,9 @@
 {
   "name": "lescovex",
   "version": "1.0.0",
-  "description": "Taboow media explorer and wallet",
+  "description": "Lescovex media explorer and wallet",
   "main": "main.js",
-  "author": "lescovex",
+  "author": "Lescovex",
   "license": "ISC",
   "scripts": {
     "start": "webpack-dev-server --inline --progress --port 8080",
@@ -26,7 +26,11 @@
     "@angular/platform-browser": "~4.2.0",
     "@angular/platform-browser-dynamic": "~4.2.0",
     "@angular/router": "~4.2.0",
+    "angular": "^1.7.2",
+    "angular-animate": "^1.7.3",
+    "angular-aria": "^1.7.3",
     "angular-material": "^1.1.8",
+    "angular-messages": "^1.7.3",
     "bs58check": "^2.1.1",
     "chalk": "^2.3.0",
     "core-js": "^2.4.1",
@@ -86,7 +90,7 @@
   "build": {
     "appId": "Xplodde",
     "win": {
-      "icon": "./xplodde.ico"
+      "icon": "./lescovex.ico"
     },
     "files": [
       "build",

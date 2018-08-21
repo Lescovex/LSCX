@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core'
 declare var require: any;
 import * as QRcode from 'qrcode';
 
-import { AccountService } from '../../../account.service'
+import { AccountService } from '../../../services/account.service';
 
 
 

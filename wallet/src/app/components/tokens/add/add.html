@@ -1,16 +1,16 @@
 <div>
     <label class="title" for="contractAddr">Token Contract Address</label>
-    <input class="block" required id="contractAddr" type="text" value=""  name="contractAddr" [(ngModel)]="contractAddr" #contract="ngModel"/>
+    <input class="block" required id="contractAddr" type="text" value=""  name="contractAddress" [(ngModel)]="token.contractAddress" #contract="ngModel" (change)="setTokenInfo()"/>
     <!--<p *ngIf="errors.receiver !== ''" class="error">{{errors.receiver}}</p>-->
 </div>
 <div class="clear">
     <label class="title block" for="symbol">Token symbol</label>
-    <input class="half" required id="symbol" type="text" placeholder="TOKEN" name="symbol" [(ngModel)]="symbol"/>
+    <input class="half" required id="symbol" type="text" placeholder="TOKEN" name="symbol" [(ngModel)]="token.tokenSymbol"/>
     <!--<p *ngIf="errors.symbol !== ''" class="error">{{errors.symbol}}</p>-->
 </div>
 <div class="clear">
-    <label class="title block" for="decimals">Decimals precision</label>
-    <input class="half" required id="decimals" type="number" min="0" max="18" placeholder="18" name="decimals" [(ngModel)]="decimals"/>
+    <label class="title block" for="decimal">Decimals precision</label>
+    <input class="half" required id="decimal" type="number" min="0" max="18" placeholder="18" name="decimal" [(ngModel)]="token.tokenDecimal"/>
         <!--<p *ngIf="errors.symbol !== ''" class="error">{{errors.symbol}}</p>-->
 </div>
 <div class="inline right">

@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 /*Services*/
-import { AccountService } from '../../account.service';
+import { AccountService } from '../../services/account.service';
 
 /*Dialog*/
 import {MdDialog} from '@angular/material';

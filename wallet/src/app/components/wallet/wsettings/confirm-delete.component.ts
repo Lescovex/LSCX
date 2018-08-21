@@ -3,8 +3,8 @@ import { Component, Inject  } from '@angular/core'
 import {MdDialog} from '@angular/material';
 import {MdDialogRef} from '@angular/material';
 
-import { AccountService } from '../../../account.service';
-import { WalletService } from '../../../wallet.service'
+import { AccountService } from '../../../services/account.service';
+import { WalletService } from '../../../services/wallet.service';
 
 @Component({
   selector: 'confirm-delete',

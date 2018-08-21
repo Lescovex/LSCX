@@ -5,8 +5,8 @@ import {MdDialog} from '@angular/material';
 import {MdDialogRef} from '@angular/material';
 
 /*Services*/
-import { AccountService } from '../../account.service'
-import { WalletService } from '../../wallet.service'
+import { AccountService } from '../../services/account.service'
+import { WalletService } from '../../services/wallet.service'
 
 
 @Component({

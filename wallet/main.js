@@ -1,15 +1,8 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
-const { ENV } = require('./config/config.js');
-const WINDOW_OPTS = {
-  width: 1000,
-  height: 720,
-  minWidth: 1000,
-  minHeight: 720,
-  'use-content-size': true,
-  icon : path.join(__dirname ,'/xplodde.png')
-}
+const { ENV, WINDOW_OPTS} = require('./config/config.js');
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;

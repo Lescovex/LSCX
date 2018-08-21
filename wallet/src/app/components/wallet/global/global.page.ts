@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 declare var require: any;
 
-import { AccountService } from '../../../account.service'
+import { AccountService } from '../../../services/account.service';
 
 
 @Component({

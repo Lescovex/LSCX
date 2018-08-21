@@ -1,0 +1,38 @@
+<nav class="flex-row">
+
+    <a routerLink="add" routerLinkActive="active" #add="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="add.isActive" src='~icons/newcontract_icon.svg'>
+                <img *ngIf="!add.isActive" src='~icons/newcontract_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Add</p>
+        </div>
+    </a>
+
+    <a routerLink="contractPage" routerLinkActive="active" #contract="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="contract.isActive" src='~icons/send_icon.svg'>
+                 <img *ngIf="!contract.isActive" src='~icons/send_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Contracts</p>
+        </div>
+    </a>
+
+    <a routerLink="history" routerLinkActive="active" #hist="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="hist.isActive" src='~icons/history_icon.svg'>
+                <img *ngIf="!hist.isActive" src='~icons/history_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Contract history</p>
+        </div>
+    </a>
+</nav>
+<div class="content flex-inside">
+    <p *ngIf="!_account.account.hasOwnProperty('address'); else content" style="text-align: center">Select an account</p>
+    <ng-template #content>
+        <router-outlet></router-outlet>
+    </ng-template>
+</div>

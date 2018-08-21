@@ -4,8 +4,8 @@ import { MdDialog } from '@angular/material';
 import {MdDialogRef} from '@angular/material';
 import {MD_DIALOG_DATA} from '@angular/material';
 
-import { AccountService } from '../../../account.service';
-import { WalletService } from '../../../wallet.service'
+import { AccountService } from '../../../services/account.service';
+import { WalletService } from '../../../services/wallet.service';
 
 
 

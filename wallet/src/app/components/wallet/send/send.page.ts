@@ -4,9 +4,9 @@ import * as EthUtil from 'ethereumjs-util';
 import * as EthTx from 'ethereumjs-tx';
 
 /*Services*/
-import { AccountService } from '../../../account.service'
-import { Web3 } from '../../../web3.service'
-import { SendDialogService } from '../../../send-dialog.service'
+import { AccountService } from '../../../services/account.service';
+import { Web3 } from '../../../services/web3.service';
+import { SendDialogService } from '../../../services/send-dialog.service';
 
 @Component({
   selector: 'send-page',
@@ -68,7 +68,7 @@ export class SendPage implements OnInit {
       gasLimit: this._web3.web3.toHex(21000),
       to: receiverAddr,
       value: this._web3.web3.toHex(amountW),
-      data:'',
+      data: this._web3.web3.toHex(trans_data),
       chainId:'0x3'
     }
     //console.log(txParams)

@@ -6,7 +6,7 @@ import { MaterialModule } from '@angular/material';
 import { MdInputModule, MdCheckboxModule, MdSidenavModule } from '@angular/material';
 import { MdCardModule, MdButtonModule, MD_DIALOG_DATA} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MdDialogModule } from '@angular/material';
 
 
@@ -33,6 +33,12 @@ import { GeneralPage } from './components/tokens/general/general.page'
 import { SendTokensPage } from './components/tokens/send/send-tokens.page'
 import { AddTokenPage } from './components/tokens/add/add.page'
 
+import { ContractsComponent } from './components/contracts/contracts.component'
+import { AddContractPage } from './components/contracts/add/add-contract.component'
+import { ContractPage } from './components/contracts/contracts/contract.component'
+
+import { SettingsComponent } from './components/settings/settings.component'
+
 /*Dialogs*/
 import { SelectAccountDialogComponent } from './components/navComponent/selectAccount-dialog.component';
 import { AddAccountDialogComponent } from './components/navComponent/addAccount-dialog.component';
@@ -49,15 +55,20 @@ import { PendingDialogComponent } from './components/dialogs/pending-dialog.comp
 
 
 /*Servicies*/
-import { WalletService } from './wallet.service';
-import { AccountService } from './account.service';
-import { Web3 } from './web3.service';
-import { DialogService } from './dialog.service';
-import { SendDialogService } from './send-dialog.service';
-import { TokenService } from './token.service';
+import { WalletService } from './services/wallet.service';
+import { AccountService } from './services/account.service';
+import { Web3 } from './services/web3.service';
+import { DialogService } from './services/dialog.service';
+import { SendDialogService } from './services/send-dialog.service';
+import { TokenService } from './services/token.service';
+import { ContractService } from './services/contract.service'
+import { FormsService } from './services/forms.service'
+import { RawTxService } from './services/rawtx.sesrvice'
+import { ContractStorageService } from './services/contractStorage.service'
 
 /*Pipes*/
-import { ConverterPipe } from './converter.pipe';
+import { ConverterPipe } from './pipes/converter.pipe';
+import { SeparateWordsPipe } from './pipes/words.pipe'
 
 
 
@@ -70,7 +81,9 @@ import { ConverterPipe } from './converter.pipe';
     SendPage,
     ReceivePage,
     WsettingsPage,
+    SettingsComponent,
     ConverterPipe,
+    SeparateWordsPipe,
     SelectAccountDialogComponent,
     AddAccountDialogComponent,
     NewAccountDialogComponent,
@@ -88,7 +101,10 @@ import { ConverterPipe } from './converter.pipe';
     TokensComponent,
     GeneralPage,
     SendTokensPage,
-    AddTokenPage
+    AddTokenPage,
+    ContractsComponent,
+    AddContractPage,
+    ContractPage,
   ],
   imports: [
     BrowserModule,
@@ -96,6 +112,7 @@ import { ConverterPipe } from './converter.pipe';
     MaterialModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     MdSidenavModule,
     MdDialogModule,
     MdCardModule,
@@ -129,7 +146,11 @@ import { ConverterPipe } from './converter.pipe';
     Web3,
     DialogService,
     SendDialogService,
-    TokenService
+    TokenService,
+    ContractService,
+    FormsService,
+    RawTxService,
+    ContractStorageService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

@@ -1,22 +1,44 @@
 import { Component, OnInit } from '@angular/core'
-//import * as devp2p from 'ethereumjs-devp2p'
-// Aqui puedes importar las libs como con require
+import { Router } from '@angular/router'
 
+import {MdDialog} from '@angular/material';
 
-//Librerias
-//import * as EthereumTx from 'ethereumjs-tx'
-//const xplodde = require('../libs/x.js')
+import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
+import { Web3 } from './services/web3.service';
+import { AccountService } from './services/account.service';
 
 @Component({
   selector: 'ion-app',
   templateUrl: './app.html',
 })
 export class MyApp implements OnInit {
-
-  constructor() {
-    
+  loadingD;
+  interval;
+  
+  constructor(private _account: AccountService, private dialog: MdDialog, private _web3: Web3, private router : Router) {
+    if(this._account.apikey=="" || this._web3.infuraKey == ""){
+      this.router.navigate(['/settings']);
+    }else{
+      this.loadingD = this.dialog.open(LoadingDialogComponent, {
+        width: '660px',
+        height: '150px',
+        disableClose: true,
+      });
+    }  
   }
-
-  ngOnInit() {
+  async ngOnInit() {
+    if(this._account.apikey!="" && this._web3.infuraKey != ""){
+      this.interval = setInterval(async() => {
+        if('address'in this._account.account){
+          if('balance' in this._account.account){
+            this.loadingD.close();
+            clearInterval(this.interval);
+          }
+        }else{
+          clearInterval(this.interval);
+          this.loadingD.close();
+        } 
+      });
+    }
   }
 }

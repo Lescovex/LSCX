@@ -3,8 +3,10 @@
 <div *ngIf="this._account.account.tokens?.length > 0" class="scroll scrollbar dist" style="height: 61vh">
     <ul class="round">
         <li *ngFor="let token of _account.account.tokens, index as  i" class="backWhite">
-            <p>{{token.tokenSymbol}} {{token.balance | number:'1.2-15':'en'}}</p>
-            <p class="italic">({{token.tokenName}})</p>
+            <a class="pointer" (click)="openExternal(token.contractAddress)">
+                <p>{{token.tokenSymbol}} {{token.balance | number:'1.2-15':'en'}}</p>
+                <p class="italic">({{token.tokenName}})</p>
+            </a>
         </li>
     </ul>
 </div>

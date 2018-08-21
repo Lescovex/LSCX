@@ -14,11 +14,21 @@
     <img *ngIf="!tokens.isActive" src="~icons/token_icon.svg" alt="settings_icon">
     <span class="title-button-left">Tokens</span>
 </button>
+
+<button class="link" routerLink="/contracts" routerLinkActive="active" #contracts="routerLinkActive">
+    <img *ngIf="contracts.isActive" src="~icons/contracts_icon.svg" alt="contracts_icon">
+    <img *ngIf="!contracts.isActive" src="~icons/contracts_inactive_icon.svg" alt="contracts_icon">
+    <span class="title-button-left">Contracts</span>
+</button>
+
+<button class="link" routerLink="/settings" routerLinkActive="active" #settings="routerLinkActive">
+    <img *ngIf="settings.isActive" src="~icons/generalsettings_icon.svg" alt="settings_icon">
+    <img *ngIf="!settings.isActive" src="~icons/generalsettings_inactive_icon.svg" alt="settings_icon">
+    <span class="title-button-left">General Settings</span>
+</button>
+
 <div class="bottom" *ngIf="route=='' || route.indexOf('/wallet')!=-1 || route.indexOf('/contract')!=-1 || route.indexOf('/tokens')!=-1">
-    <button *ngIf="!_account?.account.addresss" class="btn-solid" (click)="openSelectAccount()">My accounts</button>
+    <button *ngIf="_account.account.hasOwnProperty('address')" class="btn-solid" (click)="openSelectAccount()">My accounts</button>
     <button class="btn-solid" (click)="openAddAccount()">Add account</button>
 </div>
-
-
-
 

@@ -1,4 +1,5 @@
-*{  font-family: 'Lato-Bold'}
+*{  font-family: 'Lato-Bold';
+    font-size: 12pt;}
 #account{
   height:65px;
   width: 100%;

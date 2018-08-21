@@ -1,9 +1,13 @@
 <div>
-    <h1 style="text-align: center">Confirm transaction <img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1> 
+    <h1 style="text-align: center">Confirm transaction <img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
 </div>
 <div class="margin">
-    <p class="black dist">To</p>
-    <p>{{data.to}}</p>
+    <div *ngIf="data.action != 'contractDeploy'" class="dist">
+        <p class="black">To</p>
+        <p>{{data.to}}</p>
+    </div>
+
+    <h2 *ngIf="data.action == 'contractDeploy'" class="black dist">Contract creation</h2>
 
     <div class="flex-row dist">
         <div style="flex:1">
@@ -15,7 +19,7 @@
             <p class="black">Fees</p>
             <p>ETH {{(data.fees | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
         </div>
-        <div style="flex:1"> 
+        <div style="flex:1">
             <p class="black">Total</p>
             <p>ETH {{(data.total | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
         </div>
@@ -24,8 +28,8 @@
 
 <div class="dist">
     <label class="title block">Password*</label>
-    <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass"/>
-    <p class="italic">Type your wallet password to continue.</p>
+    <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" />
+    <p class="italic">Type your account password to continue.</p>
 </div>
 <div class="buttons">
     <button class="btn-black half left" (click)="closeDialog()">Cancel</button>

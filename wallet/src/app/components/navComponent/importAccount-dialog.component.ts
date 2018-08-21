@@ -1,15 +1,13 @@
 import { Component } from '@angular/core'
 
 /*Services*/
-import { WalletService } from '../../wallet.service'
-import { AccountService } from '../../account.service'
-import { DialogService } from '../../dialog.service'
+import { WalletService } from '../../services/wallet.service'
+import { AccountService } from '../../services/account.service'
+import { DialogService } from '../../services/dialog.service'
 
 /*Dialog*/
 import { MdDialog } from '@angular/material';
 import { MdDialogRef } from '@angular/material';
-import { LoadingDialogComponent } from '../dialogs/loading-dialog.component';
-
 
 const EthUtils = require('ethereumjs-util')
 

@@ -1,13 +1,13 @@
 <div>
-  <h1 style="text-align: center">Select Wallet<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1> 
+    <h1 style="text-align: center">Select account<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
 </div>
 <div id="selectList" class="round scroll scrollbar">
-  <ul>
-    <li *ngFor="let account of _wallet.wallet" [ngClass]="(selectedAcc.address == account.address)? 'selected' : ''" (click)="changeSelected(account)">
-      <p class="title">{{account.name}}</p>
-      <p>{{account.address}}</p>
-    </li>
-  </ul>
+    <ul>
+        <li *ngFor="let account of _wallet.wallet" [ngClass]="(selectedAcc.address == account.address)? 'selected' : ''" (click)="changeSelected(account)">
+            <p class="title">{{account.name}}</p>
+            <p>{{account.address}}</p>
+        </li>
+    </ul>
 </div>
 
 

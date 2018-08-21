@@ -1,7 +1,5 @@
 import { Component, OnInit, Inject  } from '@angular/core'
 
-import {MdButtonModule} from '@angular/material';
-
 import {MdDialog} from '@angular/material';
 import {MdDialogRef} from '@angular/material';
 import {NewAccountDialogComponent} from './newAccount-dialog.component';

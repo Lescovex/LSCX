@@ -13,7 +13,7 @@ const WINDOW_OPTS = {
   minWidth: 1000,
   minHeight: 720,
   'use-content-size': true,
-  icon : path.join(__dirname ,'../logo.png')
+  icon : path.join(__dirname ,'../lescovex.png')
 }
 
 module.exports = {

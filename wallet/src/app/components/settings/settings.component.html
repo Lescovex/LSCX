@@ -1,0 +1,29 @@
+<div class="content">
+    <div class="dist">
+        <label class="title" for="lang">Language</label>
+        <select id="lang" class="block" [(ngModel)]="lang" name="lang">
+            <option *ngFor="let language of languages, index as i" [ngValue]="language.lang">{{language.text}}</option>
+        </select>
+    </div>
+    <div >
+        <p><label class="title" for="lang">Infura API token</label> Get a Infura Api token and paste here. <a class="pointer" (click)="openUrl('infura')">Infura Web Page</a></p>
+        <input type="text" class="block" [(ngModel)]="infuraApiKey"
+        (blur)="setInfuraKey()" (keypress.enter)= "setInfuraKey()">
+    </div>
+    <div >
+        <p><label class="title" for="lang">Etherscan API token</label> Get a Etherscan Api key and paste here. <a class="pointer" (click)="openUrl('etherscan')">Etherscan Web Page</a></p>
+        <input type="text" class="block" [(ngModel)]="etherscanApiKey"
+        (blur)="setEtherscanKey()" (keypress.enter)= "setEtherscanKey()" >
+    </div>
+
+    <div>
+        <label class="title" for="lang">Terms of use</label>
+        <div class="scroll scrollbar" id="terms">
+            <div   class="whiteBox">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ullamcorper ligula a diam venenatis vestibulum. Nunc ut erat lacinia, consequat mauris et, dignissim purus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer quis cursus eros, eget aliquam velit. Sed hendrerit id metus vel fermentum. Praesent aliquam aliquet metus, in gravida metus commodo at. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque lacus ipsum, semper aliquet diam id, ultrices dignissim magna. Phasellus eget faucibus lacus, id pulvinar mauris. Aenean mattis cursus odio quis efficitur. Curabitur euismod euismod dapibus. Ut vulputate nunc accumsan suscipit porttitor. Vivamus mattis, erat pretium tincidunt auctor, orci eros tempor leo, nec suscipit tortor odio et eros.</p>
+                <p>Praesent lobortis lorem non feugiat blandit. Curabitur rhoncus, mi vel blandit elementum, dui metus ultricies erat, nec feugiat mi erat vitae nisi. Aliquam et leo a augue fringilla sollicitudin. Maecenas quis blandit arcu. In in cursus urna, sit amet vehicula tellus. Quisque auctor ligula nec enim aliquam, eu tincidunt quam mattis. Suspendisse in commodo magna. Sed rhoncus tempor metus, in euismod justo consequat id. Phasellus iaculis, augue auctor interdum pellentesque, nibh diam laoreet nulla, in scelerisque dolor libero quis justo.</p>         
+                <p>Ut id pharetra neque, nec dignissim nisl. In consequat sem at leo feugiat semper. Nulla mattis euismod congue. Integer sodales sit amet odio et placerat. Duis volutpat nec tortor vitae tempus. Nunc sollicitudin dictum mi, eget interdum lacus sagittis nec. Pellentesque bibendum vulputate nulla. Donec at mi finibus, pulvinar enim placerat, dignissim libero. Nulla sed commodo diam, in porttitor massa. Integer lorem metus, maximus ac nulla ut, tristique tempus velit. Donec iaculis nunc diam, eget consequat mi finibus nec. </p>
+                </div>
+        </div>
+    </div>
+</div>
