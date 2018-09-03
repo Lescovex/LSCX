@@ -15,19 +15,23 @@ export class ContractStorageService {
         }else{
             this.contracts = [];
         }
-
     }
 
     addContract(contract){
-        let result = this.contracts.findIndex(contract2=> contract2.address == contract.address && contract2.account == contract.account)
-        if(result ==-1){
             this.contracts.push(contract);
             console.log("Add",this.contracts)
             this.saveContracts();
-        }else{
-            throw "The contract you are are trying to import is a duplicate"
-        } 
  
+    }
+    
+    isDuplicated(address, account){
+        let result = this.contracts.findIndex(contract=> contract.address == address && contract.account == account);
+        if(result !=-1){
+            return true
+        }else{
+            return false
+        }
+
     }
     async checkForAddress(){
         let checkInterval= setInterval(async()=>{

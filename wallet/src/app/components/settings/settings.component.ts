@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
-import { AccountService } from '../../services/account.service';
 import { Web3 } from '../../services/web3.service';
+import { EtherscanService } from '../../services/etherscan.service';
 
 
 @Component({
@@ -12,9 +12,9 @@ export class SettingsComponent implements OnInit {
   lang = 'en';
   infuraApiKey : string;
   etherscanApiKey: string;
-  constructor(private _account: AccountService, private _web3 : Web3) {
+  constructor(private _scan: EtherscanService, private _web3 : Web3) {
     this.infuraApiKey= _web3.infuraKey;
-    this.etherscanApiKey = _account.apikey;
+    this.etherscanApiKey = _scan.apikey;
   }
 
   ngOnInit() {}
@@ -24,7 +24,7 @@ export class SettingsComponent implements OnInit {
     this._web3.setProvider(3);
   }
   setEtherscanKey(){
-    this._account.setApiKey(this.etherscanApiKey)
+    this._scan.setApiKey(this.etherscanApiKey)
   }
   openUrl(website){
     const shell = require('electron').shell;

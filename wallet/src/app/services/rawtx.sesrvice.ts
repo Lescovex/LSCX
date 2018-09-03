@@ -13,39 +13,54 @@ export class RawTxService {
     }
 
     async createRaw(receiverAddr: string, amount: number, data?: string){
-
-        let chainId = this._web3.network;
+        if(typeof(data)=='undefined'){
+            data ="";
+        }
+        let gasLimit;
+        let chainId = this._web3.web3.toHex(this._web3.network);
         let acc = this._account.account;
-        let amountW = this._web3.web3.toWei(amount,'ether');
-        let gasPrice  = this._web3.web3.toHex(this._web3.web3.toWei('1','gwei'));
+        let amountW = parseInt(this._web3.web3.toWei(amount,'ether'));
+        let gasPrice  = parseInt(this._web3.web3.toWei('5','gwei'));
         console.log("address", acc.address)
         let nonce = await this._web3.getNonce(acc.address);
-        console.log("nonce", nonce)
-        let gasLimit = await this._web3.estimateGas(acc, receiverAddr, data, amountW)
-        console.log("estimate",gasLimit)
-        
-        let txParams = {
-            nonce: nonce,
-            gasPrice: gasPrice,
-            gasLimit: this._web3.web3.toHex(21000),
-            to: receiverAddr,
-            value: this._web3.web3.toHex(amountW),
-            data: this._web3.web3.toHex(data),
-            chainId:chainId
+        console.log(acc.address, receiverAddr, data, amountW)
+        try{
+            gasLimit = await this._web3.estimateGas(acc.address, receiverAddr, data, amountW)
+        }catch(e){
+            gasLimit = await this._web3.blockGas();
         }
         
+        console.log("estimate",gasLimit, "price", gasPrice)
+
+        let txParams: any = {
+            nonce: nonce,
+            gasPrice: gasPrice,
+            gasLimit: gasLimit,
+            to: receiverAddr,
+            value: amountW,
+            chainId:chainId
+        }
+        if(data!=""){
+            txParams.data = this._web3.web3.toHex(data)
+        }
+        console.log(txParams)
+
+        
         let tx = new EthTx(txParams);
-
+        console.log(gasLimit,gasPrice,amountW)
         let cost = gasLimit*gasPrice+amountW;
-        let balance =  this._web3.web3.toWei(this._account.account.balance,'ether');
-
-        if(cost> balance){ 
-            throw "Parameter is not a number!";
+        
+        let balance =  await this._web3.web3.toWei(this._account.account.balance,'ether');
+        balance = parseInt(balance);
+        console.log(cost ,balance)
+        if(cost>balance){ 
+            throw "Insuficient founds!";
         }else{
             return [tx,cost,amountW]
         }
 
     }
+
     async contractCreationRaw(data: string){
         console.log('dentro')
         let chainId = this._web3.web3.toHex(this._web3.network);

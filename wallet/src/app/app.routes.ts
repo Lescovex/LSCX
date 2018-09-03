@@ -16,7 +16,10 @@ import { AddTokenPage } from './components/tokens/add/add.page'
 
 import { ContractsComponent } from './components/contracts/contracts.component'
 import { AddContractPage } from './components/contracts/add/add-contract.component'
-import { ContractPage } from './components/contracts/contracts/contract.component'
+import { SelectContractPage } from './components/contracts/contracts/selectContract.component'
+import { HistoryPage } from './components/contracts/history/history.page'
+
+import { MarketComponent } from './components/market/market.component'
 
 import { SettingsComponent } from './components/settings/settings.component'
 
@@ -40,12 +43,13 @@ const routes: Routes = [
   },
   { path: 'contracts', component: ContractsComponent,
     children: [
-      { path: '', redirectTo: 'add', pathMatch: 'full' },
+      { path: '', redirectTo: 'contractPage', pathMatch: 'full' },
       { path: 'add', component: AddContractPage },
-      { path: 'contractPage', component: ContractPage },
-
+      { path: 'contractPage', component: SelectContractPage },
+      { path: 'history', component: HistoryPage }
     ]
   },
+  { path: 'market', component: MarketComponent },
   { path: 'settings', component: SettingsComponent },
   { path: '', redirectTo: '/wallet/global', pathMatch: 'full' },
   { path: '**', redirectTo: '/wallet/global', pathMatch: 'full' },

@@ -65,7 +65,7 @@ export class SendDialogComponent{
       self._account.addPendingTx(pending);
       if(this.data.action == 'contractDeploy'){
         let contract =  new Contract();
-        contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address);
+        contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
         this._contractStorage.addContract(contract);
         this._contractStorage.checkForAddress();
       }

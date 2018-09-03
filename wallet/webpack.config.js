@@ -14,25 +14,30 @@ module.exports = {
   },
   target: 'electron-renderer',
   output: {
-    path: __dirname + '/build/',
-    publicPath: __dirname + '/build',
+    path: './build/',
+    publicPath: './',
     filename: '[name].js',
     sourceMapFilename: '[name].js.map',
     chunkFilename: '[id].chunk.js',
     // libraryTarget: "commonjs2"
   },
-  // externals: [nodeExternals()],
-
+  externals: {
+    scrypt: 'require("scrypt")',
+    sha3: 'require("sha3")',
+  },
 
   resolve: {
     extensions: ['.ts', '.js', '.node'],
-    modules: [helpers.root('src'), 'node_modules'],
+    // modules: [helpers.root('src'), 'node_modules'],
     alias: {
       // Allow friendly reference to core modules
       images: helpers.root('src/assets/images'),
       icons: helpers.root('src/assets/icons'),
       fonts: helpers.root('src/assets/Lato')
-    }
+    },
+    modules: [
+      'node_modules'
+    ]
   },
 
   module: {
@@ -66,7 +71,7 @@ module.exports = {
       },
       {
         test: /\.node$/,
-        use: 'node-loader'
+        loader: 'node-loader'
       }
     ]
   },
@@ -85,8 +90,8 @@ module.exports = {
 
     new HtmlWebpackPlugin({
       template: 'index.ejs',
-      themeURL: __dirname + "/assets/css/theme.css",
-      link : __dirname + "/assets/css/main.css"
+      themeURL: "./assets/css/theme.css",
+      link: "./assets/css/main.css"
     }),
     new CopyWebpackPlugin([
       {
@@ -99,13 +104,19 @@ module.exports = {
         from: helpers.root('src/assets/images'),
         to: 'icons'
       }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: helpers.root('assets/css'),
+        to: 'assets/css'
+      }
     ])
   ],
   node: {
     global: true,
     progress: false,
     crypto: 'empty',
-    module: false,
+    // module: false,
     clearImmediate: false,
     setImmediate: false
   }

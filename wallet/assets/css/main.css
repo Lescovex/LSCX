@@ -21,6 +21,11 @@
     color: #000;
     box-sizing: border-box;
 }
+html,
+body {
+    overflow-y: hidden;
+    max-height: 100%;
+}
 
 .title-button-navbar {
     margin-top: 10px;
@@ -31,7 +36,6 @@ h1 {
     font-size: 14pt;
     font-weight: bold;
     padding-bottom: 10px;
-    color: #000;
 }
 
 .mat-dialog-container {
@@ -86,6 +90,7 @@ h1 {
 
 header {
     height: 73px;
+    min-height: 73px;
     background-color: #272D33;
     z-index: 2;
 }
@@ -112,7 +117,6 @@ header img {
 }
 
 .title {
-    color: #000;
     padding-left: 15px;
     font-family: "Lato-Bold"
 }
@@ -150,14 +154,14 @@ header img {
     overflow: hidden;
     padding: 20px;
 }
-
 .main-content {
     flex-grow: 1;
     background-color: #f8f8f8;
+    overflow:hidden;
 }
 
 nav {
-    margin-bottom: 60px;
+    margin-bottom: 50px;
 }
 
 nav a {
@@ -169,6 +173,10 @@ nav a {
     margin: 0;
     text-decoration: none;
 }
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+ }
 
 nav a p,
 a.pending,
@@ -185,7 +193,6 @@ nav a:focus {
 nav a.active {
     border-top: 7px solid #30D67F;
 }
-
 nav a.active p {
     color: #000;
 }
@@ -209,9 +216,18 @@ button {
 }
 
 .content {
-    margin: 15px 30px 15px 20px;
+    padding: 15px 30px 15px 20px;
     display: flex;
     flex-direction: column;
+    overflow:hidden;
+}
+
+.scrollable-content {
+    height: 100%;
+    overflow-y: scroll;
+}
+.scrollable-content::-webkit-scrollbar {
+    display:none;
 }
 
 .round {
@@ -224,7 +240,6 @@ button {
     list-style-type: none;
     margin-top: 15px;
     margin-bottom: 30px;
-    color: #546a89;
     overflow: hidden;
 }
 
@@ -236,6 +251,14 @@ button {
 
 .list li a {
     text-decoration: none;
+}
+
+.info-list{
+    overflow:hidden;
+    list-style-type: none;
+}
+.info-list li{
+    padding: 3px 0;
 }
 
 .green {
@@ -287,22 +310,36 @@ select {
     margin-bottom: 20px;
     background-color: white;
 }
-
-#password {
-    border: none;
+.whiteBox{
+    border:none;
+    margin-bottom: 10px;
 }
 
 div.input-container {
     padding: 0;
     display: flex;
     flex-direction: row;
+    position:relative;
 }
 
 .input-container input {
     flex-grow: 1;
     margin: 0;
+    border:none;
+    z-index:2;
+    background-color: transparent;
 }
-
+#resized{
+    display:block;
+}
+#zeros{
+    position:absolute;
+    z-index: 1;
+    cursor: none;
+}
+#zeros span{
+    padding: 12px 0;
+}
 .input-container span,
 .input-container p {
     padding: 12px;
@@ -346,7 +383,7 @@ p.error{
     font-size: 11pt;
 }
 
-.btn-solid {
+.btn-solid, .btn-contract {
     background-color: #30D67F;
     color: #fff;
     border: none
@@ -469,4 +506,31 @@ input[type="radio"]:checked+label span {
     height: 12px;
     background-color: #30D67F;
     border: 4px solid white;
+}
+
+.contract-list *{
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;   
+}
+
+.contract-list-title{
+    font-size: 14pt;
+}
+.contract-list-title, .contract-list-name, .contract-list-addr{
+    font-family: "Lato-Bold";
+    padding-left: 15px;
+}
+.contract-list-addr{
+    color: grey;
+}
+.contract-list-disabled *{
+    cursor: not-allowed;
+    opacity: 0.5
+}
+.btn-contract{
+   padding:5px;
+   border-radius: 5px;
+   cursor: pointer;
 }

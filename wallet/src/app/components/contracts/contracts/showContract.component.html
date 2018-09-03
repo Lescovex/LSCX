@@ -1,0 +1,55 @@
+
+<div id="clear">
+    <div>
+        <div class="left">
+            <img class="left" *ngIf="contractInfo.type=='LCX_ABT'" src='~icons/LCX_ABT.png'>
+            <img class="left" *ngIf="contractInfo.type=='LCX_CIF'" src='~icons/LCX_CIF.png'>
+            <img class="left" *ngIf="contractInfo.type=='LCX_CYC'" src='~icons/LCX_CYC.png'>
+            <img class="left" *ngIf="contractInfo.type=='LCX_ISC'" src='~icons/LCX_ISC.png'>
+            <div class="left">
+                <p class="contract-list-title">{{contractInfo.symbol}}-{{contractInfo.name}}</p>
+                <p class="contract-list-name">{{contractInfo.address}}</p>
+            </div>
+        </div>
+        <a class="right btn-contract" (click)="goBack()"><img src="~icons/left.svg"> Go back</a>
+    </div>
+    <ul class="info-list clear dist">
+       <!-- <li class="half left clear"><p class="title">Name:</p><p class="whiteBox">{{contractInfo.name}}</p></li>
+        <li class="half right"><p class="title">Symbol:</p><p class="whiteBox">{{contractInfo.symbol}}</p></li>
+       --><li *ngIf="contractInfo.type != 'LCX_CYC'" class="half left clear"><p class="title">Total supply:</p> <p class="whiteBox">{{totalSupply() | number:'1.8-8'}}</p></li>
+        <li *ngIf="contractInfo.type == 'LCX_CYC'" class="half left clear"><p class="title">Total supply:</p><p class="whiteBox">{{totalSupply() | number:'1.18-18'}}</p></li>
+        <li class="half right"><p class="title">Standard:</p><p class="whiteBox">{{contractInfo.standard}}</p></li>
+        <li class="half left clear"><p class="title">Decimals:</p><p class="whiteBox">{{contractInfo.decimals}}</p></li>
+        <li *ngFor="let item of moreInfo, index as i" [ngClass]="(i+1)%2!=0 ? 'right' : 'left clear'" class="half">
+            <p class="title">{{(item[0] | separateWords) | titlecase}}:</p>
+            <p class="whiteBox">{{item[1]}}</p>
+        </li>
+    </ul>
+    <div class="dist">
+        <h1 class="clear">Contract Functions</h1>
+        <form id="functionForm" [formGroup]="functionForm" (ngSubmit)="onSubmit()">
+            <select id="functionCtrl" class="block" formControlName="functionCtrl" name="functionCtrl" (change)="showFunction()">
+                <option [ngValue]="null" disabled>Select a function</option>
+                <option *ngFor="let function of functions" [ngValue]="function" [disabled]="function.onlyOwner && owner!=_account.account.address">
+                    <p>{{(function.name | separateWords) | titlecase}} <span *ngIf="function.constant">(Read contract)</span><span *ngIf="!function.constant">(Write contract)</span></p>
+                </option>
+            </select>
+            <div *ngIf="funct?.payable">
+                <label class="title" for="ethAmount">Ethereum amount <span>*</span></label>
+                <input formControlName="ethAmount" type="number" class="block" [ngClass]="{'error': submited && getControl('ethAmount').errors!= null}">
+            </div>
+            <ng-container *ngIf="funct?.inputs.length>0">
+                <div *ngFor="let input of funct.inputs, index as i" [ngClass]="(i+1)%2==0 ? 'right' : 'left clear'" class="half">
+                    <label class="title" for="{{input.name}}">{{(input.name | separateWords) | titlecase}} <span>- {{input.type}} *</span></label>
+                    <input formControlName="{{input.name}}" type="{{input.type2}}" class="block" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
+                </div>
+            </ng-container>
+
+            <div *ngIf="function!={}" class="clear right" >
+                <button  type="submit" class="btn-inverse">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+    
+    

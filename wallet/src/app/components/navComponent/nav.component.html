@@ -20,6 +20,11 @@
     <img *ngIf="!contracts.isActive" src="~icons/contracts_inactive_icon.svg" alt="contracts_icon">
     <span class="title-button-left">Contracts</span>
 </button>
+<button class="link" routerLink="/market" routerLinkActive="active" #market="routerLinkActive">
+    <img *ngIf="market.isActive" src="~icons/generalsettings_icon.svg" alt="settings_icon">
+    <img *ngIf="!market.isActive" src="~icons/generalsettings_inactive_icon.svg" alt="settings_icon">
+    <span class="title-button-left">Market</span>
+</button>
 
 <button class="link" routerLink="/settings" routerLinkActive="active" #settings="routerLinkActive">
     <img *ngIf="settings.isActive" src="~icons/generalsettings_icon.svg" alt="settings_icon">

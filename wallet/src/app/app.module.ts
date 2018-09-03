@@ -35,7 +35,11 @@ import { AddTokenPage } from './components/tokens/add/add.page'
 
 import { ContractsComponent } from './components/contracts/contracts.component'
 import { AddContractPage } from './components/contracts/add/add-contract.component'
-import { ContractPage } from './components/contracts/contracts/contract.component'
+import { SelectContractPage } from './components/contracts/contracts/selectContract.component'
+import { ShowContract } from './components/contracts/contracts/showContract.component'
+import { HistoryPage } from './components/contracts/history/history.page'
+
+import { MarketComponent } from './components/market/market.component'
 
 import { SettingsComponent } from './components/settings/settings.component'
 
@@ -50,8 +54,7 @@ import { JSONDialogComponent } from './components/wallet/wsettings/json-dialog.c
 import { PrivateKeyDialogComponent } from './components/wallet/wsettings/privatekey-dialog.component'
 import { ErrorDialogComponent } from './components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
-import { WaitingDialogComponent } from './components/dialogs/waiting-dialog.component';
-import { PendingDialogComponent } from './components/dialogs/pending-dialog.component';
+import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
 
 
 /*Servicies*/
@@ -65,6 +68,7 @@ import { ContractService } from './services/contract.service'
 import { FormsService } from './services/forms.service'
 import { RawTxService } from './services/rawtx.sesrvice'
 import { ContractStorageService } from './services/contractStorage.service'
+import { EtherscanService } from './services/etherscan.service'
 
 /*Pipes*/
 import { ConverterPipe } from './pipes/converter.pipe';
@@ -92,8 +96,6 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     DeleteComponent,
     ErrorDialogComponent,
     LoadingDialogComponent,
-    WaitingDialogComponent,
-    PendingDialogComponent,
     JSONDialogComponent,
     PrivateKeyDialogComponent,
     ListComponent,
@@ -104,7 +106,11 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     AddTokenPage,
     ContractsComponent,
     AddContractPage,
-    ContractPage,
+    SelectContractPage,
+    ShowContract,
+    HistoryPage,
+    MarketComponent,
+    MessageDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -135,10 +141,9 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     DeleteComponent,
     ErrorDialogComponent,
     LoadingDialogComponent,
-    WaitingDialogComponent,
-    PendingDialogComponent,
     JSONDialogComponent,
     PrivateKeyDialogComponent,
+    MessageDialogComponent
   ],
   providers: [
     WalletService,
@@ -150,7 +155,8 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     ContractService,
     FormsService,
     RawTxService,
-    ContractStorageService
+    ContractStorageService,
+    EtherscanService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

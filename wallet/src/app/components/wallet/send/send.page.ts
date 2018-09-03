@@ -7,6 +7,7 @@ import * as EthTx from 'ethereumjs-tx';
 import { AccountService } from '../../../services/account.service';
 import { Web3 } from '../../../services/web3.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
+import { RawTxService } from '../../../services/rawtx.sesrvice';
 
 @Component({
   selector: 'send-page',
@@ -23,7 +24,7 @@ export class SendPage implements OnInit {
     amount:""
   }
 
-  constructor(public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService) {
+  constructor(public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
     // console.log('SendPage')
   }
 
@@ -55,8 +56,9 @@ export class SendPage implements OnInit {
     if(this.checkAmount(amount) == false || this.checkAddress(receiverAddr) == false){
       return false;
     }
-
-    let chainId = 3;
+    let tx =  await this._rawtx.createRaw(receiverAddr, amount)
+    this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send")
+    /*let chainId = 3;
     let acc = this._account.account;
     let amountW = this._web3.web3.toWei(amount,'ether');
     let gasPrice  = this._web3.web3.toHex(this._web3.web3.toWei('1','gwei'));
@@ -89,7 +91,7 @@ export class SendPage implements OnInit {
       this.errors.amount ="";
     }
 
-    this.sendDialogService.openConfirmSend(tx2, receiverAddr, amount, (cost-amountW), cost, 'send')
+    this.sendDialogService.openConfirmSend(tx2, receiverAddr, amount, (cost-amountW), cost, 'send')*/
   }
 
 }

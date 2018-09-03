@@ -1,7 +1,7 @@
 /*
   Config
 */
-const path =  require('path')
+const path = require('path')
 
 // ENVIROMENT
 const ENV = 'dev';
@@ -13,7 +13,10 @@ const WINDOW_OPTS = {
   minWidth: 1000,
   minHeight: 720,
   'use-content-size': true,
-  icon : path.join(__dirname ,'../lescovex.png')
+  icon : path.join(__dirname ,'../lescovex.png'),
+  webPreferences: {
+    webSecurity: false
+  }
 }
 
 module.exports = {

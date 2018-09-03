@@ -1,15 +1,4 @@
 <nav class="flex-row">
-
-    <a routerLink="add" routerLinkActive="active" #add="routerLinkActive">
-        <div>
-            <span>
-                <img *ngIf="add.isActive" src='~icons/newcontract_icon.svg'>
-                <img *ngIf="!add.isActive" src='~icons/newcontract_inactive_icon.svg'>
-            </span>
-            <p class="title-button-navbar">Add</p>
-        </div>
-    </a>
-
     <a routerLink="contractPage" routerLinkActive="active" #contract="routerLinkActive">
         <div>
             <span>
@@ -20,7 +9,7 @@
         </div>
     </a>
 
-    <a routerLink="history" routerLinkActive="active" #hist="routerLinkActive">
+    <a routerLink="history" [class.disabled]="_contract.contractInfo == {}" routerLinkActive="active" #hist="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="hist.isActive" src='~icons/history_icon.svg'>
@@ -29,8 +18,19 @@
             <p class="title-button-navbar">Contract history</p>
         </div>
     </a>
+
+    <a routerLink="add" routerLinkActive="active" #add="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="add.isActive" src='~icons/newcontract_icon.svg'>
+                <img *ngIf="!add.isActive" src='~icons/newcontract_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Add</p>
+        </div>
+    </a>
+    
 </nav>
-<div class="content flex-inside">
+<div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}" id="contract" >
     <p *ngIf="!_account.account.hasOwnProperty('address'); else content" style="text-align: center">Select an account</p>
     <ng-template #content>
         <router-outlet></router-outlet>

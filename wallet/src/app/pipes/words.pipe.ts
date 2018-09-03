@@ -13,7 +13,6 @@ export class SeparateWordsPipe implements PipeTransform {
         str += value.charAt(i);
       }
     }
-    console.log(str)
     return str.toLowerCase();
   }
 }

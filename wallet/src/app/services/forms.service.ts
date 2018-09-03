@@ -30,12 +30,11 @@ export class FormsService {
         }if(input.type == 'address'){
             validators.push(ValidateAddress)
         }
-        console.log(input.type, validators)
         return validators
     }
 
     removeControls(inputs, form): FormGroup{
-        this._contract.getConstructor();
+        //this._contract.getConstructor();
         inputs.forEach(input=>{
            form.removeControl(input.name);
         })
@@ -45,7 +44,6 @@ export class FormsService {
     addControls(inputs, form): FormGroup{
         inputs.forEach(input=>{
             input = this.getInputType(input);
-            console.log(input)
             let value = (input.type2 == 'text')? '': 0;
             let validators = this.getValidators(input)
            form.addControl(input.name, new FormControl(value, validators));
@@ -53,12 +51,16 @@ export class FormsService {
         return form
     }
 
-    getValues(inputs, form): Array<any>{
+    getValues(inputs, form, file?): Array<any>{
         let values = [];
+        let type = file;
         inputs.forEach(input=>{
             let value = form.get(input.name).value;
             if(input.type2 == 'number'){
                 value = parseFloat(value);
+                if(input.name.indexOf('Supply')!=-1){
+                    value = (type=="LCX_CYC")? value*Math.pow(10,18): value*Math.pow(10,8);
+                }    
             }
             values.push(value);
           })
@@ -67,16 +69,16 @@ export class FormsService {
 
     getValuesObject(inputs, form){
         let valueObj: any = {};
+        let type = form.get('contract').value;
         inputs.forEach(input=>{
             let value = form.get(input.name).value;
             if(input.type2 == 'number'){
                 value = parseFloat(value);
             }
-            console.log("input", input.name, value);
             if(input.name.indexOf('Name')!=-1){
                 valueObj.name=value;
             }else if(input.name.indexOf('Supply')!=-1){
-                valueObj.totalSupply=value;
+                valueObj.totalSupply=(type=="LCX_CYC")? value*Math.pow(10,18): value*Math.pow(10,8);
             }else if(input.name.indexOf('Symbol')!=-1){
                 valueObj.symbol = value;
             }

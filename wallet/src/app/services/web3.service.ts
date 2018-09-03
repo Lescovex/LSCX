@@ -6,8 +6,9 @@ import * as Web3L from 'web3';
 export class Web3 {
   web3: Web3L;
   infuraKey = "";
-  network
+  network: number;
   constructor(){
+    this.network=3;
     this.getInfuraKey();
     if(this.infuraKey!=""){
       if (typeof this.web3 !== 'undefined') {
@@ -28,7 +29,6 @@ export class Web3 {
     }
       apikeys.inf = apikey;
       localStorage.setItem('apikeys', JSON.stringify(apikeys));
-    this.network=3;
   }
   getInfuraKey(){
     if(localStorage.getItem('apikeys')){
@@ -38,11 +38,17 @@ export class Web3 {
       }
     }
   }
- 
+
   estimateGas(from, to, data, amount?):Promise<number>{
-    let value = (typeof(amount)== 'undefined')? 0 : "0x"+amount.toString(16);
-    let data2 = this.web3.toHex(data);
-    let options = (to=="")? {from: from, data:data2, value:amount}:{from: from, to:to, data:data2, value:amount}
+    let options: any={from:from}
+    options.value = (typeof(amount)== 'undefined')? 0 : "0x"+amount.toString(16);
+    if(to != ''){
+      options.to = to
+    }
+    if(data != ''){
+      options.data = this.web3.toHex(data)
+    }
+
     let self = this;
     return new Promise((resolve, reject)=>{
       self.web3.eth.estimateGas(options,(err, result)=>{
@@ -52,6 +58,30 @@ export class Web3 {
           resolve(result)
         }
         console.log("result",result)
+      })
+    })
+  }
+
+  async blockGas(){
+    let self = this;
+    let block = await new Promise((resolve, reject)=>{
+      self.web3.eth.getBlockNumber((err, result)=>{
+        if(err){
+          reject(err)
+        }else{
+          resolve(result)
+        }
+      })
+    })
+
+    console.log("block", block)
+    return new Promise((resolve, reject)=>{
+      self.web3.eth.getBlock(block, (err, result)=>{
+        if(err){
+          reject(err)
+        }else{
+          resolve(result.gasLimit)
+        }
       })
     })
 

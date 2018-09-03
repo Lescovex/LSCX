@@ -1,18 +1,28 @@
-import { Injectable, APP_BOOTSTRAP_LISTENER} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 
 import { Web3 } from './web3.service'
 import { AccountService } from './account.service';
+import { EtherscanService } from './etherscan.service';
 
 const fs = require('fs')
 
 @Injectable()
 export class ContractService {
-	contracts=['LCX_ABT', 'LCX_CYC', 'LCX_ISC', 'LCX_CIF']
+	contracts=['LCX_ABT', 'LCX_CYC', 'LCX_ISC', 'LCX_CIF'];
+	type = "";
 	abi;
 	contract;
-	constructor(private _web3 : Web3, private _account: AccountService, private http: Http){
-		
+	contractInfo: any = {};
+	contractHist = [];
+
+	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _scan: EtherscanService){	
+	}
+	reset(){
+		this.contractInfo={};
+		this.contractHist = [];
+		this.contract = null;
+		this.abi=[];
 	}
 	
 	async getAbi(file){
@@ -29,34 +39,32 @@ export class ContractService {
 	}
 
 	async setAbi(file){	
+		this.type = file;
 		this.abi = await this.getAbi(file);
-		console.log(this.abi)
-		this.contract =this._web3.web3.eth.contract(this.abi)
-		console.log("set abi",this.contract)
 	}
+
+	
 	async contractInstance(file, address){
 		await this.setAbi(file);
 		let contract = this._web3.web3.eth.contract(this.abi).at(address);
 		return contract;
 	}
 
-	async callFunction(contractInst, functionName, params?){
-		return new Promise (function (resolve, reject) {
-			contractInst[functionName].call(params,function(err, res){  
-			if (err) {
-				reject(err);
-			} else {
-				resolve(res.toString());
-			}
-		});
-		});
+	async setContract(contract){
+		this.contractInfo = contract;
+		this.contract = await this.contractInstance(contract.type, contract.address);
+		let history = await this._scan.getHistory(contract.address);
+		for(let i =0; i<history.length; i++){
+			let date = this._scan.tm(history[i].timeStamp);
+			history[i].date = date;
+		  }
+		this.contractHist = history; 
 	}
 
-	async getBytecode(file){
+	async getBytecode(file:string){
 		let solPromise = new Promise (function (resolve, reject) {
 			fs.readFile('./src/LCX-contracts/'+file+'_bytecode.json', 'utf8', function (err,data) { 
 				if(data=="" || typeof(data)=='undefined'){
-					console.log(err)
 					return resolve(data); 
 				}else{
 					resolve(JSON.parse(data)); 
@@ -68,58 +76,105 @@ export class ContractService {
 		let bytecode = source.object;
 		return bytecode;
 	}
-	async getContractModelData(type, address){
+
+	async callFunction(contractInst, functionName:string, params){
+		return new Promise (function (resolve, reject) {
+			contractInst[functionName].call(...params, function(err, res){  
+				if (err) {
+					reject(err);
+				} else {
+					resolve(res.toString());
+				}
+			});
+		});
+	}
+
+	async getFunctionData(functionName:string, params?){
+		let self =  this;
+		return self.contract[functionName].getData(...params);
+	}
+
+	async getContractModelData(type:string, address:string){
 		let myContract = await this.contractInstance(type, address);
 		let info: any = {};
-		info.name = await this.callFunction(myContract, 'name');
-		info.totalSupply = await this.callFunction(myContract, 'totalSupply');
-		info.symbol = await this.callFunction(myContract, 'symbol');
+		info.name = await this.callFunction(myContract, 'name',[]);
+		info.totalSupply = await this.callFunction(myContract, 'totalSupply',[]);
+		info.symbol = await this.callFunction(myContract, 'symbol',[]);
 		
 		return info;
 	}
 
-	async getContractData(type, address){
-		let myContract = await this.contractInstance(type, address);
-		let functions=new Array();
-		for (let i = 0; i < this.abi.length;i++) {
-			if(this.abi[i]['constant']==true && this.abi[i]['inputs'].length==0){
-				if(this.abi[i].name!='name' && this.abi[i].name!= 'totalSupply' && this.abi[i].name!='symbol'){
-					functions.push(this.abi[i]['name']);
-				}
-			}
-		}
+	async getContractData(){
+		let functions = this.abi.filter(data=>{
+			return data['constant']==true && data['inputs'].length==0 && data.name!='name' && data.name!= 'totalSupply' && data.name !='symbol' && data.name!= 'standard' && data.name != 'decimals'
+		});
+		let info =[];
 		for(let i = 0; i<functions.length; i++) {
-
+			info.push([functions[i].name,await this.callFunction(this.contract, functions[i].name,[])]);
 		}
-			//return JSON.stringify(variables);	
+		return info;
 	}
 
-	getFunctions(){
-
+	getTransFunctions(): any[]{
+		let functions = this.abi.filter(data => data.constant == false);
+		
+		return this.addOnlyOwner(functions);
 	}
 
-	getDataView(){
+	getInfoFunctions(): any[]{
+		let functions = this.abi.filter(data => data['constant']==true && data['inputs'].length>0);
 
+		return this.addOnlyOwner(functions);
 	}
 
-	getConstructor(): Array<any>{
-		let cdata=this.abi;
-		let constructor = this.abi.find(data=> data.type == "constructor");
+	addOnlyOwner(functions): any[]{
+		let onlyOnwner:any = {
+			LCX_ABT : ["transferOwnership"],
+			LCX_CIF : ["transferOwnership", "deposit", "setPrice"],
+			LCX_CYC : ["renounceOwnership"],
+			LCX_ISC : ["transferOwnership", "setHoldTime","setHoldMax", "deposit", "withdraw"]
+		}
+		functions.forEach(funct=>{
+			if(onlyOnwner[this.type].findIndex(name=>name==funct.name)!= -1){
+				funct.onlyOwner = true;
+			}else{
+				funct.onlyOwner = false;
+			}
+		})
+		return functions;
+	}
+
+
+
+	getConstructor(abi): Array<any>{
+		let constructor = abi.find(data=> data.type == "constructor");
 
 		return constructor.inputs
 	}
 
-	getDeployContractData(bytecode,args){
-		return this.contract.new.getData(...args, {data: bytecode})
+	async getDeployContractData(type, bytecode:string, args:any[]){
+		let abi = await this.getAbi(type);
+		let myContract = this._web3.web3.eth.contract(abi)
+		let result = myContract.new.getData(...args, {data: bytecode});
+		return result
 	}
 
-	checkContract(cAddress){
-		let url = 'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address='+cAddress+'&startblock=0&endblock=99999999&sort=asc&apikey='+this._account.apikey;
-		return this.http.get(url).map(res => res.json());
+	async checkContract(cAddress:string){
+		let response : any = await this._scan.getTx(cAddress).toPromise();
+		if (response.status == 1){
+			let result = response.result[0];
+      		if(typeof(result)!= 'undefined' && result.contractAddress == cAddress){
+				  return result
+			}else{
+				return false
+			}
+		}else{
+			return false
+		}
+		
 	}
 
-	async checkType(data): Promise<string>{
-		console.log(data)
+	async checkType(data:string): Promise<string>{
 		let type = "";
 		for(let i=0; i<this.contracts.length; i++){
 			let byteCode = await this.getBytecode(this.contracts[i]);
