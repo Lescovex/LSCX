@@ -15,14 +15,16 @@ export class ContractService {
 	contract;
 	contractInfo: any = {};
 	contractHist = [];
+	moreInfo = [];
 
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _scan: EtherscanService){	
 	}
 	reset(){
-		this.contractInfo={};
+		this.contractInfo = {};
 		this.contractHist = [];
 		this.contract = null;
 		this.abi=[];
+		this.moreInfo=[];
 	}
 	
 	async getAbi(file){
@@ -58,7 +60,8 @@ export class ContractService {
 			let date = this._scan.tm(history[i].timeStamp);
 			history[i].date = date;
 		  }
-		this.contractHist = history; 
+		this.contractHist = history;
+		this.moreInfo= await this.getContractData(); 
 	}
 
 	async getBytecode(file:string){
@@ -104,7 +107,7 @@ export class ContractService {
 		return info;
 	}
 
-	async getContractData(){
+	async getContractData(): Promise<any[]>{
 		let functions = this.abi.filter(data=>{
 			return data['constant']==true && data['inputs'].length==0 && data.name!='name' && data.name!= 'totalSupply' && data.name !='symbol' && data.name!= 'standard' && data.name != 'decimals'
 		});
@@ -144,6 +147,36 @@ export class ContractService {
 		return functions;
 	}
 
+	addDecimals(functions):any[]{
+		let inputsDecimals:any = {
+			LCX_ABT : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  requestWithdraw:"value", decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
+			LCX_CIF : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
+			LCX_CYC : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
+			LCX_ISC : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue", withdraw: "value"}
+		}
+		
+		let otuputsdecimals: any = {
+			LCX_ABT : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit"],
+			LCX_CIF : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit", "requestWithdraws", "maxSupply", "holdedOf"],
+			LCX_CYC : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit"],
+			LCX_ISC : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit", "contractBalance", "holdedOf"],
+		}
+		let inputsWeis: any = {
+			LCX_ABT : {},
+			LCX_CIF : {setPrice:"_value"},
+			LCX_CYC : {},
+			LCX_ISC : {}
+
+		}
+		let outputsEth: any = {
+			LCX_ABT : ["tokenPrice"],
+			LCX_CIF : ["tokenPrice", "contractBalance",],
+			LCX_CYC : [],
+			LCX_ISC : [],
+		}
+		functions
+		return functions;
+	}
 
 
 	getConstructor(abi): Array<any>{

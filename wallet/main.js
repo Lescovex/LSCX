@@ -31,7 +31,7 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
-  console.log(WINDOW_OPTS.icon)
+  console.log(WINDOW_OPTS)
 })
 
 // Quit when all windows are closed.

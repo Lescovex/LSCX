@@ -15,7 +15,8 @@ const WINDOW_OPTS = {
   'use-content-size': true,
   icon : path.join(__dirname ,'../lescovex.png'),
   webPreferences: {
-    webSecurity: false
+    allowRunningInsecureContent: false,
+    webSecurity: true,
   }
 }
 
