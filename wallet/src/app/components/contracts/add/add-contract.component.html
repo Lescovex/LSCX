@@ -26,7 +26,7 @@
         <div *ngFor="let input of inputs, index as i" [ngClass]="(i+1)%2==0 ? 'right' : 'left clear'" class="half">
             <label class="title" for="{{input.name}}">{{(input.name | separateWords) | titlecase}} <span>- {{input.type}} *</span></label>
             <input *ngIf="input.name != 'initialSupply'" formControlName="{{input.name}}" type="{{input.type2}}" class="block" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
-            <div *ngIf="input.name == 'initialSupply'" class="input-container" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
+            <div *ngIf="input.decimals == 'decimals'" class="input-container" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
                 <input type="{{input.type2}}" id="resized" formControlName="{{input.name}}"/>
                 <p  id="zeros">
                     <span class="hidden">{{getControl(input.name).value}}</span>

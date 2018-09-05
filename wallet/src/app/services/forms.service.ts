@@ -2,10 +2,11 @@ import { Injectable} from '@angular/core';
 import { Validators, ValidatorFn, FormGroup, FormControl } from '@angular/forms'
 import { ValidateAddress } from '../validators/address.validator'; 
 import { ContractService } from './contract.service';
+import { Web3 } from './web3.service';
 
 @Injectable()
 export class FormsService {
-    constructor(private _contract: ContractService){
+    constructor(private _contract: ContractService, private _web3: Web3){
 
     }
 
@@ -58,12 +59,15 @@ export class FormsService {
             let value = form.get(input.name).value;
             if(input.type2 == 'number'){
                 value = parseFloat(value);
-                if(input.name.indexOf('Supply')!=-1){
+                if(input.decimals == "decimals"){
                     value = (type=="LCX_CYC")? value*Math.pow(10,18): value*Math.pow(10,8);
-                }    
+                }else if(input.decimals == "eth"){
+                    value = parseInt(this._web3.web3.toWei(value, 'ether'))
+                }
             }
             values.push(value);
           })
+          console.log(values)
         return values;
     }
 

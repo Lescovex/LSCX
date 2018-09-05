@@ -52,10 +52,8 @@ export class SelectContractPage implements OnInit{
     let dialofRef = this._dialog.openLoadingDialog();
 
     await this._contract.setContract(contract);
-    console.log("info",this._contract.contractInfo)
-    let txfunctions = this._contract.getTransFunctions();
-    let callFunctions = this._contract.getInfoFunctions();
-    this.functions =  txfunctions.concat(callFunctions)
+    console.log("info",this._contract.contractInfo);
+    this._contract.functions =  this._contract.getFunctions();
     console.log("functions",this.functions)
     this.moreInfo = await this._contract.getContractData();
     this._contract.moreInfo = this.moreInfo;

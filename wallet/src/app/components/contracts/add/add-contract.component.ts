@@ -51,6 +51,7 @@ export class AddContractPage {
       this.abi = await this._contract.getAbi(contract);
       
       inputs = this._contract.getConstructor(this.abi);
+      inputs = this._contract.addDecimalsConst(inputs, contract)
       this.constructorForm = this._forms.addControls(inputs, this.constructorForm);
       this.inputs=inputs;
     }

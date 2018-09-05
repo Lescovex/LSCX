@@ -39,7 +39,11 @@ import { SelectContractPage } from './components/contracts/contracts/selectContr
 import { ShowContract } from './components/contracts/contracts/showContract.component'
 import { HistoryPage } from './components/contracts/history/history.page'
 
-import { MarketComponent } from './components/market/market.component'
+import { MarketComponent } from './components/market/market.component';
+import { MarketWalletPage } from './components/market/marketWallet/market-wallet.page';
+import { BuySellPage } from './components/market/buySell/buy-sell.page';
+import { MarketHistoryPage } from './components/market/history/market-history.page';
+
 
 import { SettingsComponent } from './components/settings/settings.component'
 
@@ -110,7 +114,10 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     ShowContract,
     HistoryPage,
     MarketComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    MarketWalletPage,
+    BuySellPage,
+    MarketHistoryPage
   ],
   imports: [
     BrowserModule,

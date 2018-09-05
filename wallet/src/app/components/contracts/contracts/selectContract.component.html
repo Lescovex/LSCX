@@ -15,5 +15,5 @@
 
 </div>
 <ng-template #showContract>
-    <app-show-contract (back)="onBack($event)"[functions]="functions" [moreInfo]="_contract.moreInfo"></app-show-contract>
+    <app-show-contract (back)="onBack($event)"[functions]="_contract.functions" [moreInfo]="_contract.moreInfo"></app-show-contract>
 </ng-template>

@@ -14,10 +14,8 @@
         <a class="right btn-contract" (click)="goBack()"><img src="~icons/left.svg"> Go back</a>
     </div>
     <ul class="info-list clear dist">
-       <!-- <li class="half left clear"><p class="title">Name:</p><p class="whiteBox">{{contractInfo.name}}</p></li>
-        <li class="half right"><p class="title">Symbol:</p><p class="whiteBox">{{contractInfo.symbol}}</p></li>
-       --><li *ngIf="contractInfo.type != 'LCX_CYC'" class="half left clear"><p class="title">Total supply:</p> <p class="whiteBox">{{totalSupply() | number:'1.8-8'}}</p></li>
-        <li *ngIf="contractInfo.type == 'LCX_CYC'" class="half left clear"><p class="title">Total supply:</p><p class="whiteBox">{{totalSupply() | number:'1.18-18'}}</p></li>
+        <li *ngIf="contractInfo.type != 'LCX_CYC'" class="half left clear"><p class="title">Total supply:</p> <p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.8-8'}}</p></li>
+        <li *ngIf="contractInfo.type == 'LCX_CYC'" class="half left clear"><p class="title">Total supply:</p><p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.18-18'}}</p></li>
         <li class="half right"><p class="title">Standard:</p><p class="whiteBox">{{contractInfo.standard}}</p></li>
         <li class="half left clear"><p class="title">Decimals:</p><p class="whiteBox">{{contractInfo.decimals}}</p></li>
         <li *ngFor="let item of moreInfo, index as i" [ngClass]="(i+1)%2!=0 ? 'right' : 'left clear'" class="half">
@@ -41,7 +39,15 @@
             <ng-container *ngIf="funct?.inputs.length>0">
                 <div *ngFor="let input of funct.inputs, index as i" [ngClass]="(i+1)%2==0 ? 'right' : 'left clear'" class="half">
                     <label class="title" for="{{input.name}}">{{(input.name | separateWords) | titlecase}} <span>- {{input.type}} *</span></label>
-                    <input formControlName="{{input.name}}" type="{{input.type2}}" class="block" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
+                    <input *ngIf="input.decimals != 'decimals'" formControlName="{{input.name}}" type="{{input.type2}}" class="block" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
+                    <div *ngIf="input.decimals == 'decimals'" class="input-container" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
+                        <input type="{{input.type2}}" id="resized" formControlName="{{input.name}}"/>
+                        <p  id="zeros">
+                            <span class="hidden">{{getControl(input.name).value}}</span>
+                            <span *ngIf="contractInfo.type != 'LCX_CYC'">.{{('0').repeat(8)}}</span>
+                            <span *ngIf="contractInfo.types == 'LCX_CYC'">.{{('0').repeat(18)}}</span>
+                        </p>
+                    </div>
                 </div>
             </ng-container>
 

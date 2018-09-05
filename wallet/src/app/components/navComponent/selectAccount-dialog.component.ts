@@ -7,6 +7,7 @@ import {MdDialogRef} from '@angular/material';
 /*Services*/
 import { AccountService } from '../../services/account.service'
 import { WalletService } from '../../services/wallet.service'
+import { ContractService } from '../../services/contract.service';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class SelectAccountDialogComponent implements OnInit{
 
   selectedAcc;
 
-  constructor(public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, private _wallet: WalletService) {
+  constructor(public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, private _wallet: WalletService, private _contract: ContractService) {
 
   }
   ngOnInit(){
@@ -31,6 +32,7 @@ export class SelectAccountDialogComponent implements OnInit{
   selectAccount(){
     if(this._account.account.address != this.selectedAcc.address){
       this._account.setAccount(this.selectedAcc);
+      this._contract.reset();
       this.dialogRef.close('loading');
     }else{
       this.dialogRef.close();

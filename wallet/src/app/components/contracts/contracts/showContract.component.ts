@@ -77,10 +77,18 @@ export class ShowContract implements OnInit{
     if(this.functionForm.invalid){
       return false
     }
-    let params = this._forms.getValues(this.funct.inputs, this.functionForm);
+    let params = this._forms.getValues(this.funct.inputs, this.functionForm, this.contractInfo.type);
     if(this.funct.constant){  
       let response = await this._contract.callFunction(this._contract.contract, this.funct.name, params);
       console.log("response", response)
+      if(this.funct.decimals == 'decimals'){
+        let number = parseInt(response.toString()) /Math.pow(10,this.contractInfo.decimals);
+				let zero = '0'
+				response = number.toLocaleString('en') + "."+zero.repeat(this.contractInfo.decimals)
+      }else if(this.funct.decimals == "eth"){
+        let number = this._web3.web3.fromWei(parseInt(response.toString()),'ether')
+				response = number.toLocaleString('en')
+      }
 
       this._dialog.openMessageDialog(this.funct.name, response)
     }else{
@@ -98,9 +106,9 @@ export class ShowContract implements OnInit{
   }
 }
 
-  totalSupply(){
-    let totalSupply = this.contractInfo.totalSupply/Math.pow(10,this.contractInfo.decimals)
-    return totalSupply
+  decimalsOutput(value){
+    let result = value/Math.pow(10,this.contractInfo.decimals)
+    return result
   }
 
   

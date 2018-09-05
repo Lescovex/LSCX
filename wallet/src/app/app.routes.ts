@@ -20,6 +20,10 @@ import { SelectContractPage } from './components/contracts/contracts/selectContr
 import { HistoryPage } from './components/contracts/history/history.page'
 
 import { MarketComponent } from './components/market/market.component'
+import { MarketWalletPage } from './components/market/marketWallet/market-wallet.page';
+import { BuySellPage } from './components/market/buySell/buy-sell.page';
+import { MarketHistoryPage } from './components/market/history/market-history.page';
+
 
 import { SettingsComponent } from './components/settings/settings.component'
 
@@ -43,13 +47,19 @@ const routes: Routes = [
   },
   { path: 'contracts', component: ContractsComponent,
     children: [
-      { path: '', redirectTo: 'contractPage', pathMatch: 'full' },
+      { path: '', redirectTo: 'contract-page', pathMatch: 'full' },
       { path: 'add', component: AddContractPage },
-      { path: 'contractPage', component: SelectContractPage },
+      { path: 'contract-page', component: SelectContractPage },
       { path: 'history', component: HistoryPage }
     ]
   },
-  { path: 'market', component: MarketComponent },
+  { path: 'market', component: MarketComponent,
+  children: [
+    { path: '', redirectTo: 'marketWallet', pathMatch: 'full' },
+    { path: 'buy-sell', component: BuySellPage },
+    { path: 'market-wallet', component: MarketWalletPage },
+    { path: 'history', component: MarketHistoryPage }
+  ] },
   { path: 'settings', component: SettingsComponent },
   { path: '', redirectTo: '/wallet/global', pathMatch: 'full' },
   { path: '**', redirectTo: '/wallet/global', pathMatch: 'full' },

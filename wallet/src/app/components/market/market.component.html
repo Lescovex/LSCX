@@ -1,1 +1,38 @@
-<p>MARKET page</p>
+<nav class="flex-row">
+    <a routerLink="marketWallet" routerLinkActive="active" #contract="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="contract.isActive" src='~icons/send_icon.svg'>
+                 <img *ngIf="!contract.isActive" src='~icons/send_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Market Wallet</p>
+        </div>
+    </a>
+    <a routerLink="buySell" routerLinkActive="active" #add="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="add.isActive" src='~icons/newcontract_icon.svg'>
+                <img *ngIf="!add.isActive" src='~icons/newcontract_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Buy/Sell</p>
+        </div>
+    </a>
+    <a routerLink="history" [class.disabled]="_contract.contractInfo == {}" routerLinkActive="active" #hist="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="hist.isActive" src='~icons/history_icon.svg'>
+                <img *ngIf="!hist.isActive" src='~icons/history_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Market history</p>
+        </div>
+    </a>
+
+    
+    
+</nav>
+<div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}" id="contract" >
+    <p *ngIf="!_account.account.hasOwnProperty('address'); else content" style="text-align: center">Select an account</p>
+    <ng-template #content>
+        <router-outlet></router-outlet>
+    </ng-template>
+</div>
