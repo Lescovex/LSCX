@@ -29,7 +29,15 @@
             <p class="title-button-navbar">Receive</p>
         </div>
     </a>
-
+    <a routerLink="card" routerLinkActive="active" #sett="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="sett.isActive" src='~icons/walletsettings_icon.svg'>
+                <img *ngIf="!sett.isActive" src='~icons/walletsettings_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Withdraw Eth</p>
+        </div>
+    </a>
     <a routerLink="wsettings" routerLinkActive="active" #sett="routerLinkActive">
         <div>
             <span>
@@ -41,8 +49,8 @@
     </a>
 </nav>
 <div class="content scrollable-content flex-inside">
-  <p *ngIf="!_account.account?.address; else content" class="text-center">Select an account</p>
-  <ng-template #content>
-    <router-outlet></router-outlet>
-  </ng-template>
+    <p *ngIf="!_account.account?.address; else content" class="text-center">Select an account</p>
+    <ng-template #content>
+        <router-outlet></router-outlet>
+    </ng-template>
 </div>

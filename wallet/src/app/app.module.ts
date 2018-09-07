@@ -43,7 +43,7 @@ import { MarketComponent } from './components/market/market.component';
 import { MarketWalletPage } from './components/market/marketWallet/market-wallet.page';
 import { BuySellPage } from './components/market/buySell/buy-sell.page';
 import { MarketHistoryPage } from './components/market/history/market-history.page';
-
+import { CreditCardPage } from './components/wallet/creditCard/creditCard.component';
 
 import { SettingsComponent } from './components/settings/settings.component'
 
@@ -59,6 +59,7 @@ import { PrivateKeyDialogComponent } from './components/wallet/wsettings/private
 import { ErrorDialogComponent } from './components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
+
 
 
 /*Servicies*/
@@ -117,7 +118,8 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     MessageDialogComponent,
     MarketWalletPage,
     BuySellPage,
-    MarketHistoryPage
+    MarketHistoryPage,
+    CreditCardPage
   ],
   imports: [
     BrowserModule,

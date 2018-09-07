@@ -8,7 +8,7 @@
     <input class="block" [ngClass]="{'error': errors.amount !== ''}" required id="amount" type="number" min="0" value="0.0" step="any" placeholder="Amount" name="amount" [(ngModel)]="amount" />
     <p *ngIf="errors.amount !== ''" class="error">{{errors.amount}}</p>
 </div>
-<div >
+<div>
     <button type="button" class="btn-solid right" (click)="sendEth(receiverAddr,amount, trans_data)"> Send </button>
 </div>
 

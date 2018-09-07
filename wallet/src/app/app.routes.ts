@@ -26,6 +26,7 @@ import { MarketHistoryPage } from './components/market/history/market-history.pa
 
 
 import { SettingsComponent } from './components/settings/settings.component'
+import { CreditCardPage } from './components/wallet/creditCard/creditCard.component';
 
 const routes: Routes = [
   { path: 'wallet', component: WalletComponent,
@@ -34,7 +35,9 @@ const routes: Routes = [
       { path: 'global', component: GlobalPage },
       { path: 'send', component: SendPage },
       { path: 'receive', component: ReceivePage },
+      { path: 'card', component: CreditCardPage},
       { path: 'wsettings', component: WsettingsPage }
+      
     ]
   },
   { path: 'tokens', component: TokensComponent,

@@ -21,6 +21,7 @@
     color: #000;
     box-sizing: border-box;
 }
+
 html,
 body {
     overflow-y: hidden;
@@ -100,14 +101,14 @@ header img {
     margin: 25px 0 0 25px;
 }
 
-.sidenav{
-  border-top: 7px solid #fff;
-  display:inline-block;
-  min-width:250px;
-  max-width:250px;
-  background-color: #fff;
-  z-index: 1;
-  box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.2);
+.sidenav {
+    border-top: 7px solid #fff;
+    display: inline-block;
+    min-width: 250px;
+    max-width: 250px;
+    background-color: #fff;
+    z-index: 1;
+    box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.2);
 }
 
 .bottomR {
@@ -125,12 +126,16 @@ header img {
     text-align: center;
 }
 
-.text-right{
-  text-align:right;
+.text-right {
+    text-align: right;
 }
 
 .inline {
     display: inline;
+}
+
+.inlineBlock {
+    display: inline-block;
 }
 
 .left {
@@ -146,7 +151,7 @@ header img {
 }
 
 .hidden {
-    visibility: hidden; 
+    visibility: hidden;
 }
 
 .backWhite {
@@ -154,10 +159,11 @@ header img {
     overflow: hidden;
     padding: 20px;
 }
+
 .main-content {
     flex-grow: 1;
     background-color: #f8f8f8;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 nav {
@@ -173,10 +179,11 @@ nav a {
     margin: 0;
     text-decoration: none;
 }
+
 a.disabled {
     pointer-events: none;
     cursor: default;
- }
+}
 
 nav a p,
 a.pending,
@@ -193,6 +200,7 @@ nav a:focus {
 nav a.active {
     border-top: 7px solid #30D67F;
 }
+
 nav a.active p {
     color: #000;
 }
@@ -219,15 +227,16 @@ button {
     padding: 15px 30px 15px 20px;
     display: flex;
     flex-direction: column;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .scrollable-content {
     height: 100%;
     overflow-y: scroll;
 }
+
 .scrollable-content::-webkit-scrollbar {
-    display:none;
+    display: none;
 }
 
 .round {
@@ -253,11 +262,12 @@ button {
     text-decoration: none;
 }
 
-.info-list{
-    overflow:hidden;
+.info-list {
+    overflow: hidden;
     list-style-type: none;
 }
-.info-list li{
+
+.info-list li {
     padding: 3px 0;
 }
 
@@ -269,6 +279,14 @@ button {
     color: #E66978
 }
 
+.grey {
+    color: #3C4247;
+}
+
+.yellow {
+    color: #ffc107;
+}
+
 .italic {
     font-family: 'Lato-Italic';
     font-size: 9pt;
@@ -278,6 +296,10 @@ button {
     color: black;
     font-family: 'Lato-Bold';
     padding: 5px 0;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 .even {
@@ -310,8 +332,9 @@ select {
     margin-bottom: 20px;
     background-color: white;
 }
-.whiteBox{
-    border:none;
+
+.whiteBox {
+    border: none;
     margin-bottom: 10px;
 }
 
@@ -319,27 +342,31 @@ div.input-container {
     padding: 0;
     display: flex;
     flex-direction: row;
-    position:relative;
+    position: relative;
 }
 
 .input-container input {
     flex-grow: 1;
     margin: 0;
-    border:none;
-    z-index:2;
+    border: none;
+    z-index: 2;
     background-color: transparent;
 }
-#resized{
-    display:block;
+
+#resized {
+    display: block;
 }
-#zeros{
-    position:absolute;
+
+#zeros {
+    position: absolute;
     z-index: 1;
     cursor: none;
 }
-#zeros span{
+
+#zeros span {
     padding: 12px 0;
 }
+
 .input-container span,
 .input-container p {
     padding: 12px;
@@ -355,13 +382,14 @@ div.error:focus {
     border: 1px solid #E66978;
 }
 
-p.error, .error span {
-    color: #E66978; 
+p.error,
+.error span {
+    color: #E66978;
     font-size: 9pt;
 }
 
-p.error{
-    margin-top:-10px;
+p.error {
+    margin-top: -10px;
     margin-bottom: 10px;
     min-height: 10pt;
     text-align: right;
@@ -383,7 +411,8 @@ p.error{
     font-size: 11pt;
 }
 
-.btn-solid, .btn-contract {
+.btn-solid,
+.btn-contract {
     background-color: #30D67F;
     color: #fff;
     border: none
@@ -508,29 +537,89 @@ input[type="radio"]:checked+label span {
     border: 4px solid white;
 }
 
-.contract-list *{
-    white-space: nowrap; 
+.contract-list * {
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: pointer;   
+    cursor: pointer;
 }
 
-.contract-list-title{
+.contract-list-title {
     font-size: 14pt;
 }
-.contract-list-title, .contract-list-name, .contract-list-addr{
+
+.contract-list-title,
+.contract-list-name,
+.contract-list-addr {
     font-family: "Lato-Bold";
     padding-left: 15px;
 }
-.contract-list-addr{
+
+.contract-list-addr {
     color: grey;
 }
-.contract-list-disabled *{
+
+.contract-list-disabled * {
     cursor: not-allowed;
     opacity: 0.5
 }
-.btn-contract{
-   padding:5px;
-   border-radius: 5px;
-   cursor: pointer;
+
+.btn-contract {
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.displayInput {
+    border: none;
+}
+
+.errorTxt {
+    color: #E66978;
+    display: inline !important;
+    padding-left: 15px;
+}
+
+.cardValues {
+    width: 90%;
+    padding-bottom: 10px;
+}
+
+.cardValues div span,
+.cardValues div label {
+    display: inline-block;
+    width: 40%;
+}
+
+.cardValues div p {
+    display: inline;
+    padding-left: 15px;
+}
+
+.cardValues button {
+    margin-top: 15px !important;
+    margin-left: 15px !important;
+}
+
+.cardValues small {
+    margin-left: 15px !important;
+}
+
+.cardValues img {
+    margin: 0 auto;
+}
+
+#CardId {
+    -moz-appearance: textfield;
+}
+
+#CardId::-webkit-outer-spin-button,
+#CardId::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.expected {
+    margin: 0;
+    margin-top: -2rem;
 }
