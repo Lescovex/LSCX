@@ -12,22 +12,34 @@ export class RawTxService {
 
     }
 
-    async createRaw(receiverAddr: string, amount: number, data?: string){
-        if(typeof(data)=='undefined'){
-            data ="";
+    async createRaw(receiverAddr: string, amount: number, options?: any){
+        if(typeof(options)=='undefined'){
+            options = {}
         }
+        let data = "";
         let gasLimit;
         let chainId = this._web3.web3.toHex(this._web3.network);
         let acc = this._account.account;
         let amountW = parseInt(this._web3.web3.toWei(amount,'ether'));
         let gasPrice  = parseInt(this._web3.web3.toWei('5','gwei'));
-        console.log("address", acc.address)
         let nonce = await this._web3.getNonce(acc.address);
-        console.log(acc.address, receiverAddr, data, amountW)
-        try{
-            gasLimit = await this._web3.estimateGas(acc.address, receiverAddr, data, amountW)
-        }catch(e){
-            gasLimit = await this._web3.blockGas();
+        if('data' in options){
+            data = options.data;
+        }
+        if('gasLimit' in options){
+            gasLimit = options.gasLimit
+        }else{
+            try{
+                gasLimit = await this._web3.estimateGas(acc.address, receiverAddr, data, amountW)
+            }catch(e){
+                gasLimit = await this._web3.blockGas();
+            }
+        }
+        if('gasPrice' in options){
+            gasPrice = options.gasPrice;
+        }
+        if('nonce' in options){
+            nonce += options.nonce
         }
         
         console.log("estimate",gasLimit, "price", gasPrice)
@@ -40,7 +52,7 @@ export class RawTxService {
             value: amountW,
             chainId:chainId
         }
-        if(data!=""){
+        if(data != ""){
             txParams.data = this._web3.web3.toHex(data)
         }
         console.log(txParams)

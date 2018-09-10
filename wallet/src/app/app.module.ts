@@ -40,7 +40,10 @@ import { ShowContract } from './components/contracts/contracts/showContract.comp
 import { HistoryPage } from './components/contracts/history/history.page'
 
 import { MarketComponent } from './components/market/market.component';
+import { TokensListComponent } from './components/market/tokens-list.component';
 import { MarketWalletPage } from './components/market/marketWallet/market-wallet.page';
+import { MarketAmountsComponent} from './components/market/marketWallet/market-amounts.component';
+import { MarketActionComponent} from './components/market/marketWallet/market-action.component';
 import { BuySellPage } from './components/market/buySell/buy-sell.page';
 import { MarketHistoryPage } from './components/market/history/market-history.page';
 import { CreditCardPage } from './components/wallet/creditCard/creditCard.component';
@@ -60,8 +63,6 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog.componen
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
 
-
-
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
 import { AccountService } from './services/account.service';
@@ -69,15 +70,24 @@ import { Web3 } from './services/web3.service';
 import { DialogService } from './services/dialog.service';
 import { SendDialogService } from './services/send-dialog.service';
 import { TokenService } from './services/token.service';
-import { ContractService } from './services/contract.service'
+import { ContractService } from './services/contract.service';
+import { LCXContractService } from './services/LCX-contract.service';
 import { FormsService } from './services/forms.service'
 import { RawTxService } from './services/rawtx.sesrvice'
 import { ContractStorageService } from './services/contractStorage.service'
-import { EtherscanService } from './services/etherscan.service'
+import { EtherscanService } from './services/etherscan.service';
+import { MarketService } from './services/market.service';
 
 /*Pipes*/
 import { ConverterPipe } from './pipes/converter.pipe';
-import { SeparateWordsPipe } from './pipes/words.pipe'
+import { SeparateWordsPipe } from './pipes/words.pipe';
+
+
+/*Directives*/
+import { CustomMinDirective } from './validators/min-validator.directive';
+import { ValidateAddressDirective } from './validators/address-validator.directive';
+import { InsuficientFoundsDirective } from './validators/founds-validator.directive';
+
 
 
 
@@ -119,6 +129,12 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     MarketWalletPage,
     BuySellPage,
     MarketHistoryPage,
+    TokensListComponent,
+    MarketAmountsComponent,
+    MarketActionComponent,
+    CustomMinDirective,
+    ValidateAddressDirective,
+    InsuficientFoundsDirective,
     CreditCardPage
   ],
   imports: [
@@ -162,10 +178,12 @@ import { SeparateWordsPipe } from './pipes/words.pipe'
     SendDialogService,
     TokenService,
     ContractService,
+    LCXContractService,
     FormsService,
     RawTxService,
     ContractStorageService,
-    EtherscanService
+    EtherscanService,
+    MarketService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

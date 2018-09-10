@@ -1,1 +1,12 @@
-<h1>Market Wallet</h1>
+<div class="dist clear">
+    <button [ngClass]="(action == 'deposit') ? 'btn-solid':'btn-inverse'" (click)="activeButton('deposit')">Deposit</button>
+    <button class="extra" [ngClass]="(action == 'withdraw') ? 'btn-solid':'btn-inverse'"(click)="activeButton('withdraw')">Withdraw</button>
+</div>
+<div>
+    <app-market-amounts [token]="_market.token" [walletAmount]="_market.token?.balance" [deltaAmount]="_market.etherdeltaBalances.token" class="clear dist block"></app-market-amounts>
+    <app-action-amounts [action]="action" [token]="_market.token" [walletAmount]="_market.token?.balance" [deltaAmount]="_market.etherdeltaBalances.token" class="clear dist block"></app-action-amounts>
+    <app-market-amounts [token]="_market.config.tokens[0]" [walletAmount]="_account.account.balance" [deltaAmount]="_market.etherdeltaBalances.eth" class="clear dist block"></app-market-amounts>
+    <app-action-amounts [action]="action" [token]="_market.config.tokens[0]" [walletAmount]="_account.account.balance" [deltaAmount]="_market.etherdeltaBalances.eth" class="clear dist block"></app-action-amounts>
+</div>
+
+<p>Make sure <a>{{_market.token?.name}}</a> is the token you actually want to trade. Multiple tokens can share the same name.</p>

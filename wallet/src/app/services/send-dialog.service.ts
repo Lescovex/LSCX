@@ -14,8 +14,8 @@ export class SendDialogService{
             width: '660px',
             height: '400px',
             data:{
-              tx: tx,
-              to: to,
+                tx: tx,
+                to: to,
                 amount: amount,
                 fees: fees,
                 total: total,
@@ -26,15 +26,15 @@ export class SendDialogService{
     }
     openConfirmDeploy(tx, amount, fees, total, action, contract){
         return this.dialog.open(SendDialogComponent, {
-          width: '660px',
-          height: '400px',
-          data:{
-            tx: tx,
-            amount: amount,
-            fees: fees,
-            total: total,
-            action: action,
-            contract : contract},
+            width: '660px',
+            height: '400px',
+            data:{
+                tx: tx,
+                amount: amount,
+                fees: fees,
+                total: total,
+                action: action,
+                contract : contract},
         });
     }
 }

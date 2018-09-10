@@ -1,23 +1,23 @@
 <nav class="flex-row">
-    <a routerLink="marketWallet" routerLinkActive="active" #contract="routerLinkActive">
+    <a routerLink="market-wallet" routerLinkActive="active" #market="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="contract.isActive" src='~icons/send_icon.svg'>
-                 <img *ngIf="!contract.isActive" src='~icons/send_inactive_icon.svg'>
+                <img *ngIf="market.isActive" src='~icons/send_icon.svg'>
+                 <img *ngIf="!market.isActive" src='~icons/send_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Market Wallet</p>
         </div>
     </a>
-    <a routerLink="buySell" routerLinkActive="active" #add="routerLinkActive">
+    <a routerLink="buy-sell" routerLinkActive="active" #buySell="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="add.isActive" src='~icons/newcontract_icon.svg'>
-                <img *ngIf="!add.isActive" src='~icons/newcontract_inactive_icon.svg'>
+                <img *ngIf="buySell.isActive" src='~icons/newcontract_icon.svg'>
+                <img *ngIf="!buySell.isActive" src='~icons/newcontract_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Buy/Sell</p>
         </div>
     </a>
-    <a routerLink="history" [class.disabled]="_contract.contractInfo == {}" routerLinkActive="active" #hist="routerLinkActive">
+    <a routerLink="history" routerLinkActive="active" #hist="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="hist.isActive" src='~icons/history_icon.svg'>
@@ -30,9 +30,13 @@
     
     
 </nav>
-<div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}" id="contract" >
-    <p *ngIf="!_account.account.hasOwnProperty('address'); else content" style="text-align: center">Select an account</p>
+<div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}" id="market" >
+    <p *ngIf="!_account.account.hasOwnProperty('address'); else content" class="text-center">Select an account</p>
     <ng-template #content>
+        <div class="half left" class="market-token">
+            <p class="title" for="contract">Token <a (click)="toggleList()">{{_market.token?.name}}<img src="~icons/select_icon.svg"></a></p>
+            <app-tokens-list *ngIf="showList" (show)="onSelect($event)" class="tokens-list scrollbar"></app-tokens-list>
+        </div>
         <router-outlet></router-outlet>
     </ng-template>
 </div>

@@ -1,5 +1,5 @@
 <nav class="flex-row">
-    <a routerLink="contract-page" routerLinkActive="active" #contract="routerLinkActive">
+    <a routerLink="contract-page" [class.disabled]="contracts.length == 0" routerLinkActive="active" #contract="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="contract.isActive" src='~icons/send_icon.svg'>
@@ -9,7 +9,7 @@
         </div>
     </a>
 
-    <a routerLink="history" [class.disabled]="_contract.contractInfo == {}" routerLinkActive="active" #hist="routerLinkActive">
+    <a routerLink="history" [class.disabled]="!selected || contracts.length == 0" routerLinkActive="active" #hist="routerLinkActive">
         <div>
             <span>
                 <img *ngIf="hist.isActive" src='~icons/history_icon.svg'>
@@ -31,7 +31,7 @@
     
 </nav>
 <div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}" id="contract" >
-    <p *ngIf="!_account.account.hasOwnProperty('address'); else content" style="text-align: center">Select an account</p>
+    <p *ngIf="!_account.account.hasOwnProperty('address'); else content" class="text-center">Select an account</p>
     <ng-template #content>
         <router-outlet></router-outlet>
     </ng-template>

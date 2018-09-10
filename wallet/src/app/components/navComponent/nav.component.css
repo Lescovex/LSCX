@@ -16,16 +16,17 @@
     text-align: left;
     text-decoration: none;
     border: none;
-    color: #abb0b2;
     background-color: #272d33;
 }
-.link img{
+.link>div{
+  display:inline-block;
+  width: 33px;
+  height: 33px;
   margin-right: 10px;
 }
 .link.active, link:focus {
   background-color: #30D67F;
   border: none;
-  color: #fff;
 }
 .bottom{
   text-align: center;
@@ -42,5 +43,9 @@
 .title-button-left {
     position: relative;
     top: -6px;
-    color: white;
+    color: #abb0b2;
+}
+.active .title-button-left{
+
+  color: white;
 }

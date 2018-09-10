@@ -1,8 +1,8 @@
 <h1 style="text-align: right; font-weight: normal">Balance: ETH {{_account.account.balance | number:'1.2-5':'en'}} </h1>
-<p *ngIf="this._account.account.tokens?.length == 0" class="backWhite text-center"> You don't have tokens</p>
+<p *ngIf="this._account.account.tokens?.length == 0" class="whiteBox text-center"> You don't have tokens</p>
 <div *ngIf="this._account.account.tokens?.length > 0" class="scroll scrollbar dist" style="height: 61vh">
     <ul class="round">
-        <li *ngFor="let token of _account.account.tokens, index as  i" class="backWhite">
+        <li *ngFor="let token of _account.account.tokens, index as  i" class="whiteBox-extra">
             <a class="pointer" (click)="openExternal(token.contractAddress)">
                 <p>{{token.tokenSymbol}} {{token.balance | number:'1.2-15':'en'}}</p>
                 <p class="italic">({{token.tokenName}})</p>

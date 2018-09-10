@@ -1,7 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 import { FormGroup, FormControl,Validators} from '@angular/forms';
 
-import { ContractService } from '../../../services/contract.service'
+import { LCXContractService } from '../../../services/LCX-contract.service'
 import { AccountService } from '../../../services/account.service';
 import { ContractStorageService } from '../../../services/contractStorage.service';
 import { DialogService } from '../../../services/dialog.service';
@@ -18,10 +18,8 @@ export class SelectContractPage implements OnInit{
   public contractForm: FormGroup;
   public moreInfo = [];
   public functions = [];
-
   
-  
-  constructor(public _contract: ContractService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
+  constructor(public _LCXcontract: LCXContractService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
     this.getContracts();
     this._contractStorage.checkForAddress();
     if(this.contracts.length == 0){
@@ -30,8 +28,8 @@ export class SelectContractPage implements OnInit{
     this.contractForm =  new FormGroup({
       contract:new FormControl(null,Validators.required),
     })
-    console.log(Object.keys(this._contract.contractInfo))
-    if(Object.keys(this._contract.contractInfo).length > 0){
+
+    if(Object.keys(this._LCXcontract.contractInfo).length > 0){
       this.selected = true
     }
   }
@@ -51,12 +49,10 @@ export class SelectContractPage implements OnInit{
     }
     let dialofRef = this._dialog.openLoadingDialog();
 
-    await this._contract.setContract(contract);
-    console.log("info",this._contract.contractInfo);
-    this._contract.functions =  this._contract.getFunctions();
+    await this._LCXcontract.setContract(contract);
+    console.log("info",this._LCXcontract.contractInfo);
+    this._LCXcontract.functions =  this._LCXcontract.getFunctions();
     console.log("functions",this.functions)
-    this.moreInfo = await this._contract.getContractData();
-    this._contract.moreInfo = this.moreInfo;
     dialofRef.close();
     this.selected = true;
   }
@@ -64,9 +60,7 @@ export class SelectContractPage implements OnInit{
   onBack(bool: boolean){
     if(bool){
       this.selected= false;
-      this._contract.reset();
+      this._LCXcontract.reset();
     }
-
   }
-
 }

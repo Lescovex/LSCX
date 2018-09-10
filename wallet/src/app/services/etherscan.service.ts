@@ -32,13 +32,13 @@ export class EtherscanService {
 
 	getTx(address:string){
 		let network = (this._web3.network == 1)? "": "-ropsten"
-		let url = 'http://api'+network+'.etherscan.io/api?module=account&action=txlist&address='+address+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
+		let url = 'https://api'+network+'.etherscan.io/api?module=account&action=txlist&address='+address+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
 		return this.http.get(url).map(res => res.json());
 	}
 	
 	getInternalTx(address:string){
 		let network = (this._web3.network == 1)? "": "-ropsten"
-		let url = 'http://api'+network+'.etherscan.io/api?module=account&action=txlistinternal&address='+address+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
+		let url = 'https://api'+network+'.etherscan.io/api?module=account&action=txlistinternal&address='+address+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
 		return this.http.get(url).map(res => res.json());
 	}
 

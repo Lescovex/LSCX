@@ -1,0 +1,23 @@
+
+<table class="amount-table">
+    <thead>
+        <tr>
+            <th>Token</th>
+            <th>Wallet</th>
+            <th>EtherDelta</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{token.name}}</td>
+            <ng-container *ngIf ="walletAmount === null || deltaAmount === null; else load">
+                <td>???</td>
+                <td>???</td>
+            </ng-container> 
+            <ng-template #load>
+                <td>{{walletAmount | number:'1.3-3':'en'}}</td>
+                <td>{{deltaAmount | number:'1.3-3':'en'}}</td>
+            </ng-template>
+        </tr>
+    </tbody>
+</table>

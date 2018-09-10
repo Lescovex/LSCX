@@ -1,20 +1,26 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 
 import { AccountService } from '../../../services/account.service'
+import { MarketService } from '../../../services/market.service';
 
 @Component({
   selector: 'app-market-wallet',
   templateUrl: './market-wallet.page.html',
 })
-export class MarketWalletPage implements OnInit {
-
-  constructor(public _account:AccountService) {
+export class MarketWalletPage implements OnInit, OnDestroy {
+  action : string;
+  interval;
+  constructor(public _account:AccountService, private _market: MarketService) {
+    this.action = 'deposit'
   }
-  ngOnInit() {
-  }
+  async ngOnInit() {
 
-  maxHeight(){
-    var mainContent = document.getElementsByClassName('main-content')[0];
-    return mainContent.getBoundingClientRect().height-110;
+    this.interval = await this._market.balancesInterval();
+  }
+  ngOnDestroy(){
+    clearInterval(this.interval)
+  }
+  activeButton(action){
+    this.action = action;
   }
 }

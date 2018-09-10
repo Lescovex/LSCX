@@ -1,7 +1,7 @@
 <!--<h1 style="text-align: right; font-weight: normal">Balance: ETH {{_contract.contractInfo.totalSupply | number:'1.2-5':'en'}} </h1>-->
 
-<div *ngIf="_contract.contractHist?.length == 0">
-    <p class="backWhite text-center">There are not contract selected</p>
+<div *ngIf="_LCXcontract.contractHist?.length == 0">
+    <p class="whiteBox text-center">There are not contract selected</p>
 </div>
   
-<app-list *ngIf="_contract.contractHist?.length > 0" [history]="_contract.contractHist" [address]="_contract.contractInfo.address"></app-list>
+<app-list *ngIf="_LCXcontract.contractHist?.length > 0" [history]="_LCXcontract.contractHist" [address]="_LCXcontract.contractInfo.address"></app-list>

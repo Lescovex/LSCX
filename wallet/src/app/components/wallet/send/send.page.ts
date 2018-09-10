@@ -56,9 +56,14 @@ export class SendPage implements OnInit {
     if(this.checkAmount(amount) == false || this.checkAddress(receiverAddr) == false){
       return false;
     }
-    let tx =  await this._rawtx.createRaw(receiverAddr, amount)
-    this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send")
-   
+    let tx;
+    if(typeof(trans_data)=='undefined'){
+      tx =  await this._rawtx.createRaw(receiverAddr, amount)
+    }else{
+      tx =  await this._rawtx.createRaw(receiverAddr, amount, {data:trans_data})
+    }
+    
+    this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send");
   }
 
 }

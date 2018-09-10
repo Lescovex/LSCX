@@ -1,6 +1,6 @@
 
 <div *ngIf="!selected; else showContract">
-    <div *ngFor="let contract of contracts, index as i" (click)="setContract(contract)" class="input half contract-list" [ngClass]="[{true :'right', false: 'left clear'}[(i+1)%2==0],{true:'contract-list-active', false: 'contract-list-disabled'}[contract.active]]">
+    <div *ngFor="let contract of contracts, index as i" (click)="setContract(contract)" class="backWhite half contract-list" [ngClass]="[{true :'right', false: 'left clear'}[(i+1)%2==0],{true:'contract-list-active', false: 'contract-list-disabled'}[contract.active]]">
             <img class="left" *ngIf="contract.type=='LCX_ABT'" src='~icons/LCX_ABT.png'>
             <img class="left" *ngIf="contract.type=='LCX_CIF'" src='~icons/LCX_CIF.png'>
             <img class="left" *ngIf="contract.type=='LCX_CYC'" src='~icons/LCX_CYC.png'>
@@ -15,5 +15,5 @@
 
 </div>
 <ng-template #showContract>
-    <app-show-contract (back)="onBack($event)"[functions]="_contract.functions" [moreInfo]="_contract.moreInfo"></app-show-contract>
+    <app-show-contract (back)="onBack($event)"[functions]="_LCXcontract.functions" [moreInfo]="_LCXcontract.moreInfo"></app-show-contract>
 </ng-template>

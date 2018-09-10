@@ -37,7 +37,6 @@ const routes: Routes = [
       { path: 'receive', component: ReceivePage },
       { path: 'card', component: CreditCardPage},
       { path: 'wsettings', component: WsettingsPage }
-      
     ]
   },
   { path: 'tokens', component: TokensComponent,
@@ -57,12 +56,13 @@ const routes: Routes = [
     ]
   },
   { path: 'market', component: MarketComponent,
-  children: [
-    { path: '', redirectTo: 'marketWallet', pathMatch: 'full' },
-    { path: 'buy-sell', component: BuySellPage },
-    { path: 'market-wallet', component: MarketWalletPage },
-    { path: 'history', component: MarketHistoryPage }
-  ] },
+    children: [
+      { path: '', redirectTo: 'market-wallet', pathMatch: 'full' },
+      { path: 'buy-sell', component: BuySellPage },
+      { path: 'market-wallet', component: MarketWalletPage },
+      { path: 'history', component: MarketHistoryPage }
+    ]
+  },
   { path: 'settings', component: SettingsComponent },
   { path: '', redirectTo: '/wallet/global', pathMatch: 'full' },
   { path: '**', redirectTo: '/wallet/global', pathMatch: 'full' },

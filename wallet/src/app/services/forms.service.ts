@@ -1,6 +1,6 @@
 import { Injectable} from '@angular/core';
 import { Validators, ValidatorFn, FormGroup, FormControl } from '@angular/forms'
-import { ValidateAddress } from '../validators/address.validator'; 
+import { ValidateAddress } from '../validators/address-validator.directive'; 
 import { ContractService } from './contract.service';
 import { Web3 } from './web3.service';
 
@@ -45,7 +45,7 @@ export class FormsService {
     addControls(inputs, form): FormGroup{
         inputs.forEach(input=>{
             input = this.getInputType(input);
-            let value = (input.type2 == 'text')? '': 0;
+            let value= (input.name=="initialSupply" || input.name=="contractMaxSupply")? 0 :"";
             let validators = this.getValidators(input)
            form.addControl(input.name, new FormControl(value, validators));
           })

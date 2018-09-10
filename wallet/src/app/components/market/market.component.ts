@@ -1,15 +1,27 @@
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core';
 
-import { AccountService } from '../../services/account.service'
+import { AccountService } from '../../services/account.service';
+import { MarketService } from '../../services/market.service';
+
 
 @Component({
   selector: 'app-market',
   templateUrl: './market.component.html',
 })
-export class MarketComponent implements OnInit {
+export class MarketComponent{
+  protected showList: boolean = false;
+  interval;
+  constructor(public _account:AccountService, private _market: MarketService) {
+  }
 
-  constructor(public _account:AccountService) {
+  maxHeight() {
+    var mainContent = document.getElementsByClassName('main-content')[0];
+    return mainContent.getBoundingClientRect().height-110;
   }
-  ngOnInit() {
+  toggleList() {
+    this.showList = !this.showList
   }
+  onSelect(show:boolean) {
+    this.showList = show
+  } 
 }

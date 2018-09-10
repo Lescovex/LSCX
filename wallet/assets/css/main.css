@@ -89,6 +89,11 @@ h1 {
     flex-direction: row;
 }
 
+.flex1{
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
 header {
     height: 73px;
     min-height: 73px;
@@ -299,7 +304,7 @@ button {
 }
 
 .bold {
-    font-weight: bold;
+    font-family: 'Lato-Bold';
 }
 
 .even {
@@ -324,18 +329,41 @@ textarea,
 div.input-container,
 .input,
 .whiteBox,
+.whiteBox-extra,
+.backWhite,
 select {
     padding: 12px;
     border-radius: 5px;
     border: 1px solid #abb0b2;
     margin-top: 10px;
     margin-bottom: 20px;
-    background-color: white;
+    background-color: #fff;
+}
+input,
+div.input-container,
+.input,
+.whiteBox,
+select{
+    height: 44px;
 }
 
-.whiteBox {
-    border: none;
+.backWhite {
+    overflow: hidden;
+    padding: 20px;
+}
+
+textarea {
+    resize: none;
+}
+
+.whiteBox, .whiteBox-extra {
+    border:none;
     margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.whiteBox-extra {
+    padding: 20px
 }
 
 div.input-container {
@@ -403,7 +431,7 @@ p.error {
 .btn-solid,
 .btn-black,
 .btn-inverse {
-    height: 40px;
+    height: 44px;
     padding: 0 40px;
     border-radius: 5px;
     text-decoration: none;
@@ -415,7 +443,7 @@ p.error {
 .btn-contract {
     background-color: #30D67F;
     color: #fff;
-    border: none
+    border: 2px solid transparent;
 }
 
 .btn-inverse {
@@ -471,7 +499,7 @@ p.error {
 }
 
 .warning:focus,
-warning:hover,
+.warning:hover,
 .error-founds {
     color: white;
     background-color: #E66978;
@@ -568,6 +596,72 @@ input[type="radio"]:checked+label span {
     padding: 5px;
     border-radius: 5px;
     cursor: pointer;
+}
+.market-token {
+    position: relative;
+    overflow: visible;
+}
+
+.market-token>p a {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.tokens-list{
+    position: absolute;
+    background-color:white;
+    border: 1px solid #ddd;
+    padding-bottom: 10px;
+    top: 15px;
+    left: 50px;
+    z-index: 2;
+    max-height: 400px;
+    overflow-y: auto;
+}
+.tokens-list>div:first-child{
+    padding: 0 10px;
+}
+.tokens-list ul{
+    list-style-type: none;
+    
+}
+.tokens-list::-webkit-scrollbar-thumb{
+    border-left:1px solid #eee;
+}
+.tokens-list li{
+    padding: 5px 10px;
+}
+.tokens-list li:hover{
+    background-color: #eee;
+}
+.amount-table{
+    width:100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.amount-table th{
+    border-bottom: 1px solid grey;
+}
+.amount-table th, .amount-table td{
+    padding: 5px 0;
+}
+.amount-table tr>*:first-child{
+    text-align: left;
+}
+.amount-table tr>*:nth-child(2){
+    text-align: center;
+}
+.amount-table tr>*:nth-child(3){
+    text-align: right;
+}
+.market-action > div{
+    width:60%;
+    padding-right: 10px;
+}
+.market-action button{
+    width:40%;
+    margin-top: 26px;
 }
 
 .displayInput {

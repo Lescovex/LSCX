@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
-import { ContractService } from '../../../services/contract.service'
-import { FormsService } from '../../../services/forms.service'
+import { LCXContractService } from '../../../services/LCX-contract.service';
+import { FormsService } from '../../../services/forms.service';
 import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { AccountService } from '../../../services/account.service';
@@ -29,11 +29,11 @@ export class ShowContract implements OnInit{
   public funct: any;
   public owner: string;
   
-  constructor(public _contract: ContractService, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
+  constructor(public _LCXcontract: LCXContractService, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
     this.functionForm = new FormGroup({
       functionCtrl: new FormControl(null,Validators.required),
     })
-    this.contractInfo = this._contract.contractInfo;
+    this.contractInfo = this._LCXcontract.contractInfo;
   }
 
   ngOnInit(){
@@ -79,7 +79,7 @@ export class ShowContract implements OnInit{
     }
     let params = this._forms.getValues(this.funct.inputs, this.functionForm, this.contractInfo.type);
     if(this.funct.constant){  
-      let response = await this._contract.callFunction(this._contract.contract, this.funct.name, params);
+      let response = await this._LCXcontract.callFunction(this._LCXcontract.contract, this.funct.name, params);
       console.log("response", response)
       if(this.funct.decimals == 'decimals'){
         let number = parseInt(response.toString()) /Math.pow(10,this.contractInfo.decimals);
@@ -93,12 +93,12 @@ export class ShowContract implements OnInit{
       this._dialog.openMessageDialog(this.funct.name, response)
     }else{
       let dialogRef = this._dialog.openLoadingDialog();
-      let data = await this._contract.getFunctionData(this.funct.name, params)
+      let data = await this._LCXcontract.getFunctionData(this.funct.name, params)
       let amount = 0;
       if(this.funct.payable){
         amount =  parseFloat(this.getControl('ethAmount').value)
       }
-      let tx =  await this._rawtx.createRaw(this.contractInfo.address, amount, data)
+      let tx =  await this._rawtx.createRaw(this.contractInfo.address, amount, {data:data})
       console.log(tx)
       dialogRef.close();
       //tx, to, amount, fees, total, action, token?
@@ -107,11 +107,15 @@ export class ShowContract implements OnInit{
 }
 
   decimalsOutput(value){
-    let result = value/Math.pow(10,this.contractInfo.decimals)
+    let result = value/Math.pow(10,this.contractInfo.decimals);
     return result
   }
 
-  
+  changeValue(inputName){
+    let value = parseFloat(this.getControl(inputName).value).toFixed(this.contractInfo.decimals);
+    this.functionForm.controls[inputName].setValue(value);
+    console.log(value,this.getControl(inputName).value)
+  }
 
   goBack(){
     this.back.emit(true);

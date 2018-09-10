@@ -1,7 +1,7 @@
 <h1 style="text-align: right; font-weight: normal">Balance: ETH {{_account.account.balance | number:'1.2-5':'en'}} </h1>
 
 <div *ngIf="_account.account.history?.length == 0">
-    <p class="backWhite text-center">There are not transactions</p>
+    <p class="whiteBox text-center">There are not transactions</p>
 </div>
   
 <app-list *ngIf="_account.account.history?.length > 0" [history]="_account.account.history" [address]="_account.account.address"></app-list>
