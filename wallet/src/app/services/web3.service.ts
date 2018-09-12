@@ -8,18 +8,20 @@ export class Web3 {
   infuraKey = "";
   network: number;
   constructor(){
-    this.network=3;
+    this.getIntialNetwork();
     this.getInfuraKey();
     if(this.infuraKey!=""){
       if (typeof this.web3 !== 'undefined') {
         this.web3= new Web3L(this.web3.currentProvider);
       } else {  
         // set the provider you want from Web3.providers
-        this.web3 = new Web3L(new Web3L.providers.HttpProvider("https://ropsten.infura.io/"+this.infuraKey));
+        this.setProvider();
       }
     }else{
       this.web3= new Web3L()
-    }   
+    }
+
+    console.log("network", this.network)
   }
   setInfuraKey(apikey){
     this.infuraKey = apikey;
@@ -86,16 +88,26 @@ export class Web3 {
     })
 
   }
-  setProvider(network:number){
-    let net = (network==1)? 'mainnet' : 'ropsten'
-    let url= "https://"+net+".infura.io/"+this.infuraKey;
 
-    this.web3.setProvider(new Web3L.providers.HttpProvider(url));
+  setProvider(){
+    let net = (this.network==1)? 'mainnet' : 'ropsten'
+    let url= "https://"+net+".infura.io/"+this.infuraKey;
+    this.web3 = new Web3L(new Web3L.providers.HttpProvider(url));
   }
+
   setNetwork(network:number){
     this.network = network;
+    localStorage.setItem('network', JSON.stringify(network))
     let net = (this.network==1)? 'mainnet' : 'ropsten'
-    this.web3.setProvider("https://"+net+".infura.io/zsCtddlly08DjGmyIBkH")
+    this.setProvider();
+  }
+
+  getIntialNetwork() {
+    if(!localStorage.getItem('network')){
+      this.network = 1
+    }else{
+      this.network = JSON.parse(localStorage.getItem('network'));
+    }
   }
 
   async getTxStatus(txhash){

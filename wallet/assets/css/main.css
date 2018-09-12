@@ -99,11 +99,35 @@ header {
     min-height: 73px;
     background-color: #272D33;
     z-index: 2;
+    position: relative;
 }
 
-header img {
+header > img {
     max-height: 30px;
     margin: 25px 0 0 25px;
+}
+
+#network-select{
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 220px;
+    height: 30px;
+    border: 1px solid #444;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.1)
+}
+#network-select p{
+    color: #888;
+    padding: 6px 15px;
+}
+#network-select .select-list{
+    top:29px;
+    left: 0;
+}
+#network-select .select-list>p{
+    margin: 10px;
 }
 
 .sidenav {
@@ -157,12 +181,6 @@ header img {
 
 .hidden {
     visibility: hidden;
-}
-
-.backWhite {
-    background-color: #fff;
-    overflow: hidden;
-    padding: 20px;
 }
 
 .main-content {
@@ -274,6 +292,21 @@ button {
 
 .info-list li {
     padding: 3px 0;
+}
+.circle{
+    width:14px;
+    height: 14px;
+    border-radius:50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.circle-blue{
+      background-color: #4A90E2;
+}
+
+.circle-red{
+      background-color: #E66978;
 }
 
 .green {
@@ -411,7 +444,7 @@ div.error:focus {
 }
 
 p.error,
-.error span {
+p.error span {
     color: #E66978;
     font-size: 9pt;
 }
@@ -419,7 +452,7 @@ p.error,
 p.error {
     margin-top: -10px;
     margin-bottom: 10px;
-    min-height: 10pt;
+    min-height: 11pt;
     text-align: right;
 }
 
@@ -608,31 +641,34 @@ input[type="radio"]:checked+label span {
     cursor: pointer;
 }
 
-.tokens-list{
+.select-list{
     position: absolute;
     background-color:white;
     border: 1px solid #ddd;
     padding-bottom: 10px;
-    top: 15px;
-    left: 50px;
     z-index: 2;
     max-height: 400px;
     overflow-y: auto;
 }
-.tokens-list>div:first-child{
+#token-list{
+    top: 15px;
+    left: 50px;
+}
+
+.select-list>div:first-child{
     padding: 0 10px;
 }
-.tokens-list ul{
+.select-list ul{
     list-style-type: none;
     
 }
-.tokens-list::-webkit-scrollbar-thumb{
+.select-list::-webkit-scrollbar-thumb{
     border-left:1px solid #eee;
 }
-.tokens-list li{
+.select-list li{
     padding: 5px 10px;
 }
-.tokens-list li:hover{
+.select-list li:hover{
     background-color: #eee;
 }
 .amount-table{

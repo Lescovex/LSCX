@@ -6,7 +6,7 @@
         <p class="error" [ngClass]="{'hidden':!(submited && amount.errors != null)}">
             <span *ngIf="amount.errors?.required">This field is required</span>
             <span *ngIf="!amount.errors?.required && amount.errors?.customMin">Minimum required amount is 0.001</span>
-            <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFounds">Insufficient founds in your wallet</span>
+            <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFounds">Insufficient funds in your wallet</span>
         </p>
     </div>
     <div *ngIf="action=='withdraw'">
@@ -15,7 +15,7 @@
         <p class="error" [ngClass]="{'hidden':!(submited && amount.errors != null)}">
             <span *ngIf="amount.errors?.required">This field is required</span>
             <span *ngIf="!amount.errors?.required && amount.errors?.customMin">Minimum required amount is 0.001</span>
-            <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFounds">Insufficient founds in Etherdelta</span>
+            <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFounds">Insufficient funds in Market</span>
         </p>
     </div>    
     <button type="submit" class="btn-solid">{{action | titlecase}}</button>

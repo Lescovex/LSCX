@@ -21,7 +21,7 @@ export class SettingsComponent implements OnInit {
 
   setInfuraKey(){
     this._web3.setInfuraKey(this.infuraApiKey);
-    this._web3.setProvider(3);
+    this._web3.setProvider();
   }
   setEtherscanKey(){
     this._scan.setApiKey(this.etherscanApiKey)

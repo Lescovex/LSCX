@@ -13,6 +13,7 @@ import { EtherscanService } from './etherscan.service';
 
 @Injectable()
 export class AccountService{
+  updated = false;
   account : any = {};
   pending: Array<any> = [];
   events : Array<any> = [];
@@ -44,6 +45,13 @@ export class AccountService{
     
     this.router.navigate(['/wallet/global']);
     
+  }
+  async refreshAccountData(){
+      clearInterval(this.interval)
+      this.getPendingTx();
+      await this.startIntervalData();
+      await this.setTokens();
+      this.updated = await true;
   }
   
   refreshAccount(){
@@ -91,37 +99,6 @@ export class AccountService{
       }
     }
     this.account.history = history;
-    /*this._scan.getTx(addr).subscribe((resp:any) =>{
-      let history = [];
-      history =  resp.result;
-      
-      this._scan.getInternalTx(addr).subscribe((resp:any) =>{
-        let intHistory = [];
-        intHistory =  resp.result;
-        for(let i =0; i<intHistory.length; i++){
-          history.push(intHistory[i]);
-        }
-
-        history.sort((a,b)=>{
-          return a.timeStamp - b.timeStamp
-        });
-        history = history.reverse();
-        for(let i = 0; i<this.pending.length; i++){
-          let result = history.findIndex(x => (x.hash).toLowerCase() == this.pending[i].hash.toLowerCase());
-          if(result == -1){
-            history.unshift(this.pending[i]);
-          }else{
-            this.pending.splice(i,1)
-            this.removePendingTx();
-          }
-          for(let i =0; i<history.length; i++){
-            let date = this.tm(history[i].timeStamp);
-            history[i].date = date;
-          }
-        }
-        this.account.history = history;
-      })
-    }); */
   }
   
   async getAccountData(){
@@ -134,35 +111,13 @@ export class AccountService{
     }
   }
 
-  getTx(addr): Observable<any> {
-    //Ojo ropsten
-    let url = 'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address='+addr+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
-    let response = this.http.get(url).map(res => res.json());
-    return response;
-  }
-
-  getInternalTx(addr): Observable<any> { 
-    //Ojo ropsten
-    let url = 'http://api-ropsten.etherscan.io/api?module=account&action=txlistinternal&address='+addr+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
-  
-    let response = this.http.get(url).map(res => res.json());
-    return response;
-  }
-
-  getTokensTransfers(addr): Observable<any> {
-    //Ropsten
-    let url = 'http://api-ropsten.etherscan.io/api?module=account&action=tokentx&address='+addr+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
-   
-    let response = this.http.get(url).map(res => res.json());
-    return response;
-  }
-
   getTokensLocale(){
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);
       if(wallet[result].hasOwnProperty('tokens')){
-        return wallet[result].tokens;
+        let tokens = wallet[result].tokens.filter(x=> x.network = this._web3.network)
+        return tokens;
       }else{
         return new Array();;
       }
@@ -175,7 +130,7 @@ export class AccountService{
     if('address' in this.account){
       let tokens = this.getTokensLocale();
       tokens = await this.updateTokens(tokens);
-      this.getTokensTransfers(this.account.address).subscribe(async function(resp:any){
+      this._scan.getTokensTransfers(this.account.address).subscribe(async function(resp:any){
         let tkns : Array<any> = [];
         tkns = resp.result;
         self.account.tokens=[];
@@ -186,8 +141,10 @@ export class AccountService{
               tokenName:  tkns[i].tokenName,
               tokenSymbol:  tkns[i].tokenSymbol,
               tokenDecimal: parseInt( tkns[i].tokenDecimal),
+              network : self._web3.network
             }
-            token = await self.updateTokenBalance(token)
+            token = await self.updateTokenBalance(token);
+            
             tokens.push(token)
           }
         }
@@ -204,7 +161,7 @@ export class AccountService{
   addToken(token){
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
-      let result = wallet.findIndex(x =>x.address == this.account.address);
+      let result = wallet.findIndex(x => x.address == this.account.address);
       if('tokens' in wallet[result]){
         this.account.tokens.push(token);
         wallet[result].tokens.push(token);
@@ -212,7 +169,6 @@ export class AccountService{
         this.account.tokens = [token]
         wallet[result].tokens = [token]
       }
-
       localStorage.setItem('ethAcc',JSON.stringify(wallet));
     }
   }
@@ -238,12 +194,13 @@ export class AccountService{
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);
       if(wallet[result].hasOwnProperty('pending')){
-        this.pending= wallet[result].pending;
+        this.pending= wallet[result].pending.filter(x=> x.network = this._web3.network);
       }
     }
   }
   
   async addPendingTx(tx){
+    tx.network=this._web3.network;
     this.pending.push(tx);
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));

@@ -1,20 +1,27 @@
 import { Injectable} from '@angular/core';
 import { Web3 } from './web3.service';
+import { AccountService } from './account.service';
 
 @Injectable()
 export class ContractStorageService {
     contracts: Array<any>;
-    constructor(private _web3: Web3){
-        this.getContracts();
-        console.log("CONTRACTS", this.contracts)
+    accContracts: Array<any>;
+
+    constructor(private _web3: Web3, private _account: AccountService){
+        this.setContracts();
+        this.setAccContracts();
+        console.log("CONTRACTS", this.contracts, this.accContracts)
     }
 
-    getContracts(){
+    setContracts(){
         if(localStorage.getItem('contracts')){
-            this.contracts = JSON.parse(localStorage.getItem('contracts'));
+            this.contracts= JSON.parse(localStorage.getItem('contracts'));
         }else{
             this.contracts = [];
         }
+    }
+    setAccContracts(){
+        this.accContracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
     }
 
     addContract(contract){

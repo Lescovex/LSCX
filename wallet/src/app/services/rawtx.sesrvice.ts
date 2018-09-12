@@ -3,7 +3,6 @@ import { Injectable} from '@angular/core';
 import { AccountService } from './account.service';
 import { Web3 } from './web3.service';
 
-import * as EthUtil from 'ethereumjs-util';
 import * as EthTx from 'ethereumjs-tx';
 
 @Injectable()

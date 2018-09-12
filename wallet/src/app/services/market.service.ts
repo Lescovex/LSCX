@@ -6,6 +6,12 @@ import { AccountService } from './account.service';
 import { ContractService } from './contract.service';
 import { BigNumber } from 'bignumber.js';
 
+import { Order } from '../models/order';
+import { Trade } from '../models/trade';
+
+const io = require('socket.io-client');
+
+
 @Injectable()
 export class MarketService {
 	config: any;
@@ -27,16 +33,21 @@ export class MarketService {
 		this.setContracts();
 		this.setToken();
 		this.setTokencontract();
+		this.socket = io.connect(this.config.socketServer[0], { transports: ['websocket'] });
+		
+		this.socket.on('connect', () => {
+			console.log('socket connected', this.socket);
+	  	});
 	}
 	
 
 	setCongif() {
 		let file = (this._web3.network == 1)? 'main': 'testnet';
-		this.config= require('../../etherdelta/config/'+file+'.json');
+		this.config= require('../../libs/market-lib/config/'+file+'.json');
 	}
 
 	getAbi(file) {
-		return require('../../etherdelta/smart_contract/'+file+'.sol.json');
+		return require('../../libs/market-lib/smart_contract/'+file+'.sol.json');
 	}
 
 	setToken(token?) {
@@ -110,4 +121,121 @@ export class MarketService {
 		},2000)
 	}
 
+	waitForMarket(){
+		let self = this;
+		new Promise((resolve, reject) => {
+			setTimeout(() => {
+			  reject('Could not get market');
+			}, 20000);
+			self.socket.off('orders');
+			self.socket.off('trades');
+			self.getMarketAndWait();
+		});
+	}
+	
+	getMarket(){
+		
+		if (!this.token.addr) throw new Error('Please enter a valid token');
+		if (!this._account.account.address) throw new Error('Please enter a valid address');
+		this.socket.emit('getMarket', { token: this.token.addr , user: this._account.account.address });
+	}
+
+	getMarketAndWait(){
+		let interval;
+		this.getMarket();
+		this.socket.once('market', (market) => {
+			if('orders' in market && 'trades' in market){
+				this.updateOrders(market.orders, this.token, this._account.account.address);
+				this.updateTrades(market.trades, this.token, this._account.account.address);
+				this.socket.on('orders', (orders) => {
+				  	this.updateOrders(orders, this.token, this._account.account.address);
+				});
+				this.socket.on('trades', (trades) => {
+					this.updateTrades(trades, this.token, this._account.account.address);
+				});
+				console.log(this.state)
+				  clearInterval(interval);
+			}else{
+				console.log('aqui estamos')
+				interval = setTimeout(() => {
+					this.getMarketAndWait();
+				}, 2000);
+			}		
+		});
+	}
+	
+	updateOrders = (newOrders, token, user) => {
+		const newOrdersTransformed = {
+		  buys: newOrders.buys
+			.map(x => x = new Order(x, 'buy', token)
+			),
+		  sells: newOrders.sells
+		  .map(x => x = new Order(x, 'sell', token)
+		  ),
+		};
+		if (!this.state.orders) this.state.orders = { buys: [], sells: [] };
+		if (!this.state.myOrders) this.state.myOrders = { buys: [], sells: [] };
+		this.compareOrders(newOrdersTransformed, 'buys');
+		this.compareOrders(newOrdersTransformed, 'sells');
+		this.state.orders = {
+		  sells: this.state.orders.sells.sort((a, b) =>
+			a.price - b.price || a.amountGet - b.amountGet),
+		  buys: this.state.orders.buys.sort((a, b) =>
+			b.price - a.price || b.amountGet - a.amountGet),
+		};
+		this.state.myOrders = {
+		  sells: this.state.myOrders.sells.sort((a, b) =>
+			a.price - b.price || a.amountGet - b.amountGet),
+		  buys: this.state.myOrders.buys.sort((a, b) =>
+			b.price - a.price || b.amountGet - a.amountGet),
+		};
+	};
+
+	compareOrders(newOrdersTransformed, type){
+		newOrdersTransformed[type].forEach((x) => {
+			if ('deleted' in x || x.ethAvailableVolumeBase <= this.config.minOrderSize) {
+				this.state.orders[type] = this.state.orders[type].filter(y => y.id !== x.id);
+				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
+				this.state.myOrders[type] = this.state.myOrders[type].filter(y => y.id !== x.id);
+				}
+			} else if (this.state.orders[type].find(y => y.id === x.id)) {
+				this.state.orders[type] = this.state.orders[type].map(y => (y.id === x.id ? x : y));
+				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
+				this.state.myOrders[type] = this.state.myOrders[type].map(y => (y.id === x.id ? x : y));
+				}
+			} else {
+				this.state.orders[type].push(x);
+				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
+				this.state.myOrders[type].push(x);
+				}
+			}
+		});
+	}
+	
+	updateTrades(newTrades, token, user) {
+		const newTradesTransformed = newTrades
+		.map(x => x = new Trade(x));
+	
+		if (!this.state.trades) this.state.trades = [];
+		if (!this.state.myTrades) this.state.myTrades = [];
+		newTradesTransformed.forEach((x) => {
+			if (!this.state.trades.find(y => y.txHash === x.txHash)) {
+				this.state.trades.push(x);
+				if (x.buyer.toLowerCase() === this._account.account.address.toLowerCase() ||
+				x.seller.toLowerCase() === this._account.account.address.toLowerCase()) {
+				this.state.myTrades.push(x);
+				}
+			};
+		});
+		/*this.state.trades = this.state.trades
+		  .sort((a, b) => new Date(b.date) - new Date(a.date) || b.amount - a.amount);
+		this.state.myTrades = this.state.myTrades
+		  .sort((a, b) => new Date(b.date) - new Date(a.date) || b.amount - a.amount);*/
+	
+	}
+	
+	toWei(eth, decimals){
+		return new BigNumber(String(eth))
+		.times(new BigNumber(10 ** decimals));
+	}
 }

@@ -63,6 +63,12 @@ export class EtherscanService {
     let dt = new Date(parseInt(unix_tm)*1000); // Devuelve más 2 horas
     let  strDate = dt.getUTCDate()+"-"+(dt.getUTCMonth()+1)+"-"+dt.getUTCFullYear();
     return strDate;
+	}
+	getTokensTransfers(addr){
+		let network = (this._web3.network == 1)? "": "-ropsten"
+    let url = 'https://api'+network+'.etherscan.io/api?module=account&action=tokentx&address='+addr+'&startblock=0&endblock=99999999&sort=asc&apikey='+this.apikey;
+   
+    return this.http.get(url).map(res => res.json());
   }
 
 

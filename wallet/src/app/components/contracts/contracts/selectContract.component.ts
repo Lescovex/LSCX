@@ -20,9 +20,8 @@ export class SelectContractPage implements OnInit{
   public functions = [];
   
   constructor(public _LCXcontract: LCXContractService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
-    this.getContracts();
     this._contractStorage.checkForAddress();
-    if(this.contracts.length == 0){
+    if(this._contractStorage.accContracts.length == 0){
       this.router.navigate(['/contracts/add'])
     }
     this.contractForm =  new FormGroup({
@@ -35,12 +34,6 @@ export class SelectContractPage implements OnInit{
   }
 
   ngOnInit(){
-    this.getContracts();
-  }
-
-  getContracts(){
-    let contracts =  this._contractStorage.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
-    this.contracts = contracts;
   }
   
   async setContract(contract){

@@ -10,10 +10,9 @@ import { Web3 } from '../../services/web3.service';
   templateUrl: './contracts.component.html'
 })
 export class ContractsComponent implements DoCheck{
-  contracts=[];
+
   selected = false;
   constructor(public _account:AccountService, private _LCXcontract: LCXContractService, private _contractStorage: ContractStorageService, private _web3: Web3) {
-    this.getContracts();
   }
   ngDoCheck(){
     if(Object.keys(this._LCXcontract.contractInfo).length > 0){
@@ -27,9 +26,5 @@ export class ContractsComponent implements DoCheck{
     var mainContent = document.getElementsByClassName('main-content')[0];
     return mainContent.getBoundingClientRect().height-110;
   }
-  
-  getContracts(){
-    let contracts =  this._contractStorage.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
-    this.contracts = contracts;
-  }
+
 }

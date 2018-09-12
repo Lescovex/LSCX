@@ -34,7 +34,7 @@
     <span class="title-button-left">Market</span>
 </button>
 
-<button class="link" routerLink="/settings" routerLinkActive="active" #settings="routerLinkActive">
+<button class="link" routerLink="/general-settings" routerLinkActive="active" #settings="routerLinkActive">
     <div>
         <img *ngIf="settings.isActive" src="~icons/generalsettings_icon.svg" alt="settings_icon">
         <img *ngIf="!settings.isActive" src="~icons/generalsettings_inactive_icon.svg" alt="settings_icon">        
@@ -42,7 +42,7 @@
     <span class="title-button-left">General Settings</span>
 </button>
 
-<div class="bottom" *ngIf="route=='' || route.indexOf('/wallet')!=-1 || route.indexOf('/contract')!=-1 || route.indexOf('/tokens')!=-1">
+<div class="bottom" *ngIf="route.indexOf('/general-settings')==-1">
     <button *ngIf="_account.account.hasOwnProperty('address')" class="btn-solid" (click)="openSelectAccount()">My accounts</button>
     <button class="btn-solid" (click)="openAddAccount()">Add account</button>
 </div>

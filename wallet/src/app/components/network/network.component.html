@@ -1,0 +1,7 @@
+<p (click)="toggleShow()"><span class="circle" [ngClass]="(net.chain == 1)? 'circle-blue' : 'circle-red'"></span>{{net.name}}<img class="right" src="~icons/select_icon.svg"></p>
+<div *ngIf="show" class="select-list">
+    <p>The default network for Ether transactions is MainNet (main network)</p>
+    <ul>
+        <li *ngFor="let net of networks" (click)="selectNetwork(net)">{{net.name}}</li>
+    </ul>
+</div>

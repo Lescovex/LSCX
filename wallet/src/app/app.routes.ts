@@ -63,7 +63,7 @@ const routes: Routes = [
       { path: 'history', component: MarketHistoryPage }
     ]
   },
-  { path: 'settings', component: SettingsComponent },
+  { path: 'general-settings', component: SettingsComponent },
   { path: '', redirectTo: '/wallet/global', pathMatch: 'full' },
   { path: '**', redirectTo: '/wallet/global', pathMatch: 'full' },
 ];

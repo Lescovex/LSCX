@@ -17,27 +17,28 @@ import { AppRoutingModule } from './app.routes';
 
 /*Components*/
 import { MyApp } from './app.component';
-import { NavComponent } from './components/navComponent/nav.component'
+import { NavComponent } from './components/navComponent/nav.component';
+import { NetWorkComponent } from './components/network/network.component';
 
-import { PaginatorComponent } from './components/paginator/paginator.component'
+import { PaginatorComponent } from './components/paginator/paginator.component';
 
-import { WalletComponent } from './components/wallet/wallet.component'
-import { GlobalPage } from './components/wallet/global/global.page'
-import { SendPage } from './components/wallet/send/send.page'
-import { ReceivePage } from './components/wallet/receive/receive.page'
-import { ListComponent } from './components/wallet/global/list.component'
-import { WsettingsPage } from './components/wallet/wsettings/wsettings.page'
+import { WalletComponent } from './components/wallet/wallet.component';
+import { GlobalPage } from './components/wallet/global/global.page';
+import { SendPage } from './components/wallet/send/send.page';
+import { ReceivePage } from './components/wallet/receive/receive.page';
+import { ListComponent } from './components/wallet/global/list.component';
+import { WsettingsPage } from './components/wallet/wsettings/wsettings.page';
 
-import { TokensComponent } from './components/tokens/tokens.component'
-import { GeneralPage } from './components/tokens/general/general.page'
-import { SendTokensPage } from './components/tokens/send/send-tokens.page'
-import { AddTokenPage } from './components/tokens/add/add.page'
+import { TokensComponent } from './components/tokens/tokens.component';
+import { GeneralPage } from './components/tokens/general/general.page';
+import { SendTokensPage } from './components/tokens/send/send-tokens.page';
+import { AddTokenPage } from './components/tokens/add/add.page';
 
-import { ContractsComponent } from './components/contracts/contracts.component'
-import { AddContractPage } from './components/contracts/add/add-contract.component'
-import { SelectContractPage } from './components/contracts/contracts/selectContract.component'
-import { ShowContract } from './components/contracts/contracts/showContract.component'
-import { HistoryPage } from './components/contracts/history/history.page'
+import { ContractsComponent } from './components/contracts/contracts.component';
+import { AddContractPage } from './components/contracts/add/add-contract.component';
+import { SelectContractPage } from './components/contracts/contracts/selectContract.component';
+import { ShowContract } from './components/contracts/contracts/showContract.component';
+import { HistoryPage } from './components/contracts/history/history.page';
 
 import { MarketComponent } from './components/market/market.component';
 import { TokensListComponent } from './components/market/tokens-list.component';
@@ -48,7 +49,7 @@ import { BuySellPage } from './components/market/buySell/buy-sell.page';
 import { MarketHistoryPage } from './components/market/history/market-history.page';
 import { CreditCardPage } from './components/wallet/creditCard/creditCard.component';
 
-import { SettingsComponent } from './components/settings/settings.component'
+import { SettingsComponent } from './components/settings/settings.component';
 
 /*Dialogs*/
 import { SelectAccountDialogComponent } from './components/navComponent/selectAccount-dialog.component';
@@ -58,7 +59,7 @@ import { ImportAccountDialogComponent } from './components/navComponent/importAc
 import { SendDialogComponent } from './components/dialogs/send-dialog.component';
 import { DeleteComponent } from './components/wallet/wsettings/confirm-delete.component';
 import { JSONDialogComponent } from './components/wallet/wsettings/json-dialog.component';
-import { PrivateKeyDialogComponent } from './components/wallet/wsettings/privatekey-dialog.component'
+import { PrivateKeyDialogComponent } from './components/wallet/wsettings/privatekey-dialog.component';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
@@ -95,6 +96,7 @@ import { InsuficientFoundsDirective } from './validators/founds-validator.direct
   declarations: [
     MyApp,
     NavComponent,
+    NetWorkComponent,
     WalletComponent,
     GlobalPage,
     SendPage,

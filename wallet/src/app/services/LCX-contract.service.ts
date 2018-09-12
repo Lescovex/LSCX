@@ -20,6 +20,7 @@ export class LCXContractService {
 
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _scan: EtherscanService, private _contract: ContractService){	
 	}
+
 	reset(){
 		this.contractInfo = {};
 		this.contractHist = [];
@@ -291,5 +292,5 @@ export class LCXContractService {
 		}
 		return type;
 	}
-	
+
 }
