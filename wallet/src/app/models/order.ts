@@ -23,6 +23,7 @@ export class Order {
     ethAvailableVolumeBase: number;
 
     constructor(object: any, type:string, token){
+
         this.id = object.id;
 		this.date = new Date(object.updated);
 		this.price = new BigNumber(object.price);

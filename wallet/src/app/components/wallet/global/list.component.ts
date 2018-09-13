@@ -34,8 +34,8 @@ export class ListComponent implements OnInit, OnChanges {
     }
     openExternal(txHash){
         const shell = require('electron').shell;
-        let net = (this._web3.network==1) ? "":"ropsten";
-        shell.openExternal('https://'+net+'.etherscan.io/tx/'+txHash);
+        let net = (this._web3.network==1) ? "":"ropsten.";
+        shell.openExternal('https://'+net+'etherscan.io/tx/'+txHash);
     }
 
     getItmes(): void {

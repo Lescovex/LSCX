@@ -23,6 +23,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
     ngOnInit(){
         this.net = (this._web3.network == 1)? this.networks[0]: this.networks[1];
     }
+
     ngDoCheck(){
         if(this._account.updated ==  true && this.loading){
             this.loading = false,
@@ -43,6 +44,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this.net = network;
         this._web3.setNetwork(network.chain);
         this._contractStorage.setAccContracts();
+        this._market.resetMarket();
         this._LCXcontract.reset();
         this._account.refreshAccountData();
         this._account.updated = false;

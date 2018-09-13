@@ -10,9 +10,13 @@ import { ContractService } from '../../../services/contract.service';
   templateUrl: './market-history.page.html'
 })
 export class MarketHistoryPage implements OnInit {
+  show: boolean =false;
   constructor(protected _account: AccountService, private _contract: ContractService) {
   }
   ngOnInit() {
+  }
+  toggleShow(){
+    this.show = !this.show;
   }
 
 

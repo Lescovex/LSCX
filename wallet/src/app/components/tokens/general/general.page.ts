@@ -24,8 +24,8 @@ export class GeneralPage implements OnInit, OnDestroy {
 
   openExternal(txHash){
     const shell = require('electron').shell;
-    let net = (this._web3.network == 1) ? "" : "ropsten";
-    shell.openExternal('https://'+net+'.etherscan.io/token/'+txHash+'?a='+this._account.account.address);
+    let net = (this._web3.network == 1) ? "" : "ropsten.";
+    shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+this._account.account.address);
   }
 
   ngOnDestroy(){

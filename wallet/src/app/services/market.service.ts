@@ -7,7 +7,6 @@ import { ContractService } from './contract.service';
 import { BigNumber } from 'bignumber.js';
 
 import { Order } from '../models/order';
-import { Trade } from '../models/trade';
 
 const io = require('socket.io-client');
 
@@ -23,23 +22,12 @@ export class MarketService {
 	socket;
 	state: any = {
 		orders: undefined,
-		trades: undefined,
 		myOrders: undefined,
-		myTrades: undefined
 	};
 
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService) {
-		this.setCongif();	
-		this.setContracts();
-		this.setToken();
-		this.setTokencontract();
-		this.socket = io.connect(this.config.socketServer[0], { transports: ['websocket'] });
-		
-		this.socket.on('connect', () => {
-			console.log('socket connected', this.socket);
-	  	});
+		this.setMarket();
 	}
-	
 
 	setCongif() {
 		let file = (this._web3.network == 1)? 'main': 'testnet';
@@ -69,6 +57,30 @@ export class MarketService {
 
 	setTokencontract() {
 		this.token.contract = this.contractToken.at(this.token.addr)
+	}
+
+	setMarket(){
+		this.setCongif();	
+		this.setContracts();
+		this.setToken();
+		this.setTokencontract();
+		this.socket = io.connect(this.config.socketServer[0], { transports: ['websocket'] });
+		
+		this.socket.on('connect', () => {
+			console.log('socket connected', this.socket);
+		  });
+		  this.waitForMarket();
+	}
+	resetMarket() {
+		console.log("before", this.state)
+		this.socket.close();
+		this.state = {
+
+			
+			myOrders: undefined,
+		};
+		this.setMarket();
+		console.log("after", this.state)
 	}
 	
 	getFunctionData(contract, functionName:string, params?) {
@@ -144,19 +156,14 @@ export class MarketService {
 		let interval;
 		this.getMarket();
 		this.socket.once('market', (market) => {
-			if('orders' in market && 'trades' in market){
+			console.log("market", market)
+			if('orders' in market){
 				this.updateOrders(market.orders, this.token, this._account.account.address);
-				this.updateTrades(market.trades, this.token, this._account.account.address);
 				this.socket.on('orders', (orders) => {
 				  	this.updateOrders(orders, this.token, this._account.account.address);
 				});
-				this.socket.on('trades', (trades) => {
-					this.updateTrades(trades, this.token, this._account.account.address);
-				});
-				console.log(this.state)
 				  clearInterval(interval);
 			}else{
-				console.log('aqui estamos')
 				interval = setTimeout(() => {
 					this.getMarketAndWait();
 				}, 2000);
@@ -173,6 +180,7 @@ export class MarketService {
 		  .map(x => x = new Order(x, 'sell', token)
 		  ),
 		};
+		console.log("new",newOrdersTransformed)
 		if (!this.state.orders) this.state.orders = { buys: [], sells: [] };
 		if (!this.state.myOrders) this.state.myOrders = { buys: [], sells: [] };
 		this.compareOrders(newOrdersTransformed, 'buys');
@@ -189,21 +197,25 @@ export class MarketService {
 		  buys: this.state.myOrders.buys.sort((a, b) =>
 			b.price - a.price || b.amountGet - a.amountGet),
 		};
+		console.log(this.state)
 	};
 
 	compareOrders(newOrdersTransformed, type){
 		newOrdersTransformed[type].forEach((x) => {
-			if ('deleted' in x || x.ethAvailableVolumeBase <= this.config.minOrderSize) {
+			if (x.deleted == true || x.ethAvailableVolumeBase <= this.config.minOrderSize) {
+				console.log('deleted')
 				this.state.orders[type] = this.state.orders[type].filter(y => y.id !== x.id);
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
 				this.state.myOrders[type] = this.state.myOrders[type].filter(y => y.id !== x.id);
 				}
 			} else if (this.state.orders[type].find(y => y.id === x.id)) {
+				console.log('ya está')
 				this.state.orders[type] = this.state.orders[type].map(y => (y.id === x.id ? x : y));
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
 				this.state.myOrders[type] = this.state.myOrders[type].map(y => (y.id === x.id ? x : y));
 				}
 			} else {
+				console.log('nuevo')
 				this.state.orders[type].push(x);
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
 				this.state.myOrders[type].push(x);
@@ -211,29 +223,7 @@ export class MarketService {
 			}
 		});
 	}
-	
-	updateTrades(newTrades, token, user) {
-		const newTradesTransformed = newTrades
-		.map(x => x = new Trade(x));
-	
-		if (!this.state.trades) this.state.trades = [];
-		if (!this.state.myTrades) this.state.myTrades = [];
-		newTradesTransformed.forEach((x) => {
-			if (!this.state.trades.find(y => y.txHash === x.txHash)) {
-				this.state.trades.push(x);
-				if (x.buyer.toLowerCase() === this._account.account.address.toLowerCase() ||
-				x.seller.toLowerCase() === this._account.account.address.toLowerCase()) {
-				this.state.myTrades.push(x);
-				}
-			};
-		});
-		/*this.state.trades = this.state.trades
-		  .sort((a, b) => new Date(b.date) - new Date(a.date) || b.amount - a.amount);
-		this.state.myTrades = this.state.myTrades
-		  .sort((a, b) => new Date(b.date) - new Date(a.date) || b.amount - a.amount);*/
-	
-	}
-	
+		
 	toWei(eth, decimals){
 		return new BigNumber(String(eth))
 		.times(new BigNumber(10 ** decimals));

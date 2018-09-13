@@ -20,14 +20,14 @@ export class TokensListComponent {
   }
 
   search(input?){
-    let tokens = this._market.config.tokens;
+    let tokens = this._market.config.tokens.sort((a, b)=> (a.name).localeCompare(b.name));
     let LCXcontracts: any[] =  this._contractStorage.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
-    LCXcontracts.forEach(contract =>{
+    /*LCXcontracts.forEach(contract =>{
       if(tokens.findIndex(tk=>tk.addr.toUpperCase() == contract.address.toUpperCase())== -1){
         let tokenP = { addr: contract.address, name: contract.symbol, decimals: contract.decimals };
         tokens.push(tokenP);
       }
-    })
+    })*/
     /*if('tokens' in this._account.account){
       this._account.account.tokens.forEach(token=>{
         if(tokens.findIndex(tk=>tk.addr.toUpperCase()==token.contractAddress.toUpperCase())== -1){

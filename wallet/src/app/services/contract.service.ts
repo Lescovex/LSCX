@@ -32,8 +32,6 @@ export class ContractService {
 	}
 
 	getFunctionData(contractInst,functionName:string, params?){
-		console.log(params)
 		return contractInst[functionName].getData(...params);
-	}
-	
+	}	
 }

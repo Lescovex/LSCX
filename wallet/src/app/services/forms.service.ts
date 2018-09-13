@@ -45,7 +45,7 @@ export class FormsService {
     addControls(inputs, form): FormGroup{
         inputs.forEach(input=>{
             input = this.getInputType(input);
-            let value= (input.name=="initialSupply" || input.name=="contractMaxSupply")? 0 :"";
+            let value= (input.name=="initialSupply" || input.name=="contractMaxSupply")? 0.0000 :"";
             let validators = this.getValidators(input)
            form.addControl(input.name, new FormControl(value, validators));
           })

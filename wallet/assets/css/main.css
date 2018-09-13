@@ -247,7 +247,7 @@ button {
 }
 
 .content {
-    padding: 15px 30px 15px 20px;
+    padding: 15px 20px 15px 20px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -538,9 +538,30 @@ p.error {
     background-color: #E66978;
 }
 
+.auto-h{
+    position: fixed;
+    bottom:50px;
+    top: 220px;
+    left: 270px;
+    right: 15px;
+}
+
+#terms{
+    top: 395px;
+    margin-right:5px;
+}
+
+.scrollbar::-webkit-scrollbar {
+    margin: -15px;
+}
+  
+#terms p{
+    line-height: 1.5em;
+    padding: 10px 0;
+}
+
 .scroll {
     overflow-y: scroll;
-    margin-right: -15px;
     padding-right: 10px;
 }
 
@@ -649,6 +670,16 @@ input[type="radio"]:checked+label span {
     z-index: 2;
     max-height: 400px;
     overflow-y: auto;
+}
+.overlay {
+    z-index: 1;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 100%;
+    opacity: 0.5;
+    background-color: black;
 }
 #token-list{
     top: 15px;
