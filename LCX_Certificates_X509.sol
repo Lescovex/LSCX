@@ -1,10 +1,9 @@
 pragma solidity ^0.4.20;
 
-
-
 /*
     Copyright 2018, Vicent Nos & Enrique Santos
-
+    
+    License:
     https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
     
 
