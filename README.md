@@ -1,4 +1,4 @@
-# LCX
+# Lescovex
 Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes
 
 ## Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
