@@ -1,5 +1,5 @@
-<div *ngIf="pendingTx else serviceStatus" class="round backWhite">
-    <div *ngIf="pendingTx" class="cardValues">
+<div *ngIf="pendingTx else serviceStatus" class="backWhite">
+    <div *ngIf="pendingTx == true" class="cardValues">
         <p class="title">General status: <span>{{checkResponseStatus}}</span></p>
         <p class="title">Pay IN status: <span>{{checkResponseIn}}</span></p>
         <p class="title">Pay OUT status: <span>{{checkResponseOut}}</span></p>
@@ -11,18 +11,17 @@
         </span>
         <button type="button" name="button" class="btn-black" (click)="backPendingTx()">Back</button>
     </div>
-    <div *ngIf="checkResponseOut == true" class="cardValues">
+    <div *ngIf="successTx == true" class="cardValues">
         <span class="block">
-                <img src="~icons/correct_icon.svg">
-                <h1 class="title inlineBlock">{{txtResponseOut}}</h1>
+            <img src="~icons/correct_icon.svg">
+            <h1 class="title inline">{{txtResponseIn}}</h1>
         </span>
-
         <small class="grey block">* Remember that this action may take up <span class="red bold">72 hours</span>.</small>
         <button type="button" name="button" class="btn-inverse" (click)="backPendingTx()">Continue</button>
     </div>
 </div>
 <ng-template #serviceStatus>
-    <div *ngIf="serviceStatus else down" class="round backWhite">
+    <div *ngIf="serviceStatus else down" class="backWhite">
         <div *ngIf="inputData else detailTx" class="cardValues">
             <div>
                 <label for="Amount" class="title">Amount to withdraw in €:</label>
@@ -47,7 +46,7 @@
 </ng-template>
 
 <ng-template #detailTx>
-    <div class="round backWhite cardValues">
+    <div class="backWhite cardValues displayInput">
         <h1 class="">Transaction detail:</h1>
         <div>
             <span class="title ">Spark Card Receiver Number:</span>
@@ -58,12 +57,12 @@
             <p class="">{{selfAccount}}</p>
         </div>
         <div>
-            <span class="title ">to:</span>
+            <span class="title ">To:</span>
             <p class="">{{ethAddr}}</p>
         </div>
         <div>
-            <span class="title ">amount:</span>
-            <p class="">{{(amountWei| converter:'fromWei':'ether')}}</p>
+            <span class="title ">Amount:</span>
+            <p class="">{{amountEth}} ETH</p>
         </div>
         <div>
             <span class="title ">Send before of:</span>
@@ -71,17 +70,17 @@
         </div>
     </div>
     <button type="button" name="button" class="btn-black" (click)="back()">Back</button>
-    <button type="button" name="button" class="btn-inverse" (click)="sendEth(ethAddr, amountWei)">Confirm</button>
+    <button type="button" name="button" class="btn-inverse" (click)="sendEth(ethAddr, amountEth)">Confirm</button>
 </ng-template>
 
 <ng-template #down>
-    <div class="round backWhite">
+    <div class="backWhite">
         <h1 class="red text-center">Service not available</h1>
     </div>
 </ng-template>
 
 <ng-template #success>
-    <div class="round backWhite">
+    <div class="backWhite">
         <h1 class="green text-center">Recharge successful</h1>
     </div>
 </ng-template>

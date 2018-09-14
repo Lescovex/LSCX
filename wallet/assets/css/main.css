@@ -89,7 +89,7 @@ h1 {
     flex-direction: row;
 }
 
-.flex1{
+.flex1 {
     flex-grow: 1;
     flex-basis: 0;
 }
@@ -102,12 +102,12 @@ header {
     position: relative;
 }
 
-header > img {
+header>img {
     max-height: 30px;
     margin: 25px 0 0 25px;
 }
 
-#network-select{
+#network-select {
     position: absolute;
     bottom: 25px;
     right: 25px;
@@ -118,15 +118,18 @@ header > img {
     background-color: rgba(255, 255, 255, 0.05);
     background-color: rgba(255, 255, 255, 0.1)
 }
-#network-select p{
+
+#network-select p {
     color: #888;
     padding: 6px 15px;
 }
-#network-select .select-list{
-    top:29px;
+
+#network-select .select-list {
+    top: 29px;
     left: 0;
 }
-#network-select .select-list>p{
+
+#network-select .select-list>p {
     margin: 10px;
 }
 
@@ -293,20 +296,21 @@ button {
 .info-list li {
     padding: 3px 0;
 }
-.circle{
-    width:14px;
+
+.circle {
+    width: 14px;
     height: 14px;
-    border-radius:50%;
+    border-radius: 50%;
     display: inline-block;
     margin-right: 8px;
 }
 
-.circle-blue{
-      background-color: #4A90E2;
+.circle-blue {
+    background-color: #4A90E2;
 }
 
-.circle-red{
-      background-color: #E66978;
+.circle-red {
+    background-color: #E66978;
 }
 
 .green {
@@ -372,11 +376,12 @@ select {
     margin-bottom: 20px;
     background-color: #fff;
 }
+
 input,
 div.input-container,
 .input,
 .whiteBox,
-select{
+select {
     height: 44px;
 }
 
@@ -389,8 +394,9 @@ textarea {
     resize: none;
 }
 
-.whiteBox, .whiteBox-extra {
-    border:none;
+.whiteBox,
+.whiteBox-extra {
+    border: none;
     margin-bottom: 10px;
     overflow: hidden;
 }
@@ -496,7 +502,6 @@ p.error {
 }
 
 .btn-black {
-    height: 40px;
     padding: 0 40px;
     border-radius: 5px;
     color: #272d33;
@@ -538,24 +543,24 @@ p.error {
     background-color: #E66978;
 }
 
-.auto-h{
+.auto-h {
     position: fixed;
-    bottom:50px;
+    bottom: 50px;
     top: 220px;
     left: 270px;
     right: 15px;
 }
 
-#terms{
+#terms {
     top: 395px;
-    margin-right:5px;
+    margin-right: 5px;
 }
 
 .scrollbar::-webkit-scrollbar {
     margin: -15px;
 }
-  
-#terms p{
+
+#terms p {
     line-height: 1.5em;
     padding: 10px 0;
 }
@@ -651,6 +656,7 @@ input[type="radio"]:checked+label span {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .market-token {
     position: relative;
     overflow: visible;
@@ -662,15 +668,16 @@ input[type="radio"]:checked+label span {
     cursor: pointer;
 }
 
-.select-list{
+.select-list {
     position: absolute;
-    background-color:white;
+    background-color: white;
     border: 1px solid #ddd;
     padding-bottom: 10px;
     z-index: 2;
     max-height: 400px;
     overflow-y: auto;
 }
+
 .overlay {
     z-index: 1;
     position: fixed;
@@ -681,53 +688,66 @@ input[type="radio"]:checked+label span {
     opacity: 0.5;
     background-color: black;
 }
-#token-list{
+
+#token-list {
     top: 15px;
     left: 50px;
 }
 
-.select-list>div:first-child{
+.select-list>div:first-child {
     padding: 0 10px;
 }
-.select-list ul{
+
+.select-list ul {
     list-style-type: none;
-    
 }
-.select-list::-webkit-scrollbar-thumb{
-    border-left:1px solid #eee;
+
+.select-list::-webkit-scrollbar-thumb {
+    border-left: 1px solid #eee;
 }
-.select-list li{
+
+.select-list li {
     padding: 5px 10px;
 }
-.select-list li:hover{
+
+.select-list li:hover {
     background-color: #eee;
 }
-.amount-table{
-    width:100%;
+
+.amount-table {
+    width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
 }
-.amount-table th{
+
+.amount-table th {
     border-bottom: 1px solid grey;
 }
-.amount-table th, .amount-table td{
+
+.amount-table th,
+.amount-table td {
     padding: 5px 0;
 }
-.amount-table tr>*:first-child{
+
+.amount-table tr>*:first-child {
     text-align: left;
 }
-.amount-table tr>*:nth-child(2){
+
+.amount-table tr>*:nth-child(2) {
     text-align: center;
 }
-.amount-table tr>*:nth-child(3){
+
+.amount-table tr>*:nth-child(3) {
     text-align: right;
 }
-.market-action > div{
-    width:60%;
+
+.market-action>div {
+    width: 60%;
     padding-right: 10px;
 }
-.market-action button{
-    width:40%;
+
+.market-action button {
+    width: 40%;
     margin-top: 26px;
 }
 
