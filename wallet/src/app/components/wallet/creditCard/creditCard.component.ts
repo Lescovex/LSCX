@@ -392,6 +392,7 @@ export class CreditCardPage implements OnInit {
                 }, err => {},
             );
           }, 1000);
+          
       }
 
       checkAddress(receiverAddr): boolean {
