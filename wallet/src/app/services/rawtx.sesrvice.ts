@@ -64,11 +64,8 @@ export class RawTxService {
         let balance =  await this._web3.web3.toWei(this._account.account.balance,'ether');
         balance = parseInt(balance);
         console.log(cost ,balance)
-        if(cost>balance){ 
-            return new Error("Insuficient founds!");
-        }else{
-            return [tx,cost,amountW]
-        }
+
+        return [tx,cost,amountW]
 
     }
 

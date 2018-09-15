@@ -20,7 +20,8 @@ import { MarketService } from '../../services/market.service';
 export class SendDialogComponent{
   insufficient = false;
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService, private _market: MarketService) {
-    if(_web3.web3.toWei(this._account.account.balance,'ether') < data.cost ){
+    console.log(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) ,  data.total)
+    if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
       this.insufficient= true;
     }
   }

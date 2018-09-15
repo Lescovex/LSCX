@@ -541,6 +541,7 @@ p.error {
 .error-founds {
     color: white;
     background-color: #E66978;
+    border: none;
 }
 
 .auto-h {
