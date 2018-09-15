@@ -10,10 +10,6 @@ export class WalletService {
 
   constructor() {
     this.wallet = new Array();
-
-    //Hardcore localstorage wallet
-    //localStorage.setItem('ethAcc','[{"privateKey":"0x26399e744a8cd774fbeb91237dc8ab213069c54f6f703157ecce163b16be5e13","publicKey":"0x79ed76efac9de1e97bdb017b82f442a625f917e78cf9139dd2048570a68807bb3126036b5d7e29d5ba7e4c0bf3b26bcdeb77ac82bd7f07080173cbbb4a38a97e","address":"0x02FA9E97F9e92a5FDEf52F3A6a1cF048beb8C37b","name":"Wallet1"}]');
-    
     this.getFinishW();
     
   }

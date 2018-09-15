@@ -23,5 +23,8 @@ export class MarketComponent{
   }
   onSelect(show:boolean) {
     this.showList = show
-  } 
+  }
+  toggleShow() {
+    this.showList = ! this.showList;
+  }
 }

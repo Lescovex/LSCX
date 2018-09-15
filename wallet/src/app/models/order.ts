@@ -23,7 +23,10 @@ export class Order {
     ethAvailableVolumeBase: number;
 
     constructor(object: any, type:string, token){
-
+        this.amountGet = new BigNumber(object.amountGet);
+        this.amountGive = new BigNumber(object.amountGive);
+        this.tokenGet = object.tokenGet;
+        this.tokenGive = object.tokenGive;
         this.id = object.id;
 		this.date = new Date(object.updated);
 		this.price = new BigNumber(object.price);
@@ -43,19 +46,11 @@ export class Order {
 
     }
     setBuy(object,token){
-        this.amountGet = new BigNumber(object.amountGet);
-        this.amountGive = new BigNumber(object.amountGive);
-        this.tokenGet = object.tokenGet;
-        this.tokenGive = object.tokenGive;
         this.amount = this.toEth(object.amountGet, token.decimals).toNumber();
 		this.amountBase = this.toEth(object.amountGive, 18).toNumber();
 
     }
     setSell(object,token){
-        this.amountGet = new BigNumber(object.amountGive);
-        this.amountGive = new BigNumber(object.amountGet);
-        this.tokenGet = object.tokenGive;
-		this.tokenGive = object.tokenGet;
         this.amount = this.toEth(object.amountGive, token.decimals).toNumber();
 		this.amountBase = this.toEth(object.amountGet, 18).toNumber();
     }

@@ -20,7 +20,8 @@ export class TokensListComponent {
   }
 
   search(input?){
-    let tokens = this._market.config.tokens.sort((a, b)=> (a.name).localeCompare(b.name));
+    let tokens = this._market.config.tokens.filter(x=> x);
+    tokens.sort((a, b)=> (a.name).localeCompare(b.name));
     let LCXcontracts: any[] =  this._contractStorage.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
     /*LCXcontracts.forEach(contract =>{
       if(tokens.findIndex(tk=>tk.addr.toUpperCase() == contract.address.toUpperCase())== -1){
@@ -36,14 +37,15 @@ export class TokensListComponent {
         }
       })
     }*/
-    console.log(tokens)
     if(typeof(input)!="undefined"){
       tokens = tokens.filter(token=> token.name.toUpperCase().startsWith(input.toUpperCase()))
     }
     this.tokens =  tokens;
   }
   selectToken(token){
-    this._market.setToken(token);
+    console.log("cons",token)
+    this._market.resetSocket(token);
     this.show.emit(false);
+    
   }
 }

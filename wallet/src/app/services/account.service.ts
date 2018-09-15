@@ -44,7 +44,6 @@ export class AccountService{
       this.setTokens();
     
     this.router.navigate(['/wallet/global']);
-    
   }
   async refreshAccountData(){
       clearInterval(this.interval)

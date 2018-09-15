@@ -63,10 +63,9 @@ export class Web3 {
       })
     })
   }
-
-  async blockGas(){
+  async blockNumber() {
     let self = this;
-    let block = await new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject)=>{
       self.web3.eth.getBlockNumber((err, result)=>{
         if(err){
           reject(err)
@@ -75,6 +74,10 @@ export class Web3 {
         }
       })
     })
+  }
+  async blockGas(){
+    let self = this;
+    let block = this.blockNumber();
 
     console.log("block", block)
     return new Promise((resolve, reject)=>{

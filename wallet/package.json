@@ -39,6 +39,7 @@
     "got": "^8.3.0",
     "hammerjs": "^2.0.8",
     "human-standard-token-abi": "^1.0.2",
+    "js-sha256": "^0.9.0",
     "leveldown": "^3.0.0",
     "levelup": "^2.0.2",
     "node-loader": "^0.6.0",

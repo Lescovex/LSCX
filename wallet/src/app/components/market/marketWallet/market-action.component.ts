@@ -33,7 +33,7 @@ export class MarketActionComponent implements OnChanges{
 
         let dialogRef = this._dialog.openLoadingDialog(); 
         let params = [];
-        let tx: any[];
+        let tx;
         let value = 0;
         if(this.action != 'deposit' && this.token.name == 'ETH') {
             value = parseInt(this._web3.web3.toWei(form.controls.amount.value, 'ether'));
@@ -62,7 +62,7 @@ export class MarketActionComponent implements OnChanges{
         }
         dialogRef.close();
         if(tx instanceof Error) {
-
+            this._dialog.openErrorDialog("Unable to "+this.action, "You don't have enough founds", " ");
         } else {
             this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
         }
@@ -70,12 +70,8 @@ export class MarketActionComponent implements OnChanges{
     }
 
     async depositEth(params){
-        if(this.walletAmount<this.deltaAmount){
-            throw "You can't deposit more ETH than you have."
-        }else{
             let data = this._market.getFunctionData(this._market.contractEtherDelta, 'deposit');
-            return  await this._rawtx.createRaw(this._market.contractEtherDelta.address, params[0], {data:data});  
-        }      
+            return await this._rawtx.createRaw(this._market.contractEtherDelta.address, params[0], {data:data}) ;           
     }
 
     async withdrawEth(params){

@@ -11,20 +11,22 @@ import { AccountService } from '../../services/account.service'
 
 import { Contract } from '../../models/contract';
 import { ContractStorageService } from '../../services/contractStorage.service';
+import { MarketService } from '../../services/market.service';
 
 @Component({
   selector: 'send-dialog',
   templateUrl: './send-dialog.component.html'
 })
 export class SendDialogComponent{
-
-  constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService) {
-   }
+  insufficient = false;
+  constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService, private _market: MarketService) {
+    if(_web3.web3.toWei(this._account.account.balance,'ether') < data.cost ){
+      this.insufficient= true;
+    }
+  }
    
 
   async sendTx(pass){
-    //check pass
-
     let self = this;
     let error = "";
     let title = "";
@@ -39,7 +41,7 @@ export class SendDialogComponent{
       privateKey = this._account.getPrivateKey(pass)
     }catch(e){
       title = "Unable to complete transaction";
-      message = "Something went wrong"
+      message = "Something went wrong";
       error = e.message;
       self.dialogRef.close();
       let dialogRef = self.dialogService.openErrorDialog(title,message,error);
@@ -50,6 +52,7 @@ export class SendDialogComponent{
     }else{
       txs = this.data.tx
     }
+
     for(let i=0; i<txs.length; i++){
       txs[i].sign(privateKey);
       let serialized = "0x"+(txs[i].serialize()).toString('hex');
@@ -64,9 +67,19 @@ export class SendDialogComponent{
         self.dialogRef.close();
         let dialogRef = self.dialogService.openErrorDialog(title,message,error);
       }else{
-        let pending: any = await self._web3.getTx(sendResult);
+        if(this.data.action == "order") {
+          let hash = await this._market.orderHash(this.data.hashParams)
+          let sign = this._market.signOrder(hash, privateKey);
+          let order = await this._market.placeOrder(this.data.hashParams, sign);
+          console.log("order",sign, order)
+        }
+        let pending: any = null;
+        while(pending == null){
+          pending = await self._web3.getTx(sendResult);
+        }
+        console.log("pending",pending)
         pending.timeStamp = Date.now()/1000;
-        //console.log(pending)
+        console.log(pending)
         self._account.addPendingTx(pending);
         if(this.data.action == 'contractDeploy'){
           let contract =  new Contract();

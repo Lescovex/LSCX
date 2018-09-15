@@ -37,6 +37,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
 
     selectNetwork(network: any){
         if(this.net.chain == network.chain ){
+            this.show = !this.show;
             return false
         }
         this.loading = true;
@@ -44,7 +45,8 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this.net = network;
         this._web3.setNetwork(network.chain);
         this._contractStorage.setAccContracts();
-        this._market.resetMarket();
+        this._market.setMarket();
+        this._market.resetSocket();
         this._LCXcontract.reset();
         this._account.refreshAccountData();
         this._account.updated = false;

@@ -65,7 +65,7 @@ export class RawTxService {
         balance = parseInt(balance);
         console.log(cost ,balance)
         if(cost>balance){ 
-            throw "Insuficient founds!";
+            return new Error("Insuficient founds!");
         }else{
             return [tx,cost,amountW]
         }

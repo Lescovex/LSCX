@@ -12,8 +12,8 @@
     <div class="flex-row dist">
         <div class="flex1">
             <p class="black">Amount</p>
-            <p *ngIf="data.action == 'send'">ETH {{(data.amount| converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
-            <p *ngIf="data.action != 'send'">{{data.token}} {{data.amount}}</p>
+            <p *ngIf="data.action !=transfer">ETH {{(data.amount| converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
+            <p *ngIf="data.action == 'transfer'">{{data.token}} {{data.amount}}</p>
         </div>
         <div class="flex1">
             <p class="black">Fees</p>
@@ -25,13 +25,20 @@
         </div>
     </div>
 </div>
-
-<div class="dist">
-    <label class="title block">Password*</label>
-    <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" />
-    <p class="italic">Type your account password to continue.</p>
+<div *ngIf="insufficient" class="dist">
+    <p class="error-founds input text-center dist">You don't have sufficient founds</p>
+    <div class="buttons text-center">
+        <button class="btn-black half" (click)="closeDialog()">Back</button>
+    </div>
 </div>
-<div class="buttons">
-    <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
-    <button class="btn-inverse half right" (click)="sendTx(pass)">Send</button>
+<div *ngIf="!insufficient">
+    <div class="dist">
+        <label class="title block">Password*</label>
+        <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" />
+        <p class="italic">Type your account password to continue.</p>
+    </div>
+    <div class="buttons">
+        <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+        <button class="btn-inverse half right" (click)="sendTx(pass)">Send</button>
+    </div>
 </div>

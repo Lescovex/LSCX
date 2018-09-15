@@ -37,4 +37,20 @@ export class SendDialogService{
                 contract : contract},
         });
     }
+
+    openConfirmOrder(tx, to, amount, fees, total, action, hashParams){
+        return this.dialog.open(SendDialogComponent, {
+            width: '660px',
+            height: '400px',
+            data:{
+                tx: tx,
+                to: to,
+                amount: amount,
+                fees: fees,
+                total: total,
+                action: action,
+                hashParams: hashParams
+            },
+        });
+    }
 }

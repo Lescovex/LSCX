@@ -36,7 +36,7 @@
         <div class="half left" class="market-token">
             <p class="title" for="contract">Token <a (click)="toggleList()">{{_market.token?.name}}<img src="~icons/select_icon.svg"></a></p>
             <app-tokens-list *ngIf="showList" (show)="onSelect($event)" id="token-list" class="select-list scrollbar"></app-tokens-list>
-            <div *ngIf="show" class="overlay" (click)="toggleShow()"></div>
+            <div *ngIf="showList" class="overlay" (click)="toggleShow()"></div>
         </div>
         <router-outlet></router-outlet>
     </ng-template>

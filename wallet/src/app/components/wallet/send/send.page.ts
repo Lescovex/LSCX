@@ -62,8 +62,8 @@ export class SendPage implements OnInit {
     }else{
       tx =  await this._rawtx.createRaw(receiverAddr, amount, {data:trans_data})
     }
-    
-    this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send");
+
+    this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send"); 
   }
 
 }
