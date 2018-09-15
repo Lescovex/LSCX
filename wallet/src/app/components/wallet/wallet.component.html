@@ -29,11 +29,11 @@
             <p class="title-button-navbar">Receive</p>
         </div>
     </a>
-    <a routerLink="card" routerLinkActive="active" #sett="routerLinkActive">
+    <a *ngIf="_web3.network == 1" routerLink="card" routerLinkActive="active" #card="routerLinkActive" >
         <div>
             <span>
-                <img *ngIf="sett.isActive" src='~icons/walletsettings_icon.svg'>
-                <img *ngIf="!sett.isActive" src='~icons/walletsettings_inactive_icon.svg'>
+                <img *ngIf="card.isActive" src='~icons/token_generaltab_icon.svg'>
+                <img *ngIf="!card.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Withdraw Eth</p>
         </div>

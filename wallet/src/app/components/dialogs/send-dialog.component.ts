@@ -58,6 +58,7 @@ export class SendDialogComponent{
       let serialized = "0x"+(txs[i].serialize()).toString('hex');
       console.log(serialized)
       let sendResult = await this._web3.sendRawTx(serialized);
+     
       self.dialogRef.close();
 
       if(sendResult instanceof Error){
@@ -73,11 +74,11 @@ export class SendDialogComponent{
           let order = await this._market.placeOrder(this.data.hashParams, sign);
           console.log("order",sign, order)
         }
+
         let pending: any = null;
         while(pending == null){
           pending = await self._web3.getTx(sendResult);
         }
-        console.log("pending",pending)
         pending.timeStamp = Date.now()/1000;
         console.log(pending)
         self._account.addPendingTx(pending);

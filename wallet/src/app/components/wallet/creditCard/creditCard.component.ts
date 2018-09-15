@@ -10,6 +10,8 @@ import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
 
+import { Router, NavigationEnd } from '@angular/router';
+
 @Component({
   selector: 'cardPage',
   templateUrl: './creditCard.component.html',
@@ -22,13 +24,10 @@ export class CreditCardPage implements OnInit {
     //  sandbox:    'https://sandbox.chip-chap.com'
     //  production: 'https://api.chip-chap.com'
 
-    private url:string = 'https://sandbox.chip-chap.com';
+    private url:string = 'https://api.chip-chap.com';
 
     public username:any;
-    public password:any;  
-    
-    //private clientId :string = "21_5jfviud5jbgocw8w8kg44wosg4kw4wkg4sw04kwkwskswwcgo8"; //add 21_ to client_id
-    //private clientSecret:string = "18s80pjcez6s8ks0444ok8ossskkw8ckc0o8scskkwkwkgoc8";
+    public password:any;
 
     //Credentials Variables
     private accessToken:string;
@@ -44,7 +43,10 @@ export class CreditCardPage implements OnInit {
 
     public serviceStatus;
     public pendingTx;
-
+    public cardDetailTx;
+    public inputData;//ngtemplate servicestatus
+    public confirmTx; 
+    public successTx;
 
     //input variables
     public inputAmount;
@@ -61,15 +63,12 @@ export class CreditCardPage implements OnInit {
     public tx_id:number;
     public ethAddr; //chipchap eth account
     public amountWei;
+    public amountEth;
     public timeLeft;
-
-    public cardDetailTx;
-    public inputData;
+    public scale;
+   
 
     public loadingD;
-
-
-
 
     //Control status
     public checkResponseIn;
@@ -94,16 +93,8 @@ export class CreditCardPage implements OnInit {
     }
 
 
-    constructor(private dialog: MdDialog, private http: Http, public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
-       /* this.interval = setInterval(() =>{
-            this.chipchapAccess().then(
-              result => {
-                  console.log("Auto Access");
-                    }, err => {},
-            );
-          }, 3000000);*/
-        
-
+    constructor(private dialog: MdDialog, private http: Http, public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService, private router : Router) {
+   
           if(localStorage.getItem('pendingTx')){
             let x = localStorage.getItem('pendingTx'); 
             this.tx_id = JSON.parse(x);
@@ -114,6 +105,7 @@ export class CreditCardPage implements OnInit {
         this.pendingTx = null;
         this.serviceStatus = true;
         this.inputData = true;
+        this.successTx = null;
         await this.chipchapSwiftStatus();
         localStorage.removeItem('pendingTx');
     }
@@ -126,9 +118,6 @@ export class CreditCardPage implements OnInit {
             this.pendingTx = true;
             await this.chipchapSwiftResponse();
             
-
-            
-          
           }else{
             this.serviceStatus = true;
             this.inputData = true;
@@ -164,11 +153,11 @@ export class CreditCardPage implements OnInit {
         if(data == "available"){
             this.serviceStatus = true;
         }else{
-            this.serviceStatus = false;
+            this.serviceStatus = null;
         }        
     }
 
-    setTxInfo(tx, addr, q, t, to, s){
+    setTxInfo(tx, addr, q, t, to, s, scl){
         this.tx_id = tx;
         this.ethAddr = addr;
         this.amountWei = q;
@@ -179,6 +168,14 @@ export class CreditCardPage implements OnInit {
         this.fiatAmount = s;
 
         this.inputData = null;
+        this.confirmTx = true;
+        this.scale = scl;
+        console.log("this.scale!!!!",this.scale);
+        
+        this.amountEth = this.amountWei/Math.pow(10,this.scale);
+        
+        console.log("amount in Eth????", this.amountEth);
+        
         this.loadingD.close();
     }
 
@@ -212,9 +209,7 @@ export class CreditCardPage implements OnInit {
                     disableClose: true,
                   });
 
-                //BEFORE PROD: change btc to eth
-                //eth not avaiable in sandbox
-                let path = "/swift/v1/btc/spark";
+                let path = "/swift/v1/eth/spark";
                 
                 let amountX = this.inputAmount*100;
                 
@@ -233,7 +228,7 @@ export class CreditCardPage implements OnInit {
                         let payIn = response.pay_in_info;
                         let payOut = response.pay_out_info;
                         
-                        this.setTxInfo(txId,payIn.address, payIn.amount, payIn.expires_in, payOut.card_id, payOut.amount);
+                        this.setTxInfo(txId,payIn.address, payIn.amount, payIn.expires_in, payOut.card_id, payOut.amount, payIn.scale);
                                         
                     }, err =>{
                         console.log(err);
@@ -255,11 +250,10 @@ export class CreditCardPage implements OnInit {
         
     }
 
+
     //should change to eth in prod
     chipchapSwiftResponse(){
-        //let path = "/swift/v1/btc/spark/"+this.tx_id;
-        let path = "/swift/v1/btc/spark/5b91755dc13d8b7b488b4570"; //this force expired tx
-        
+        let path = "/swift/v1/eth/spark/"+this.tx_id;
 
             return new Promise((resolve, reject) => {
             let headers = new Headers();
@@ -281,10 +275,17 @@ export class CreditCardPage implements OnInit {
                 if(this.checkResponseIn == "expired"){
                     this.txtResponseIn = "Time is expired to pay in.";
                 }
-                if(this.checkResponseOut == true){
-                    this.txtResponseOut = "Transaction has been success."
+                if(this.checkResponseIn == "success"){
+                    this.setSuccess();
+                    this.txtResponseIn = "Transaction has been success.";
                 }
-                
+                if(this.checkResponseIn == "received"){
+                    this.setSuccess();
+                    this.txtResponseIn = "Transaction has been success.";
+                }
+                if(this.checkResponseIn == "created"){
+                    this.txtResponseIn = "Transaction has been created.";
+                }
                            
             }, err =>{
                 console.log(err);
@@ -292,9 +293,13 @@ export class CreditCardPage implements OnInit {
             });
         });
     }
-
+    setSuccess(){
+       this.successTx = true; 
+       console.log("setSuccess function?", this.successTx);
+       
+    }
     chipchapSwiftStatus(){
-        let path = "/swift/v2/hello/btc";
+        let path = "/swift/v2/hello/eth";
             //should change to eth in prod
 
             return new Promise((resolve, reject) => {
@@ -304,9 +309,12 @@ export class CreditCardPage implements OnInit {
             this.http.get(this.url +  path,  {headers: headers}).subscribe(res =>{
                 resolve(res.json());
                 let response = res.json();
+                console.log("response?", response);
+                
                 console.log("BEFORE PROD: should check parameters before to call setServiceStatus");
-
-                this.setServiceStatus(response.swift_methods["btc-spark"].status);
+                console.log(response.swift_methods["eth-spark"].status);
+                
+                this.setServiceStatus(response.swift_methods["eth-spark"].status);
                 
             }, err =>{
                 console.log(err);
@@ -338,32 +346,6 @@ export class CreditCardPage implements OnInit {
                 });
         });
     }
-    //test function
-    publicTikerByBtcCurrencyChipChap(){
-        let path = '/exchange/v1/ticker/btc';
-
-            return new Promise((resolve, reject) => {
-                let headers = new Headers();
-                let data = this.accessToken;
-                
-                headers.append('Authorization', data);
-                
-                this.http.get(this.url + path, {headers: headers}).subscribe(res =>{
-                    resolve(res.json());
-                    
-                    let response = res.json();
-                    
-                    let setData = JSON.stringify(response.data.EURxBTC);
-                    
-                    
-                    this.setPublicTikerByBtcCurrency(setData);
-                    
-                }, err =>{
-                    console.log(err);
-                    reject(err);
-                });
-        });
-    }
 
     async checkChange(data){
         await this.publicTikerByEthCurrencyChipChap();
@@ -376,49 +358,41 @@ export class CreditCardPage implements OnInit {
 
     async sendEth(receiverAddr: string, amount: number, trans_data? : string) {
         //BEFORE PROD: change otherAddress to receiverAddr
-        let otherAddress = "0x7df73b0fbc274766451111408673c442e04c3211";
-        console.log("sendData:",otherAddress, amount);
+        
+        console.log("sendData:",receiverAddr, amount);
+        
         await this.chipchapSwiftStatus();
 
-        let contador=0;
+        let count=0;
 
-        if(this.checkAmount(amount) == false || this.checkAddress(otherAddress) == false){
-            
+        if(this.checkAmount(amount) == false || this.checkAddress(receiverAddr) == false){
             return false;
         }
-        //change otherAmount to amount
-        let otherAmount = 1;
-        let tx =  await this._rawtx.createRaw(otherAddress, otherAmount);
-        this.sendDialogService.openConfirmSend(tx[0], otherAddress, tx[2],tx[1]-tx[2], tx[1], "send");
+        
+        let tx =  await this._rawtx.createRaw(receiverAddr, amount);
+        this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send");
 
         localStorage.setItem("pendingTx", JSON.stringify(this.tx_id));
+        this.pendingTx = true;
+        this.serviceStatus = null;
+        
         this.interval = setInterval(() =>{
             this.chipchapSwiftResponse().then(
               result => {
-                  console.log("swift response", result);
-                  console.log("check in", this.checkResponseIn);
-                  console.log("check out",this.checkResponseOut);
-                  console.log("check general status", this.checkResponseStatus);
-                  
-                  
-                  
-                this.pendingTx = true;
-                this.serviceStatus = null;
-                console.log(contador);
-                contador++;
-                    if(this.checkResponseOut == true){
+
+                this.chipchapSwiftResponse();
+ 
+                console.log(count);
+                count++;
+                    if(this.checkResponseIn == "received"){
+                        this.setSuccess();
                         clearInterval(this.interval);
-                        this.pendingTx = null;
-                        this.serviceStatus = true;
-                        localStorage.removeItem("pendingTx");
+                        this.router.navigate(["/wallet/global"]);
                     }
                 }, err => {},
             );
           }, 1000);
-        
-
-        
-        
+          
       }
 
       checkAddress(receiverAddr): boolean {
@@ -448,4 +422,5 @@ export class CreditCardPage implements OnInit {
           return true;
         }
       }
+
 }
