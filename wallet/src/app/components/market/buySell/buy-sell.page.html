@@ -7,7 +7,7 @@
         <div class="half left">
             <label class="title" for="amount">Amount to {{action}}</label>
             <div class="input-container" [ngClass]="{'error': submited  && (amount.invalid || eth.invalid)}">
-                <input type="number" placeholder="0.000" step="any"  name="amount" (input)="total()" [(ngModel)]="f.amount" ngModel required #amount="ngModel"/>
+                <input type="number" [placeholder]="0.+('0').repeat(_market.token.decimal)" step="any"  name="amount" (input)="total()" [(ngModel)]="f.amount" ngModel required #amount="ngModel"/>
                 <span class="right">{{_market.token.name}}</span>
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
@@ -42,6 +42,6 @@
             </p>
         </div>
         <p *ngIf="buyInCross != ''" class="clear dist">{{buyInCross}}</p>
-        <button type="submit" class="dist block" [ngClass]="(action=='buy')? ' btn warning': 'btn-inverse'">{{action | titlecase}} order</button>
+        <button type="submit" class="dist block" [ngClass]="(action=='buy')? 'btn-inverse' : 'btn warning'">{{action | titlecase}} order</button>
     </div>
 </form>

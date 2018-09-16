@@ -3,8 +3,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA }  from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Http, HttpModule } from '@angular/http';
 import { MaterialModule } from '@angular/material';
-import { MdInputModule, MdCheckboxModule, MdSidenavModule } from '@angular/material';
-import { MdCardModule, MdButtonModule, MD_DIALOG_DATA} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MdDialogModule } from '@angular/material';
@@ -47,6 +45,8 @@ import { MarketAmountsComponent} from './components/market/marketWallet/market-a
 import { MarketActionComponent} from './components/market/marketWallet/market-action.component';
 import { BuySellPage } from './components/market/buySell/buy-sell.page';
 import { MarketHistoryPage } from './components/market/history/market-history.page';
+import { MarketListComponent } from './components/market/history/market-list.component';
+
 import { CreditCardPage } from './components/wallet/creditCard/creditCard.component';
 
 import { SettingsComponent } from './components/settings/settings.component';
@@ -131,6 +131,7 @@ import { InsuficientFoundsDirective } from './validators/founds-validator.direct
     MarketWalletPage,
     BuySellPage,
     MarketHistoryPage,
+    MarketListComponent,
     TokensListComponent,
     MarketAmountsComponent,
     MarketActionComponent,
@@ -146,11 +147,7 @@ import { InsuficientFoundsDirective } from './validators/founds-validator.direct
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    MdSidenavModule,
     MdDialogModule,
-    MdCardModule,
-    MdButtonModule,
-    MdInputModule,
     AppRoutingModule,
   ],
   exports: [

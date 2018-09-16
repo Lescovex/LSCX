@@ -552,6 +552,10 @@ p.error {
     right: 15px;
 }
 
+#hist-market{
+    top: 300px;
+}
+
 #terms {
     top: 395px;
     margin-right: 5px;
@@ -715,18 +719,21 @@ input[type="radio"]:checked+label span {
     background-color: #eee;
 }
 
-.amount-table {
+.amount-table,
+.history-table{
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
 }
 
-.amount-table th {
+.amount-table th,
+.history-table th {
     border-bottom: 1px solid grey;
 }
 
 .amount-table th,
-.amount-table td {
+.amount-table td,
+{
     padding: 5px 0;
 }
 
@@ -737,8 +744,23 @@ input[type="radio"]:checked+label span {
 .amount-table tr>*:nth-child(2) {
     text-align: center;
 }
-
 .amount-table tr>*:nth-child(3) {
+    text-align: right;
+}
+.history-table th, td{
+    text-align: left;
+    padding: 10px 0;
+}
+.history-table tr>*:first-child{
+    width: 40%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 20px;
+}
+.history-table tr>*:nth-child(3),
+.history-table tr>*:nth-child(4),
+.history-table tr>*:nth-child(5)
+ {
     text-align: right;
 }
 
@@ -751,6 +773,7 @@ input[type="radio"]:checked+label span {
     width: 40%;
     margin-top: 26px;
 }
+
 
 .displayInput {
     border: none;

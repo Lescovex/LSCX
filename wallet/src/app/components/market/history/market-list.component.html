@@ -1,0 +1,63 @@
+<div id="hist-market" class="scroll scrollbar auto-h">
+    <table *ngIf="action=='myTrades'"class="history-table" >
+        <thead>
+            <tr>
+                <th>Transaction</th>
+                <th>Type</th>
+                <th>{{_market.token.name}}</th>
+                <th>ETH</th>
+                <th>{{_market.token.name}}/ETH</th>
+            </tr>
+        </thead>
+        <tr *ngIf="history.length == 0"><td colspan="5" class="collapse">There are no trades here</td></tr>
+        <tbody *ngFor="let trade of history, index as i" >
+            <tr>
+                <td class="pointer" (click)="openExternal(trade.txHash)">{{trade.txHash}}</td>
+                <td><p [ngClass]="(trade.side == 'buy')? 'green' : 'red'">{{trade.side | titlecase}} Order</p></td>
+                <td>{{trade.amount}}</td>
+                <td>{{trade.amountBase}}</td>
+                <td>{{trade.price}}</td>
+            </tr>
+        </tbody>   
+    </table>
+    <table *ngIf="action=='myOrders'" class="history-table" >
+        <thead>
+            <tr>
+                <th>{{_market.token.name}}/ETH</th>
+                <th>Available volume</th>
+                <th>Expires in</th>
+                <th>Cancel</th>
+            </tr>
+        </thead>
+        <tr *ngIf="history.length == 0"><td colspan="4" class="collapse">There are no orders here</td></tr>
+        <tbody *ngFor="let order of history, index as i" >
+            <tr>
+                <td>{{order.txHash}}</td>
+                <td><p>{{order.side | titlecase}} Order</p></td>
+                <td>{{order.amount}}</td>
+                <td>{{_web3.blockNumber()-order.expires}}</td>
+            </tr>
+        </tbody>       
+    </table>
+    <table *ngIf="action=='myFunds'" class="history-table" >
+        <thead>
+            <tr>
+                <th>Transaction</th>
+                <th>Type</th>
+                <th>{{_market.token.name}}</th>
+                <th>ETH</th>
+            </tr>   
+        </thead>
+        <tr *ngIf="history.length == 0"><td colspan="4" class="collapse">There are no funds</td></tr>
+        <tbody *ngFor="let fund of history, index as i" >
+            <tr>
+                <td class="pointer" (click)="openExternal(fund.txHash)">{{fund.txHash}}</td>
+                <td><p>{{fund.kind| titlecase}}</p></td>
+                <td *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</td>
+                <td *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</td>
+            </tr>
+        </tbody>   
+    </table>
+</div>
+
+<app-paginator *ngIf="page>1"(goPage)="goToPage($event)" [currentPage]="page" [perPage]="limit" [count]="totalPages"></app-paginator>

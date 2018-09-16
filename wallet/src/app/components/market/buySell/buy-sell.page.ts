@@ -49,6 +49,13 @@ export class BuySellPage implements OnInit {
       let price =new BigNumber(this.f.price);
       let tokenAmount = this.f.amount*Math.pow(10,this._market.token.decimals);
       let ethAmount = Math.floor(this.f.total*Math.pow(10,18));
+
+      if(this.action == "buy" && this.f.total >= this._market.etherdeltaBalances.eth || this.action == "sell" && this.f.amount >= this._market.etherdeltaBalances.token){
+        this.loadingDialog.close();
+        let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
+        return false
+      }
+      
       let amount = (this.action == 'buy')? ethAmount : tokenAmount;
       let matchs = this.getCross(amount, price);
       console.log(matchs)
@@ -111,9 +118,6 @@ export class BuySellPage implements OnInit {
           params = [this._market.token.addr, tokenAmount, ethAddr, ethAmount, block + this.f.expires, nonce]
       } else if (this.action == "sell" && this.f.amount <= this._market.etherdeltaBalances.token){
           params = [ethAddr, ethAmount, this._market.token.addr, tokenAmount, block +this.f.expires, nonce]
-      }else{
-          let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab. Enter the amount you want to deposit and press the 'Deposit' button.", " ")
-          return false
       }
       let hashParams : any[]= [this._market.contractEtherDelta.address].concat(params);
               
@@ -121,22 +125,14 @@ export class BuySellPage implements OnInit {
       let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder })
       
       this.loadingDialog.close();
-      if(tx instanceof Error) {
-
-      } else {
-          this.sendDialogService.openConfirmOrder(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "order", hashParams);
-      }
+      this.sendDialogService.openConfirmOrder(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "order", hashParams);
     }
 
     async trade(params){
         let data = await this._market.getFunctionData(this._market.contractEtherDelta,'trade',params);
         let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder });
         this.loadingDialog.close();
-        if(tx instanceof Error) {
-
-        } else {
-              this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
-        }
+        this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
     }
 
 }

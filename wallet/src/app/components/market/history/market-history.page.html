@@ -1,3 +1,7 @@
-<h1>Market history</h1>
-<div class="auto-h scroll scrollbar">
+<div class="dist clear">
+    <button [ngClass]="(action == 'myTrades') ? 'btn-solid':'btn-inverse'" (click)="activeButton('myTrades')">Trades</button>
+    <button class="extra" [ngClass]="(action == 'myOrders') ? 'btn-solid':'btn-inverse'"(click)="activeButton('myOrders')">Orders</button>
+    <button class="extra" [ngClass]="(action == 'myFunds') ? 'btn-solid':'btn-inverse'"(click)="activeButton('myFunds')">Funds</button>
 </div>
+
+<app-market-list [action]="action" [address]="_account.account.address" [history]="history"></app-market-list>
