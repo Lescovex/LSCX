@@ -1,23 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="28px" height="33px" viewBox="0 0 28 33" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
-    <title>Group 4</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="xplodde-symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="menu-contract-b" transform="translate(-31.000000, -104.000000)" stroke="#FFFFFF">
-            <g id="Group-4" transform="translate(31.000000, 104.000000)">
-                <g id="Group">
-                    <path d="M6.53142857,7.664 L0.788571429,7.664 L7.67885714,0.773714286 L7.67885714,6.51542857 C7.68,7.14971429 7.16571429,7.664 6.53142857,7.664 Z" id="Shape"></path>
-                    <path d="M22.6091429,7.664 L22.6091429,26.0388571 C22.6091429,26.6731429 22.0948571,27.1874286 21.4605714,27.1874286 L1.93714286,27.1874286 C1.30285714,27.1874286 0.788571429,26.6731429 0.788571429,26.0388571 L0.788571429,10.0331429" id="Shape"></path>
-                    <path d="M9.976,0.772571429 L21.4605714,0.772571429 C22.0948571,0.772571429 22.6091429,1.28685714 22.6091429,1.92114286 L22.6091429,7.66285714" id="Shape"></path>
-                </g>
-                <path d="M27.0742857,12.1291429 L27.0742857,30.504 C27.0742857,31.1382857 26.56,31.6525714 25.9257143,31.6525714 L6.40342857,31.6525714 C5.76914286,31.6525714 5.25485714,31.1382857 5.25485714,30.504 L5.25485714,29.6662857" id="Shape"></path>
-                <path d="M24.888,5.23885714 L25.9257143,5.23885714 C26.56,5.23885714 27.0742857,5.75314286 27.0742857,6.38742857 L27.0742857,12.1291429" id="Shape"></path>
-                <path d="M4.50857143,12.7074286 L18.8891429,12.7074286" id="Shape"></path>
-                <path d="M4.50857143,16.8171429 L18.8891429,16.8171429" id="Shape"></path>
-                <path d="M4.50857143,20.9257143 L18.8891429,20.9257143" id="Shape"></path>
-            </g>
-        </g>
-    </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 28 33" style="enable-background:new 0 0 28 33;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	.st1{fill:none;stroke:#FFFFFF;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+<title>Group 4</title>
+<desc>Created with Sketch.</desc>
+<g>
+	<path class="st0" d="M23.2,24.4l3.9,0v4.4c0,1.1-0.9,2-2,2h0c-1.1,0-2-0.9-2-2V4.1c0-1.1,0.9-2,2-2h0c1.1,0,2,0.9,2,2V8h-3.8"/>
+	<path class="st0" d="M25.5,30.9H2.8c-1.1,0-2-0.9-2-2V4.1c0-1.1,0.9-2,2-2h22.3"/>
+	<polygon class="st1" points="11.5,11.2 8.2,8.8 4.9,11.2 4.9,2.1 11.5,2.1 	"/>
+	<line class="st1" x1="4.3" y1="17.4" x2="20.3" y2="17.4"/>
+	<line class="st1" x1="4.3" y1="21.6" x2="20.3" y2="21.6"/>
+	<line class="st1" x1="4.3" y1="25.7" x2="20.3" y2="25.7"/>
+</g>
 </svg>

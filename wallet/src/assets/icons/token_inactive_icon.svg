@@ -3,28 +3,29 @@
 <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 26 26" style="enable-background:new 0 0 26 26;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:none;stroke:#FFFFFF;stroke-linecap:round;stroke-linejoin:round;}
-	.st1{fill:none;stroke:#FFFFFF;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:2,5;}
-	.st2{fill:#FFFFFF;}
+	.st0{opacity:0.5;}
+	.st1{fill:none;stroke:#FFFFFF;stroke-linecap:round;stroke-linejoin:round;}
+	.st2{fill:none;stroke:#FFFFFF;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:2,5;}
+	.st3{opacity:0.5;fill:#FFFFFF;}
 </style>
 <title>Page 1 Copy 2</title>
 <desc>Created with Sketch.</desc>
-<g id="xplodde-symbols_1_">
+<g id="xplodde-symbols_1_" class="st0">
 	<g id="off-token---general-copy" transform="translate(-179.000000, -28.000000)">
 		<g id="Page-1" transform="translate(179.000000, 28.000000)">
-			<path id="Stroke-7_1_" class="st0" d="M25.2,13.1c0,6.7-5.5,12.2-12.2,12.2S0.8,19.9,0.8,13.1S6.3,0.9,13,0.9S25.2,6.4,25.2,13.1
+			<path id="Stroke-7_1_" class="st1" d="M25.2,13.1c0,6.7-5.5,12.2-12.2,12.2S0.8,19.9,0.8,13.1S6.3,0.9,13,0.9S25.2,6.4,25.2,13.1
 				z"/>
 		</g>
 	</g>
 </g>
-<g id="xplodde-symbols_2_">
+<g id="xplodde-symbols_2_" class="st0">
 	<g id="off-token---general-copy_1_" transform="translate(-179.000000, -28.000000)">
 		<g id="Page-1_1_" transform="translate(179.000000, 28.000000)">
-			<path id="Stroke-7_2_" class="st1" d="M23.1,12.9C23.1,18.5,18.6,23,13,23S2.9,18.5,2.9,12.9S7.4,2.8,13,2.8S23.1,7.3,23.1,12.9z
+			<path id="Stroke-7_2_" class="st2" d="M23.1,12.9C23.1,18.5,18.6,23,13,23S2.9,18.5,2.9,12.9S7.4,2.8,13,2.8S23.1,7.3,23.1,12.9z
 				"/>
 		</g>
 	</g>
 </g>
-<path class="st2" d="M13.1,5.4l-4.6,8.2l4.6,6.8l4.5-6.8L13.1,5.4z M16.2,13.2l-3.2,1.3l-3.1-1.2l3.2-5.6L16.2,13.2z M13.1,18.4
+<path class="st3" d="M13.1,5.4l-4.6,8.2l4.6,6.8l4.5-6.8L13.1,5.4z M16.2,13.2l-3.2,1.3l-3.1-1.2l3.2-5.6L16.2,13.2z M13.1,18.4
 	l-2.6-3.8l2.6,1l2.6-1L13.1,18.4z"/>
 </svg>

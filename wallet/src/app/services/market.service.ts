@@ -367,9 +367,11 @@ export class MarketService {
 	getLocalState() {
 		if(localStorage.getItem('market')){
 			let market = JSON.parse(localStorage.getItem('market'));
-			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network in x);
-			if(index == -1){
-				this.state.myFunds = market[index][this._web3.network.toString()].myFunds.filter(x=>x.tokenAddr==0x0000000000000000000000000000000000000000 ||x.token.Addr==this.token.addr)
+			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network.toString() in x);
+			if(index != -1){
+				if('myFunds' in market[index][this._web3.network.toString()]) {
+					this.state.myFunds = market[index][this._web3.network.toString()].myFunds.filter(x=>x.tokenAddr==0x0000000000000000000000000000000000000000 ||x.token.Addr==this.token.addr)
+				}
 				if(this.token.addr in market[index][this._web3.network.toString()]){
 					this.state.myOrders = market[index][this._web3.network.toString()][this.token.addr].myOrders;
 					this.state.myTrades = market[index][this._web3.network.toString()][this.token.addr].myTrades;

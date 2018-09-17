@@ -2,8 +2,8 @@
     <a routerLink="contract-page" [class.disabled]="_contractStorage.accContracts.length == 0" routerLinkActive="active" #contract="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="contract.isActive" src='~icons/send_icon.svg'>
-                 <img *ngIf="!contract.isActive" src='~icons/send_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="contract.isActive" src='~icons/send_icon.svg'>
+                 <img class="top-nav-img" *ngIf="!contract.isActive" src='~icons/send_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Contracts</p>
         </div>
@@ -12,8 +12,8 @@
     <a routerLink="history" [class.disabled]="!selected || _contractStorage.accContracts.length == 0" routerLinkActive="active" #hist="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="hist.isActive" src='~icons/history_icon.svg'>
-                <img *ngIf="!hist.isActive" src='~icons/history_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="hist.isActive" src='~icons/history_icon.svg'>
+                <img class="top-nav-img" *ngIf="!hist.isActive" src='~icons/history_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Contract history</p>
         </div>
@@ -22,8 +22,8 @@
     <a routerLink="add" routerLinkActive="active" #add="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="add.isActive" src='~icons/newcontract_icon.svg'>
-                <img *ngIf="!add.isActive" src='~icons/newcontract_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="add.isActive" src='~icons/newcontract_icon.svg'>
+                <img class="top-nav-img" *ngIf="!add.isActive" src='~icons/newcontract_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Add</p>
         </div>

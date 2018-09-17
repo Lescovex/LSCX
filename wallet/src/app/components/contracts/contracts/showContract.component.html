@@ -2,10 +2,10 @@
 <div id="clear">
     <div>
         <div class="left">
-            <img class="left" *ngIf="contractInfo.type=='LCX_ABT'" src='~icons/LCX_ABT.png'>
-            <img class="left" *ngIf="contractInfo.type=='LCX_CIF'" src='~icons/LCX_CIF.png'>
-            <img class="left" *ngIf="contractInfo.type=='LCX_CYC'" src='~icons/LCX_CYC.png'>
-            <img class="left" *ngIf="contractInfo.type=='LCX_ISC'" src='~icons/LCX_ISC.png'>
+            <img class="left contract-show-icon" *ngIf="contractInfo.type=='LCX_ABT'" src='~icons/LCX_ABT.svg'>
+            <img class="left contract-show-icon" *ngIf="contractInfo.type=='LCX_CIF'" src='~icons/LCX_CIF.svg'>
+            <img class="left contract-show-icon" *ngIf="contractInfo.type=='LCX_CYC'" src='~icons/LCX_CYC.svg'>
+            <img class="left contract-show-icon" *ngIf="contractInfo.type=='LCX_ISC'" src='~icons/LCX_ISC.svg'>
             <div class="left">
                 <p class="contract-list-title">{{contractInfo.symbol}}-{{contractInfo.name}}</p>
                 <p class="contract-list-name">{{contractInfo.address}}</p>

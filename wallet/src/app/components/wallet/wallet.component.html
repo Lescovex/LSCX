@@ -3,8 +3,8 @@
     <a routerLink="global" routerLinkActive="active" #global="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="global.isActive" src='~icons/global_icon.svg'>
-                <img *ngIf="!global.isActive" src='~icons/global_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="global.isActive" src='~icons/global_icon.svg'>
+                <img class="top-nav-img" *ngIf="!global.isActive" src='~icons/global_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Global</p>
         </div>
@@ -13,8 +13,8 @@
     <a routerLink="send" routerLinkActive="active" #send="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="send.isActive" src='~icons/send_icon.svg'>
-                 <img *ngIf="!send.isActive" src='~icons/send_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="send.isActive" src='~icons/send_icon.svg'>
+                 <img class="top-nav-img" *ngIf="!send.isActive" src='~icons/send_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Send</p>
         </div>
@@ -23,8 +23,8 @@
     <a routerLink="receive" routerLinkActive="active" #rec="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="rec.isActive" src='~icons/receive_icon.svg'>
-                <img *ngIf="!rec.isActive" src='~icons/receive_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="rec.isActive" src='~icons/receive_icon.svg'>
+                <img class="top-nav-img" *ngIf="!rec.isActive" src='~icons/receive_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Receive</p>
         </div>
@@ -32,8 +32,8 @@
     <a *ngIf="_web3.network == 1" routerLink="card" routerLinkActive="active" #card="routerLinkActive" >
         <div>
             <span>
-                <img *ngIf="card.isActive" src='~icons/token_generaltab_icon.svg'>
-                <img *ngIf="!card.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="card.isActive" src='~icons/token_generaltab_icon.svg'>
+                <img class="top-nav-img" *ngIf="!card.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Withdraw Eth</p>
         </div>
@@ -41,8 +41,8 @@
     <a routerLink="wsettings" routerLinkActive="active" #sett="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="sett.isActive" src='~icons/walletsettings_icon.svg'>
-                <img *ngIf="!sett.isActive" src='~icons/walletsettings_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="sett.isActive" src='~icons/walletsettings_icon.svg'>
+                <img class="top-nav-img" *ngIf="!sett.isActive" src='~icons/walletsettings_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Account settings</p>
         </div>

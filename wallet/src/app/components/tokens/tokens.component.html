@@ -3,8 +3,8 @@
     <a routerLink="general" routerLinkActive="active" #general="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="general.isActive" src='~icons/token_generaltab_icon.svg'>
-                <img *ngIf="!general.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="general.isActive" src='~icons/token_generaltab_icon.svg'>
+                <img class="top-nav-img" *ngIf="!general.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">General</p>
         </div>
@@ -13,8 +13,8 @@
     <a routerLink="send-tokens" routerLinkActive="active" #sendTokens="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="sendTokens.isActive" src='~icons/send_icon.svg'>
-                 <img *ngIf="!sendTokens.isActive" src='~icons/send_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="sendTokens.isActive" src='~icons/send_icon.svg'>
+                 <img class="top-nav-img" *ngIf="!sendTokens.isActive" src='~icons/send_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Send</p>
         </div>
@@ -23,8 +23,8 @@
     <a routerLink="add" routerLinkActive="active" #add="routerLinkActive">
         <div>
             <span>
-                <img *ngIf="add.isActive" src='~icons/add_icon.svg'>
-                <img *ngIf="!add.isActive" src='~icons/add_inactive_icon.svg'>
+                <img class="top-nav-img" *ngIf="add.isActive" src='~icons/add_icon.svg'>
+                <img class="top-nav-img" *ngIf="!add.isActive" src='~icons/add_inactive_icon.svg'>
             </span>
             <p class="title-button-navbar">Add</p>
         </div>
