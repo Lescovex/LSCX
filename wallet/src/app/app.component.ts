@@ -16,9 +16,9 @@ export class MyApp implements OnInit {
   loadingD;
   interval;
   
-  constructor(private _account: AccountService, private dialog: MdDialog, private _web3: Web3, private router : Router, private _scan: EtherscanService) {
+  constructor(protected _account: AccountService, protected dialog: MdDialog, protected _web3: Web3, protected router : Router, protected _scan: EtherscanService) {
     if(this._scan.apikey=="" || this._web3.infuraKey == ""){
-      this.router.navigate(['/settings']);
+      this.router.navigate(['/general-settings']);
     }else{
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
