@@ -33,7 +33,7 @@ export class NewAccountDialogComponent {
     let error:string = "";
 
     if(this.checkPass(pass, pass2) == false){
-      console.log('error')
+      //console.log('error')
       return false
     }
     try{

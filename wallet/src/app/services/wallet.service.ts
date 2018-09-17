@@ -88,7 +88,7 @@ export class WalletService {
 
   delete(addr):void{
     let index = this.wallet.findIndex(x => x.address === addr);
-    console.log(index);
+    //console.log(index);
     if(index > -1){
       this.wallet.splice(index,1);
       localStorage.setItem('ethAcc',JSON.stringify(this.wallet));

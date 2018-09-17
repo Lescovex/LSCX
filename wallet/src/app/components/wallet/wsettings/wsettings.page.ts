@@ -63,7 +63,7 @@ export class WsettingsPage implements OnInit {
     if(pass==null || pass==""){
       return;
     }
-    console.log("json")
+    //console.log("json")
     let error:string = "";
 
     try{ 

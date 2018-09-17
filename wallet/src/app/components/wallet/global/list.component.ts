@@ -22,7 +22,7 @@ export class ListComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        console.log(this.items.length)
+        //console.log(this.items.length)
     }
     
     ngOnChanges(): void {

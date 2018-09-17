@@ -76,10 +76,10 @@ export class MarketHistoryPage implements DoCheck {
     let marketOrders =  this._market.state.myOrders;
     let buys = (typeof(marketOrders)=="undefined")? [] : marketOrders.buys;
     let sells = (typeof(marketOrders)=="undefined")? [] : marketOrders.sells;
-    console.log(buys, sells)
+    //console.log(buys, sells)
     let orders = buys;
     orders.concat(sells);
-    console.log("sells",orders)
+    //console.log("sells",orders)
     orders.sort((a,b)=>{
       return a.price - b.price || a.amountGet - b.amountGet
     })

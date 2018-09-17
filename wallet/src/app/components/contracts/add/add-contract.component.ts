@@ -41,13 +41,13 @@ export class AddContractPage {
       let inputs = [];
       //Remove prev controls
       if(this.contract != null){
-        console.log("dentro remove");
+        //console.log("dentro remove");
         inputs = this._LCXcontract.getConstructor(this.abi);
         this.constructorForm = this._forms.removeControls(inputs, this.constructorForm);
       }
       
       this.contract = contract;
-      console.log("get abi");
+      //console.log("get abi");
       this.abi = await this._LCXcontract.getAbi(contract);
       
       inputs = this._LCXcontract.getConstructor(this.abi);
@@ -98,11 +98,11 @@ export class AddContractPage {
       let tx = isContract
       if(typeof(tx)!= 'undefined' && tx.contractAddress == contractAddr){
         let type = await this._LCXcontract.checkType(tx.input);
-        console.log('type',type)
+        //console.log('type',type)
         if(type != ""){
           let contract = new Contract();
           let info= await this._LCXcontract.getContractModelData(type,contractAddr)
-          console.log("info",info)
+          //console.log("info",info)
           contract.importContract(contractAddr,tx.hash, type, this._account.account.address, info, this._web3.network);
           try{
             this._contractStorage.addContract(contract);

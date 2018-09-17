@@ -58,7 +58,7 @@ export class BuySellPage implements OnInit {
       
       let amount = (this.action == 'buy')? ethAmount : tokenAmount;
       let matchs = this.getCross(amount, price);
-      console.log(matchs)
+      //console.log(matchs)
 
       if(matchs.length>0){
         let testTrade = false;

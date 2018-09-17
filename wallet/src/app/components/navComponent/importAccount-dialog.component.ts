@@ -71,7 +71,7 @@ export class ImportAccountDialogComponent{
       return false
     }
 
-    console.log(importType)
+    //console.log(importType)
     try{
       if(importType=="keystore"){
         wallet.importAccountJSON(name, input, pass);
@@ -81,7 +81,7 @@ export class ImportAccountDialogComponent{
       if(!localStorage.getItem('acc')){
         account.getAccountData();
       } 
-      console.log("finish");
+      //console.log("finish");
     }catch(e){
       error=(e.name=="SyntaxError")? "Json interface has wrong format": e.message;
     }

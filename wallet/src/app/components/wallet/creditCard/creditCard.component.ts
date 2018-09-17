@@ -133,7 +133,7 @@ export class CreditCardPage implements OnInit {
         this.tokenType = cred.token_type;
         this.credentials = data;
 
-        console.log("credentials setted!");
+        //console.log("credentials setted!");
         
     }
     setPublicTikerByEthCurrency(data){
@@ -170,11 +170,11 @@ export class CreditCardPage implements OnInit {
         this.inputData = null;
         this.confirmTx = true;
         this.scale = scl;
-        console.log("this.scale!!!!",this.scale);
+        //console.log("this.scale!!!!",this.scale);
         
         this.amountEth = this.amountWei/Math.pow(10,this.scale);
         
-        console.log("amount in Eth????", this.amountEth);
+        //console.log("amount in Eth????", this.amountEth);
         
         this.loadingD.close();
     }
@@ -222,7 +222,7 @@ export class CreditCardPage implements OnInit {
                     this.http.post(this.url +  path, JSON.stringify(userData),  {headers: headers}).subscribe(res =>{
                         resolve(res.json());
                         let response = res.json();
-                        console.log("response????",response);
+                        //console.log("response????",response);
                         
                         let txId = response.id;
                         let payIn = response.pay_in_info;
@@ -231,7 +231,7 @@ export class CreditCardPage implements OnInit {
                         this.setTxInfo(txId,payIn.address, payIn.amount, payIn.expires_in, payOut.card_id, payOut.amount, payIn.scale);
                                         
                     }, err =>{
-                        console.log(err);
+                        //console.log(err);
                         reject(err);
                         this.loadingD.close();
                     });
@@ -268,10 +268,6 @@ export class CreditCardPage implements OnInit {
                 this.checkResponseIn = response.pay_in_info.status;
                 this.checkResponseOut = response.pay_out_info.status;
 
-                console.log(this.checkResponseIn);
-                console.log(this.checkResponseOut);
-                console.log(this.checkResponseStatus);
-           
                 if(this.checkResponseIn == "expired"){
                     this.txtResponseIn = "Time is expired to pay in.";
                 }
@@ -288,14 +284,13 @@ export class CreditCardPage implements OnInit {
                 }
                            
             }, err =>{
-                console.log(err);
+                //console.log(err);
                 reject(err);
             });
         });
     }
     setSuccess(){
        this.successTx = true; 
-       console.log("setSuccess function?", this.successTx);
        
     }
     chipchapSwiftStatus(){
@@ -309,15 +304,12 @@ export class CreditCardPage implements OnInit {
             this.http.get(this.url +  path,  {headers: headers}).subscribe(res =>{
                 resolve(res.json());
                 let response = res.json();
-                console.log("response?", response);
-                
-                console.log("BEFORE PROD: should check parameters before to call setServiceStatus");
-                console.log(response.swift_methods["eth-spark"].status);
+          
                 
                 this.setServiceStatus(response.swift_methods["eth-spark"].status);
                 
             }, err =>{
-                console.log(err);
+                //console.log(err);
                 reject(err);
             });
         });
@@ -336,12 +328,12 @@ export class CreditCardPage implements OnInit {
                     let response = res.json();
                    
                     let setData = JSON.stringify(response.data.EURxETH);
-                    console.log("setdata???????????", setData);
+       
                     
                     this.setPublicTikerByEthCurrency(setData);
                     
                 }, err =>{
-                    console.log(err);
+                    //console.log(err);
                     reject(err);
                 });
         });
@@ -351,7 +343,7 @@ export class CreditCardPage implements OnInit {
         await this.publicTikerByEthCurrencyChipChap();
         
         this.inputExpectedAmount = this.EURxETH * data;
-        console.log("expectedamount", this.inputExpectedAmount);
+       
         
         
     }
@@ -359,7 +351,7 @@ export class CreditCardPage implements OnInit {
     async sendEth(receiverAddr: string, amount: number, trans_data? : string) {
         //BEFORE PROD: change otherAddress to receiverAddr
         
-        console.log("sendData:",receiverAddr, amount);
+
         
         await this.chipchapSwiftStatus();
 
@@ -382,7 +374,7 @@ export class CreditCardPage implements OnInit {
 
                 this.chipchapSwiftResponse();
  
-                console.log(count);
+                //console.log(count);
                 count++;
                     if(this.checkResponseIn == "received"){
                         this.setSuccess();
@@ -398,11 +390,11 @@ export class CreditCardPage implements OnInit {
       checkAddress(receiverAddr): boolean {
         if(!EthUtil.isValidAddress(receiverAddr)){
           this.errors.receiver = "invalid receiver address";
-          console.log("invalid receiver addr");
+        
           
           return false
         }else{
-            console.log("valid receiver addr");
+    
             
           this.errors.receiver =  "";
           return true
@@ -412,12 +404,12 @@ export class CreditCardPage implements OnInit {
       checkAmount(amount):boolean{
         if(amount<0){
           this.errors.amount = "Can not send negative amounts of ETH";
-          console.log("invalid amount");
+  
           
           return false;
         }else{
           this.errors.amount ="";
-          console.log("valid amount");
+         
           
           return true;
         }

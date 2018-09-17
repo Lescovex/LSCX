@@ -67,7 +67,7 @@ export class FormsService {
             }
             values.push(value);
           })
-          console.log(values)
+          //console.log(values)
         return values;
     }
 

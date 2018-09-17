@@ -43,9 +43,9 @@ export class SelectContractPage implements OnInit{
     let dialofRef = this._dialog.openLoadingDialog();
 
     await this._LCXcontract.setContract(contract);
-    console.log("info",this._LCXcontract.contractInfo);
+    //console.log("info",this._LCXcontract.contractInfo);
     this._LCXcontract.functions =  this._LCXcontract.getFunctions();
-    console.log("functions",this.functions)
+    //console.log("functions",this.functions)
     dialofRef.close();
     this.selected = true;
   }

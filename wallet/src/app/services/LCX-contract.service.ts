@@ -33,7 +33,7 @@ export class LCXContractService {
 		return new Promise (function (resolve, reject) {
 			fs.readFile('./src/LCX-contracts/'+file+'.json', 'utf8', function (err,data) { 
 				if(data=="" || typeof(data)=='undefined'){
-					console.log(err)
+					//console.log(err)
 					resolve(data); 
 				}else{
 					resolve(JSON.parse(data)); 
@@ -106,7 +106,7 @@ export class LCXContractService {
 	}
 
 	async getContractData(): Promise<any[]>{
-		console.log(this.contract)
+		//console.log(this.contract)
 		let functions = this.contract.abi.filter(data=>{
 			return data['constant']==true && data['inputs'].length==0 && data.name!='name' && data.name!= 'totalSupply' && data.name !='symbol' && data.name!= 'standard' && data.name != 'decimals'
 		});

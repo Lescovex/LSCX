@@ -32,11 +32,11 @@ export class AddTokenPage implements OnInit {
       try{
         this.token.tokenSymbol = await this._token.getSymbol();
       }catch(e){
-        console.log(e)
+        //console.log(e)
         error = true;
       }
       if(!error){
-        console.log("sin erro")
+        
         this.token.tokenDecimal = await this._token.getDecimal();
         this.token.tokenName = await this._token.getName();
         this.token = await this._account.updateTokenBalance(this.token)
@@ -56,7 +56,7 @@ export class AddTokenPage implements OnInit {
 
     }else{
       if(this.isToken){
-        console.log(this.token.tokenSymbol,this.token.tokenDecimal,this._token.token )
+        //console.log(this.token.tokenSymbol,this.token.tokenDecimal,this._token.token )
         this._account.addToken(this.token),
         this.reset();
         this.router.navigate(['/tokens/general']);

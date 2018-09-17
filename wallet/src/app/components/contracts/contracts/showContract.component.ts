@@ -42,7 +42,7 @@ export class ShowContract implements OnInit{
         this.owner=info[1]
       }
     })
-    console.log("funct", this.funct) 
+    //console.log("funct", this.funct) 
   }
 
   getControl(controlName: string): AbstractControl{
@@ -56,7 +56,7 @@ export class ShowContract implements OnInit{
       this.submited = false;
       //Remove prev controls
       if(this.funct != null){
-        console.log("dentro remove");
+        //console.log("dentro remove");
         this.functionForm = this._forms.removeControls(this.funct.inputs, this.functionForm);
         if(this.funct.payable){
           this.functionForm.removeControl('ethAmount');
@@ -80,7 +80,7 @@ export class ShowContract implements OnInit{
     let params = this._forms.getValues(this.funct.inputs, this.functionForm, this.contractInfo.type);
     if(this.funct.constant){  
       let response = await this._LCXcontract.callFunction(this._LCXcontract.contract, this.funct.name, params);
-      console.log("response", response)
+      //console.log("response", response)
       if(this.funct.decimals == 'decimals'){
         let number = parseInt(response.toString()) /Math.pow(10,this.contractInfo.decimals);
 				let zero = '0'
@@ -99,7 +99,7 @@ export class ShowContract implements OnInit{
         amount =  parseFloat(this.getControl('ethAmount').value)
       }
       let tx =  await this._rawtx.createRaw(this.contractInfo.address, amount, {data:data})
-      console.log(tx)
+      //console.log(tx)
       dialogRef.close();
       //tx, to, amount, fees, total, action, token?
       this.sendDialogService.openConfirmSend(tx[0], this.contractInfo.address, tx[2],tx[1]-tx[2], tx[1], "send")
@@ -114,7 +114,7 @@ export class ShowContract implements OnInit{
   changeValue(inputName){
     let value = parseFloat(this.getControl(inputName).value).toFixed(this.contractInfo.decimals);
     this.functionForm.controls[inputName].setValue(value);
-    console.log(value,this.getControl(inputName).value)
+    //console.log(value,this.getControl(inputName).value)
   }
 
   goBack(){

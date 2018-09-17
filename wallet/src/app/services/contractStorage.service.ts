@@ -10,7 +10,7 @@ export class ContractStorageService {
     constructor(private _web3: Web3, private _account: AccountService){
         this.setContracts();
         this.setAccContracts();
-        console.log("CONTRACTS", this.contracts, this.accContracts)
+        //console.log("CONTRACTS", this.contracts, this.accContracts)
     }
 
     setContracts(){
@@ -26,7 +26,7 @@ export class ContractStorageService {
 
     addContract(contract){
             this.contracts.push(contract);
-            console.log("Add",this.contracts)
+            //console.log("Add",this.contracts)
             this.saveContracts();
  
     }
@@ -48,18 +48,18 @@ export class ContractStorageService {
                     pending.push(index)
                 }
             })
-            console.log("pending",pending)
+            //console.log("pending",pending)
             if(pending.length==0){
                 clearInterval(checkInterval)
             }
             for(let i=0; i<pending.length; i++){
                 let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);
-                console.log("cAddr",contractAddr)
+                //console.log("cAddr",contractAddr)
                 if(contractAddr!= null){
                     this.contracts[pending[i]].address = contractAddr
                     this.contracts[pending[i]].active = true;
                 }
-                console.log(this.contracts);
+                //console.log(this.contracts);
                 this.saveContracts();
             }
 
