@@ -98,9 +98,9 @@ export class BuySellPage implements OnInit {
     }
     getCross(amountGet, price){
       if(this.action == 'buy'){
-        return this._market.state.orders.sells.filter(x=>x.availableVolumeBase>=amountGet && x.price.eq(price))
+        return this._market.state.orders.sells.filter(x=>x.availableVolumeBase>=amountGet && parseFloat(x.price)==price)
       }else{
-        return this._market.state.orders.buys.filter(x=>x.availableVolume>=amountGet && x.price.eq(price));
+        return this._market.state.orders.buys.filter(x=>x.availableVolume>=amountGet && parseFloat(x.price)==price);
       }
     }
 

@@ -1,0 +1,21 @@
+<div>
+    <h1 class="text-center">Gas details<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<form class="dist" (ngSubmit)="confirm(form)" #form="ngForm">
+    <div class="half left">
+            <label class="title">Gas limit</label>
+            <input class="block" type="number" [customMin]="21000" required id="gasLimit" name="gasLimit" [(ngModel)]="data" [ngClass]="{'error': submited && gLimit.invalid}" ngModel required #gLimit="ngModel"/>
+    </div>
+    <div class="half right">
+        <label class="title block">Gas price</label>
+        <div class="input-container" [ngClass]="{'error': submited && gPrice.invalid }">
+            <input class="block" type="number" [customMin]="1" required id="gasPrice" name="gasPrice" [(ngModel)]="gasPrice" ngModel required #gPrice="ngModel" />
+            <span class="right">Gwei</span>
+        </div>            
+    </div>
+    <div class="buttons clear">
+        <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+        <button type="submit" class="btn-inverse half right" >Confirm</button>
+    </div>
+</form>
+

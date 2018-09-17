@@ -40,6 +40,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
             this.show = !this.show;
             return false
         }
+
         this.loading = true;
         this.dialog = this._dialog.openLoadingDialog();
         this.net = network;
@@ -51,6 +52,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
                 this._market.resetSocket();
                 this._LCXcontract.reset();
             if('address' in this._account.account){
+                this._contractStorage.setAccContracts();
                 this._account.refreshAccountData();
                 this._account.updated = false;
                 

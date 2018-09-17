@@ -5,6 +5,7 @@ import { MdDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from '../components/dialogs/message-dialog.component';
+import { GasDialogComponent } from '../components/dialogs/gas-dialog.component';
 
 
 
@@ -41,6 +42,13 @@ export class DialogService{
               title: title,
               result: result
             }
+          });
+    }
+    openGasDialog(gasLimit){
+        return this.dialog.open(GasDialogComponent, {
+            width: '660px',
+            height: '280px',
+            data: gasLimit
           });
     }
 }

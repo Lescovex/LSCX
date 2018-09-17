@@ -46,6 +46,7 @@ export class MarketListComponent implements OnInit, OnChanges {
     }
 
     async cancelOrder(order) {
+        console.log(order)
         let dialogRef = this._dialog.openLoadingDialog();
         let data = await this._market.getFunctionData(this._market.contractEtherDelta,'cancelOrder', [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.v, order.r, order.s])
         let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder });
