@@ -40,7 +40,7 @@ export class MarketActionComponent implements OnChanges{
         if(this.action != 'deposit' && this.token.name == 'ETH') {
             value = parseInt(this._web3.web3.toWei(form.controls.amount.value, 'ether'));
         } else if(this.token.name != 'ETH') {
-            value = parseFloat(form.controls.amount.value)*Math.pow(10,this.token.decimals);
+            value = (form.controls.amount.value*Math.pow(10,this.token.decimals));
             console.log("value",value)
         } else {
             value = form.controls.amount.value;

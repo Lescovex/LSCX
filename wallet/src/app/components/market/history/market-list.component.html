@@ -13,7 +13,8 @@
         <tbody *ngFor="let trade of history, index as i" >
             <tr>
                 <td class="pointer" (click)="openExternal(trade.txHash)">{{trade.txHash}}</td>
-                <td><p [ngClass]="(trade.side == 'buy')? 'green' : 'red'">{{trade.side | titlecase}} Order</p></td>
+                <td *ngIf="trade.buyer.toLowerCase() == address.toLowerCase()"><p class="green">Buy Order</p></td>
+                <td *ngIf="trade.seller.toLowerCase() == address.toLowerCase()"><p class="red">Sell Order</p></td>
                 <td>{{trade.amount}}</td>
                 <td>{{trade.amountBase}}</td>
                 <td>{{trade.price}}</td>
@@ -32,10 +33,10 @@
         <tr *ngIf="history.length == 0"><td colspan="4" class="collapse">There are no orders here</td></tr>
         <tbody *ngFor="let order of history, index as i" >
             <tr>
-                <td>{{order.txHash}}</td>
-                <td><p>{{order.side | titlecase}} Order</p></td>
-                <td>{{order.amount}}</td>
-                <td>{{_web3.blockNumber()-order.expires}}</td>
+                <td>{{order.price.toString() | number:"1.8-8":"en"}}</td>
+                <td>{{order.ethAvailableVolume| number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
+                <td>{{order.expires-blockNumber}}</td>
+                <td><a (click)="cancelOrder(order)">Cancel</a></td>
             </tr>
         </tbody>       
     </table>
@@ -53,8 +54,8 @@
             <tr>
                 <td class="pointer" (click)="openExternal(fund.txHash)">{{fund.txHash}}</td>
                 <td><p>{{fund.kind| titlecase}}</p></td>
-                <td *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</td>
-                <td *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</td>
+                <td><p *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>
+                <td><p *ngIf="fund.tokenAddr == '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>
             </tr>
         </tbody>   
     </table>

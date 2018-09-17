@@ -13,6 +13,7 @@ import { Web3 } from '../../../services/web3.service';
 })
 export class MarketHistoryPage implements DoCheck {
   action: string;
+  lastAction: string;
   history: any[] = [];
   currentToken: any;
   currentState:any;
@@ -20,41 +21,40 @@ export class MarketHistoryPage implements DoCheck {
 
   constructor(protected _account: AccountService, private _contract: ContractService, private _market: MarketService, private _dialog: DialogService, private _web3: Web3) {
     this.action = "myTrades";
-    this.getHistory();
+    this.lastAction = "myTrades";
+    this.getHistory(this.action);
     this.currentState = this._market.state.myTrades;
     this.currentToken = this._market.token.name; 
   }
 
-  ngDoCheck() {
+  async ngDoCheck() {
     if(this.currentToken != this._market.token.name){
       this.currentToken = this._market.token.name;
-      this.activeButton(this.action);
+      Promise.resolve().then(() => { this.activeButton(this.action)});
     }
 
-    if(JSON.stringify(this.currentState) != JSON.stringify(this._market.state[this.action])) {
+    if(JSON.stringify(this.currentState) != JSON.stringify(this._market.state[this.action]) && this.lastAction == this.action) {
+      this.lastAction = this.action;
       this.currentState = this._market.state[this.action];
-      this.getHistory();
+      this.getHistory(this.action);
     }
   }
 
-  async activeButton(action){
-    this.action = action;
+  activeButton(action){
     this.loadingDialog = this._dialog.openLoadingDialog();
-    this.getHistory();
-    if(this._market.state.initialState == true) {
-      this.loadingDialog.close();
-    }else{
-      let interval = setInterval(()=>{
-        if(this._market.state.initialState == true){
-          this.loadingDialog.close();
-          clearInterval(interval);
-        }
-      },500)
-    }
+
+    let interval = setInterval(()=>{
+      if(this._market.state.initialState == true){
+        this.getHistory(action);
+        this.action = action;
+        this.loadingDialog.close();
+        clearInterval(interval);
+      }
+    },500)
   }
 
-  getHistory() {
-    switch(this.action){
+  getHistory(action) {
+    switch(action){
       case "myTrades":
         this.history = this.getMyTrades();
         break;
@@ -73,12 +73,13 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyOrders(): any[] {
-    let marketOrders =  this._market.state.myOrders
+    let marketOrders =  this._market.state.myOrders;
     let buys = (typeof(marketOrders)=="undefined")? [] : marketOrders.buys;
     let sells = (typeof(marketOrders)=="undefined")? [] : marketOrders.sells;
-    let orders = [];
-    orders.concat(buys); 
+    console.log(buys, sells)
+    let orders = buys;
     orders.concat(sells);
+    console.log("sells",orders)
     orders.sort((a,b)=>{
       return a.price - b.price || a.amountGet - b.amountGet
     })

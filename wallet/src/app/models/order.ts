@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 export class Order {
     id: string;
     date: Date;
-    price: BigNumber;
+    price: string;
     amountGet: BigNumber;
     amountGive: BigNumber;
     expires: number;
@@ -29,7 +29,7 @@ export class Order {
         this.tokenGive = object.tokenGive;
         this.id = object.id;
 		this.date = new Date(object.updated);
-		this.price = new BigNumber(object.price);
+		this.price = object.price;
 		this.expires = Number(object.expires);
 		this.nonce = Number(object.nonce);
 		this.user = object.user;

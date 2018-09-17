@@ -1,6 +1,9 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { Web3 } from '../../../services/web3.service';
 import { MarketService } from '../../../services/market.service';
+import { RawTxService } from '../../../services/rawtx.sesrvice';
+import { DialogService } from '../../../services/dialog.service';
+import { SendDialogService } from '../../../services/send-dialog.service';
 
 @Component({
   selector: 'app-market-list',
@@ -11,20 +14,21 @@ export class MarketListComponent implements OnInit, OnChanges {
     @Input() address: "string";
     @Input() action: "string";
 
-    loading = false;
-    totalPages = 0;
-    page = 1;
-    limit = 15;
+    blockNumber;
+    loading:boolean = false;
+    totalPages:number = 0;
+    page:number = 1;
+    limit:number = 15;
 
     items: any[];
 
-    constructor(private _web3: Web3, protected _market: MarketService) {
+    constructor(private _web3: Web3, protected _market: MarketService, private _rawtx: RawTxService, private _dialog: DialogService, private _sendDialogService: SendDialogService) {
     }
 
     ngOnInit(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        console.log(this.items.length)
+       setInterval(async()=>{this.blockNumber = await this._web3.blockNumber()})
     }
     
     ngOnChanges(): void {
@@ -34,10 +38,19 @@ export class MarketListComponent implements OnInit, OnChanges {
         }
   
     }
+
     openExternal(txHash){
         const shell = require('electron').shell;
         let net = (this._web3.network==1) ? "":"ropsten.";
         shell.openExternal('https://'+net+'etherscan.io/tx/'+txHash);
+    }
+
+    async cancelOrder(order) {
+        let dialogRef = this._dialog.openLoadingDialog();
+        let data = await this._market.getFunctionData(this._market.contractEtherDelta,'cancelOrder', [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.v, order.r, order.s])
+        let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder });
+        dialogRef.close();
+        this._sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
     }
 
     getItmes(): void {

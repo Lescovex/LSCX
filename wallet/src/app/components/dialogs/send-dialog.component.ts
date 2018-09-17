@@ -20,7 +20,6 @@ import { MarketService } from '../../services/market.service';
 export class SendDialogComponent{
   insufficient = false;
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService, private _market: MarketService) {
-    console.log(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) ,  data.total)
     if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
       this.insufficient= true;
     }
@@ -57,7 +56,6 @@ export class SendDialogComponent{
     for(let i=0; i<txs.length; i++){
       txs[i].sign(privateKey);
       let serialized = "0x"+(txs[i].serialize()).toString('hex');
-      console.log(serialized)
       let sendResult = await this._web3.sendRawTx(serialized);
      
       self.dialogRef.close();
@@ -73,7 +71,6 @@ export class SendDialogComponent{
           let hash = await this._market.orderHash(this.data.hashParams)
           let sign = this._market.signOrder(hash, privateKey);
           let order = await this._market.placeOrder(this.data.hashParams, sign);
-          console.log("order",sign, order)
         }
 
         let pending: any = null;
@@ -81,7 +78,6 @@ export class SendDialogComponent{
           pending = await self._web3.getTx(sendResult);
         }
         pending.timeStamp = Date.now()/1000;
-        console.log(pending)
         self._account.addPendingTx(pending);
         if(this.data.action == 'contractDeploy'){
           let contract =  new Contract();
@@ -92,7 +88,6 @@ export class SendDialogComponent{
         if(i==txs.length-1){
           title = "Your transaction has been sended";
           message = "You can see the progress in the history tab"
-          console.log(this.data.action);
           self.dialogRef.close();
           let dialogRef = self.dialogService.openErrorDialog(title, message, error, this.data.action);
           dialogRef.afterClosed().subscribe(result=>{

@@ -20,9 +20,8 @@ export class Web3 {
     }else{
       this.web3= new Web3L()
     }
-
-    console.log("network", this.network)
   }
+
   setInfuraKey(apikey){
     this.infuraKey = apikey;
     let apikeys: any = {};
@@ -32,6 +31,7 @@ export class Web3 {
       apikeys.inf = apikey;
       localStorage.setItem('apikeys', JSON.stringify(apikeys));
   }
+
   getInfuraKey(){
     if(localStorage.getItem('apikeys')){
       let apikeys : any = JSON.parse(localStorage.getItem('apikeys'));
@@ -59,7 +59,6 @@ export class Web3 {
         }else{
           resolve(result)
         }
-        console.log("result",result)
       })
     })
   }
@@ -78,8 +77,6 @@ export class Web3 {
   async blockGas(){
     let self = this;
     let block = this.blockNumber();
-
-    console.log("block", block)
     return new Promise((resolve, reject)=>{
       self.web3.eth.getBlock(block, (err, result)=>{
         if(err){
@@ -122,7 +119,6 @@ export class Web3 {
         if (tx.blockNumber == null) {
           let count = 0;          
           interval = setInterval( async function(){
-            console.log(count,": ",tx.blockNumber);
             tx = await self.getTx(txhash);
             if(tx.blockNumber != null){  
               clearInterval(interval)
@@ -201,7 +197,6 @@ export class Web3 {
       let interval;
       self.web3.eth.getTransaction(txhash,function(err,res){
         if (err) {
-          console.log("error", err)
           reject(err);
         } else {
           resolve(res); 

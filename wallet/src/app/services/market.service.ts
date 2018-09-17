@@ -240,17 +240,25 @@ export class MarketService {
 		let interval;
 		this.getMarket();
 		this.socket.once('market', (market) => {
-			console.log("market", market)
 			if('orders' in market && 'trades' in market){
+				console.log(market)
 				this.updateOrders(market.orders, this.token, this._account.account.address);
 				this.updateTrades(market.trades, this.token, this._account.account.address);
 				this.state.initialState = true;
 				this.socket.on('orders', (orders) => {
+					console.log("yeeeeep ORDERS");
 				  	this.updateOrders(orders, this.token, this._account.account.address);
 				});
 				this.socket.on('trades', (trades) => {
+					console.log("yeeeeep TRADES");
 					this.updateTrades(trades, this.token, this._account.account.address);
 				});
+				if('myOrders' in market){
+
+				}
+				if('myTrades' in market){
+
+				}
 				if('myFunds' in market){
 					this.updateFunds(market.myFunds);
 					this.socket.on('myFunds', (myFunds) => {
@@ -280,7 +288,7 @@ export class MarketService {
 				price: Number(x.price)
 			})
 		})
-		if (!this.state.myFunds) this.state.myFunds = [];
+		if (typeof(this.state.myFunds)=="undefined") this.state.myFunds = [];
 		newFunds.forEach(x=>{
 			if(this.state.myFunds.findIndex(y => y.txHash === x.txHash)==-1){
 				this.state.myFunds.push(x);
@@ -297,9 +305,10 @@ export class MarketService {
 		  .map(x => x = new Order(x, 'sell', token)
 		  ),
 		};
-		if (!this.state.orders) this.state.orders = { buys: [], sells: [] };
-		if (!this.state.myOrders) this.state.myOrders = { buys: [], sells: [] };
+		if (typeof(this.state.orders)=="undefined") this.state.orders = { buys: [], sells: [] };
+		if (typeof(this.state.myOrders)=="undefined") this.state.myOrders = { buys: [], sells: [] };
 		this.compareOrders(newOrdersTransformed, 'buys');
+		console.log(this.state)
 		this.compareOrders(newOrdersTransformed, 'sells');
 		this.state.orders = {
 		  sells: this.state.orders.sells.sort((a, b) =>
@@ -316,70 +325,35 @@ export class MarketService {
 	};
 
 	compareOrders(newOrdersTransformed, type){
+		console.log(newOrdersTransformed[type].filter(x=>x.user.toLowerCase() === this._account.account.address.toLowerCase()));
 		newOrdersTransformed[type].forEach((x) => {
-			if (x.deleted == true || x.ethAvailableVolumeBase <= this.config.minOrderSize) {
+			if (x.deleted == true || x.ethAvailableVolumeBase < this.config.minOrderSize) {
 				this.state.orders[type] = this.state.orders[type].filter(y => y.id !== x.id);
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-				this.state.myOrders[type] = this.state.myOrders[type].filter(y => y.id !== x.id);
+					this.state.myOrders[type] = this.state.myOrders[type].filter(y => y.id !== x.id);
 				}
-			} else if (this.state.orders[type].find(y => y.id === x.id)) {
+			} else if (this.state.orders[type].findIndex(y => y.id === x.id)!=-1) {
 				this.state.orders[type] = this.state.orders[type].map(y => (y.id === x.id ? x : y));
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-				this.state.myOrders[type] = this.state.myOrders[type].map(y => (y.id === x.id ? x : y));
+					this.state.myOrders[type] = this.state.myOrders[type].map(y => (y.id === x.id ? x : y));
 				}
 			} else {
 				this.state.orders[type].push(x);
+				x.user.toLowerCase() === this._account.account.address.toLowerCase()
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-				this.state.myOrders[type].push(x);
+					this.state.myOrders[type].push(x);
 				}
 			}
 		});
 	}
 
-	getLocalState() {
-		if(localStorage.getItem('market')){
-			let market = JSON.parse(localStorage.getItem('market'));
-			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network in x);
-			if(index == -1){
-				if(this.token.address in market[index][this._web3.network]){
-					this.state = market[index][this._web3.network][this.token.address];
-				}
-			}
-		}
-	}
-
-	saveState() {
-		if(localStorage.getItem('market')){
-			let market = JSON.parse(localStorage.getItem('market'));
-			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase());
-			if(index==-1){
-				let marketObj: any = {
-					account: this._account.account.address,
-				}
-				marketObj[this._web3.network] = this.state;
-				market.push(marketObj);
-			}else{
-				market[index][this._web3.network] == this.state;
-			}
-			localStorage.setItem('market', JSON.stringify(market))
-		}else{
-			let marketObj: any = {
-				account: this._account.account.address,
-			}
-			marketObj[this._web3.network] = this.state;
-			localStorage.setItem('market', JSON.stringify([marketObj]))
-		}
-	}
-
 	updateTrades(newTrades, token, user) {
 		const newTradesTransformed = newTrades
 		.map(x => x = new Trade(x));
-	
-		if (!this.state.trades) this.state.trades = [];
-		if (!this.state.myTrades) this.state.myTrades = [];
+		if (typeof(this.state.trades)=="undefined") this.state.trades = [];
+		if (typeof(this.state.myTrades)=="undefined") this.state.myTrades = [];
 		newTradesTransformed.forEach((x) => {
-			if (!this.state.trades.find(y => y.txHash === x.txHash)) {
-				this.state.trades.push(x);
+			if (this.state.myTrades.findIndex(y => y.txHash === x.txHash)==-1) {
 				if (x.buyer.toLowerCase() === this._account.account.address.toLowerCase() ||
 				x.seller.toLowerCase() === this._account.account.address.toLowerCase()) {
 				this.state.myTrades.push(x);
@@ -388,6 +362,54 @@ export class MarketService {
 		});
 		this.state.myTrades = this.state.myTrades
 		  .sort((a, b) => b.date.getTime() -a.date.getTime() || b.amount - a.amount);	
+	}
+
+	getLocalState() {
+		if(localStorage.getItem('market')){
+			let market = JSON.parse(localStorage.getItem('market'));
+			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network in x);
+			if(index == -1){
+				this.state.myFunds = market[index][this._web3.network.toString()].myFunds.filter(x=>x.tokenAddr==0x0000000000000000000000000000000000000000 ||x.token.Addr==this.token.addr)
+				if(this.token.addr in market[index][this._web3.network.toString()]){
+					this.state.myOrders = market[index][this._web3.network.toString()][this.token.addr].myOrders;
+					this.state.myTrades = market[index][this._web3.network.toString()][this.token.addr].myTrades;
+				}
+			}
+		}
+	}
+
+	saveState() {
+		let tokenStatus ={
+			myOrders: this.state.myOrders,
+			myTrades: this.state.myTrades
+		}
+		if(localStorage.getItem('market')){
+			let market = JSON.parse(localStorage.getItem('market'));
+			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase());
+			if(index==-1){
+				let marketObj: any = {
+					account: this._account.account.address,
+					myFunds: this.state.myFunds
+				}
+				marketObj[this._web3.network.toString()]={}
+				marketObj[this._web3.network.toString()][this.token.addr] = tokenStatus;
+				market.push(marketObj);
+			}else if(this._web3.network.toString() in market[index]){
+				market[index][this._web3.network.toString()][this.token.addr] = tokenStatus;
+			}else{
+				market[index][this._web3.network.toString()]={}
+				market[index][this._web3.network.toString()][this.token.addr] = tokenStatus;
+			}
+			localStorage.setItem('market', JSON.stringify(market))
+		}else{
+			let marketObj: any = {
+				account: this._account.account.address,
+				myFunds: this.state.myFunds
+			}
+			marketObj[this._web3.network.toString()]={}
+			marketObj[this._web3.network.toString()][this.token.address] = tokenStatus;
+			localStorage.setItem('market', JSON.stringify([marketObj]))
+		}
 	}
 
 	toWei(eth, decimals){
