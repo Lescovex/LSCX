@@ -44,14 +44,21 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this.dialog = this._dialog.openLoadingDialog();
         this.net = network;
         this._web3.setNetwork(network.chain);
-        this._contractStorage.setAccContracts();
-        this._market.setMarket();
-        this._market.resetSocket();
-        this._LCXcontract.reset();
-        if('address' in this._account.account){
-            this._account.refreshAccountData();
-            this._account.updated = false;
+       
+        if(this._account.account.address > 0){
+                this._contractStorage.setAccContracts();
+                this._market.setMarket();
+                this._market.resetSocket();
+                this._LCXcontract.reset();
+            if('address' in this._account.account){
+                this._account.refreshAccountData();
+                this._account.updated = false;
+                
+            }
+        }else{
+            this.dialog.close();
         }
+        
         this.show = !this.show;
     }
 }
