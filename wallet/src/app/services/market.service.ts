@@ -241,16 +241,16 @@ export class MarketService {
 		this.getMarket();
 		this.socket.once('market', (market) => {
 			if('orders' in market && 'trades' in market){
-				//console.log(market)
+				console.log(market)
 				this.updateOrders(market.orders, this.token, this._account.account.address);
 				this.updateTrades(market.trades, this.token, this._account.account.address);
 				this.state.initialState = true;
 				this.socket.on('orders', (orders) => {
-					//console.log("yeeeeep ORDERS");
+					console.log("yeeeeep ORDERS");
 				  	this.updateOrders(orders, this.token, this._account.account.address);
 				});
 				this.socket.on('trades', (trades) => {
-					//console.log("yeeeeep TRADES");
+					console.log("yeeeeep TRADES");
 					this.updateTrades(trades, this.token, this._account.account.address);
 				});
 				if('myOrders' in market){
@@ -297,6 +297,7 @@ export class MarketService {
 	}
 	
 	updateOrders(newOrders, token, user){
+		console.log(newOrders)
 		const newOrdersTransformed = {
 		  buys: newOrders.buys
 			.map(x => x = new Order(x, 'buy', token)
@@ -308,7 +309,7 @@ export class MarketService {
 		if (typeof(this.state.orders)=="undefined") this.state.orders = { buys: [], sells: [] };
 		if (typeof(this.state.myOrders)=="undefined") this.state.myOrders = { buys: [], sells: [] };
 		this.compareOrders(newOrdersTransformed, 'buys');
-		//console.log(this.state)
+		console.log(this.state)
 		this.compareOrders(newOrdersTransformed, 'sells');
 		this.state.orders = {
 		  sells: this.state.orders.sells.sort((a, b) =>
@@ -325,7 +326,6 @@ export class MarketService {
 	};
 
 	compareOrders(newOrdersTransformed, type){
-		//console.log(newOrdersTransformed[type].filter(x=>x.user.toLowerCase() === this._account.account.address.toLowerCase()));
 		newOrdersTransformed[type].forEach((x) => {
 			if (x.deleted == true || x.ethAvailableVolumeBase < this.config.minOrderSize) {
 				this.state.orders[type] = this.state.orders[type].filter(y => y.id !== x.id);

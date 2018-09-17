@@ -63,6 +63,7 @@ import { PrivateKeyDialogComponent } from './components/wallet/wsettings/private
 import { ErrorDialogComponent } from './components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
+import { GasDialogComponent } from './components/dialogs/gas-dialog.component';
 
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
@@ -128,6 +129,7 @@ import { InsuficientFoundsDirective } from './validators/founds-validator.direct
     HistoryPage,
     MarketComponent,
     MessageDialogComponent,
+    GasDialogComponent,
     MarketWalletPage,
     BuySellPage,
     MarketHistoryPage,
@@ -167,7 +169,8 @@ import { InsuficientFoundsDirective } from './validators/founds-validator.direct
     LoadingDialogComponent,
     JSONDialogComponent,
     PrivateKeyDialogComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    GasDialogComponent
   ],
   providers: [
     WalletService,
