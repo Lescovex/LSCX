@@ -433,13 +433,14 @@ div.input-container {
     cursor: none;
 }
 
-#zeros span {
-    padding: 12px 0;
+#zeros span:nth-child(2) {
+    margin-left: -1px;
+    padding-left: 12px;
 }
 
 .input-container span,
 .input-container p {
-    padding: 12px;
+    padding: 14px 12px 14px;
     cursor: pointer;
 }
 

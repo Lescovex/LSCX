@@ -28,6 +28,7 @@ export class ContractStorageService {
             this.contracts.push(contract);
             //console.log("Add",this.contracts)
             this.saveContracts();
+            this.setAccContracts();
  
     }
     
