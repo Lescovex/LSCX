@@ -1,10 +1,62 @@
-# Lescovex
+# Lescovex DEX
 Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes
 
-## Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
+Lescovex DEX is a tool for managing your ethers and ethereum tokens with the possibility of issuing financial contracts and trading them disrectly on a decentralized OTC market. All based on our smart contracts.
+![Send](./images/send.png)
 
-By exercising the Licensed Rights (defined below), You accept and agree to be bound by the terms and conditions of this Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License ("Public License"). To the extent this Public License may be interpreted as a contract, You are granted the Licensed Rights in consideration of Your acceptance of these terms and conditions, and the Licensor grants You such rights in consideration of benefits the Licensor receives from making the Licensed Material available under these terms and conditions.
+![ShowContract](./images/show-contract.png)
 
+![Market](./images/market.png)
+
+
+## Smart contracts
+**Crypto Currencies (CYC)**
+
+![CYC](./images/DEX_CYC.png)
+
+- Payment Token
+
+- Utility Token
+
+Description:
+
+Crypto currencies can be used as a store of value and medium of exchange as well as provide some functionalities such as access to web applications and other services. We contemplate crypto currencies as commodities. They are highly fungible and have no intrinsic value, so their value is driven by their utility and scarcity rather than a stream of cash flows.
+
+
+**Income Smart Contract (ISC)**
+
+![ISC](./images/DEX_ISC.png)
+
+- Equity Token
+
+- Debt Token
+
+Description:
+
+ISCs allow issuers the distribution of income by setting fixed or variable payments in Ether to token holders. Capital distributions are automatically executed provided some predefined contract specifications are met. Income Smart Contracts are classified as financial assets and may be analogous to conventional equity and debt instruments.
+
+**Asset-Backed Tokens (ABT)**
+
+![ABT](./images/DEX_ABT.png)
+
+- Commodities
+- Financial assets
+
+Description:
+
+ABTs represent digital ownership with respect to an underlying tangible, intangible or financial asset. Lescovex only considers for listing ABTs whose underlying assets are highly fungible, such as commodities and securities. To decide which asset class an ABT represents to we look at its underlying asset. If an ABT is “backed” by a commodity, we will consider it a commodity. Likewise, if an underlying is a security the ABT will undoubtedly be a financial asset.
+
+**Crypto Investment Fund (CIF)**
+
+![CIF](./images/DEX_CIF.png)
+
+- Closed-end
+
+- Open-end
+
+Description:
+
+CIFs may take the form of closed-end or open-end and whose underlying investments comprise digital assets of any kind. Smart contracts unleash efficiency improvements for investment funds operations, including fast and auditable capital calls and distributions alongside transparent, error-proof, Net Asset Value (NAV) calculations. We label crypto investment funds as securities.
 **Section 1 – Definitions.**
 
 1.  **Adapted Material**  means material subject to Copyright and Similar Rights that is derived from or based upon the Licensed Material and in which the Licensed Material is translated, altered, arranged, transformed, or otherwise modified in a manner requiring permission under the Copyright and Similar Rights held by the Licensor. For purposes of this Public License, where the Licensed Material is a musical work, performance, or sound recording, Adapted Material is always produced where the Licensed Material is synched in timed relation with a moving image.
