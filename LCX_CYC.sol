@@ -240,8 +240,8 @@ contract Lescovex_CYC is LescovexERC20 {
         totalSupply = initialSupply;  // Update total supply
         name = contractName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        owner=contractOwner;
-        balances[contractOwner]= balances[contractOwner].add(totalSupply);
+        owner = contractOwner;
+        balances[contractOwner] = balances[contractOwner].add(totalSupply);
 
     }
 }

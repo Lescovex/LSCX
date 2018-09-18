@@ -74,18 +74,7 @@ contract LescovexERC20 is Ownable {
 
 
     mapping (address => uint256) public balances;
-
-    mapping (address => uint256) public requestWithdraws;
-
     mapping (address => mapping (address => uint256)) internal allowed;
-
-    mapping (address => timeHold) holded;
-
-    struct timeHold{
-        uint256[] amount;
-        uint256[] time;
-        uint256 length;
-    }
 
     /* Public variables for the ERC20 token */
     string public constant standard = "ERC20 Lescovex ABT";
@@ -93,10 +82,6 @@ contract LescovexERC20 is Ownable {
     uint256 public totalSupply;
     string public name;
     string public symbol;
-
-    uint256 public holdTime;
-    uint256 public holdMax;
-    uint256 public maxSupply;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -189,7 +174,6 @@ contract Lescovex_ABT is LescovexERC20 {
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
 
-    string public BCA;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
@@ -201,14 +185,14 @@ contract Lescovex_ABT is LescovexERC20 {
             string contractName,
             string tokenSymbol,
             address contractOwner,
-            string contractBCA
+            uint256 price
         ) public {
 
         totalSupply = initialSupply;  // Update total supply
         name = contractName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        owner=contractOwner;
-        balances[contractOwner]= balances[contractOwner].add(totalSupply);
-        BCA=contractBCA;
+        owner = contractOwner;
+        balances[contractOwner] = balances[contractOwner].add(totalSupply);
+        tokenPrice = price;
     }
 }

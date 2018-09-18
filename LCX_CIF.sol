@@ -126,7 +126,7 @@ contract LescovexERC20 is Ownable {
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
         delete holded[msg.sender];
-		    hold(msg.sender, balances[msg.sender]);
+		hold(msg.sender, balances[msg.sender]);
 
         hold(_to,_value);
 
@@ -207,7 +207,7 @@ contract Lescovex_CIF is LescovexERC20 {
     uint256 public tokenPrice = 0;
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
-
+    uint256 public contractBalance = 0;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
@@ -228,11 +228,11 @@ contract Lescovex_CIF is LescovexERC20 {
         totalSupply = initialSupply;  // Update total supply
         name = contractName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
-        holdTime=contractHoldTime;
-        holdMax=contractHoldMax;
-        maxSupply=contractMaxSupply;
-        owner=contractOwner;
-        balances[contractOwner]= balances[contractOwner].add(totalSupply);
+        holdTime = contractHoldTime;
+        holdMax = contractHoldMax;
+        maxSupply = contractMaxSupply;
+        owner = contractOwner;
+        balances[contractOwner] = balances[contractOwner].add(totalSupply);
 
     }
 
@@ -240,15 +240,12 @@ contract Lescovex_CIF is LescovexERC20 {
         buy();   // Allow to buy tokens sending ether directly to contract
     }
 
-
-    uint256 public contractBalance=0;
-
     function deposit() external payable onlyOwner returns(bool success) {
         // Check for overflows;
 
         assert (this.balance + msg.value >= this.balance); // Check for overflows
 
-        contractBalance=this.balance;
+        contractBalance = this.balance;
 
         //executes event to reflect the changes
         LogDeposit(msg.sender, msg.value);
@@ -293,8 +290,7 @@ contract Lescovex_CIF is LescovexERC20 {
     }
 
     function setPrice(uint256 _value) public onlyOwner{
-      tokenPrice=_value;
-      delete holded;
+      tokenPrice = _value;
     }
 
     event LogWithdrawal(address receiver, uint amount);
