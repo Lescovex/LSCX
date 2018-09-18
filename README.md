@@ -57,6 +57,12 @@ ABTs represent digital ownership with respect to an underlying tangible, intangi
 Description:
 
 CIFs may take the form of closed-end or open-end and whose underlying investments comprise digital assets of any kind. Smart contracts unleash efficiency improvements for investment funds operations, including fast and auditable capital calls and distributions alongside transparent, error-proof, Net Asset Value (NAV) calculations. We label crypto investment funds as securities.
+
+## Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
+
+By exercising the Licensed Rights (defined below), You accept and agree to be bound by the terms and conditions of this Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License ("Public License"). To the extent this Public License may be interpreted as a contract, You are granted the Licensed Rights in consideration of Your acceptance of these terms and conditions, and the Licensor grants You such rights in consideration of benefits the Licensor receives from making the Licensed Material available under these terms and conditions.
+
+
 **Section 1 – Definitions.**
 
 1.  **Adapted Material**  means material subject to Copyright and Similar Rights that is derived from or based upon the Licensed Material and in which the Licensed Material is translated, altered, arranged, transformed, or otherwise modified in a manner requiring permission under the Copyright and Similar Rights held by the Licensor. For purposes of this Public License, where the Licensed Material is a musical work, performance, or sound recording, Adapted Material is always produced where the Licensed Material is synched in timed relation with a moving image.
