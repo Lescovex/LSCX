@@ -24,6 +24,7 @@ export class SendTokensPage implements OnInit, OnDestroy{
     receiver:"",
     amount:""
   }
+  submited = false;
 
   constructor(public _rawtx: RawTxService,protected _account: AccountService, private sendDialogService: SendDialogService, private _token : TokenService,) {
     if('tokens' in this._account.account && this._account.account.tokens.length > 0){
@@ -34,6 +35,7 @@ export class SendTokensPage implements OnInit, OnDestroy{
   ngOnInit() {
     this.interval = this._account.startIntervalTokens();
   }
+
   ngOnDestroy(){
     clearInterval(this.interval);
   }
@@ -58,15 +60,19 @@ export class SendTokensPage implements OnInit, OnDestroy{
     }
   }
 
-  async sendTokens() {
-    if(this.checkAmount(this.amount) == false || this.checkAddress(this.receiverAddr) == false){
+  async sendTokens(form) {
+    this.submited = true;
+    console.log(form)
+    if(form.invalid){
       return false;
     }
+    this._token.setToken(form.controls.token.value.contractAddress);
 
-    let amount = this.amount * (10 ** this.token.tokenDecimal);
-    let txData = await this._token.getDataTransfer(this.receiverAddr, amount)
-    let tx =  await this._rawtx.createRaw(this.receiverAddr, 0, {data:txData})
-    this.sendDialogService.openConfirmSend(tx[0], this.receiverAddr, this.amount, tx[1], tx[1] , 'transfer',this.token.tokenSymbol)
+    let amount = parseFloat(form.controls.amount.value) * Math.pow(10,parseInt(form.controls.token.value.tokenDecimal));
+    console.log(amount);
+    let txData = await this._token.getDataTransfer(form.controls.receiverAddr.value, Math.floor(amount))
+    let tx =  await this._rawtx.createRaw(form.controls.token.value.contractAddress, 0, {data:txData})
+    this.sendDialogService.openConfirmSend(tx[0], form.controls.receiverAddr.value, this.amount, tx[1], tx[1] , 'transfer',form.controls.token.value.tokenSymbol)
   }
 
 }

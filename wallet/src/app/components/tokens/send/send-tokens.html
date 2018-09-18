@@ -1,23 +1,31 @@
 <p *ngIf="this._account.account.tokens?.length == 0" class="whiteBox text-center"> You don't have tokens</p>
-<div *ngIf="this._account.account.tokens?.length > 0">
+<form *ngIf="this._account.account.tokens?.length > 0" (ngSubmit)="sendTokens(form)" #form="ngForm">
     <div >
-        <label class="title" for="tokens">Tokens</label>
-        <select id="tokens" class="block" [(ngModel)]="token" name="tokens">
+        <label class="title" for="token">Tokens</label>
+        <select id="tokens" class="block" [(ngModel)]="token" name="token">
             <option *ngFor="let token of _account.account.tokens, index as i" [ngValue]="token">{{token.tokenName}}-{{token.tokenSymbol}}</option>
         </select>
     </div>
     <div>
         <label class="title" for="receiverAddr">Receiver Address</label>
-        <input class="block" [ngClass]="{'error': errors.receiver !==''}" required id="receiverAddr" type="text" value=""  name="receiverAddr" [(ngModel)]="receiverAddr" #rec="ngModel"/>
-        <p *ngIf="errors.receiver !== ''" class="error">{{errors.receiver}}</p>
+        <input class="block" [ngClass]="{'error': submited && receiverAddr.invalid}" required invalidAddress id="receiverAddr" type="text" value="" name="receiverAddr" ngModel #receiverAddr="ngModel" />
+        <p [ngClass]="{'hidden':!(submited && receiverAddr.invalid)}"  class="error">
+            <span *ngIf="receiverAddr.errors?.required" class="error">This field is required</span>
+            <span *ngIf="!receiverAddr.errors?.required && receiverAddr.errors?.invalidAddress" class="error">Invalid receiver address</span>
+        </p>
+        
     </div>
     <div class="clear">
-        <label class="title" for="amount">Amount</label>
-        <input class="block" [ngClass]="{'error': errors.amount !== ''}"required id="amount" type="number" min="0" value="0.0" step="any" placeholder="Amount" name="amount" [(ngModel)]="amount"/>
-        <p *ngIf="errors.amount !== ''" class="error">{{errors.amount}}</p>
+        <label class="title" for="amount">Ether amount</label>
+        <input type="number" class="block" step="any" [customMin]="0" value="0" [funds]="token.balance" placeholder="0.{{('0').repeat(token.tokenDecimal)}}" name="amount" [ngClass]="{'error': submited && amount.invalid}" ngModel required #amount="ngModel"/>
+        <p [ngClass]="{'hidden':!(submited && receiverAddr.invalid)}" class="error">
+            <span *ngIf="amount.errors?.required" class="error">This field is required</span>
+            <span *ngIf="!amount.errors?.required && amount.errors?.customMin " class="error">Can not send negative amounts of ETH</span>
+            <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds" class="error">You don't have enough funds</span>
+        </p>  
     </div>
-    <button type="button" class="btn-solid right" (click)="sendTokens()" > Send </button>
-</div>
+    <button type="submit" class="btn-solid right"> Send </button>
+</form>
 
 
     
