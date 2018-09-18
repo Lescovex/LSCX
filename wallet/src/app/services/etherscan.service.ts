@@ -7,8 +7,7 @@ import { Web3 } from './web3.service'
 
 @Injectable()
 export class EtherscanService {
-
-	apikey;
+	apikey = "";
 	constructor(private _web3 : Web3, private http: Http){	
 	}
 	setApiKey(apikey){

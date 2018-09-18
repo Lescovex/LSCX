@@ -6,12 +6,12 @@
         </select>
     </div>
     <div >
-        <p><label class="title" for="lang">Infura API token</label> Get a Infura Api token and paste here. <a class="pointer" (click)="openUrl('infura')">Infura Web Page</a></p>
+        <p><label class="title" for="lang">Infura API token</label> Get a Infura Api token and paste here. <a class="pointer" (click)="openUrl('https://infura.io/register')">Infura Web Page</a></p>
         <input type="text" class="block" [(ngModel)]="infuraApiKey"
         (blur)="setInfuraKey()" (keypress.enter)= "setInfuraKey()">
     </div>
     <div >
-        <p><label class="title" for="lang">Etherscan API token</label> Get a Etherscan Api key and paste here. <a class="pointer" (click)="openUrl('etherscan')">Etherscan Web Page</a></p>
+        <p><label class="title" for="lang">Etherscan API token</label> Get a Etherscan Api key and paste here. <a class="pointer" (click)="openUrl('https://ropsten.etherscan.io/apis')">Etherscan Web Page</a></p>
         <input type="text" class="block" [(ngModel)]="etherscanApiKey"
         (blur)="setEtherscanKey()" (keypress.enter)= "setEtherscanKey()" >
     </div>
@@ -28,7 +28,7 @@
                 <p><strong>Section 1 – Definitions.</strong></p>
                 <ol>
                     <li><strong>Adapted Material</strong>  means material subject to Copyright and Similar Rights that is derived from or based upon the Licensed Material and in which the Licensed Material is translated, altered, arranged, transformed, or otherwise modified in a manner requiring permission under the Copyright and Similar Rights held by the Licensor. For purposes of this Public License, where the Licensed Material is a musical work, performance, or sound recording, Adapted Material is always produced where the Licensed Material is synched in timed relation with a moving image.</li>
-                    <li><strong>Copyright and Similar Rights</strong>  means copyright and/or similar rights closely related to copyright including, without limitation, performance, broadcast, sound recording, and Sui Generis Database Rights, without regard to how the rights are labeled or categorized. For purposes of this Public License, the rights specified in Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s2b" rel="nofollow">2(b)(1)-(2)</a>  are not Copyright and Similar Rights.</li>
+                    <li><strong>Copyright and Similar Rights</strong>  means copyright and/or similar rights closely related to copyright including, without limitation, performance, broadcast, sound recording, and Sui Generis Database Rights, without regard to how the rights are labeled or categorized. For purposes of this Public License, the rights specified in Section  <a (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s2b')">2(b)(1)-(2)</a>  are not Copyright and Similar Rights.</li>
                     <li><strong>Effective Technological Measures</strong>  means those measures that, in the absence of proper authority, may not be circumvented under laws fulfilling obligations under Article 11 of the WIPO Copyright Treaty adopted on December 20, 1996, and/or similar international agreements.</li>
                     <li><strong>Exceptions and Limitations</strong>  means fair use, fair dealing, and/or any other exception or limitation to Copyright and Similar Rights that applies to Your use of the Licensed Material.</li>
                     <li><strong>Licensed Material</strong>  means the artistic or literary work, database, or other material to which the Licensor applied this Public License.</li>
@@ -54,10 +54,10 @@
                                 <p>Exceptions and Limitations. For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply, and You do not need to comply with its terms and conditions.</p>
                             </li>
                             <li>
-                                <p>Term. The term of this Public License is specified in Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6a" rel="nofollow">6(a)</a>.</p>
+                                <p>Term. The term of this Public License is specified in Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6a')">6(a)</a>.</p>
                             </li>
                             <li>
-                                <p>Media and formats; technical modifications allowed. The Licensor authorizes You to exercise the Licensed Rights in all media and formats whether now known or hereafter created, and to make technical modifications necessary to do so. The Licensor waives and/or agrees not to assert any right or authority to forbid You from making technical modifications necessary to exercise the Licensed Rights, including technical modifications necessary to circumvent Effective Technological Measures. For purposes of this Public License, simply making modifications authorized by this Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s2a4" rel="nofollow">2(a)(4)</a>  never produces Adapted Material.</p>
+                                <p>Media and formats; technical modifications allowed. The Licensor authorizes You to exercise the Licensed Rights in all media and formats whether now known or hereafter created, and to make technical modifications necessary to do so. The Licensor waives and/or agrees not to assert any right or authority to forbid You from making technical modifications necessary to exercise the Licensed Rights, including technical modifications necessary to circumvent Effective Technological Measures. For purposes of this Public License, simply making modifications authorized by this Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s2a4')" >2(a)(4)</a>  never produces Adapted Material.</p>
                             </li>
                             <li>
                                 <p>Downstream recipients.</p>
@@ -67,7 +67,7 @@
                                  </ol>
                             </li>
                             <li>
-                                <p>No endorsement. Nothing in this Public License constitutes or may be construed as permission to assert or imply that You are, or that Your use of the Licensed Material is, connected with, or sponsored, endorsed, or granted official status by, the Licensor or others designated to receive attribution as provided in Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a1Ai" rel="nofollow">3(a)(1)(A)(i)</a>.</p>
+                                <p>No endorsement. Nothing in this Public License constitutes or may be construed as permission to assert or imply that You are, or that Your use of the Licensed Material is, connected with, or sponsored, endorsed, or granted official status by, the Licensor or others designated to receive attribution as provided in Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a1Ai')">3(a)(1)(A)(i)</a>.</p>
                             </li>
                         </ol>
                     </li>
@@ -89,23 +89,23 @@
                             <li><p>If You Share the Licensed Material, You must:</p>
                                 <ol>
                                     <li>retain the following if it is supplied by the Licensor with the Licensed Material:
-                                        <ol>
+                                        <ul>
                                             <li>identification of the creator(s) of the Licensed Material and any others designated to receive attribution, in any reasonable manner requested by the Licensor (including by pseudonym if designated);</li>
                                             <li>a copyright notice;</li>
                                             <li>a notice that refers to this Public License;</li>
                                             <li>a notice that refers to the disclaimer of warranties;</li>
                                             <li>a URI or hyperlink to the Licensed Material to the extent reasonably practicable;</li>
-                                        </ol>
+                                        </ul>
                                     </li>
                                     <li>indicate if You modified the Licensed Material and retain an indication of any previous modifications; and</li>
                                     <li>indicate the Licensed Material is licensed under this Public License, and include the text of, or the URI or hyperlink to, this Public License.For the avoidance of doubt, You do not have permission under this Public License to Share Adapted Material.</li>
                                 </ol>
                             </li>
                             <li>
-                                <p>You may satisfy the conditions in Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a1" rel="nofollow">3(a)(1)</a>  in any reasonable manner based on the medium, means, and context in which You Share the Licensed Material. For example, it may be reasonable to satisfy the conditions by providing a URI or hyperlink to a resource that includes the required information.</p>
+                                <p>You may satisfy the conditions in Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a1')" >3(a)(1)</a>  in any reasonable manner based on the medium, means, and context in which You Share the Licensed Material. For example, it may be reasonable to satisfy the conditions by providing a URI or hyperlink to a resource that includes the required information.</p>
                             </li>
                             <li>
-                                <p>If requested by the Licensor, You must remove any of the information required by Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a1A" rel="nofollow">3(a)(1)(A)</a>  to the extent reasonably practicable.</p>
+                                <p>If requested by the Licensor, You must remove any of the information required by Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a1A')" >3(a)(1)(A)</a>  to the extent reasonably practicable.</p>
                             </li>
                         </ol>
                     </li>
@@ -113,11 +113,11 @@
                 <p><strong>Section 4 – Sui Generis Database Rights.</strong></p>
                 <p>Where the Licensed Rights include Sui Generis Database Rights that apply to Your use of the Licensed Material:</p>
                 <ol>
-                    <li>for the avoidance of doubt, Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s2a1" rel="nofollow">2(a)(1)</a>  grants You the right to extract, reuse, reproduce, and Share all or a substantial portion of the contents of the database for NonCommercial purposes only and provided You do not Share Adapted Material;</li>
+                    <li>for the avoidance of doubt, Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s2a1')" >2(a)(1)</a>  grants You the right to extract, reuse, reproduce, and Share all or a substantial portion of the contents of the database for NonCommercial purposes only and provided You do not Share Adapted Material;</li>
                     <li>if You include all or a substantial portion of the database contents in a database in which You have Sui Generis Database Rights, then the database in which You have Sui Generis Database Rights (but not its individual contents) is Adapted Material; and</li>
-                    <li>You must comply with the conditions in Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a" rel="nofollow">3(a)</a>  if You Share all or a substantial portion of the contents of the database.</li>
+                    <li>You must comply with the conditions in Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s3a')" >3(a)</a>  if You Share all or a substantial portion of the contents of the database.</li>
                 </ol>
-                <p>For the avoidance of doubt, this Section <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s4" rel="nofollow">4</a> supplements and does not replace Your obligations under this Public License where the Licensed Rights include other Copyright and Similar Rights.</p>
+                <p>For the avoidance of doubt, this Section <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s4')" >4</a> supplements and does not replace Your obligations under this Public License where the Licensed Rights include other Copyright and Similar Rights.</p>
                 <p><strong>Section 5 – Disclaimer of Warranties and Limitation of Liability.</strong></p>
                 <ol>
                     <li>
@@ -136,17 +136,17 @@
                         <p>This Public License applies for the term of the Copyright and Similar Rights licensed here. However, if You fail to comply with this Public License, then Your rights under this Public License terminate automatically.</p>
                        </li>
                     <li>
-                        <p>Where Your right to use the Licensed Material has terminated under Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6a" rel="nofollow">6(a)</a>, it reinstates:</p>
+                        <p>Where Your right to use the Licensed Material has terminated under Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6a')" >6(a)</a>, it reinstates:</p>
                         <ol>
                             <li>automatically as of the date the violation is cured, provided it is cured within 30 days of Your discovery of the violation; or</li>
                             <li>upon express reinstatement by the Licensor.</li>
-                        </ol>                            <p>For the avoidance of doubt, this Section  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6b" rel="nofollow">6(b)</a>  does not affect any right the Licensor may have to seek remedies for Your violations of this Public License.</p>
+                        </ol>                            <p>For the avoidance of doubt, this Section  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6b')" >6(b)</a>  does not affect any right the Licensor may have to seek remedies for Your violations of this Public License.</p>
                     </li>
                     <li>
                         <p>For the avoidance of doubt, the Licensor may also offer the Licensed Material under separate terms or conditions or stop distributing the Licensed Material at any time; however, doing so will not terminate this Public License.</p>
                     </li>
                     <li>
-                        <p>Sections  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s1" rel="nofollow">1</a>,  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s5" rel="nofollow">5</a>,  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6" rel="nofollow">6</a>,  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s7" rel="nofollow">7</a>, and  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s8" rel="nofollow">8</a>  survive termination of this Public License.</p>
+                        <p>Sections  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s1')" >1</a>,  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s5')" >5</a>,  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s6')" >6</a>,  <a class="pointer" (click)="openUrl('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s7')" >7</a>, and  <a class="pointer" (click)="openUr('https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode#s8')" >8</a>  survive termination of this Public License.</p>
                     </li>
                 </ol>
                 <p><strong>Section 7 – Other Terms and Conditions.</strong></p>

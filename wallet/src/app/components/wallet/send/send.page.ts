@@ -24,6 +24,7 @@ export class SendPage implements OnInit {
     receiver:"",
     amount:""
   }
+  submited = false;
 
   constructor(public _web3: Web3,private _account: AccountService, private _dialog: DialogService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
     // console.log('SendPage')
@@ -43,6 +44,7 @@ export class SendPage implements OnInit {
     }
 
   }
+  
   checkAmount(amount):boolean{
     if(amount<0){
       this.errors.amount = "Can not send negative amounts of ETH";
@@ -56,17 +58,19 @@ export class SendPage implements OnInit {
     }
   }
 
-  async sendEth(receiverAddr: string, amount: number, trans_data? : string) {
-    if(this.checkAmount(amount) == false || this.checkAddress(receiverAddr) == false){
+  async sendEth(form) {
+    this.submited = true;
+    console.log(form.controls)
+    if(form.invalid){
       return false;
     }
     let tx;
     let gasLimit;
     try{
-      if(typeof(trans_data)!="undefined"){
-        gasLimit = await this._web3.estimateGas(this._account.account.address, receiverAddr, this._web3.web3.toHex(trans_data), parseInt(this._web3.web3.toWei(amount,'ether')));
+      if(typeof(form.controls.trans_data.value)!="undefined"){
+        gasLimit = await this._web3.estimateGas(this._account.account.address, form.controls.rec.value, this._web3.web3.toHex(form.controls.trans_data.value), parseInt(this._web3.web3.toWei(form.controls.amount.value,'ether')));
       } else {
-        gasLimit = await this._web3.estimateGas(this._account.account.address, receiverAddr, "", parseInt(this._web3.web3.toWei(amount,'ether')))
+        gasLimit = await this._web3.estimateGas(this._account.account.address, form.controls.rec.value, "", parseInt(this._web3.web3.toWei(form.controls.amount.value,'ether')))
       }
     }catch(e){
       gasLimit = await this._web3.blockGas();
@@ -78,17 +82,15 @@ export class SendPage implements OnInit {
       if(typeof(result) != 'undefined'){
         let obj = JSON.parse(result);
 
-        if(typeof(trans_data)=='undefined'){
-          obj.data = trans_data;
+        if(typeof(form.controls.trans_data.value)=='undefined'){
+          obj.data = form.controls.trans_data.value;
         }
         
-        tx =  await this._rawtx.createRaw(receiverAddr, amount, obj)
+        tx =  await this._rawtx.createRaw(form.controls.rec.value, form.controls.amount.value, obj)
     
-        this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send");
+        this.sendDialogService.openConfirmSend(tx[0], form.controls.rec.value, tx[2],tx[1]-tx[2], tx[1], "send");
       }
-  })
-
-     
+    })
   }
 
 }

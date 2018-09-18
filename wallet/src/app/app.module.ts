@@ -88,7 +88,7 @@ import { SeparateWordsPipe } from './pipes/words.pipe';
 /*Directives*/
 import { CustomMinDirective } from './validators/min-validator.directive';
 import { ValidateAddressDirective } from './validators/address-validator.directive';
-import { InsuficientFoundsDirective } from './validators/founds-validator.directive';
+import { InsuficientFundsDirective } from './validators/funds-validator.directive';
 
 
 
@@ -139,7 +139,7 @@ import { InsuficientFoundsDirective } from './validators/founds-validator.direct
     MarketActionComponent,
     CustomMinDirective,
     ValidateAddressDirective,
-    InsuficientFoundsDirective,
+    InsuficientFundsDirective,
     CreditCardPage
   ],
   imports: [

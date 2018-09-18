@@ -10,8 +10,6 @@ import { SendDialogService } from '../../../services/send-dialog.service';
 import { BigNumber } from 'bignumber.js';
 import { ContractService } from '../../../services/contract.service';
 
-const EthAbi = require('ethereumjs-abi');
-
 @Component({
     selector: 'app-buy-sell',
     templateUrl: './buy-sell.page.html',

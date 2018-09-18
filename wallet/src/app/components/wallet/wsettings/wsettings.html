@@ -2,13 +2,7 @@
     <div class="inputDiv">
         <label class="title" for="name">Account name</label>
         <input class="block" required id="name" type="text" value="{{_account.account.name}}"  name="name" #name/>
-    </div> 
-        
-    <div>
-        <label class="title" for="security">Transaction security level</label>
-        <input class="block" id="security" type="text"value="" placeholder="Medium" name="security" [(ngModel)]="security"/>
-    </div>
-        
+    </div>        
     <div>
         <label class="title" for="password">Password</label>
         <div class="input-container" [ngClass]="{'error': pass.invalid && (pass.dirty || pass.touched || submited )}">
@@ -23,7 +17,6 @@
         <button type="button" class="btn-inverse extra" (click)="exportAccount(password)">Export keystore file</button>
     </div>
     
-
     <div class="clear bottomR">
         <button type="button" class="btn warning" (click)="deleteAccount()">Delete Account</button>
     </div>

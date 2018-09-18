@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { Web3 } from '../../services/web3.service';
 import { EtherscanService } from '../../services/etherscan.service';
 
+const shell = require('electron').shell;
 
 @Component({
   selector: 'app-settings',
@@ -26,15 +27,9 @@ export class SettingsComponent implements OnInit {
   setEtherscanKey(){
     this._scan.setApiKey(this.etherscanApiKey)
   }
-  openUrl(website){
-    const shell = require('electron').shell;
-    let url;
-    if(website=='infura'){
-      url='https://infura.io/register';
-    }else{
-      url='https://ropsten.etherscan.io/apis'
-    }
-        shell.openExternal(url);
+  openUrl(url){
+    shell.openExternal(url);
   }
+
 
 }

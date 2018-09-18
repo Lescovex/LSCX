@@ -86,7 +86,7 @@ export class SendDialogComponent{
           this._contractStorage.checkForAddress();
         }
         if(i==txs.length-1){
-          title = "Your transaction has been sended";
+          title = "Your transaction has been sent";
           message = "You can see the progress in the history tab"
           self.dialogRef.close();
           let dialogRef = self.dialogService.openErrorDialog(title, message, error, this.data.action);
