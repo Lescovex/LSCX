@@ -649,7 +649,14 @@ input[type="radio"]:checked+label span {
     background-color: #30D67F;
     border: 4px solid white;
 }
-
+.contract-list {
+    position: relative;
+}
+.contract-list>div{
+    position:absolute;
+    left: 90px;
+    right: 100px;
+}
 .contract-list * {
     white-space: nowrap;
     overflow: hidden;
@@ -690,6 +697,8 @@ input[type="radio"]:checked+label span {
     padding: 5px;
     border-radius: 5px;
     cursor: pointer;
+    width: 70px;
+    height: 30px;
 }
 
 .market-token {

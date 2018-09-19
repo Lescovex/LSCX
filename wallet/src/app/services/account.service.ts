@@ -33,15 +33,15 @@ export class AccountService{
     }
   }
 
-  setAccount(account){
+  async setAccount(account){
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
       clearInterval(this.interval)
     }
       this.account = account;
       localStorage.setItem('acc',JSON.stringify(account.address));
       this.getPendingTx();
-      this.startIntervalData();
-      this.setTokens();
+      await this.startIntervalData();
+      await this.setTokens();
     this.updated = true;
     this.router.navigate(['/wallet/global']);
   }
@@ -49,6 +49,7 @@ export class AccountService{
   async refreshAccountData(){
       clearInterval(this.interval)
       this.getPendingTx();
+      console.log("pending", this.pending)
       await this.startIntervalData();
       await this.setTokens();
       this.updated = await true;
@@ -116,7 +117,7 @@ export class AccountService{
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);
       if(wallet[result].hasOwnProperty('tokens')){
-        let tokens = wallet[result].tokens.filter(x=> x.network = this._web3.network)
+        let tokens = wallet[result].tokens.filter(x=> x.network == this._web3.network)
         return tokens;
       }else{
         return new Array();;
@@ -196,14 +197,15 @@ export class AccountService{
       let result = wallet.findIndex(x => x.address == this.account.address);
       console.log(result);
       if(wallet[result].hasOwnProperty('pending')){
-        console.log(wallet[result].pending.filter(x=> x.network = this._web3.network))
-        this.pending= wallet[result].pending.filter(x=> x.network = this._web3.network);
+        console.log(wallet[result].pending.filter(x=> x.network == this._web3.network))
+        this.pending= wallet[result].pending.filter(x=> x.network == this._web3.network);
       }
     }
   }
   
   async addPendingTx(tx){
     tx.network=this._web3.network;
+    console.log("pend",tx)
     this.pending.push(tx);
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));

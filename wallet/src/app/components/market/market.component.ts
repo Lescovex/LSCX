@@ -12,6 +12,7 @@ export class MarketComponent{
   protected showList: boolean = false;
   interval;
   constructor(public _account:AccountService, private _market: MarketService) {
+    this._market.setMarket();
   }
 
   maxHeight() {

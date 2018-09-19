@@ -49,15 +49,15 @@ export class SendPage implements OnInit {
 
     let dialogRef = this._dialog.openGasDialog(await gasLimit);
     dialogRef.afterClosed().subscribe(async result=>{
-      console.log(result);
+      console.log("result",result);
       if(typeof(result) != 'undefined'){
         let obj = JSON.parse(result);
 
         if(typeof(form.controls.trans_data.value)=='undefined'){
           obj.data = form.controls.trans_data.value;
         }
-        tx =  await this._rawtx.createRaw(form.controls.rec.value, form.controls.amount.value, obj)
-        this.sendDialogService.openConfirmSend(tx[0], form.controls.rec.value, tx[2],tx[1]-tx[2], tx[1], "send");
+        tx =  await this._rawtx.createRaw(form.controls.receiverAddr.value, form.controls.amount.value, obj)
+        this.sendDialogService.openConfirmSend(tx[0], form.controls.receiverAddr.value, tx[2],tx[1]-tx[2], tx[1], "send");
       }
     })
   }

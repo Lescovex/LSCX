@@ -85,12 +85,15 @@ export class SendDialogComponent{
           this._contractStorage.addContract(contract);
           this._contractStorage.checkForAddress();
         }
+        console.log()
         if(i==txs.length-1){
           title = "Your transaction has been sent";
           message = "You can see the progress in the history tab"
           self.dialogRef.close();
+          console.log(this.data.action)
           let dialogRef = self.dialogService.openErrorDialog(title, message, error, this.data.action);
           dialogRef.afterClosed().subscribe(result=>{
+            console.log('result', result)
               if(typeof(result)!= 'undefined' || result != ''){
                 this.router.navigate(['/wallet/history']);
               }
