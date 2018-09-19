@@ -422,6 +422,11 @@ div.input-container {
     z-index: 2;
     background-color: transparent;
 }
+#contract-response{
+    border: none;
+    background-color: #eaeaea;
+    padding-left:12px;
+}
 
 #resized {
     display: block;
@@ -435,12 +440,11 @@ div.input-container {
 
 #zeros span:nth-child(2) {
     margin-left: -1px;
-    padding-left: 12px;
 }
 
 .input-container span,
 .input-container p {
-    padding: 14px 12px 14px;
+    padding: 14px 12px 14px 0;
     cursor: pointer;
 }
 

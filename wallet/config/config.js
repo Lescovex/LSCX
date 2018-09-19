@@ -4,7 +4,7 @@
 const path = require('path')
 
 // ENVIROMENT
-//const ENV = 'dev';
+const ENV = 'dev';
 
 // WINDOW OPTIONS
 const WINDOW_OPTS = {
@@ -21,6 +21,6 @@ const WINDOW_OPTS = {
 }
 
 module.exports = {
-    //    ENV,
+       ENV,
     WINDOW_OPTS
 }

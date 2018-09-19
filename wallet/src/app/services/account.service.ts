@@ -189,10 +189,13 @@ export class AccountService{
   
   
   getPendingTx(){
+    this.pending=[];
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);
+      console.log(result);
       if(wallet[result].hasOwnProperty('pending')){
+        console.log(wallet[result].pending.filter(x=> x.network = this._web3.network))
         this.pending= wallet[result].pending.filter(x=> x.network = this._web3.network);
       }
     }

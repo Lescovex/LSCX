@@ -43,7 +43,9 @@
                     <input *ngIf="input.decimals == 'decimals'" type="{{input.type2}}" id="resized" formControlName="{{input.name}}" class="block" placeholder="0.{{('0').repeat(contractInfo.decimals)}}" [ngClass]="{'error': submited && getControl(input.name).errors!= null}"/>
                 </div>
             </ng-container>
-
+            <div id="contract-response" class="input-container clear dist" *ngIf="submited && response != null">
+                <p><span class="black">{{(funct?.name  | separateWords)| titlecase}}:</span> {{response}}</p>
+            </div>
             <div *ngIf="function!={}" class="clear right" >
                 <button  type="submit" class="btn-inverse">Submit</button>
             </div>

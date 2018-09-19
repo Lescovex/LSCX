@@ -126,7 +126,7 @@ export class AddContractPage {
 
     dialogRef.afterClosed().subscribe(()=>{
       if(error == ''){
-        this.router.navigate(['/contracts/contractPage']);
+        this.router.navigate(['/contracts/contract-page']);
       }
     })
   }

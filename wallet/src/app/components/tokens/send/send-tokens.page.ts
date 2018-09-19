@@ -40,26 +40,6 @@ export class SendTokensPage implements OnInit, OnDestroy{
     clearInterval(this.interval);
   }
 
-  checkAddress(receiverAddr): boolean {
-    if(!EthUtil.isValidAddress(receiverAddr)){
-      this.errors.receiver = "invalid receiver address";
-      return false
-    }else{
-      this.errors.receiver =  ""
-      return true
-    }
-
-  }
-  checkAmount(amount):boolean{
-    if(amount<0){
-      this.errors.amount = "Can not send negative amounts of ETH";
-      return false;
-    }else{
-      this.errors.amount ="";
-      return true;
-    }
-  }
-
   async sendTokens(form) {
     this.submited = true;
     console.log(form)

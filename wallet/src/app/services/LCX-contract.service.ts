@@ -5,12 +5,14 @@ import { Web3 } from './web3.service'
 import { AccountService } from './account.service';
 import { EtherscanService } from './etherscan.service';
 import { ContractService } from './contract.service';
-
+declare var require:any;
 const fs = require('fs')
 
 @Injectable()
 export class LCXContractService {
 	contracts=['LCX_ABT', 'LCX_CYC', 'LCX_ISC', 'LCX_CIF'];
+	abis = [];
+	bytecodes = [];
 	type = "";
 	contract;
 	contractInfo: any = {};
@@ -19,6 +21,7 @@ export class LCXContractService {
 	moreInfo = [];
 
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _scan: EtherscanService, private _contract: ContractService){	
+		this.getAbisadnBytecodes();
 	}
 
 	reset(){
@@ -28,18 +31,17 @@ export class LCXContractService {
 		this.functions = [];
 		this.moreInfo=[];
 	}
+
+	getAbisadnBytecodes(){
+		for(let i=0; i<this.contracts.length;i++){
+			this.abis[i] = require('../../LCX-contracts/'+this.contracts[i]+'.json');
+			this.bytecodes[i] = require('../../LCX-contracts/'+this.contracts[i]+'_bytecode.json')
+		}
+	}
 	
 	async getAbi(file){
-		return new Promise (function (resolve, reject) {
-			fs.readFile('./src/LCX-contracts/'+file+'.json', 'utf8', function (err,data) { 
-				if(data=="" || typeof(data)=='undefined'){
-					//console.log(err)
-					resolve(data); 
-				}else{
-					resolve(JSON.parse(data)); 
-				}	
-			});
-		})	
+		let i = this.contracts.findIndex(x=> x==file);
+		return this.abis[i]; 
 	}
 
 	async setAbi(file){	
@@ -78,17 +80,8 @@ export class LCXContractService {
 	}
 
 	async getBytecode(file:string){
-		let solPromise = new Promise (function (resolve, reject) {
-			fs.readFile('./src/LCX-contracts/'+file+'_bytecode.json', 'utf8', function (err,data) { 
-				if(data=="" || typeof(data)=='undefined'){
-					return resolve(data); 
-				}else{
-					resolve(JSON.parse(data)); 
-				}
-				
-			});
-		})
-		let source : any = await solPromise;
+		let i = this.contracts.findIndex(x=> x==file);
+		let source : any = this.bytecodes[i];
 		let bytecode = source.object;
 		return bytecode;
 	}

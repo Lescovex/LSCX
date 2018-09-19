@@ -43,14 +43,13 @@ export class Web3 {
 
   estimateGas(from, to, data, amount?):Promise<number>{
     let options: any={from:from}
-    options.value = (typeof(amount)== 'undefined')? 0 : "0x"+amount.toString(16);
+    options.value = (typeof(amount)== 'undefined' || amount==0)? 0 : "0x"+amount.toString(16);
     if(to != ''){
       options.to = to
     }
     if(data != ''){
       options.data = this.web3.toHex(data)
     }
-
     let self = this;
     return new Promise((resolve, reject)=>{
       self.web3.eth.estimateGas(options,(err, result)=>{
@@ -62,7 +61,8 @@ export class Web3 {
       })
     })
   }
-  async blockNumber() {
+
+  blockNumber():Promise<number> {
     let self = this;
     return new Promise((resolve, reject)=>{
       self.web3.eth.getBlockNumber((err, result)=>{
@@ -74,7 +74,8 @@ export class Web3 {
       })
     })
   }
-  async blockGas(){
+  
+  blockGas():Promise<number>{
     let self = this;
     let block = this.blockNumber();
     return new Promise((resolve, reject)=>{
@@ -85,8 +86,7 @@ export class Web3 {
           resolve(result.gasLimit)
         }
       })
-    })
-
+    });
   }
 
   setProvider(){
