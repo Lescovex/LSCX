@@ -35,13 +35,13 @@ export class MarketActionComponent implements OnChanges{
         let params = [];
         let tx;
         let value = 0;
-        //console.log(this.token.name)
-        //console.log("form", form.controls)
+        console.log(this.token.name)
+        console.log("form", form.controls)
         if(this.action != 'deposit' && this.token.name == 'ETH') {
             value = parseInt(this._web3.web3.toWei(form.controls.amount.value, 'ether'));
         } else if(this.token.name != 'ETH') {
-            value = (form.controls.amount.value*Math.pow(10,this.token.decimals));
-          //  console.log("value",value)
+            value = parseFloat(form.controls.amount.value)*Math.pow(10,this.token.decimals);
+          console.log("value",value)
         } else {
             value = form.controls.amount.value;
         }
@@ -52,7 +52,7 @@ export class MarketActionComponent implements OnChanges{
                 tx = await this.depositEth(params);
                 break;
             case (this.action == "deposit" && this.token.name != "ETH"):
-                //console.log('depTk')
+                console.log('depTk')
                 tx = await this.depositToken(params);
                 break;
             case (this.action == "withdraw" && this.token.name == "ETH"): 

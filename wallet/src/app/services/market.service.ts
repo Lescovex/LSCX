@@ -70,11 +70,11 @@ export class MarketService {
 		this.token.contract = this.contractToken.at(this.token.addr)
 	}
 
-	setMarket(){
+	setMarket(token?){
 		this.setCongif();	
 		this.setContracts();
 		this.eth = this.config.tokens[0];
-		this.setToken();
+		this.setToken(token);
 		this.getLocalState();
 		this.setSocket();
 		this.setSha256();

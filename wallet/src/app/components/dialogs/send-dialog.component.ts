@@ -27,6 +27,8 @@ export class SendDialogComponent{
    
 
   async sendTx(pass){
+
+    console.log("network",this._web3.network)
     let self = this;
     let error = "";
     let title = "";
@@ -52,8 +54,9 @@ export class SendDialogComponent{
     }else{
       txs = this.data.tx
     }
-
+    console.log('antes del for', txs)
     for(let i=0; i<txs.length; i++){
+      console.log('dentro del forrrrr')
       txs[i].sign(privateKey);
       let serialized = "0x"+(txs[i].serialize()).toString('hex');
       let sendResult = await this._web3.sendRawTx(serialized);
@@ -61,12 +64,14 @@ export class SendDialogComponent{
       self.dialogRef.close();
 
       if(sendResult instanceof Error){
+        console.log("error",sendResult);
         title = "Unable to complete transaction";
         message = "Something went wrong"
         error = sendResult.message;
         self.dialogRef.close();
         let dialogRef = self.dialogService.openErrorDialog(title,message,error);
       }else{
+        console.log("no error",sendResult)
         if(this.data.action == "order") {
           let hash = await this._market.orderHash(this.data.hashParams)
           let sign = this._market.signOrder(hash, privateKey);
@@ -76,6 +81,7 @@ export class SendDialogComponent{
         let pending: any = null;
         while(pending == null){
           pending = await self._web3.getTx(sendResult);
+          console.log(pending);
         }
         pending.timeStamp = Date.now()/1000;
         self._account.addPendingTx(pending);
@@ -85,7 +91,7 @@ export class SendDialogComponent{
           this._contractStorage.addContract(contract);
           this._contractStorage.checkForAddress();
         }
-        console.log()
+        console.log("que pasaaaaa",i==txs.length-1)
         if(i==txs.length-1){
           title = "Your transaction has been sent";
           message = "You can see the progress in the history tab"
