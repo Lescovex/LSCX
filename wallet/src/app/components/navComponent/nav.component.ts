@@ -35,19 +35,17 @@ export class NavComponent implements OnInit {
     });
 
     this.interval = setInterval(()=>{
-      if('balance' in this._account.account){
+      if(this._account.updated ==  true){
         this.loadingD.close();
         clearInterval(this.interval);
       }
     })
     if(!('address' in this._account.account)){
       this.loadingD.close();
-     // this.loadingDialog();
     }
   }
 
   ngOnInit() {
-    //console.log(this.route)
   }
   
   openAddAccount() {

@@ -42,9 +42,10 @@ export class AccountService{
       this.getPendingTx();
       this.startIntervalData();
       this.setTokens();
-    
+    this.updated = true;
     this.router.navigate(['/wallet/global']);
   }
+
   async refreshAccountData(){
       clearInterval(this.interval)
       this.getPendingTx();
@@ -227,6 +228,7 @@ export class AccountService{
 
   async startIntervalData(){
     await this.setData();
+    this.updated=true;
     this.interval = setInterval(async ()=>{
       await this.setData();
     },3000); 

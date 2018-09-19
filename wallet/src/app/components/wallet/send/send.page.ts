@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core'
 
-import * as EthUtil from 'ethereumjs-util';
-import * as EthTx from 'ethereumjs-tx';
-
 /*Services*/
 import { AccountService } from '../../../services/account.service';
 import { Web3 } from '../../../services/web3.service';
@@ -30,30 +27,6 @@ export class SendPage implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  checkAddress(receiverAddr): boolean {
-    if(!EthUtil.isValidAddress(receiverAddr)){
-      this.errors.receiver = "invalid receiver address";
-      return false
-    }else{
-      this.errors.receiver =  ""
-      return true
-    }
-
-  }
-  
-  checkAmount(amount):boolean{
-    if(amount<0){
-      this.errors.amount = "Can not send negative amounts of ETH";
-      return false;
-    }else if(amount>this._account.account.balance){
-      this.errors.amount = "You don't have enough funds";
-      return false;
-    }else {
-      this.errors.amount ="";
-      return true;
-    }
   }
 
   async sendEth(form) {

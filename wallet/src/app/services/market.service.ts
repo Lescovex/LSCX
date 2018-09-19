@@ -9,6 +9,7 @@ import { BigNumber } from 'bignumber.js';
 import { Order } from '../models/order';
 import { Trade } from '../models/trade';
 
+declare var require: any;
 const io = require('socket.io-client');
 
 import * as EthUtil from 'ethereumjs-util';
