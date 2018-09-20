@@ -38,7 +38,7 @@ Buy & Sell assets
 
 Publish tokens in the global market
 
-Token Holdes Sweeper
+Token Holders Sweeper
 
 Blockchain Certification Authority
 
