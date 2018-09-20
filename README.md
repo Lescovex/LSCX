@@ -212,7 +212,7 @@ For the avoidance of doubt, this Section [4](https://creativecommons.org/license
 
 OR
 
-- 450 ETH
+- 450 ETH per year
 
 Pubish in your app the transaction hash of the license payment to this address 
 
