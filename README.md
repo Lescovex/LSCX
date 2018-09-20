@@ -6,8 +6,11 @@ Lescovex DEX is a tool for managing your ethers and ethereum tokens with the pos
 # Install
 
 git clone https://github.com/Lescovex/LSCX.git
+
 cd wallet
+
 npm install
+
 npm run electron
 
 #App view
