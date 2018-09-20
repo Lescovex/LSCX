@@ -13,6 +13,14 @@ npm install
 
 npm run electron
 
+# Alpha Test Download (Cooming Soon)
+
+[Windows]()
+
+[Linux]()
+
+[Mac]()
+
 # App view
 
 ![Send](./images/send.png)
