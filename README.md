@@ -13,7 +13,7 @@ npm install
 
 npm run electron
 
-#App view
+# App view
 
 ![Send](./images/send.png)
 
