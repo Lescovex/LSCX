@@ -216,6 +216,11 @@ OR
 
 Pubish in your app the transaction hash of the license payment to this address 
 
+BTC
+
 [1HtdsiDvwf3ggjbP4w22UQBsWBiutfejwW](https://www.blockchain.com/btc/address/1HtdsiDvwf3ggjbP4w22UQBsWBiutfejwW)
+
+ETH
+
 [0x60cEC9c3B55FDF32c54063980200825050b2462D](https://etherscan.io/address/0xfFA2D61cbA573bC8047A7Af94AFeC5052934e564)
 
