@@ -26,7 +26,7 @@ npm run electron
 
 Import & export accounts
 
-Ether, send rececive, history
+Ether, send, receive, history
 
 Tokens, send receive, history, add
 
