@@ -2,6 +2,16 @@
 Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes, Enrique Santos
 
 Lescovex DEX is a tool for managing your ethers and ethereum tokens with the possibility of issuing financial contracts and trading them directly on a decentralized OTC market. All based on our smart contracts.
+
+# Install
+
+git clone https://github.com/Lescovex/LSCX.git
+cd wallet
+npm install
+npm run electron
+
+#App view
+
 ![Send](./images/send.png)
 
 ![ShowContract](./images/show-contract.png)
