@@ -15,9 +15,9 @@ npm run electron
 
 # Alpha Test Download (Cooming Soon)
 
-[Windows]()
+[Windows](https://github.com/Lescovex/LSCX/blob/master/lescovex%20Setup%201.0.0.exe)
 
-[Linux]()
+[Linux](https://github.com/Lescovex/LSCX/blob/master/lescovex%20Setup%201.0.0.exe)
 
 [Mac]()
 
