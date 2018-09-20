@@ -9,6 +9,8 @@ git clone https://github.com/Lescovex/LSCX.git
 
 cd wallet
 
+npm install electron -g
+
 npm install
 
 npm run electron
