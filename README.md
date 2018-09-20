@@ -1,7 +1,58 @@
 # Lescovex DEX, Alpha Test Version
 Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes, Enrique Santos
 
-Lescovex DEX is a tool for managing your ethers and ethereum tokens with the possibility of issuing financial contracts and trading them directly on a decentralized OTC market. All based on our smart contracts.
+Lescovex DEX is a tool for managing your ethers and ethereum tokens with the possibility of issuing financial contracts and trading them directly on a decentralized OTC market. 
+
+# Install
+
+git clone https://github.com/Lescovex/LSCX.git
+
+cd wallet
+
+npm install
+
+npm run electron
+
+# Alpha Test Binaries Download
+
+[Windows](https://github.com/Lescovex/LSCX/blob/master/lescovex%20Setup%201.0.0.exe)
+
+[Linux](https://github.com/Lescovex/LSCX/blob/master/lescovex-1.0.0-x86_64.AppImage)
+
+[Mac]() Cooming Soon
+
+
+# Features
+
+Import & export accounts
+
+Ether, send, receive, history
+
+Tokens, send receive, history, add
+
+Create smart contracts, crypto currencies, commodoties, securities
+
+Buy & Sell assets
+
+# Cooming Soon
+
+Publish tokens in the global market
+
+Token Holders Sweeper
+
+Blockchain Certification Authority
+
+X509 Signatures
+
+Smart Forward Contracts
+
+Waves Integration
+
+
+
+
+# App view
+
 ![Send](./images/send.png)
 
 ![ShowContract](./images/show-contract.png)
@@ -57,6 +108,7 @@ ABTs represent digital ownership with respect to an underlying tangible, intangi
 Description:
 
 CIFs may take the form of closed-end or open-end and whose underlying investments comprise digital assets of any kind. Smart contracts unleash efficiency improvements for investment funds operations, including fast and auditable capital calls and distributions alongside transparent, error-proof, Net Asset Value (NAV) calculations. We label crypto investment funds as securities.
+
 
 ## Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
 
@@ -157,3 +209,25 @@ For the avoidance of doubt, this Section [4](https://creativecommons.org/license
 2.  To the extent possible, if any provision of this Public License is deemed unenforceable, it shall be automatically reformed to the minimum extent necessary to make it enforceable. If the provision cannot be reformed, it shall be severed from this Public License without affecting the enforceability of the remaining terms and conditions.
 3.  No term or condition of this Public License will be waived and no failure to comply consented to unless expressly agreed to by the Licensor.
 4.  Nothing in this Public License constitutes or may be interpreted as a limitation upon, or waiver of, any privileges and immunities that apply to the Licensor or You, including from the legal processes of any jurisdiction or authority
+
+# License pricing
+
+- 15 BTC per year .
+
+OR
+
+- 450 ETH per year
+
+Pubish in your app the transaction hash of the payment to this address 
+
+BTC
+
+[1HtdsiDvwf3ggjbP4w22UQBsWBiutfejwW](https://www.blockchain.com/btc/address/1HtdsiDvwf3ggjbP4w22UQBsWBiutfejwW)
+
+ETH
+
+[0x60cEC9c3B55FDF32c54063980200825050b2462D](https://etherscan.io/address/0xfFA2D61cbA573bC8047A7Af94AFeC5052934e564)
+
+# Contact
+
+info@lescovex.com
