@@ -20,11 +20,17 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit() {}
 
-  setInfuraKey(){
+  setInfuraKey(text?){
+    if(typeof(text)!= 'undefined'){
+      this.infuraApiKey = text;
+    }
     this._web3.setInfuraKey(this.infuraApiKey);
     this._web3.setNetwork(this._web3.network);
   }
-  setEtherscanKey(){
+  setEtherscanKey(text?){
+    if(typeof(text)!= 'undefined'){
+      this.etherscanApiKey = text;
+    }
     this._scan.setApiKey(this.etherscanApiKey)
   }
   openUrl(url){
