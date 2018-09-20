@@ -13,7 +13,7 @@ npm install
 
 npm run electron
 
-# Alpha Test Download (Cooming Soon)
+# Alpha Test Download
 
 [Windows](https://github.com/Lescovex/LSCX/blob/master/lescovex%20Setup%201.0.0.exe)
 
