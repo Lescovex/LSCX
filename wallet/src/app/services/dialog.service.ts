@@ -34,21 +34,14 @@ export class DialogService{
           });
     }
 
-    openMessageDialog(title, result){
-        return this.dialog.open(MessageDialogComponent, {
-            width: '660px',
-            height: '150px',
-            data: {
-              title: title,
-              result: result
-            }
-          });
-    }
-    openGasDialog(gasLimit){
+    openGasDialog(gasLimit, gasPrice){
         return this.dialog.open(GasDialogComponent, {
             width: '660px',
             height: '280px',
-            data: gasLimit
+            data: {
+                gasLimit: gasLimit,
+                gasPrice: gasPrice
+            }
           });
     }
 }

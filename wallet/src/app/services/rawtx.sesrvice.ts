@@ -69,20 +69,20 @@ export class RawTxService {
 
     }
 
-    async contractCreationRaw(data: string){
+    async contractCreationRaw(options){
         //console.log('dentro')
         let chainId = this._web3.web3.toHex(this._web3.network);
         let acc = this._account.account;
-        let gasPrice  = this._web3.web3.toHex(this._web3.web3.toWei('1','gwei'));
         let nonce = await this._web3.getNonce(acc.address);
-        let gasLimit = await this._web3.estimateGas(acc.address,"", "0x"+data)
+        let gasPrice  = this._web3.web3.toHex(this._web3.web3.toWei(options.gasPrice,'gwei'));
+        let gasLimit = options.gasLimit
 
         
         let txParams = {
             nonce: nonce,
             gasPrice: gasPrice,
             gasLimit: gasLimit,
-            data: "0x"+data,
+            data: "0x"+options.data,
             chainId:chainId
         }
         
@@ -90,12 +90,8 @@ export class RawTxService {
         //console.log(txParams, tx)
         let cost = gasLimit*gasPrice;
         let balance =  this._web3.web3.toWei(this._account.account.balance,'ether');
-
-        if(cost> balance){ 
-            throw "Insuficient founds!";
-        }else{
-            return [tx, cost]
-        }
+        
+        return [tx, cost]
 
     }
 }

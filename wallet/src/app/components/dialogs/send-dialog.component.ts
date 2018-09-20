@@ -79,33 +79,42 @@ export class SendDialogComponent{
         }
 
         let pending: any = null;
-        while(pending == null){
+        let j = 0;
+        while(pending == null && i<15){
           pending = await self._web3.getTx(sendResult);
           console.log(pending);
+          j++;
         }
-        pending.timeStamp = Date.now()/1000;
-        self._account.addPendingTx(pending);
-        if(this.data.action == 'contractDeploy'){
-          let contract =  new Contract();
-          contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
-          this._contractStorage.addContract(contract);
-          this._contractStorage.checkForAddress();
-        }
-        console.log("que pasaaaaa",i==txs.length-1)
-        if(i==txs.length-1){
-          title = "Your transaction has been sent";
-          message = "You can see the progress in the history tab"
+        if(i>=15){
+          title = "Unable to complete transaction";
+          message = "Something went wrong"
+          error = "We can not check network confirmation";
           self.dialogRef.close();
-          console.log(this.data.action)
-          let dialogRef = self.dialogService.openErrorDialog(title, message, error, this.data.action);
-          dialogRef.afterClosed().subscribe(result=>{
-            console.log('result', result)
-              if(typeof(result)!= 'undefined' || result != ''){
-                this.router.navigate(['/wallet/history']);
-              }
-          })
+          let dialogRef = self.dialogService.openErrorDialog(title,message,error);
+        }else{
+          pending.timeStamp = Date.now()/1000;
+          self._account.addPendingTx(pending);
+          if(this.data.action == 'contractDeploy'){
+            let contract =  new Contract();
+            contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
+            this._contractStorage.addContract(contract);
+            this._contractStorage.checkForAddress();
+          }
+          console.log("que pasaaaaa",i==txs.length-1)
+          if(i==txs.length-1){
+            title = "Your transaction has been sent";
+            message = "You can see the progress in the history tab"
+            self.dialogRef.close();
+            console.log(this.data.action)
+            let dialogRef = self.dialogService.openErrorDialog(title, message, error, this.data.action);
+            dialogRef.afterClosed().subscribe(result=>{
+              console.log('result', result)
+                if(typeof(result)!= 'undefined' || result != ''){
+                  this.router.navigate(['/wallet/history']);
+                }
+            })
+          }
         }
-        
       }
     }
   }

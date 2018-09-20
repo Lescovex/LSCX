@@ -91,17 +91,33 @@ export class ShowContract implements OnInit{
       }
     }else{
       let dialogRef = this._dialog.openLoadingDialog();
-      let data = await this._LSCXcontract.getFunctionData(this.funct.name, params)
-      let amount = 0;
-      if(this.funct.payable){
-        amount =  parseFloat(this.getControl('ethAmount').value)
+      let data = await this._LSCXcontract.getFunctionData(this.funct.name, params);
+      let gasLimit;
+      try {
+        gasLimit = await this._web3.estimateGas(this._account.account.address,this.contractInfo.address, data, 0);
+      }catch(e){
+        gasLimit = 1000000;
       }
-      let tx =  await this._rawtx.createRaw(this.contractInfo.address, amount, {data:data})
+
       dialogRef.close();
-      //tx, to, amount, fees, total, action, token?
-      this.sendDialogService.openConfirmSend(tx[0], this.contractInfo.address, tx[2],tx[1]-tx[2], tx[1], "send")
+      dialogRef = this._dialog.openGasDialog(gasLimit, 40);
+      dialogRef.afterClosed().subscribe(async result=>{
+        console.log("result",result);
+        if(typeof(result) != 'undefined'){
+          let options = JSON.parse(result);
+          options.data = data;
+          let amount = 0;
+          if(this.funct.payable){
+            amount =  parseFloat(this.getControl('ethAmount').value)
+          }
+          let tx =  await this._rawtx.createRaw(this.contractInfo.address, amount, {data:data})
+          dialogRef.close();
+          //tx, to, amount, fees, total, action, token?
+          this.sendDialogService.openConfirmSend(tx[0], this.contractInfo.address, tx[2],tx[1]-tx[2], tx[1], "send");
+        }
+      });
+    }
   }
-}
 
   decimalsOutput(value){
     let result = value/Math.pow(10,this.contractInfo.decimals);

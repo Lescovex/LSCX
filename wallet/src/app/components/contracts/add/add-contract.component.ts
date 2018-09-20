@@ -69,16 +69,32 @@ export class AddContractPage {
     if(this.constructorForm.invalid){
       return false
     }
-
+    let dialogRef = this._dialog.openLoadingDialog();
     let type = this.getControl('contract').value;
     let byteCode = await this._LSCXcontract.getBytecode(type);
     let args = this._forms.getValues(this.inputs, this.constructorForm, type);
 
     let data = await this._LSCXcontract.getDeployContractData(type, byteCode, args);
-    let txInfo = await this._rawtx.contractCreationRaw(data);
-    let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
-    this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
+    let gasLimit;
+    try {
+      gasLimit = await this._web3.estimateGas(this._account.account.address, "", data, 0);
+    }catch(e){
+      gasLimit = 1000000;
+    }
 
+    dialogRef.close();
+    dialogRef = this._dialog.openGasDialog(gasLimit, 40);
+    dialogRef.afterClosed().subscribe(async result=>{
+      console.log("result",result);
+      if(typeof(result) != 'undefined'){
+        let options = JSON.parse(result);
+        options.data = data;
+
+        let txInfo = await this._rawtx.contractCreationRaw(options);
+        let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
+    this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
+      }
+    })
   }
 
   async importSubmit(){

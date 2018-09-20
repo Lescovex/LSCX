@@ -49,7 +49,7 @@ export class SendPage implements OnInit {
       gasLimit = await this._web3.blockGas();
     }
 
-    let dialogRef = this._dialog.openGasDialog(await gasLimit);
+    let dialogRef = this._dialog.openGasDialog(await gasLimit, 1);
     dialogRef.afterClosed().subscribe(async result=>{
       console.log("result",result);
       if(typeof(result) != 'undefined'){

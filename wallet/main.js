@@ -1,7 +1,7 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
 const url = require('url');
-const { WINDOW_OPTS, ENV } = require('./config/config.js');
+const { WINDOW_OPTS, ENV, MENU_TEMPLATE } = require('./config/config.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -10,7 +10,9 @@ let win;
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow(WINDOW_OPTS);
-
+  Menu.setApplicationMenu(Menu.buildFromTemplate(MENU_TEMPLATE));
+  
+  console.log(WINDOW_OPTS.icon)
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/build/index.html`);
 

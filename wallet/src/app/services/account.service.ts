@@ -25,7 +25,7 @@ export class AccountService{
   constructor(private http: Http, private _wallet : WalletService, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
     //Hardcode
     this._scan.getApiKey();
-    if(this._scan.apikey != ""){
+    if(this._scan.apikey != "" && this._web3){
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
@@ -125,36 +125,9 @@ export class AccountService{
   }
 
   async setTokens(){
-    let self = this;
     this.account.tokens = [];
     if('address' in this.account){
-      let tokens = this.getTokensLocale();
-      tokens = await this.updateTokens(tokens);
-      this._scan.getTokensTransfers(this.account.address).subscribe(async function(resp:any){
-        let tkns : Array<any> = [];
-        tkns = resp.result;
-        self.account.tokens=[];
-        for(let i = 0; i<tkns.length; i++){
-          if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
-            let token: any = {
-              contractAddress :  tkns[i].contractAddress,
-              tokenName:  tkns[i].tokenName,
-              tokenSymbol:  tkns[i].tokenSymbol,
-              tokenDecimal: parseInt( tkns[i].tokenDecimal),
-              network : self._web3.network
-            }
-            token = await self.updateTokenBalance(token);
-            
-            tokens.push(token)
-          }
-        }
-        self.account.tokens = tokens;
-        let wallet = JSON.parse(localStorage.getItem('ethAcc'));
-        let result = wallet.findIndex(x => x.address == self.account.address);
-        wallet[result].tokens = self.account.tokens;
-
-        localStorage.setItem('ethAcc',JSON.stringify(wallet));
-      });
+      await this.updateTokens();
     }
   }
   
@@ -173,7 +146,40 @@ export class AccountService{
     }
   }
 
-  async updateTokens(tokens){
+  async updateTokens(){
+    let self = this;
+    let tokens = this.getTokensLocale();
+      tokens = await this.updateTokenBalances(tokens);
+      this._scan.getTokensTransfers(this.account.address).subscribe(async function(resp:any){
+        let tkns : Array<any> = [];
+        tkns = resp.result;
+        self.account.tokens=[];
+        for(let i = 0; i<tkns.length; i++){
+          if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
+            let token: any = {
+              contractAddress :  tkns[i].contractAddress,
+              tokenName:  tkns[i].tokenName,
+              tokenSymbol:  tkns[i].tokenSymbol,
+              tokenDecimal: parseInt( tkns[i].tokenDecimal),
+              network : self._web3.network
+            }
+            token = await self.updateTokenBalance(token);
+            let empty=false;
+            console.log(typeof(token.tokenName),token.tokenName, typeof(token.tokenSymbol), token.tokenSymbol, typeof(token.tokenDecimal),token.tokenDecimal);
+            console.log(token.tokenDecimal == NaN)
+            tokens.push(token)
+          }
+        }
+        self.account.tokens = tokens;
+        let wallet = JSON.parse(localStorage.getItem('ethAcc'));
+        let result = wallet.findIndex(x => x.address == self.account.address);
+        wallet[result].tokens = self.account.tokens;
+
+        localStorage.setItem('ethAcc',JSON.stringify(wallet));
+      });
+  }
+
+  async updateTokenBalances(tokens){
     for(let i = 0; i<tokens.length; i++){
       tokens[i] = await this.updateTokenBalance(tokens[i])
     }
@@ -235,7 +241,7 @@ export class AccountService{
 
   startIntervalTokens(){
     return setInterval(()=>{
-      this.updateTokens(this.account.tokens)
+      this.updateTokens();
     },3000);
   }
 

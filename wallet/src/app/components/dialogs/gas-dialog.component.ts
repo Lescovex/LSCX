@@ -9,7 +9,6 @@ import { Web3 } from '../../services/web3.service';
 })
 
 export class GasDialogComponent implements OnInit{
-    gasPrice = 1;
     submited = false;
     constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<GasDialogComponent>, private _web3: Web3){
 
@@ -28,7 +27,7 @@ export class GasDialogComponent implements OnInit{
         if(form.invalid){
             return false;
         }
-        this.dialogRef.close(JSON.stringify({gasLimit: this.data, gasPrice: parseInt(this._web3.web3.toWei(this.gasPrice, 'gwei'))}));
+        this.dialogRef.close(JSON.stringify({gasLimit: this.data.gasLimit, gasPrice: parseInt(this._web3.web3.toWei(this.data.gasPrice, 'gwei'))}));
     }
 
 }

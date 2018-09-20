@@ -10,7 +10,7 @@
     <div class="clear">
         <label class="title" for="amount">Ether amount</label>
         <input type="number" class="block" step="any" [customMin]="0" value="0" [funds]="_account.account.balance" name="amount" [ngClass]="{'error': submited && amount.invalid}" ngModel required #amount="ngModel"/>
-        <p [ngClass]="{'hidden':!submited && amount.valid}">
+        <p [ngClass]="{'hidden':!(submited && receiverAddr.invalid)}" class="error">
             <span *ngIf="amount.errors?.required" class="error">This field is required</span>
             <span *ngIf="!amount.errors?.required && amount.errors?.customMin " class="error">Can not send negative amounts of ETH</span>
             <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds" class="error">You don't have enough funds</span>

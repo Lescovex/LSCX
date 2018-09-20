@@ -3,7 +3,7 @@
         <p >{{_account.account.name}}</p>
     </div>
 </div>
-<button class="link" routerLink="/wallet" [disabled]="_web3. infuraKey == '' && _scan.apikey == ''" routerLinkActive="active" #wallet="routerLinkActive">
+<button class="link" routerLink="/wallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #wallet="routerLinkActive">
     <div>
         <img *ngIf="wallet.isActive == true" src="~icons/wallet_icon.svg" alt="wallet_icon">
         <img *ngIf="wallet.isActive == false" src="~icons/wallet_inactive_icon.svg" alt="wallet_icon">
@@ -11,7 +11,7 @@
     <span class="title-button-left">Wallet</span>
 </button>
 
-<button class="link" routerLink="/tokens" [disabled]="_web3. infuraKey == '' && _scan.apikey == ''" routerLinkActive="active" #tokens="routerLinkActive">
+<button class="link" routerLink="/tokens" [disabled]="_web3. infuraKey == '' ||_scan.apikey == ''" routerLinkActive="active" #tokens="routerLinkActive">
     <div>
         <img *ngIf="tokens.isActive" src="~icons/token_icon.svg" alt="settings_icon">
         <img *ngIf="!tokens.isActive" src="~icons/token_icon.svg" alt="settings_icon">
@@ -19,14 +19,14 @@
     <span class="title-button-left">Tokens</span>
 </button>
 
-<button class="link" routerLink="/contracts" [disabled]="_web3. infuraKey == '' && _scan.apikey == ''" routerLinkActive="active" #contracts="routerLinkActive">
+<button class="link" routerLink="/contracts" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #contracts="routerLinkActive">
     <div>
         <img *ngIf="contracts.isActive" src="~icons/contracts_icon.svg" alt="contracts_icon">
         <img *ngIf="!contracts.isActive" src="~icons/contracts_inactive_icon.svg" alt="contracts_icon">
     </div>
     <span class="title-button-left">Contracts</span>
 </button>
-<button class="link" routerLink="/market" [disabled]="_web3. infuraKey == '' && _scan.apikey == ''" routerLinkActive="active" #market="routerLinkActive">
+<button class="link" routerLink="/market" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #market="routerLinkActive">
     <div>
         <img *ngIf="market.isActive" src="~icons/market_icon.svg" alt="settings_icon">
         <img *ngIf="!market.isActive" src="~icons/market_inactive_icon.svg" alt="settings_icon">
@@ -34,7 +34,7 @@
     <span class="title-button-left">Market</span>
 </button>
 
-<button class="link" routerLink="/general-settings" [disabled]="_web3. infuraKey == '' && _scan.apikey == ''" routerLinkActive="active" #settings="routerLinkActive">
+<button class="link" routerLink="/general-settings" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #settings="routerLinkActive">
     <div>
         <img *ngIf="settings.isActive" src="~icons/generalsettings_icon.svg" alt="settings_icon">
         <img *ngIf="!settings.isActive" src="~icons/generalsettings_inactive_icon.svg" alt="settings_icon">        
