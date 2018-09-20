@@ -214,7 +214,7 @@ OR
 
 - 450 ETH per year
 
-Pubish in your app the transaction hash of the license payment to this address 
+Pubish in your app the transaction hash of the payment to this address 
 
 BTC
 
