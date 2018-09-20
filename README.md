@@ -30,7 +30,7 @@ Ether, send, receive, history
 
 Tokens, send receive, history, add
 
-Create Smart contracts, crypto currencies, commodoties, securities
+Create smart contracts, crypto currencies, commodoties, securities
 
 Buy & Sell assets
 
