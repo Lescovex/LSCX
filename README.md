@@ -33,15 +33,23 @@ Buy & Sell assets
 # Features
 
 Import & export accounts
+
 Ether, send rececive, history
+
 Tokens, send receive, history, add
+
 Create Smart contracts, crypto currencies, commodoties, securities
+
 Buy & Sell assets
 
 # Cooming Soon
+
 Publish tokens
+
 Blockchain Certification Authority
+
 X509 Signatures
+
 Smart Forward Contracts
 
 
