@@ -224,3 +224,6 @@ ETH
 
 [0x60cEC9c3B55FDF32c54063980200825050b2462D](https://etherscan.io/address/0xfFA2D61cbA573bC8047A7Af94AFeC5052934e564)
 
+# Contact
+
+info@lescovex.com
