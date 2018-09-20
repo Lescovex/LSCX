@@ -232,4 +232,4 @@ ETH
 
 # Contact
 
-info@lescovex.com
+srdelabismo@lescovex.com
