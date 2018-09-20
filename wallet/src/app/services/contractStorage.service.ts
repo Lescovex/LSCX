@@ -20,8 +20,19 @@ export class ContractStorageService {
             this.contracts = [];
         }
     }
+
     setAccContracts(){
         this.accContracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
+    }
+
+    removeAccContracts(address){
+        let contracts = this.contracts.filter(contract=> contract.account != address);
+        console.log("filtrado",contracts)
+        if(contracts == []) {
+            localStorage.removeItem('contracts');
+        } else {
+            localStorage.setItem('contracts', JSON.stringify(contracts));
+        }
     }
 
     addContract(contract){

@@ -87,7 +87,7 @@ export class RawTxService {
         }
         
         let tx = new EthTx(txParams);
-//        console.log(txParams, tx)
+        //console.log(txParams, tx)
         let cost = gasLimit*gasPrice;
         let balance =  this._web3.web3.toWei(this._account.account.balance,'ether');
 

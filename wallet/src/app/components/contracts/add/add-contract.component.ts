@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ValidateAddress } from '../../../validators/address-validator.directive'; 
 
-import { LCXContractService } from '../../../services/LCX-contract.service'
+import { LSCXContractService } from '../../../services/LSCX-contract.service'
 import { FormsService } from '../../../services/forms.service'
 import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { SendDialogService } from '../../../services/send-dialog.service';
@@ -26,7 +26,7 @@ export class AddContractPage {
   public submited: boolean = false;
   public create = true;
   public zero = "0"
-  constructor(public _LCXcontract: LCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3) {
+  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3) {
     this.constructorForm =  new FormGroup({
       contract:new FormControl(null,Validators.required),
     })
@@ -42,16 +42,16 @@ export class AddContractPage {
       //Remove prev controls
       if(this.contract != null){
         //console.log("dentro remove");
-        inputs = this._LCXcontract.getConstructor(this.abi);
+        inputs = this._LSCXcontract.getConstructor(this.abi);
         this.constructorForm = this._forms.removeControls(inputs, this.constructorForm);
       }
       
       this.contract = contract;
       //console.log("get abi");
-      this.abi = await this._LCXcontract.getAbi(contract);
+      this.abi = await this._LSCXcontract.getAbi(contract);
       
-      inputs = this._LCXcontract.getConstructor(this.abi);
-      inputs = this._LCXcontract.addDecimalsConst(inputs, contract)
+      inputs = this._LSCXcontract.getConstructor(this.abi);
+      inputs = this._LSCXcontract.addDecimalsConst(inputs, contract)
       this.constructorForm = this._forms.addControls(inputs, this.constructorForm);
       this.inputs=inputs;
     }
@@ -71,10 +71,10 @@ export class AddContractPage {
     }
 
     let type = this.getControl('contract').value;
-    let byteCode = await this._LCXcontract.getBytecode(type);
+    let byteCode = await this._LSCXcontract.getBytecode(type);
     let args = this._forms.getValues(this.inputs, this.constructorForm, type);
 
-    let data = await this._LCXcontract.getDeployContractData(type, byteCode, args);
+    let data = await this._LSCXcontract.getDeployContractData(type, byteCode, args);
     let txInfo = await this._rawtx.contractCreationRaw(data);
     let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
     this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
@@ -90,18 +90,18 @@ export class AddContractPage {
     }
     let loadingDialog = this._dialog.openLoadingDialog();
     let contractAddr = this.getControl('contract').value;
-    let isContract = await this._LCXcontract.checkContract(contractAddr);
+    let isContract = await this._LSCXcontract.checkContract(contractAddr);
     let duplicated = this._contractStorage.isDuplicated(contractAddr, this._account.account.address)
     if(duplicated){
       error = "The contract you are are trying to import is a duplicate"
     } else if (isContract!=false && !duplicated){ 
       let tx = isContract
       if(typeof(tx)!= 'undefined' && tx.contractAddress == contractAddr){
-        let type = await this._LCXcontract.checkType(tx.input);
+        let type = await this._LSCXcontract.checkType(tx.input);
         //console.log('type',type)
         if(type != ""){
           let contract = new Contract();
-          let info= await this._LCXcontract.getContractModelData(type,contractAddr)
+          let info= await this._LSCXcontract.getContractModelData(type,contractAddr)
           //console.log("info",info)
           contract.importContract(contractAddr,tx.hash, type, this._account.account.address, info, this._web3.network);
           try{
@@ -111,13 +111,13 @@ export class AddContractPage {
             error = e;
           }
         }else{
-          error = "The contract you are are trying to import isn't a LCX contract"
+          error = "The contract you are are trying to import isn't a LSCX contract"
         }
       }else{
-        error = "The contract you are are trying to import isn't a LCX contract"
+        error = "The contract you are are trying to import isn't a LSCX contract"
       }
     } else{
-      error = "The contract you are are trying to import isn't a LCX contract"
+      error = "The contract you are are trying to import isn't a LSCX contract"
     }
     let title = (error=="")? 'Your contract has been successfully imported' : 'Unable to import contract';
     let message = (error=="")? 'You can find it in the contracts list' : 'Something was wrong';
@@ -144,7 +144,7 @@ export class AddContractPage {
     if(this.getControl('contract').value != null){
       this.getControl('contract').setValue(null);
       let inputs = []
-      inputs = this._LCXcontract.getConstructor(this.abi);
+      inputs = this._LSCXcontract.getConstructor(this.abi);
       this.inputs = [];
       this.constructorForm = this._forms.removeControls(inputs, this.constructorForm);  
     }

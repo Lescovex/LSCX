@@ -5,7 +5,7 @@ import { AccountService } from '../../services/account.service';
 import { DialogService } from '../../services/dialog.service';
 
 import { ContractStorageService } from '../../services/contractStorage.service';
-import { LCXContractService } from '../../services/LCX-contract.service';
+import { LSCXContractService } from '../../services/LSCX-contract.service';
 
 @Component({
     selector: 'app-network',
@@ -17,7 +17,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
     show: boolean = false;
     loading: boolean =  false;
     dialog;
-    constructor(private _market: MarketService, private _web3: Web3, private _account: AccountService, private _dialog: DialogService, private _LCXcontract: LCXContractService, private _contractStorage: ContractStorageService) {
+    constructor(private _market: MarketService, private _web3: Web3, private _account: AccountService, private _dialog: DialogService, private _LSCXcontract: LSCXContractService, private _contractStorage: ContractStorageService) {
 
     }
     ngOnInit(){
@@ -50,7 +50,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
                 this._contractStorage.setAccContracts();
                 this._market.setMarket();
                 this._market.resetSocket();
-                this._LCXcontract.reset();
+                this._LSCXcontract.reset();
             if('address' in this._account.account){
                 this._contractStorage.setAccContracts();
                 this._account.refreshAccountData();

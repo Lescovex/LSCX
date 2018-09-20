@@ -60,7 +60,7 @@ export class FormsService {
             if(input.type2 == 'number'){
                 value = parseFloat(value);
                 if(input.decimals == "decimals"){
-                    value = (type=="LCX_CYC")? value*Math.pow(10,18): value*Math.pow(10,8);
+                    value = (type=="LSCX_CYC")? value*Math.pow(10,18): value*Math.pow(10,8);
                 }else if(input.decimals == "eth"){
                     value = parseInt(this._web3.web3.toWei(value, 'ether'))
                 }
@@ -82,7 +82,7 @@ export class FormsService {
             if(input.name.indexOf('Name')!=-1){
                 valueObj.name=value;
             }else if(input.name.indexOf('Supply')!=-1){
-                valueObj.totalSupply=(type=="LCX_CYC")? value*Math.pow(10,18): value*Math.pow(10,8);
+                valueObj.totalSupply=(type=="LSCX_CYC")? value*Math.pow(10,18): value*Math.pow(10,8);
             }else if(input.name.indexOf('Symbol')!=-1){
                 valueObj.symbol = value;
             }

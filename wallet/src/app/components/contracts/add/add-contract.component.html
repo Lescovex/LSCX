@@ -18,7 +18,7 @@
         <label class="title" for="contract">Contract *</label>
         <select id="contract" class="block" formControlName="contract" name="contract" (change)="getConstructor()">
             <option [ngValue]="null" disabled>Select a contract type</option>
-            <option *ngFor="let item of _LCXcontract.contracts" value="{{item}}">{{item}}</option>
+            <option *ngFor="let item of _LSCXcontract.contracts" value="{{item}}">{{item}}</option>
         </select>
     </div>
     <div class="clear"></div>

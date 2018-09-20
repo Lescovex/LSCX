@@ -38,9 +38,11 @@ export class SendPage implements OnInit {
     let tx;
     let gasLimit;
     try{
-      if(typeof(form.controls.trans_data.value)!="undefined"){
+      if(typeof(form.controls.trans_data.value)!="undefined" && form.controls.trans_data.value != "" ){
+        console.log("con data")
         gasLimit = await this._web3.estimateGas(this._account.account.address, form.controls.receiverAddr.value, this._web3.web3.toHex(form.controls.trans_data.value), parseInt(this._web3.web3.toWei(form.controls.amount.value,'ether')));
       } else {
+        console.log("sin data")
         gasLimit = await this._web3.estimateGas(this._account.account.address, form.controls.receiverAddr.value, "", parseInt(this._web3.web3.toWei(form.controls.amount.value,'ether')))
       }
     }catch(e){
@@ -53,7 +55,7 @@ export class SendPage implements OnInit {
       if(typeof(result) != 'undefined'){
         let obj = JSON.parse(result);
 
-        if(typeof(form.controls.trans_data.value)=='undefined'){
+        if(typeof(form.controls.trans_data.value)!="undefined" && form.controls.trans_data.value != ""){
           obj.data = form.controls.trans_data.value;
         }
         tx =  await this._rawtx.createRaw(form.controls.receiverAddr.value, form.controls.amount.value, obj)

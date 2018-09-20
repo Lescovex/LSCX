@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
-import { LCXContractService } from '../../../services/LCX-contract.service';
+import { LSCXContractService } from '../../../services/LSCX-contract.service';
 import { FormsService } from '../../../services/forms.service';
 import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { SendDialogService } from '../../../services/send-dialog.service';
@@ -30,11 +30,11 @@ export class ShowContract implements OnInit{
   protected owner: string;
   protected response: any = null;
   
-  constructor(public _LCXcontract: LCXContractService, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
+  constructor(public _LSCXcontract: LSCXContractService, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
     this.functionForm = new FormGroup({
       functionCtrl: new FormControl(null,Validators.required),
     })
-    this.contractInfo = this._LCXcontract.contractInfo;
+    this.contractInfo = this._LSCXcontract.contractInfo;
   }
 
   ngOnInit(){
@@ -78,7 +78,7 @@ export class ShowContract implements OnInit{
     }
     let params = this._forms.getValues(this.funct.inputs, this.functionForm, this.contractInfo.type);
     if(this.funct.constant){  
-      let response = await this._LCXcontract.callFunction(this._LCXcontract.contract, this.funct.name, params);
+      let response = await this._LSCXcontract.callFunction(this._LSCXcontract.contract, this.funct.name, params);
       if(this.funct.decimals == 'decimals'){
         let number = parseInt(response.toString()) /Math.pow(10,this.contractInfo.decimals);
 				let zero = '0'
@@ -91,7 +91,7 @@ export class ShowContract implements OnInit{
       }
     }else{
       let dialogRef = this._dialog.openLoadingDialog();
-      let data = await this._LCXcontract.getFunctionData(this.funct.name, params)
+      let data = await this._LSCXcontract.getFunctionData(this.funct.name, params)
       let amount = 0;
       if(this.funct.payable){
         amount =  parseFloat(this.getControl('ethAmount').value)

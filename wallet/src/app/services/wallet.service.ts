@@ -10,12 +10,14 @@ export class WalletService {
 
   constructor() {
     this.wallet = new Array();
-    this.getFinishW();
+    this.getWallet();
     
   }
 
-  getFinishW():void{
-    this.wallet = JSON.parse(localStorage.getItem('ethAcc'));
+  getWallet():void{
+    if(localStorage.getItem('ethAcc')){
+      this.wallet = JSON.parse(localStorage.getItem('ethAcc'));
+    }
   }
 
   newAccount(name, pass):void {
@@ -66,10 +68,8 @@ export class WalletService {
         acc.address =  wallet.getAddressString();
         acc.name = name;
         this.addAccount(acc);
-    }
-    
+    } 
   }
-  
   
   addAccount(acc):void{
     if(!localStorage.getItem('ethAcc')){
@@ -83,21 +83,20 @@ export class WalletService {
       localStorage.setItem('ethAcc',JSON.stringify(acca));
     }
     
-    this.getFinishW();//To refresh wallet
+    this.getWallet();//To refresh wallet
   }
 
   delete(addr):void{
-    let index = this.wallet.findIndex(x => x.address === addr);
+    this.wallet = this.wallet.filter(x => x.address != addr);
     //console.log(index);
-    if(index > -1){
-      this.wallet.splice(index,1);
+    if(this.wallet == []){
+      localStorage.removeItem('ethAcc');
+    }else{
       localStorage.setItem('ethAcc',JSON.stringify(this.wallet));
-      this.getFinishW(); //To refresh wallet
     }
   }
 
   getAccount(addr): any{
-
     let acc = this.wallet.find(x => (x.address).toLowerCase() === addr.toLowerCase());
     return acc;
   }

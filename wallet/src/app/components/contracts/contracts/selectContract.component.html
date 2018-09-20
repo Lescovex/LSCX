@@ -2,10 +2,10 @@
 <div *ngIf="!selected; else showContract">
     <p *ngIf="_contractStorage.accContracts.length == 0" class="whiteBox text-center">You don't have contracts.</p>
     <div *ngFor="let contract of _contractStorage.accContracts, index as i" (click)="setContract(contract)" class="backWhite half contract-list" [ngClass]="[{true :'right', false: 'left clear'}[(i+1)%2==0],{true:'contract-list-active', false: 'contract-list-disabled'}[contract.active]]">
-            <img class="left select-contract-icon" *ngIf="contract.type=='LCX_ABT'" src='~icons/LCX_ABT.svg'>
-            <img class="left select-contract-icon" *ngIf="contract.type=='LCX_CIF'" src='~icons/LCX_CIF.svg'>
-            <img class="left select-contract-icon" *ngIf="contract.type=='LCX_CYC'" src='~icons/LCX_CYC.svg'>
-            <img class="left select-contract-icon" *ngIf="contract.type=='LCX_ISC'" src='~icons/LCX_ISC.svg'>
+            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ABT'" src='~icons/LSCX_ABT.svg'>
+            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CIF'" src='~icons/LSCX_CIF.svg'>
+            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CYC'" src='~icons/LSCX_CYC.svg'>
+            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ISC'" src='~icons/LSCX_ISC.svg'>
             <div class="left">
                 <p class="contract-list-title">{{contract.symbol}}</p>
                 <p class="contract-list-name">{{contract.name}}</p>
@@ -16,5 +16,5 @@
 
 </div>
 <ng-template #showContract>
-    <app-show-contract (back)="onBack($event)"[functions]="_LCXcontract.functions" [moreInfo]="_LCXcontract.moreInfo"></app-show-contract>
+    <app-show-contract (back)="onBack($event)"[functions]="_LSCXcontract.functions" [moreInfo]="_LSCXcontract.moreInfo"></app-show-contract>
 </ng-template>

@@ -120,7 +120,7 @@ export class BuySellPage implements OnInit {
       let hashParams : any[]= [this._market.contractEtherDelta.address].concat(params);
               
       let data =  await this._market.getFunctionData(this._market.contractEtherDelta,'order',params);
-      let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder })
+      let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder, gasPrice:this._market.config.ethGasPrice})
       
       this.loadingDialog.close();
       this.sendDialogService.openConfirmOrder(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "order", hashParams);
@@ -128,7 +128,7 @@ export class BuySellPage implements OnInit {
 
     async trade(params){
         let data = await this._market.getFunctionData(this._market.contractEtherDelta,'trade',params);
-        let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder });
+        let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder, gasPrice:this._market.config.ethGasPrice });
         this.loadingDialog.close();
         this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
     }

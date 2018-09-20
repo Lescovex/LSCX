@@ -49,7 +49,6 @@ export class AccountService{
   async refreshAccountData(){
       clearInterval(this.interval)
       this.getPendingTx();
-      console.log("pending", this.pending)
       await this.startIntervalData();
       await this.setTokens();
       this.updated = await true;
@@ -93,13 +92,13 @@ export class AccountService{
       }else{
         this.pending.splice(i,1)
         this.removePendingTx();
-      }
-      for(let i =0; i<history.length; i++){
-        let date = this.tm(history[i].timeStamp);
-        history[i].date = date;
-      }
+      }    
     }
-    this.account.history = history;
+    for(let i =0; i<history.length; i++){
+      let date = this.tm(history[i].timeStamp);
+      history[i].date = date;
+    }
+    this.account.history = await history;
   }
   
   async getAccountData(){
@@ -195,9 +194,7 @@ export class AccountService{
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);
-      console.log(result);
       if(wallet[result].hasOwnProperty('pending')){
-        console.log(wallet[result].pending.filter(x=> x.network == this._web3.network))
         this.pending= wallet[result].pending.filter(x=> x.network == this._web3.network);
       }
     }
@@ -205,7 +202,6 @@ export class AccountService{
   
   async addPendingTx(tx){
     tx.network=this._web3.network;
-    console.log("pend",tx)
     this.pending.push(tx);
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));

@@ -9,8 +9,8 @@ declare var require:any;
 const fs = require('fs')
 
 @Injectable()
-export class LCXContractService {
-	contracts=['LCX_ABT', 'LCX_CYC', 'LCX_ISC', 'LCX_CIF'];
+export class LSCXContractService {
+	contracts=['LSCX_ABT', 'LSCX_CYC', 'LSCX_ISC', 'LSCX_CIF'];
 	abis = [];
 	bytecodes = [];
 	type = "";
@@ -34,8 +34,8 @@ export class LCXContractService {
 
 	getAbisadnBytecodes(){
 		for(let i=0; i<this.contracts.length;i++){
-			this.abis[i] = require('../../LCX-contracts/'+this.contracts[i]+'.json');
-			this.bytecodes[i] = require('../../LCX-contracts/'+this.contracts[i]+'_bytecode.json')
+			this.abis[i] = require('../../LSCX-contracts/'+this.contracts[i]+'.json');
+			this.bytecodes[i] = require('../../LSCX-contracts/'+this.contracts[i]+'_bytecode.json')
 		}
 	}
 	
@@ -143,10 +143,10 @@ export class LCXContractService {
 
 	addOnlyOwner(functions): any[]{
 		let onlyOnwner:any = {
-			LCX_ABT : ["transferOwnership"],
-			LCX_CIF : ["transferOwnership", "deposit", "setPrice"],
-			LCX_CYC : ["renounceOwnership"],
-			LCX_ISC : ["transferOwnership", "setHoldTime","setHoldMax", "deposit", "withdraw"]
+			LSCX_ABT : ["transferOwnership"],
+			LSCX_CIF : ["transferOwnership", "deposit", "setPrice"],
+			LSCX_CYC : ["renounceOwnership"],
+			LSCX_ISC : ["transferOwnership", "setHoldTime","setHoldMax", "deposit", "withdraw"]
 		}
 		functions.forEach(funct=>{
 			if(onlyOnwner[this.type].findIndex(name=>name==funct.name)!= -1){
@@ -157,6 +157,7 @@ export class LCXContractService {
 		})
 		return functions;
 	}
+	
 	addDecimalsConst(inputs, type): any[]{
 		inputs.forEach(input=>{
 			if(input.name ==  'initialSupply'){
@@ -164,7 +165,7 @@ export class LCXContractService {
 			}
 		});
 		switch(type){
-			case "LCX_ABT":
+			case "LSCX_ABT":
 				inputs.forEach(input=>{
 					if(input.name ==  'price'){
 						input.decimals = "eth"
@@ -172,7 +173,7 @@ export class LCXContractService {
 				});
 				break;
 
-			case "LCX_CIF":
+			case "LSCX_CIF":
 				inputs.forEach(input=>{
 					if(input.name ==  'contractMaxSupply'){
 						input.decimals = "decimals"
@@ -182,32 +183,33 @@ export class LCXContractService {
 		}
 		return inputs
 	}
+
 	addDecimals(functions):any[]{
 		let inputsDecimals:any = {
-			LCX_ABT : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  requestWithdraw:"value", decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
-			LCX_CIF : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
-			LCX_CYC : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
-			LCX_ISC : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue", withdraw: "value"}
+			LSCX_ABT : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  requestWithdraw:"value", decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
+			LSCX_CIF : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
+			LSCX_CYC : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue"},
+			LSCX_ISC : {approve: "_value", approveAndCall:"_value" , transferFrom:"_value",  decreaseApproval:"_subtractedValue", transfer:"_value", increaseApproval:"_addedValue", withdraw: "value"}
 		}
 		
 		let outputsDecimals: any = {
-			LCX_ABT : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit"],
-			LCX_CIF : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit", "requestWithdraws", "maxSupply", "holdedOf"],
-			LCX_CYC : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit"],
-			LCX_ISC : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit", "contractBalance", "holdedOf"],
+			LSCX_ABT : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit"],
+			LSCX_CIF : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit", "requestWithdraws", "maxSupply", "holdedOf"],
+			LSCX_CYC : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit"],
+			LSCX_ISC : ["totalSupply", "balances", "balanceOf", "allowance", "tokenUnit", "contractBalance", "holdedOf"],
 		}
 		let inputsEth: any = {
-			LCX_ABT : {},
-			LCX_CIF : {setPrice:"_value"},
-			LCX_CYC : {},
-			LCX_ISC : {}
+			LSCX_ABT : {},
+			LSCX_CIF : {setPrice:"_value"},
+			LSCX_CYC : {},
+			LSCX_ISC : {}
 
 		}
 		let outputsEth: any = {
-			LCX_ABT : ["tokenPrice"],
-			LCX_CIF : ["tokenPrice", "contractBalance",],
-			LCX_CYC : [],
-			LCX_ISC : [],
+			LSCX_ABT : ["tokenPrice"],
+			LSCX_CIF : ["tokenPrice", "contractBalance",],
+			LSCX_CYC : [],
+			LSCX_ISC : [],
 		}
 
 		functions.forEach(funct=>{

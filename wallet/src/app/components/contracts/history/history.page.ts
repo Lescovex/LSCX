@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 declare var require: any;
 
 import { AccountService } from '../../../services/account.service';
-import { LCXContractService } from '../../../services/LCX-contract.service';
+import { LSCXContractService } from '../../../services/LSCX-contract.service';
 
 
 @Component({
@@ -10,7 +10,7 @@ import { LCXContractService } from '../../../services/LCX-contract.service';
   templateUrl: './history.html'
 })
 export class HistoryPage implements OnInit {
-  constructor(protected _account: AccountService, private _LCXcontract: LCXContractService) {
+  constructor(protected _account: AccountService, private _LSCXcontract: LSCXContractService) {
   }
   ngOnInit() {
   }

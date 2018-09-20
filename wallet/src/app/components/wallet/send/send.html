@@ -22,6 +22,6 @@
     
     <div class="clear">
         <label class="title" for="trans_data">Transaction data (optional)</label>
-        <input class="block" id="trans_data" type="text" value="" name="trans_data" placeholder="e.g. Market supplys payment" [(ngModel)]="trans_data" />
+        <input class="block" id="trans_data" type="text" value="" name="trans_data" placeholder="e.g. Market supplys payment" ngModel #trans_data="ngModel"/>
     </div>
 </form>
