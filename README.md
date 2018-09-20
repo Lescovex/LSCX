@@ -17,9 +17,9 @@ npm run electron
 
 [Windows](https://github.com/Lescovex/LSCX/blob/master/lescovex%20Setup%201.0.0.exe)
 
-[Linux](https://github.com/Lescovex/LSCX/blob/master/lescovex%20Setup%201.0.0.exe)
+[Linux](https://github.com/Lescovex/LSCX/blob/master/lescovex-1.0.0-x86_64.AppImage)
 
-[Mac]()
+[Mac]() Cooming Soon
 
 # Features
 
