@@ -36,7 +36,7 @@ Buy & Sell assets
 
 # Cooming Soon
 
-Publish tokens
+Publish tokens in the global market
 
 Blockchain Certification Authority
 
