@@ -28,7 +28,7 @@ export class NavComponent implements OnInit {
         this.route = location.path();
       }
     });
-    this.loadingD=this.dialog.open(LoadingDialogComponent, {
+    /*this.loadingD=this.dialog.open(LoadingDialogComponent, {
       width: '660px',
       height: '150px',
       disableClose: true,
@@ -42,7 +42,7 @@ export class NavComponent implements OnInit {
     })
     if(!('address' in this._account.account)){
       this.loadingD.close();
-    }
+    }*/
   }
 
   ngOnInit() {

@@ -36,7 +36,6 @@ export class MarketService {
 	sha256;
 
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService) {
-		this.setMarket();
 		
 	}
 

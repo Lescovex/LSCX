@@ -25,7 +25,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
     }
 
     ngDoCheck(){
-        if(this._account.updated ==  true && this.loading){
+        if(this._account.updated == true && this.loading){
             this.loading = false,
             this.dialog.close();
         }

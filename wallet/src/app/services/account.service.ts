@@ -20,12 +20,11 @@ export class AccountService{
   marginCalls : Array<any> = [];
   interval;
   apikey: string = "";
-  //apikey: string = 'JDVE27WHYITCKM7Q2DMBC3N65VDIZ74HHJ';
 
   constructor(private http: Http, private _wallet : WalletService, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
     //Hardcode
     this._scan.getApiKey();
-    if(this._scan.apikey != "" && this._web3){
+    if(this._scan.apikey != "" && this._web3.infuraKey != ""){
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
