@@ -46,6 +46,8 @@ X509 Signatures
 
 Smart Forward Contracts
 
+Waves Integration
+
 
 
 
