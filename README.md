@@ -38,6 +38,8 @@ Buy & Sell assets
 
 Publish tokens in the global market
 
+Token Holdes Sweeper
+
 Blockchain Certification Authority
 
 X509 Signatures
