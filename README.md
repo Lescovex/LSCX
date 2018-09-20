@@ -13,7 +13,7 @@ npm install
 
 npm run electron
 
-# Alpha Test Download (Coming Soon)
+# Alpha Test Download (Cooming Soon)
 
 [Windows]()
 
