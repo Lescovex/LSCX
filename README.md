@@ -105,6 +105,7 @@ Description:
 
 CIFs may take the form of closed-end or open-end and whose underlying investments comprise digital assets of any kind. Smart contracts unleash efficiency improvements for investment funds operations, including fast and auditable capital calls and distributions alongside transparent, error-proof, Net Asset Value (NAV) calculations. We label crypto investment funds as securities.
 
+
 ## Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
 
 By exercising the Licensed Rights (defined below), You accept and agree to be bound by the terms and conditions of this Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License ("Public License"). To the extent this Public License may be interpreted as a contract, You are granted the Licensed Rights in consideration of Your acceptance of these terms and conditions, and the Licensor grants You such rights in consideration of benefits the Licensor receives from making the Licensed Material available under these terms and conditions.
@@ -204,3 +205,17 @@ For the avoidance of doubt, this Section [4](https://creativecommons.org/license
 2.  To the extent possible, if any provision of this Public License is deemed unenforceable, it shall be automatically reformed to the minimum extent necessary to make it enforceable. If the provision cannot be reformed, it shall be severed from this Public License without affecting the enforceability of the remaining terms and conditions.
 3.  No term or condition of this Public License will be waived and no failure to comply consented to unless expressly agreed to by the Licensor.
 4.  Nothing in this Public License constitutes or may be interpreted as a limitation upon, or waiver of, any privileges and immunities that apply to the Licensor or You, including from the legal processes of any jurisdiction or authority
+
+# License pricing
+
+- 15 BTC per year .
+
+OR
+
+- 450 ETH
+
+Pubish in your app the transaction hash of the license payment to this address 
+
+[1HtdsiDvwf3ggjbP4w22UQBsWBiutfejwW](https://www.blockchain.com/btc/address/1HtdsiDvwf3ggjbP4w22UQBsWBiutfejwW)
+[0x60cEC9c3B55FDF32c54063980200825050b2462D](https://etherscan.io/address/0xfFA2D61cbA573bC8047A7Af94AFeC5052934e564)
+
