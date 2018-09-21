@@ -236,7 +236,7 @@ ETH
 
 # Agricultural producers
 
-1 % Market fee in tokens issued
+1 % fee of tokens issued
 
 trade fee holders sweeper
 
