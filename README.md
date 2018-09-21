@@ -17,9 +17,9 @@ npm run electron
 
 # Alpha Test Binaries Download
 
-[Windows](https://github.com/Lescovex/LSCX/blob/master/lescovex%20Setup%201.0.0.exe)
+[Windows](https://github.com/Lescovex/LSCX/releases/tag/LescovexDEX)
 
-[Linux](https://github.com/Lescovex/LSCX/blob/master/lescovex-1.0.0-x86_64.AppImage)
+[Linux](https://github.com/Lescovex/LSCX/releases/tag/LescovexDEX)
 
 [Mac](https://github.com/Lescovex/LSCX/blob/master/lescovex-1.0.0.dmg)
 
