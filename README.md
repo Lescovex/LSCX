@@ -55,11 +55,8 @@ Waves Integration
 
 # App view
 
-![Send](./images/send.png)
+![Emitir una seguridad en menos de un minuto](./images/show-contract.png)(https://www.youtube.com/watch?v=IHWlrrhAjmg&feature=youtu.be)
 
-![ShowContract](./images/show-contract.png)
-
-![Market](./images/market.png)
 
 
 ## Smart contracts
