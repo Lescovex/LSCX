@@ -212,15 +212,19 @@ For the avoidance of doubt, this Section [4](https://creativecommons.org/license
 3.  No term or condition of this Public License will be waived and no failure to comply consented to unless expressly agreed to by the Licensor.
 4.  Nothing in this Public License constitutes or may be interpreted as a limitation upon, or waiver of, any privileges and immunities that apply to the Licensor or You, including from the legal processes of any jurisdiction or authority
 
-# License pricing
+# License pricing 
 
-- 15 BTC per year .
+
+# Commercial activities
+
+- 15 BTC per year .+ trade fee holders sweeper
 
 OR
 
-- 450 ETH per year
+- 450 ETH per year + trade fee holders sweeper
 
 Pubish in your app the transaction hash of the payment to this address 
+
 
 BTC
 
@@ -229,6 +233,20 @@ BTC
 ETH
 
 [0x60cEC9c3B55FDF32c54063980200825050b2462D](https://etherscan.io/address/0xfFA2D61cbA573bC8047A7Af94AFeC5052934e564)
+
+# Agricultural producers
+
+1 % Market fee in tokens issued
+
+trade fee holders sweeper
+
+
+# Raw Materials
+
+1 % fee of tokens issued
+
+trade fee holders sweeper
+
 
 # Contact
 
