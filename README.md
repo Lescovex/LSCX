@@ -55,7 +55,7 @@ Waves Integration
 
 # App view
 
-![Emitir una seguridad en menos de un minuto](./images/show-contract.png)(https://www.youtube.com/watch?v=IHWlrrhAjmg&feature=youtu.be)
+[![issue a security in less than a minute](./images/show-contract.png)](https://www.youtube.com/watch?v=IHWlrrhAjmg&feature=youtu.be)
 
 
 
