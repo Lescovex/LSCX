@@ -78,12 +78,14 @@ export class AddContractPage {
     let gasLimit;
     try {
       gasLimit = await this._web3.estimateGas(this._account.account.address, "", data, 0);
+      console.log("gaslimit?", gasLimit);
+      
     }catch(e){
-      gasLimit = 1000000;
+      gasLimit = 3500000;
     }
 
     dialogRef.close();
-    dialogRef = this._dialog.openGasDialog(gasLimit, 40);
+    dialogRef = this._dialog.openGasDialog(gasLimit, 10);
     dialogRef.afterClosed().subscribe(async result=>{
       console.log("result",result);
       if(typeof(result) != 'undefined'){
@@ -91,6 +93,8 @@ export class AddContractPage {
         options.data = data;
 
         let txInfo = await this._rawtx.contractCreationRaw(options);
+        console.log(txInfo);
+        
         let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
     this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
       }

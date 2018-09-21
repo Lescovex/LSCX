@@ -71,10 +71,14 @@ export class RawTxService {
 
     async contractCreationRaw(options){
         //console.log('dentro')
+        console.log("optiooooons", options);
+        
         let chainId = this._web3.web3.toHex(this._web3.network);
         let acc = this._account.account;
         let nonce = await this._web3.getNonce(acc.address);
-        let gasPrice  = this._web3.web3.toHex(this._web3.web3.toWei(options.gasPrice,'gwei'));
+        console.log(options.gasPrice);
+        
+        let gasPrice  = this._web3.web3.toHex(options.gasPrice);
         let gasLimit = options.gasLimit
 
         
