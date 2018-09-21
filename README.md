@@ -21,7 +21,7 @@ npm run electron
 
 [Linux](https://github.com/Lescovex/LSCX/releases/tag/LescovexDEX)
 
-[Mac](https://github.com/Lescovex/LSCX/blob/master/lescovex-1.0.0.dmg)
+[Mac](https://github.com/Lescovex/LSCX/releases/download/LescovexDEX/lescovex-1.0.0.dmg)
 
 
 # Features
