@@ -251,7 +251,7 @@ export class LSCXContractService {
 
 	getConstructor(abi): Array<any>{
 		let constructor = abi.find(data=> data.type == "constructor");
-
+		
 		return constructor.inputs
 	}
 

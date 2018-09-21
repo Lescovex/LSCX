@@ -34,6 +34,7 @@ export class AddContractPage {
 
   
   async getConstructor(){
+    
     let contract = this.getControl('contract').value
 
     if(contract != this.contract){

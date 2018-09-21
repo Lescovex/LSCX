@@ -94,6 +94,18 @@
         "type": "function"
     },
     {
+        "constant": false,
+        "inputs": [{
+            "name": "value",
+            "type": "uint256"
+        }],
+        "name": "withdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "constant": true,
         "inputs": [],
         "name": "decimals",
@@ -167,6 +179,18 @@
     {
         "constant": true,
         "inputs": [],
+        "name": "contractBalance",
+        "outputs": [{
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
         "name": "owner",
         "outputs": [{
             "name": "",
@@ -210,6 +234,15 @@
     },
     {
         "constant": false,
+        "inputs": [],
+        "name": "withdrawReward",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
         "inputs": [{
                 "name": "_spender",
                 "type": "address"
@@ -230,6 +263,18 @@
         }],
         "payable": false,
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "deposit",
+        "outputs": [{
+            "name": "success",
+            "type": "bool"
+        }],
+        "payable": true,
+        "stateMutability": "payable",
         "type": "function"
     },
     {
@@ -322,6 +367,64 @@
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [{
+                "name": "initialSupply",
+                "type": "uint256"
+            },
+            {
+                "name": "contractName",
+                "type": "string"
+            },
+            {
+                "name": "tokenSymbol",
+                "type": "string"
+            },
+            {
+                "name": "contractHoldTime",
+                "type": "uint256"
+            },
+            {
+                "name": "contractOwner",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [{
+                "indexed": false,
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "LogDeposit",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [{
+                "indexed": false,
+                "name": "receiver",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "LogWithdrawal",
+        "type": "event"
     },
     {
         "anonymous": false,
