@@ -28,7 +28,7 @@ export class AddAccountDialogComponent implements OnInit {
     this.dialogRef.close();
     let dialogRef = this.dialog.open(dialog, {
       width: '660px',
-      height: (type=='import')?'555px':'350px',
+      height: (type=='import')?'600px':'350px',
     });
 
   }

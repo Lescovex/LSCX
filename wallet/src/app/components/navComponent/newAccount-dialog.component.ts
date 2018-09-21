@@ -18,13 +18,20 @@ import { MdDialogRef } from '@angular/material';
 
 export class NewAccountDialogComponent {
   nameAccount:string;
+  passErr;
+  pass2Err;
+  checkPassErr;
+
+  protected pass;
+  protected pass2;
+
   constructor(public dialogRef: MdDialogRef<NewAccountDialogComponent>, private _wallet: WalletService,
               private _account: AccountService, public dialog: MdDialog,private dialogService: DialogService) {
       
     if(this._wallet.wallet == null ){
       this.nameAccount= "Account 1"
     }else{
-      this.nameAccount = "Account"+(this._wallet.wallet.length+1);
+      this.nameAccount = "Account "+(this._wallet.wallet.length+1);
     }
   }
 
@@ -33,16 +40,35 @@ export class NewAccountDialogComponent {
     let error:string = "";
 
     if(this.checkPass(pass, pass2) == false){
+      this.checkPassErr = true;
       //console.log('error')
       return false
     }
+    if(pass==null || pass2 == null){
+      if(pass == null){
+        this.passErr = true;
+      }else{
+        this.passErr = null;
+      }
+      if(pass2 == null){
+        this.pass2Err = true;
+      }else{
+        this.pass2Err = null;
+      }
+  
+      return false;
+    }
+
     try{
       this._wallet.newAccount(name, pass);
       if(!localStorage.getItem('acc')){
         this._account.getAccountData();
       }
     }catch(e){
-      error= e.message;
+      //console.log("e?", e);
+      error = "Account name and password are required fields, please, try it again.";
+      //error= e.message;
+      
     }
     let title = (error=="")? 'Your account has been successfully created' : 'Unable to create account';
     let message = (error=="")? 'You can find it in the wallet list' : 'Something was wrong';

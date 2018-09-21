@@ -8,7 +8,7 @@ import { Web3 } from '../../services/web3.service';
 })
 export class WalletComponent implements OnInit {
 
-  constructor(public _account:AccountService, private _web3: Web3) {
+  constructor(public _account:AccountService, protected _web3: Web3) {
   }
   ngOnInit() {
   }

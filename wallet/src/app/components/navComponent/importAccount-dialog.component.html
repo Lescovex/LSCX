@@ -30,10 +30,16 @@
     <div class="half left">
         <label class="title" for="pass">Set password</label>
         <input required id="pass" class="block" type="password" value="" name="pass" [ngClass]="{'error': (pass.invalid && (pass.dirty || pass.touched || submited))}" [(ngModel)]="password" #pass="ngModel" />
+        <p *ngIf="passErr == true" class="title red">Password field is required</p>
     </div>
     <div class="half right">
         <label class="title" for="pass2">Repeat password</label>
         <input required id="pass2" class="block" type="password" [ngClass]="{'error': (pass2.invalid && submited) || (!checkPass(password, password2)&&(pass2.touched || !pass2.pristine))}" value="" name="pass2" [(ngModel)]="password2" #pass2="ngModel" />
+        <p *ngIf="pass2Err == true" class="title red">Repeat password field is required</p>
+    </div>
+    <div class="clear ">
+        <p *ngIf="checkPassErr == true" class="title red">These passwords don't match, try it again</p>
+
     </div>
 </div>
 <div class="clear buttons">

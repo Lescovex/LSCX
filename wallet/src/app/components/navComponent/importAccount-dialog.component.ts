@@ -20,6 +20,15 @@ export class ImportAccountDialogComponent{
   importType= "keystore";
   submited : boolean = false;
 
+  passErr;
+  pass2Err;
+  checkPassErr;
+
+
+  protected input;
+  protected password;
+  protected password2;
+
   constructor(public dialogRef: MdDialogRef<ImportAccountDialogComponent>, private _wallet: WalletService,
                private _account: AccountService, public dialog: MdDialog, private dialogService: DialogService) {
 
@@ -41,7 +50,28 @@ export class ImportAccountDialogComponent{
     let importType = this.importType
     
     if(this.checkPass(pass, pass2) == false || this.checkInput(input) == false){
+      if(this.checkPass(pass, pass2) == false){
+        this.checkPassErr = true;
+      }else{
+        this.checkPassErr = null;
+      }
+   
       return false
+    }
+
+    if(pass==null || pass2 == null){
+      if(pass == null){
+        this.passErr = true;
+      }else{
+        this.passErr = null;
+      }
+      if(pass2 == null){
+        this.pass2Err = true;
+      }else{
+        this.pass2Err = null;
+      }
+  
+      return false;
     }
     if(this.importType=="keystore"){
       try{

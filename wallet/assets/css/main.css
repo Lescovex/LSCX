@@ -217,10 +217,12 @@ a.pending span,
 .italic {
     color: #abb0b2;
 }
-.top-nav-img{
+
+.top-nav-img {
     width: 20px;
     width: 20px
 }
+
 nav a,
 nav a:focus {
     border-top: 7px solid #fff;
@@ -388,6 +390,21 @@ select {
     height: 44px;
 }
 
+.settings {
+    overflow: hidden;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #abb0b2;
+    margin-top: 10px;
+    background-color: #fff;
+}
+
+.issues {
+    bottom: 0;
+    position: absolute;
+    margin-bottom: 1rem;
+}
+
 .backWhite {
     overflow: hidden;
     padding: 20px;
@@ -422,10 +439,11 @@ div.input-container {
     z-index: 2;
     background-color: transparent;
 }
-#contract-response{
+
+#contract-response {
     border: none;
     background-color: #eaeaea;
-    padding-left:12px;
+    padding-left: 12px;
 }
 
 #resized {
@@ -560,20 +578,24 @@ p.error {
     right: 15px;
 }
 
-#hist-market{
+#hist-market {
     top: 300px;
 }
-#terms ol, #terms ul{
+
+#terms ol,
+#terms ul {
     padding-left: 10px;
 }
 
-#terms div > ol {
+#terms div>ol {
     list-style-type: lower-alpha;
 }
+
 ol ol {
     list-style-type: decimal;
 }
-ol ol ol{
+
+ol ol ol {
     list-style-type: lower-roman;
 }
 
@@ -586,7 +608,8 @@ ol ol ol{
     margin: -15px;
 }
 
-#terms p, #terms li {
+#terms p,
+#terms li {
     line-height: 1.5em;
     padding: 10px 0;
 }
@@ -649,14 +672,17 @@ input[type="radio"]:checked+label span {
     background-color: #30D67F;
     border: 4px solid white;
 }
+
 .contract-list {
     position: relative;
 }
-.contract-list>div{
-    position:absolute;
+
+.contract-list>div {
+    position: absolute;
     left: 90px;
     right: 100px;
 }
+
 .contract-list * {
     white-space: nowrap;
     overflow: hidden;
@@ -668,17 +694,18 @@ input[type="radio"]:checked+label span {
     font-size: 14pt;
 }
 
-.select-contract-icon{
+.select-contract-icon {
     margin-right: 15px;
-    height:70px;
+    height: 70px;
 }
 
-.contract-show-icon{
-    height:50px;
+.contract-show-icon {
+    height: 50px;
 }
 
 .contract-list-title,
-.contract-list-name,{
+.contract-list-name,
+{
     font-family: "Lato-Bold";
     padding-left: 15px;
 }
@@ -759,7 +786,7 @@ input[type="radio"]:checked+label span {
 }
 
 .amount-table,
-.history-table{
+.history-table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
@@ -783,23 +810,27 @@ input[type="radio"]:checked+label span {
 .amount-table tr>*:nth-child(2) {
     text-align: center;
 }
+
 .amount-table tr>*:nth-child(3) {
     text-align: right;
 }
-.history-table th, td{
+
+.history-table th,
+td {
     text-align: left;
     padding: 10px 0;
 }
-.history-table tr>*:first-child{
+
+.history-table tr>*:first-child {
     width: 40%;
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 20px;
 }
+
 .history-table tr>*:nth-child(3),
 .history-table tr>*:nth-child(4),
-.history-table tr>*:nth-child(5)
- {
+.history-table tr>*:nth-child(5) {
     text-align: right;
 }
 
@@ -812,7 +843,6 @@ input[type="radio"]:checked+label span {
     width: 40%;
     margin-top: 26px;
 }
-
 
 .displayInput {
     border: none;
