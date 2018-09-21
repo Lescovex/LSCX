@@ -53,13 +53,10 @@ Waves Integration
 
 
 
-# App view
+# Issue a security in less than a minute . Click on image to open video
 
-![Send](./images/send.png)
+[![issue a security in less than a minute](./images/show-contract.png)](https://www.youtube.com/watch?v=IHWlrrhAjmg&feature=youtu.be)
 
-![ShowContract](./images/show-contract.png)
-
-![Market](./images/market.png)
 
 
 ## Smart contracts
