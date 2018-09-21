@@ -53,7 +53,7 @@ Waves Integration
 
 
 
-# App view
+# Issue a security in less than a minute . Click on image to open video
 
 [![issue a security in less than a minute](./images/show-contract.png)](https://www.youtube.com/watch?v=IHWlrrhAjmg&feature=youtu.be)
 
