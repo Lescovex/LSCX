@@ -25,14 +25,16 @@ export class ContractStorageService {
         this.accContracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
     }
 
+    deletContract(contract){
+        console.log(this.contracts);
+        this.contracts= this.contracts.filter(c=> JSON.stringify(c) !=JSON.stringify(contract));
+        this.saveContracts();
+        this.setAccContracts();
+    }
+
     removeAccContracts(address){
-        let contracts = this.contracts.filter(contract=> contract.account != address);
-        console.log("filtrado",contracts)
-        if(contracts == []) {
-            localStorage.removeItem('contracts');
-        } else {
-            localStorage.setItem('contracts', JSON.stringify(contracts));
-        }
+        this.contracts = this.contracts.filter(contract=> contract.account != address);
+        this.saveContracts();
     }
 
     addContract(contract){
@@ -40,7 +42,6 @@ export class ContractStorageService {
             //console.log("Add",this.contracts)
             this.saveContracts();
             this.setAccContracts();
- 
     }
     
     isDuplicated(address, account){
@@ -80,7 +81,11 @@ export class ContractStorageService {
     }
 
     saveContracts(){
-        localStorage.setItem('contracts',JSON.stringify(this.contracts))
+        if(this.contracts == []) {
+            localStorage.removeItem('contracts');
+        } else {
+            localStorage.setItem('contracts', JSON.stringify(this.contracts));
+        }
     }
 
     activeContract(contract){}

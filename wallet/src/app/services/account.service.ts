@@ -118,7 +118,7 @@ export class AccountService{
         let tokens = wallet[result].tokens.filter(x=> x.network == this._web3.network)
         return tokens;
       }else{
-        return[];
+        return [];
       }
     }
   }
@@ -129,20 +129,33 @@ export class AccountService{
       await this.updateTokens();
     }
   }
-  
-  addToken(token){
+
+  saveAccountTokens(){
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
-      let result = wallet.findIndex(x => x.address == this.account.address);
-      if('tokens' in wallet[result]){
+      let result = wallet.findIndex(x => x.address.toLowerCase() == this.account.address.toLowerCase());
+      wallet[result].tokens = this.account.tokens;
+    }
+  }
+  addToken(token){
+      if('tokens' in this.account){
         this.account.tokens.push(token);
-        wallet[result].tokens.push(token);
       }else{
         this.account.tokens = [token]
-        wallet[result].tokens = [token]
       }
-      localStorage.setItem('ethAcc',JSON.stringify(wallet));
-    }
+      this.saveAccountTokens();
+  }
+
+  deleteToken(tokenAdrr){
+      if('tokens' in this.account.tokens){
+        this.account.tokens.forEach(tk=>{
+          console.log(tk.contractAddress, "a borrar", tokenAdrr,tk.contractAddress == tokenAdrr)
+          if(tk.contractAddress == tokenAdrr){
+            tk.deleted = true;
+          }
+        })
+      }
+      this.saveAccountTokens();
   }
 
   async updateTokens(){
@@ -154,12 +167,14 @@ export class AccountService{
         tkns = resp.result;
         for(let i = 0; i<tkns.length; i++){
           if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
+            console.log("entra")
             let token: any = {
               contractAddress :  tkns[i].contractAddress,
               tokenName:  tkns[i].tokenName,
               tokenSymbol:  tkns[i].tokenSymbol,
               tokenDecimal: parseInt( tkns[i].tokenDecimal),
-              network : self._web3.network
+              network : self._web3.network,
+              deleted: false
             }
             token = await self.updateTokenBalance(token);
             if(!isNaN(token.tokenDecimal)){
@@ -168,11 +183,7 @@ export class AccountService{
           }
         }
         self.account.tokens = tokens;
-        let wallet = JSON.parse(localStorage.getItem('ethAcc'));
-        let result = wallet.findIndex(x => x.address == self.account.address);
-        wallet[result].tokens = self.account.tokens;
-
-        localStorage.setItem('ethAcc',JSON.stringify(wallet));
+        self.saveAccountTokens();
       });
   }
 
@@ -184,10 +195,12 @@ export class AccountService{
   }
   
   async updateTokenBalance(token){
-    this._token.setToken(token.contractAddress);
-    let exp = 10 ** token.tokenDecimal;
-    let balance : any = await this._token.getBalanceOf(this.account.address);
-    token.balance = balance.div(exp).toNumber();
+    if(!('balance' in token) || !token.deleted){
+      this._token.setToken(token.contractAddress);
+      let exp = 10 ** token.tokenDecimal;
+      let balance : any = await this._token.getBalanceOf(this.account.address);
+      token.balance = balance.div(exp).toNumber();
+    } 
     return token
   }
   

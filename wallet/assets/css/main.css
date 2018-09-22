@@ -524,8 +524,15 @@ p.error {
     background-color: #30D67F;
     color: #fff;
     border: 2px solid transparent;
+    cursor: pointer;
 }
-
+.btn-contract, .btn-contract-delete{
+    padding: 5px;
+    border-radius: 5px;
+}
+.btn-contract-delete {
+    margin-top: 5px;
+}
 .btn-inverse {
     border: 2px solid#30D67F;
     background-color: transparent;
@@ -571,7 +578,7 @@ p.error {
     margin-left: 20px;
 }
 
-.warning {
+.warning, .btn-contract-delete {
     border: 2px solid #E66978;
     color: #E66978;
     background: none;
@@ -579,7 +586,8 @@ p.error {
 
 .warning:focus,
 .warning:hover,
-.error-founds {
+.error-founds,
+.btn-contract-delete:hover {
     color: white;
     background-color: #E66978;
     border: none;
@@ -691,18 +699,20 @@ input[type="radio"]:checked+label span {
 .contract-list {
     position: relative;
 }
-
-.contract-list>div {
-    position: absolute;
-    left: 90px;
-    right: 100px;
-}
-
 .contract-list * {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: pointer;
+}
+
+.contract-list div:nth-child(2) {
+    position: absolute;
+    left: 90px;
+    right: 100px;
+}
+.contract-list div:nth-child(3){
+    width: 70px;
+    float: right;
 }
 
 .contract-list-title {
@@ -733,14 +743,6 @@ input[type="radio"]:checked+label span {
 .contract-list-disabled * {
     cursor: not-allowed;
     opacity: 0.5
-}
-
-.btn-contract {
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 70px;
-    height: 30px;
 }
 
 .market-token {

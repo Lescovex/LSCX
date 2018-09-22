@@ -47,20 +47,22 @@ export class AddTokenPage implements OnInit {
   }
 
   addToken(){
-    let isToken = this._account.account.tokens.findIndex(token => token.contractAddress.toLowerCase() == this.token.contractAddress.toLowerCase())
-    if(isToken != -1){
+    let tokenIndex = this._account.account.tokens.findIndex(token => token.contractAddress.toLowerCase() == this.token.contractAddress.toLowerCase())
+    if(tokenIndex != -1 && !this._account.account.tokens[tokenIndex].deleted){
         let title = 'Unable to add token';
         let message = 'Something was wrong';
         let error = 'The token you are trying to import is a duplicate'
         let dialogRef = this._dialog.openErrorDialog(title, message, error)
-
-    }else{
+        
+    } else if(tokenIndex != -1 && this._account.account.tokens[tokenIndex].deleted) {
+      this._account.account.tokens[tokenIndex].deleted = false;
+      this.router.navigate(['/tokens/general']);
+    } else {
       if(this.isToken){
-        //console.log(this.token.tokenSymbol,this.token.tokenDecimal,this._token.token )
         this._account.addToken(this.token),
-        this.reset();
         this.router.navigate(['/tokens/general']);
       }
+      
     }
   }
 
@@ -72,7 +74,7 @@ export class AddTokenPage implements OnInit {
       tokenName : '',
       tokenBalance: 0
 
-    }
+  }
     this.isToken=false;
     
   }

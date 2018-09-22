@@ -50,6 +50,15 @@ export class SelectContractPage implements OnInit{
     this.selected = true;
   }
   
+  deleteContract(contract){
+    let dialogRef = this._dialog.openDeleteDialog('contract');
+    dialogRef.afterClosed().subscribe(result=> {
+      if (result){
+        this._contractStorage.deletContract(contract);
+        this._account.deleteToken(contract.address);
+      }
+    })
+  }
   onBack(bool: boolean){
     if(bool){
       this.selected= false;

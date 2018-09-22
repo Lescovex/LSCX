@@ -1,16 +1,20 @@
 
 <div *ngIf="!selected; else showContract">
     <p *ngIf="_contractStorage.accContracts.length == 0" class="whiteBox text-center">You don't have contracts.</p>
-    <div *ngFor="let contract of _contractStorage.accContracts, index as i" (click)="setContract(contract)" class="backWhite half contract-list" [ngClass]="[{true :'right', false: 'left clear'}[(i+1)%2==0],{true:'contract-list-active', false: 'contract-list-disabled'}[contract.active]]">
+    <div *ngFor="let contract of _contractStorage.accContracts, index as i" class="backWhite half contract-list" [ngClass]="[{true :'right', false: 'left clear'}[(i+1)%2==0],{true:'contract-list-active', false: 'contract-list-disabled'}[contract.active]]">
             <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ABT'" src='~icons/LSCX_ABT.svg'>
             <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CIF'" src='~icons/LSCX_CIF.svg'>
             <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CYC'" src='~icons/LSCX_CYC.svg'>
             <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ISC'" src='~icons/LSCX_ISC.svg'>
-            <div class="left">
+            <div class="center">
                 <p class="contract-list-title">{{contract.symbol}}</p>
                 <p class="contract-list-name">{{contract.name}}</p>
             </div>
-            <button class="right btn-contract">Show</button>
+            <div >
+                <button class="btn-contract block" (click)="setContract(contract)">Show</button>
+                <button class="btn-contract-delete block" (click)="deleteContract(contract)">Delete</button>
+            </div>
+            
             <p class="clear contract-list-addr">{{contract.address}}<span *ngIf="!contract.active"> (Waiting Address)</span></p>
     </div>
 

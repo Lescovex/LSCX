@@ -32,6 +32,7 @@ export class TokenService{
             });
         });
     }
+
     getDecimal() : Promise<number>{
         let self=this
         return new Promise (function (resolve, reject) {
@@ -45,6 +46,7 @@ export class TokenService{
             });
         });
     }
+
     getName() : Promise<string>{
         let self=this
         return new Promise (function (resolve, reject) {
@@ -57,6 +59,7 @@ export class TokenService{
             });
         });
     }
+
     getBalanceOf(addr){
         let self=this
         return new Promise (function (resolve, reject) {

@@ -63,6 +63,7 @@ import { PrivateKeyDialogComponent } from './components/wallet/wsettings/private
 import { ErrorDialogComponent } from './components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
+import { DeleteDialog } from './components/dialogs/confirm-delete.component';
 import { GasDialogComponent } from './components/dialogs/gas-dialog.component';
 import { ContractDialogComponent } from './components/contracts/add/contract-dialog.component';
 
@@ -142,7 +143,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     CustomMinDirective,
     ValidateAddressDirective,
     InsuficientFundsDirective,
-    CreditCardPage
+    CreditCardPage,
+    DeleteDialog
   ],
   imports: [
     BrowserModule,
@@ -173,7 +175,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     PrivateKeyDialogComponent,
     MessageDialogComponent,
     GasDialogComponent,
-    ContractDialogComponent
+    ContractDialogComponent,
+    DeleteDialog
   ],
   providers: [
     WalletService,
