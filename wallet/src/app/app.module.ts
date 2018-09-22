@@ -64,6 +64,7 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog.componen
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
 import { GasDialogComponent } from './components/dialogs/gas-dialog.component';
+import { ContractDialogComponent } from './components/contracts/add/contract-dialog.component';
 
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
@@ -107,6 +108,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ConverterPipe,
     SeparateWordsPipe,
     SelectAccountDialogComponent,
+    ContractDialogComponent,
     AddAccountDialogComponent,
     NewAccountDialogComponent,
     ImportAccountDialogComponent,
@@ -170,7 +172,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     JSONDialogComponent,
     PrivateKeyDialogComponent,
     MessageDialogComponent,
-    GasDialogComponent
+    GasDialogComponent,
+    ContractDialogComponent
   ],
   providers: [
     WalletService,

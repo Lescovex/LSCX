@@ -1,6 +1,6 @@
 <div>
     <button [ngClass]="create? 'btn-solid':'btn-inverse'" (click)="activeButton('create')">Deploy new contract</button>
-    <button class="extra" [ngClass]="!create ? 'btn-solid':'btn-inverse'"(click)="activeButton('import')">Import contract</button>
+    <button class="extra" [ngClass]="!create ? 'btn-solid':'btn-inverse'" (click)="activeButton('import')">Import contract</button>
 </div>
 <form *ngIf="!create" class="dist" id="constructorForm" [formGroup]="constructorForm" (ngSubmit)="importSubmit()">
     <label class="title" for="contract">Contract address*</label>
@@ -16,9 +16,9 @@
 <form *ngIf="create" (ngSubmit)="createSubmit()" id="constructorForm" [formGroup]="constructorForm" novalidate class="dist">
     <div class="half left">
         <label class="title" for="contract">Contract *</label>
-        <select id="contract" class="block" formControlName="contract" name="contract" (change)="getConstructor()">
+        <select id="contract" class="block" formControlName="contract" name="contract" (change)="openInfo()">
             <option [ngValue]="null" disabled>Select a contract type</option>
-            <option *ngFor="let item of _LSCXcontract.contracts" value="{{item}}">{{item}}</option>
+            <option *ngFor="let item of _LSCXcontract.contracts, index as i" value="{{item}}">{{contracts[i]}}</option>
         </select>
     </div>
     <div class="clear"></div>
@@ -27,14 +27,14 @@
             <label class="title" for="{{input.name}}">{{(input.name | separateWords) | titlecase}} <span>- {{input.type}} *</span></label>
             <input *ngIf="input.decimals != 'decimals'" formControlName="{{input.name}}" type="{{input.type2}}" class="block" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
             <div *ngIf="input.decimals == 'decimals'" class="input-container" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
-                <input type="{{input.type2}}" id="resized" formControlName="{{input.name}}"/>
-                <p  id="zeros">
+                <input type="{{input.type2}}" id="resized" formControlName="{{input.name}}" />
+                <p id="zeros">
                     <span class="hidden">{{getControl(input.name).value}}</span>
                     <span *ngIf="getControl('contract').value != 'LCX_CYC'">.{{zero.repeat(8)}}</span>
                     <span *ngIf="getControl('contract').value == 'LCX_CYC'">.{{zero.repeat(18)}}</span>
                 </p>
             </div>
-            
+
             <p class="error" [ngClass]="{'hidden':!(submited && getControl(input.name).errors != null)}">
                 <span *ngIf="getControl(input.name)?.errors?.required">This field is required</span>
                 <span *ngIf="getControl(input.name)?.errors?.required != true && getControl(input.name)?.errors?.invalidAddress">Invalid address</span>

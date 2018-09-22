@@ -6,7 +6,7 @@ import { ErrorDialogComponent } from '../components/dialogs/error-dialog.compone
 import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
 import { MessageDialogComponent } from '../components/dialogs/message-dialog.component';
 import { GasDialogComponent } from '../components/dialogs/gas-dialog.component';
-
+import { ContractDialogComponent } from '../components/contracts/add/contract-dialog.component';
 
 
 @Injectable()
@@ -41,6 +41,19 @@ export class DialogService{
             data: {
                 gasLimit: gasLimit,
                 gasPrice: gasPrice
+            }
+          });
+    }
+
+    openContractDialog(contract){
+
+        return this.dialog.open(ContractDialogComponent, {
+            width: '660px',
+            height: '',
+            panelClass: 'dialog',
+            data: {
+              title: contract,
+              
             }
           });
     }

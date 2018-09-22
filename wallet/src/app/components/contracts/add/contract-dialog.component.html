@@ -1,0 +1,24 @@
+<div>
+    <span>
+        <img class="inline-block right" src="~icons/cross_icon.svg" (click)="closeDialog()">
+        <h1 class="text-center contractDetail">
+                <img *ngIf="data.title == 'LSCX_ABT'" src="~icons/LSCX_ABT.svg" width="50px">
+                <img *ngIf="data.title == 'LSCX_CYC'" src="~icons/LSCX_CYC.svg" width="50px">
+                <img *ngIf="data.title == 'LSCX_ISC'" src="~icons/LSCX_ISC.svg" width="50px">
+                <img *ngIf="data.title == 'LSCX_CIF'" src="~icons/LSCX_CIF.svg" width="50px"> {{title}}
+        </h1>
+    </span>
+</div>
+<div>
+    <p *ngFor="let item of usages"> - {{item}}</p>
+</div>
+<div class="text-justify">
+    <p class="dist text-justify">
+        {{description}}
+    </p>
+
+</div>
+
+<div class="dist">
+    <button class="btn-inverse right" (click)="closeDialog()">Ok</button>
+</div>

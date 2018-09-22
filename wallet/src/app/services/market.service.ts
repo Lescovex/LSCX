@@ -223,6 +223,8 @@ export class MarketService {
 			setTimeout(() => {
 			  reject('Could not get market');
 			}, 20000);
+			console.log("dentro del waitformarket");
+			
 			self.socket.off('orders');
 			self.socket.off('trades');
 			self.getMarketAndWait();

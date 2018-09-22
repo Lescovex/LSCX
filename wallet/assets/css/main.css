@@ -158,6 +158,10 @@ header>img {
     text-align: center;
 }
 
+.text-justify {
+    text-align: justify;
+}
+
 .text-right {
     text-align: right;
 }
@@ -438,6 +442,17 @@ div.input-container {
     border: none;
     z-index: 2;
     background-color: transparent;
+}
+
+.contractDetail {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.contractDetail img {
+    align-items: bottom !important;
 }
 
 #contract-response {

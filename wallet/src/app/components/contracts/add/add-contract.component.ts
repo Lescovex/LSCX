@@ -12,12 +12,14 @@ import { AccountService } from '../../../services/account.service';
 import { ContractStorageService } from '../../../services/contractStorage.service';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
-
+import { ContractDialogComponent } from './contract-dialog.component';
+import {MdDialog} from '@angular/material';
 
 @Component({
   selector: 'app-add-contract',
   templateUrl: './add-contract.component.html',
 })
+
 export class AddContractPage {
   public contract = null;
   public abi;
@@ -25,8 +27,10 @@ export class AddContractPage {
   public inputs = [];
   public submited: boolean = false;
   public create = true;
-  public zero = "0"
-  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3) {
+  public zero = "0";
+  public contracts=['Asset-Backed Tokens (ABT)', 'Crypto Currencies (CYC)', 'Income Smart Contract (ISC)', 'Crypto Investment Fund (CIF)'];
+
+  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3, public dialog: MdDialog) {
     this.constructorForm =  new FormGroup({
       contract:new FormControl(null,Validators.required),
     })
@@ -170,4 +174,12 @@ export class AddContractPage {
       this.constructorForm = this._forms.removeControls(inputs, this.constructorForm);  
     }
   }
+
+  openInfo(){
+    let contract = this.getControl('contract').value
+    console.log(contract);
+    this._dialog.openContractDialog(contract);
+    this.getConstructor();
+  }
+
 }
