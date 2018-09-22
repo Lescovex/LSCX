@@ -118,14 +118,14 @@ export class AccountService{
         let tokens = wallet[result].tokens.filter(x=> x.network == this._web3.network)
         return tokens;
       }else{
-        return new Array();;
+        return[];
       }
     }
   }
 
   async setTokens(){
-    this.account.tokens = [];
     if('address' in this.account){
+      this.account.tokens = this.getTokensLocale();
       await this.updateTokens();
     }
   }
@@ -147,12 +147,11 @@ export class AccountService{
 
   async updateTokens(){
     let self = this;
-    let tokens = this.getTokensLocale();
-      tokens = await this.updateTokenBalances(tokens);
-      this._scan.getTokensTransfers(this.account.address).subscribe(async function(resp:any){
+    let tokens = this.account.tokens
+    tokens = await this.updateTokenBalances(tokens);
+    this._scan.getTokensTransfers(this.account.address).subscribe(async function(resp:any){
         let tkns : Array<any> = [];
         tkns = resp.result;
-        self.account.tokens=[];
         for(let i = 0; i<tkns.length; i++){
           if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
             let token: any = {
@@ -163,10 +162,9 @@ export class AccountService{
               network : self._web3.network
             }
             token = await self.updateTokenBalance(token);
-            let empty=false;
-            console.log(typeof(token.tokenName),token.tokenName, typeof(token.tokenSymbol), token.tokenSymbol, typeof(token.tokenDecimal),token.tokenDecimal);
-            console.log(token.tokenDecimal == NaN)
-            tokens.push(token)
+            if(!isNaN(token.tokenDecimal)){
+              tokens.push(token);
+            }
           }
         }
         self.account.tokens = tokens;
@@ -240,6 +238,7 @@ export class AccountService{
 
   startIntervalTokens(){
     return setInterval(()=>{
+      console.log("tokens",this.account.tokens);
       this.updateTokens();
     },3000);
   }
