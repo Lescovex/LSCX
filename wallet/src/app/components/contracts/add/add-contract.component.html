@@ -16,11 +16,14 @@
 <form *ngIf="create" (ngSubmit)="createSubmit()" id="constructorForm" [formGroup]="constructorForm" novalidate class="dist">
     <div class="half left">
         <label class="title" for="contract">Contract *</label>
-        <select id="contract" class="block" formControlName="contract" name="contract" (change)="openInfo()">
+        <img *ngIf="getControl('contract').value != null" aria-placeholder="Contract information" class="inline extra" src="~icons/info_iconContracts.svg" (click)="openInfo()">
+        <select id="contract" class="block" formControlName="contract" name="contract" (change)="getConstructor()">
             <option [ngValue]="null" disabled>Select a contract type</option>
             <option *ngFor="let item of _LSCXcontract.contracts, index as i" value="{{item}}">{{contracts[i]}}</option>
         </select>
+
     </div>
+
     <div class="clear"></div>
     <ng-container *ngIf="inputs.length!=0">
         <div *ngFor="let input of inputs, index as i" [ngClass]="(i+1)%2==0 ? 'right' : 'left clear'" class="half">

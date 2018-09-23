@@ -530,13 +530,17 @@ p.error {
     border: 2px solid transparent;
     cursor: pointer;
 }
-.btn-contract, .btn-contract-delete{
+
+.btn-contract,
+.btn-contract-delete {
     padding: 5px;
     border-radius: 5px;
 }
+
 .btn-contract-delete {
     margin-top: 5px;
 }
+
 .btn-inverse {
     border: 2px solid#30D67F;
     background-color: transparent;
@@ -582,7 +586,8 @@ p.error {
     margin-left: 20px;
 }
 
-.warning, .btn-contract-delete {
+.warning,
+.btn-contract-delete {
     border: 2px solid #E66978;
     color: #E66978;
     background: none;
@@ -706,6 +711,7 @@ input[type="radio"]:checked+label span {
 .contract-list {
     position: relative;
 }
+
 .contract-list * {
     white-space: nowrap;
     overflow: hidden;
@@ -717,7 +723,8 @@ input[type="radio"]:checked+label span {
     left: 90px;
     right: 100px;
 }
-.contract-list div:nth-child(3){
+
+.contract-list div:nth-child(3) {
     width: 70px;
     float: right;
 }
@@ -801,13 +808,15 @@ input[type="radio"]:checked+label span {
     border-left: 1px solid #eee;
 }
 
-.select-list li, .select-list p {
+.select-list li,
+.select-list p {
     padding: 5px 10px;
 }
 
 .select-list li:hover {
     background-color: #eee;
 }
+
 .select-list hr {
     margin-bottom: 5px;
 }
