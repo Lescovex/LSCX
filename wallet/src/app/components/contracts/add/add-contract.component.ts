@@ -176,10 +176,11 @@ export class AddContractPage {
   }
 
   openInfo(){
-    let contract = this.getControl('contract').value
-    console.log(contract);
+    let contract = this.getControl('contract').value;
+    console.log("Contract?", contract);
+    
     this._dialog.openContractDialog(contract);
-    this.getConstructor();
+
   }
 
 }
