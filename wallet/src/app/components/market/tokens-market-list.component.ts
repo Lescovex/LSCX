@@ -8,10 +8,10 @@ import { Web3 } from '../../services/web3.service';
 
 
 @Component({
-  selector: 'app-tokens-list',
-  templateUrl: './tokens-list.component.html',
+  selector: 'app-tokens-market-list',
+  templateUrl: './tokens-market-list.component.html',
 })
-export class TokensListComponent {
+export class TokensMarketListComponent {
   @Output() show = new EventEmitter<boolean>();  
   tokens : any[] = [];
   LSCX_tokens: any[] = [];

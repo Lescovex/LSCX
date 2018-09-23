@@ -147,7 +147,7 @@ export class AccountService{
   }
 
   deleteToken(tokenAdrr){
-      if('tokens' in this.account.tokens){
+      if('tokens' in this.account){
         this.account.tokens.forEach(tk=>{
           console.log(tk.contractAddress, "a borrar", tokenAdrr,tk.contractAddress == tokenAdrr)
           if(tk.contractAddress == tokenAdrr){

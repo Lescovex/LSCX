@@ -39,7 +39,7 @@ import { ShowContract } from './components/contracts/contracts/showContract.comp
 import { HistoryPage } from './components/contracts/history/history.page';
 
 import { MarketComponent } from './components/market/market.component';
-import { TokensListComponent } from './components/market/tokens-list.component';
+import { TokensMarketListComponent } from './components/market/tokens-market-list.component';
 import { MarketWalletPage } from './components/market/marketWallet/market-wallet.page';
 import { MarketAmountsComponent} from './components/market/marketWallet/market-amounts.component';
 import { MarketActionComponent} from './components/market/marketWallet/market-action.component';
@@ -137,7 +137,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     BuySellPage,
     MarketHistoryPage,
     MarketListComponent,
-    TokensListComponent,
+    TokensMarketListComponent,
     MarketAmountsComponent,
     MarketActionComponent,
     CustomMinDirective,

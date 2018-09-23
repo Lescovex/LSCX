@@ -14,7 +14,6 @@ export class MarketWalletPage implements OnInit, OnDestroy {
     this.action = 'deposit'
   }
   async ngOnInit() {
-
     this.interval = await this._market.balancesInterval();
   }
   ngOnDestroy(){

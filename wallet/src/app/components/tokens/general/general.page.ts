@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core'
+import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core'
 
 /*Services*/
 import { AccountService } from '../../../services/account.service'
@@ -11,15 +11,30 @@ import { Web3 } from '../../../services/web3.service';
   templateUrl: './general.html'
 })
 
-export class GeneralPage implements OnInit, OnDestroy {
+export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   interval;
-
+  tokens:  any[];
+  hideZero: boolean;
+  allTokens: any[];
   constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3) {
-    // console.log('SendPage')
+    this.hideZero = false;
+    this.allTokens = this._account.account.tokens.filter(x=>x);
   }
 
   ngOnInit() {
+    this.setTokens();
     this.interval = this._account.startIntervalTokens();
+  }
+
+  ngOnDestroy(){
+    clearInterval(this.interval)
+  }
+
+  ngDoCheck() {
+    if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.account.tokens)){
+      this.setTokens();
+      this.allTokens = this._account.account.tokens.filter(x=>x);
+    }
   }
 
   openExternal(txHash){
@@ -28,7 +43,16 @@ export class GeneralPage implements OnInit, OnDestroy {
     shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+this._account.account.address);
   }
 
-  ngOnDestroy(){
-    clearInterval(this.interval)
+  setTokens() {
+    if(!this.hideZero){
+      this.tokens =  this._account.account.tokens.filter(token => !token.deleted);
+    }else{
+      this.tokens = this._account.account.tokens.filter(token => token.balance > 0 && !token.deleted);
+    }
+  }
+  
+  toggleHideZero(){
+    this.hideZero = !this.hideZero;
+    this.setTokens();
   }
 }

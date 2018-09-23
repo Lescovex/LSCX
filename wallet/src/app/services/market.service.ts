@@ -53,8 +53,7 @@ export class MarketService {
 			let localToken = this.getLocalStorageToken();
 			if(localToken !=null && this.config.tokens.find(token=>token.addr == localToken.addr) != null){
 				this.token = localToken;
-			}else if ( localToken !=null && 'tokens' in this._account.account &&
-			 this._account.account.tokens.find(token=>token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network) != null){
+			}else if ( localToken !=null && 'tokens' in this._account.account && this._account.account.tokens.find(token=> token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network) != null){
 				this.token = localToken;
 			}else{
 				this.token = this.config.tokens[1]; 
@@ -86,11 +85,11 @@ export class MarketService {
 	}
 
 	setTokenContract() {
-		this.token.contract = this.contractToken.at(this.token.addr)
+		this.token.contract = this.contractToken.at(this.token.addr);
 	}
 
 	setMarket(token?){
-		this.setCongif();	
+		this.setCongif();
 		this.setContracts();
 		this.eth = this.config.tokens[0];
 		this.setToken(token);

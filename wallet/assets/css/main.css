@@ -385,6 +385,10 @@ select {
     margin-bottom: 20px;
     background-color: #fff;
 }
+input[type="checkbox"] {
+    height: auto;
+    margin: 0 12px;
+}
 
 input,
 div.input-container,
@@ -599,6 +603,9 @@ p.error {
     top: 220px;
     left: 270px;
     right: 15px;
+}
+#general-token-list {
+    top: 270px;
 }
 
 #hist-market {
