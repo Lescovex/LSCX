@@ -35,7 +35,7 @@ export class MarketService {
 	};
 	sha256;
 
-	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService) {
+	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, ) {
 		
 	}
 
@@ -50,12 +50,32 @@ export class MarketService {
 
 	setToken(token?) {
 		if(typeof(token)=="undefined"){
-			this.token = this.config.tokens[1]; 
+			let localToken = this.getLocalStorageToken();
+			if(localToken !=null && this.config.tokens.find(token=>token.addr == localToken.addr) != null){
+				this.token = localToken;
+			}else if ( localToken !=null && 'tokens' in this._account.account &&
+			 this._account.account.tokens.find(token=>token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network) != null){
+				this.token = localToken;
+			}else{
+				this.token = this.config.tokens[1]; 
+			}
 		}else{
 			this.token = token;
 		}
+		this.saveLocalStorageToken();
 		this.setTokenContract();
 		this.resetTokenBalances();
+	}
+
+	getLocalStorageToken(){
+		if(localStorage.getItem('marketToken')){
+			return JSON.parse(localStorage.getItem('marketToken'));
+		}else{
+			return null;
+		}
+	}
+	saveLocalStorageToken(){
+		localStorage.setItem('marketToken', JSON.stringify(this.token));
 	}
 
 
@@ -223,16 +243,14 @@ export class MarketService {
 			setTimeout(() => {
 			  reject('Could not get market');
 			}, 20000);
-			console.log("dentro del waitformarket");
 			
 			self.socket.off('orders');
 			self.socket.off('trades');
 			self.getMarketAndWait();
 		});
 	}
-	
+
 	getMarket(){
-		
 		if (!this.token.addr) throw new Error('Please enter a valid token');
 		if (!this._account.account.address) throw new Error('Please enter a valid address');
 		this.socket.emit('getMarket', { token: this.token.addr , user: this._account.account.address });
@@ -243,7 +261,7 @@ export class MarketService {
 		this.getMarket();
 		this.socket.once('market', (market) => {
 			if('orders' in market && 'trades' in market){
-				//console.log(market)
+				console.log(market)
 				this.updateOrders(market.orders, this.token, this._account.account.address);
 				this.updateTrades(market.trades, this.token, this._account.account.address);
 				this.state.initialState = true;

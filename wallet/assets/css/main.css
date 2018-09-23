@@ -794,12 +794,15 @@ input[type="radio"]:checked+label span {
     border-left: 1px solid #eee;
 }
 
-.select-list li {
+.select-list li, .select-list p {
     padding: 5px 10px;
 }
 
 .select-list li:hover {
     background-color: #eee;
+}
+.select-list hr {
+    margin-bottom: 5px;
 }
 
 .amount-table,
