@@ -266,21 +266,21 @@ export class LSCXContractService {
 		let response : any = await this._scan.getTx(cAddress).toPromise();
 		if (response.status == 1){
 			let result = response.result[0];
-      		if(typeof(result)!= 'undefined' && result.contractAddress == cAddress){
+      		if(typeof(result)!= 'undefined' && result.contractAddress.toLowerCase() == cAddress.toLowerCase()){
 				  return result
 			}else{
 				return false
 			}
 		}else{
 			return false
-		}
-		
+		}	
 	}
 
 	async checkType(data:string): Promise<string>{
 		let type = "";
 		for(let i=0; i<this.contracts.length; i++){
 			let byteCode = await this.getBytecode(this.contracts[i]);
+			console.log(byteCode)
 			if(data.indexOf(byteCode)!=-1){
 				return this.contracts[i]
 			}

@@ -1,5 +1,5 @@
 <nav class="flex-row">
-    <a routerLink="contract-page" [class.disabled]="_contractStorage.accContracts.length == 0" routerLinkActive="active" #contract="routerLinkActive">
+    <a routerLink="contract-page" [class.disabled]="_contractStorage.LSCX_Contracts.length == 0 && _contractStorage.customContracts.length == 0" routerLinkActive="active" #contract="routerLinkActive">
         <div>
             <span>
                 <img class="top-nav-img" *ngIf="contract.isActive" src='~icons/send_icon.svg'>
@@ -9,7 +9,7 @@
         </div>
     </a>
 
-    <a routerLink="history" [class.disabled]="!selected || _contractStorage.accContracts.length == 0" routerLinkActive="active" #hist="routerLinkActive">
+    <a routerLink="history" [class.disabled]="!selected || _contractStorage.LSCX_Contracts.length == 0 && _contractStorage.customContracts.length == 0" routerLinkActive="active" #hist="routerLinkActive">
         <div>
             <span>
                 <img class="top-nav-img" *ngIf="hist.isActive" src='~icons/history_icon.svg'>

@@ -9,7 +9,7 @@ import { MD_DIALOG_DATA } from '@angular/material';
 import { Web3 } from '../../services/web3.service'
 import { AccountService } from '../../services/account.service'
 
-import { Contract } from '../../models/contract';
+import { LSCX_Contract } from '../../models/LSCX_contract';
 import { ContractStorageService } from '../../services/contractStorage.service';
 import { MarketService } from '../../services/market.service';
 
@@ -95,7 +95,7 @@ export class SendDialogComponent{
           pending.timeStamp = Date.now()/1000;
           self._account.addPendingTx(pending);
           if(this.data.action == 'contractDeploy'){
-            let contract =  new Contract();
+            let contract =  new LSCX_Contract();
             contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
             this._contractStorage.addContract(contract);
             this._contractStorage.checkForAddress();

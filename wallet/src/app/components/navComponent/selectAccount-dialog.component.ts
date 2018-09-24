@@ -22,7 +22,7 @@ export class SelectAccountDialogComponent implements OnInit{
   selectedAcc;
 
   constructor(public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, private _contracStorage: ContractStorageService, private _wallet: WalletService, private _LSCXcontract: LSCXContractService, private _market: MarketService) {
-
+    console.log(this.dialogRef)
   }
   ngOnInit(){
     this.selectedAcc = this._account.account;
@@ -31,13 +31,16 @@ export class SelectAccountDialogComponent implements OnInit{
   changeSelected(account){
     this.selectedAcc=account;    
   }
+
   selectAccount(){
     if(this._account.account.address != this.selectedAcc.address){
       this._account.updated == false;
       this._account.setAccount(this.selectedAcc);
       this._contracStorage.setAccContracts();
       this._LSCXcontract.reset();
-      this._market.resetSocket();
+      if(typeof(this._market.socket)!= "undefined"){
+        this._market.resetSocket();
+      }
       this.dialogRef.close('loading');
     }else{
       this.dialogRef.close();

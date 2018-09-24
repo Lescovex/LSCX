@@ -5,7 +5,8 @@ import { AccountService } from './account.service';
 @Injectable()
 export class ContractStorageService {
     contracts: Array<any>;
-    accContracts: Array<any>;
+    LSCX_Contracts: Array<any>;
+    customContracts: Array<any>;
 
     constructor(private _web3: Web3, private _account: AccountService){
         this.setContracts();
@@ -22,7 +23,8 @@ export class ContractStorageService {
     }
 
     setAccContracts(){
-        this.accContracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network);
+        this.LSCX_Contracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network && contract.type != "custom");
+        this.customContracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network && contract.type == "custom");
     }
 
     deletContract(contract){
@@ -39,7 +41,6 @@ export class ContractStorageService {
 
     addContract(contract){
             this.contracts.push(contract);
-            //console.log("Add",this.contracts)
             this.saveContracts();
             this.setAccContracts();
     }

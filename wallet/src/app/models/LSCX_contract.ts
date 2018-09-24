@@ -1,4 +1,4 @@
-export class Contract {
+export class LSCX_Contract {
     public address: String;
     public type: String;
     public deployHash: String;
@@ -40,6 +40,7 @@ export class Contract {
         this.totalSupply = info.totalSupply;
         this.setStandard(type);
     }
+    
     setStandard(type){
         switch(type){
             case "LCX_ABT":

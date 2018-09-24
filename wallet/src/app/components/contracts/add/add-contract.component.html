@@ -2,21 +2,48 @@
     <button [ngClass]="create? 'btn-solid':'btn-inverse'" (click)="activeButton('create')">Deploy new contract</button>
     <button class="extra" [ngClass]="!create ? 'btn-solid':'btn-inverse'" (click)="activeButton('import')">Import contract</button>
 </div>
-<form *ngIf="!create" class="dist" id="constructorForm" [formGroup]="constructorForm" (ngSubmit)="importSubmit()">
-    <label class="title" for="contract">Contract address*</label>
-    <input id="contractAddress" type="text" formControlName="contract" class="block" name="contractAddress" [ngClass]="{'error': submited && getControl('contract').errors!= null}">
-    <p class="error" [ngClass]="{'hidden':!(submited && getControl('contract').errors != null)}">
-        <span *ngIf="getControl('contract')?.errors?.required">This field is required</span>
-        <span *ngIf="getControl('contract')?.errors?.required != true && getControl('contract')?.errors?.invalidAddress">Invalid address</span>
-    </p>
-    <div class="clear bottomR">
-        <button type="submit" class="btn-inverse">Import Contract</button>
+<form *ngIf="!create" class="dist flex-row" id="constructorForm" [formGroup]="constructorForm" (ngSubmit)="importLSCX()">
+    <div class="flex1">
+        <label class="title" for="contract">LSCX_Contract address*</label>
+        <input id="contractAddress" type="text" formControlName="contract" class="block" name="contractAddress" [ngClass]="{'error': submited && getControl('contract').errors!= null}">
+        <p class="error" [ngClass]="{'hidden':!(submited && getControl('contract').errors != null)}">
+            <span *ngIf="getControl('contract')?.errors?.required">This field is required</span>
+            <span *ngIf="getControl('contract')?.errors?.required != true && getControl('contract')?.errors?.invalidAddress">Invalid address</span>
+        </p>
     </div>
+    <div class="inline import-contract-right">
+        <button class="btn-inverse extra" type="submit">Import Contract</button>
+    </div>
+    
 </form>
+<form *ngIf="!create" class="dist flex-row" id="customForm" [formGroup]="customContractForm" (ngSubmit)="importCustom()">
+        
+        <div class="flex1">
+            <div>
+                <label class="title" for="contract">Contract name*</label>
+                <input id="name" type="text" formControlName="name" class="block" name="name" [ngClass]="{'error': submitedOther && customContractForm.controls.name.errors!= null}"><p class="error" [ngClass]="{'hidden':!(submited && getControl('contract').errors != null)}">
+                <p  class="error" [ngClass]="{'hidden':!(submitedOther&& customContractForm.controls.name.errors != null)}">                    
+                    <span *ngIf="getControl('contract')?.errors?.required">This field is required</span>
+                </p>
+            </div>
+            <div>
+                <label class="title" for="contract">Other Contract address*</label>
+                {{customContractForm.controls.contract.errors |json}}
+                <input id="contractAddress" type="text" formControlName="contract" class="block" name="contractAddress" [ngClass]="{'error': submitedOther && customContractForm.controls.contract.errors!= null}">
+                <p class="error" [ngClass]="{'hidden':!(submitedOther && customContractForm.invalid)}">
+                    <span *ngIf="customContractForm.controls.contract.errors?.required">This field is required</span>
+                    <span *ngIf="customContractForm.controls.contract.errors?.required != true && customContractForm.controls.contract.errors?.invalidAddress">Invalid address</span>
+                </p>
+            </div>
+        </div>
+        <div class="import-contract-right">
+            <button class="btn-inverse extra" type="submit">Import Contract</button>
+        </div>
+    </form>
 <form *ngIf="create" (ngSubmit)="createSubmit()" id="constructorForm" [formGroup]="constructorForm" novalidate class="dist">
     <div class="half left">
         <label class="title" for="contract">Contract *</label>
-        <img *ngIf="getControl('contract').value != null" aria-placeholder="Contract information" class="inline extra" src="~icons/info_iconContracts.svg" (click)="openInfo()">
+        <img *ngIf="getControl('contract').value != null" aria-placeholder="Contract information" class="inline extra pointer" src="~icons/info_iconContracts.svg" (click)="openInfo()">
         <select id="contract" class="block" formControlName="contract" name="contract" (change)="getConstructor()">
             <option [ngValue]="null" disabled>Select a contract type</option>
             <option *ngFor="let item of _LSCXcontract.contracts, index as i" value="{{item}}">{{contracts[i]}}</option>

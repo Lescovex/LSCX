@@ -21,7 +21,7 @@ export class SelectContractPage implements OnInit{
   
   constructor(public _LSCXcontract: LSCXContractService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
     this._contractStorage.checkForAddress();
-    if(this._contractStorage.accContracts.length == 0){
+    if(this._contractStorage.LSCX_Contracts.length == 0 && this._contractStorage.customContracts.length == 0 ){
       this.router.navigate(['/contracts/add'])
     }
     this.contractForm =  new FormGroup({

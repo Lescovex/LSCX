@@ -7,13 +7,15 @@ import { LSCXContractService } from '../../../services/LSCX-contract.service'
 import { FormsService } from '../../../services/forms.service'
 import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { SendDialogService } from '../../../services/send-dialog.service';
-import { Contract } from '../../../models/contract';
+import { LSCX_Contract } from '../../../models/LSCX_contract';
+import { CustomContract } from '../../../models/CustomContract';
 import { AccountService } from '../../../services/account.service';
 import { ContractStorageService } from '../../../services/contractStorage.service';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
 import { ContractDialogComponent } from './contract-dialog.component';
-import {MdDialog} from '@angular/material';
+import { MdDialog } from '@angular/material';
+import { EtherscanService } from '../../../services/etherscan.service';
 
 @Component({
   selector: 'app-add-contract',
@@ -24,15 +26,21 @@ export class AddContractPage {
   public contract = null;
   public abi;
   public constructorForm: FormGroup;
+  customContractForm: FormGroup;
   public inputs = [];
   public submited: boolean = false;
+  public submitedOther: boolean = false;
   public create = true;
   public zero = "0";
   public contracts=['Asset-Backed Tokens (ABT)', 'Crypto Currencies (CYC)', 'Income Smart Contract (ISC)', 'Crypto Investment Fund (CIF)'];
 
-  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3, public dialog: MdDialog) {
+  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3, public dialog: MdDialog, private _scan: EtherscanService) {
     this.constructorForm =  new FormGroup({
       contract:new FormControl(null,Validators.required),
+    })
+    this.customContractForm =  new FormGroup({
+      contract:new FormControl(null,[Validators.required, ValidateAddress]),
+      name: new FormControl(null,Validators.required)
     })
   }
 
@@ -101,13 +109,12 @@ export class AddContractPage {
         console.log(txInfo);
         
         let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
-    this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
+        this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
       }
     })
   }
 
-  async importSubmit(){
-
+  async importLSCX(){
     let error = "";
     this.submited = true;
     if(this.constructorForm.invalid){
@@ -116,33 +123,30 @@ export class AddContractPage {
     let loadingDialog = this._dialog.openLoadingDialog();
     let contractAddr = this.getControl('contract').value;
     let isContract = await this._LSCXcontract.checkContract(contractAddr);
+    console.log(isContract)
     let duplicated = this._contractStorage.isDuplicated(contractAddr, this._account.account.address)
+    console.log(duplicated)
     if(duplicated){
+      console.log('duplicated')
       error = "The contract you are are trying to import is a duplicate"
     } else if (isContract!=false && !duplicated){ 
-      let tx = isContract
-      if(typeof(tx)!= 'undefined' && tx.contractAddress == contractAddr){
-        let type = await this._LSCXcontract.checkType(tx.input);
-        //console.log('type',type)
-        if(type != ""){
-          let contract = new Contract();
-          let info= await this._LSCXcontract.getContractModelData(type,contractAddr)
-          //console.log("info",info)
-          contract.importContract(contractAddr,tx.hash, type, this._account.account.address, info, this._web3.network);
-          try{
-            this._contractStorage.addContract(contract);
-          }catch(e){
-
-            error = e;
-          }
-        }else{
-          error = "The contract you are are trying to import isn't a LSCX contract"
+      console.log("no duplicated");
+      let tx = isContract;
+      let type = await this._LSCXcontract.checkType(tx.input);
+      if(type != ""){
+        let contract = new LSCX_Contract();
+        let info= await this._LSCXcontract.getContractModelData(type,contractAddr)
+        contract.importContract(contractAddr,tx.hash, type, this._account.account.address, info, this._web3.network);
+        try{
+          this._contractStorage.addContract(contract);
+        }catch(e){
+          error = e;
         }
       }else{
-        error = "The contract you are are trying to import isn't a LSCX contract"
+          error = "The contract you are trying to import isn't a LSCX contract, import with Other Contracts form"
       }
     } else{
-      error = "The contract you are are trying to import isn't a LSCX contract"
+      error = "The address you are trying to import isn't a contract"
     }
     let title = (error=="")? 'Your contract has been successfully imported' : 'Unable to import contract';
     let message = (error=="")? 'You can find it in the contracts list' : 'Something was wrong';
@@ -150,6 +154,57 @@ export class AddContractPage {
     let dialogRef = this._dialog.openErrorDialog(title,message, error);
 
     dialogRef.afterClosed().subscribe(()=>{
+      this.submited = false;
+      this.constructorForm.reset();
+      if(error == ''){
+        this.router.navigate(['/contracts/contract-page']);
+      }
+    })
+  }
+
+  async importCustom(){
+    let error = "";
+    this.submitedOther = true;
+    console.log(this.customContractForm)
+    if(this.customContractForm.invalid){
+      return false;
+    }
+    let loadingDialog = this._dialog.openLoadingDialog();
+    let contractAddr = this.customContractForm.controls.contract.value;
+    let isContract = await this._LSCXcontract.checkContract(contractAddr);
+    let duplicated = this._contractStorage.isDuplicated(contractAddr, this._account.account.address)
+    if(duplicated){
+      console.log('duplicated')
+      error = "The contract you are are trying to import is a duplicate"
+    } else if (isContract!=false && !duplicated){ 
+      console.log("no duplicated");
+      let tx = isContract;
+      let type = await this._LSCXcontract.checkType(tx.input);
+      console.log(type)
+      if(type != ""){
+          error = "The contract you are trying to import is a LSCX contract, import with LSCX contracts form"
+      }else{
+          let isVerified: any = await this.isVerifiedMessages(contractAddr);
+          loadingDialog.close();
+          let dialogRef = this._dialog.openErrorDialog(isVerified.title,isVerified.message, isVerified.error); 
+          dialogRef.afterClosed().subscribe(()=>{
+              if(isVerified.error == ''){
+                this.router.navigate(['/contracts/contract-page']);
+              }
+          });
+          return false;
+      }
+    } else {
+      error = "The address you are trying to import isn't a contract"
+    }
+    let title = (error=="")? 'Your contract has been successfully imported' : 'Unable to import contract';
+    let message = (error=="")? 'You can find it in the contracts list' : 'Something was wrong';
+    loadingDialog.close();
+    let dialogRef = this._dialog.openErrorDialog(title,message, error);
+
+    dialogRef.afterClosed().subscribe(()=>{
+      this.submited = false;
+      this.constructorForm.reset();
       if(error == ''){
         this.router.navigate(['/contracts/contract-page']);
       }
@@ -180,7 +235,23 @@ export class AddContractPage {
     console.log("Contract?", contract);
     
     this._dialog.openContractDialog(contract);
-
   }
 
+  async isVerifiedMessages(contractAddr){
+    let message;
+    let error = "";
+    let abi = await this._scan.getAbi(contractAddr)
+    if(abi.result == "Contract source code not verified"){
+        message = "The contract you are are trying to import isn't verify, its code isn't public."
+        error = " ";
+    }else{
+        let contract = new CustomContract(contractAddr, name, JSON.stringify(abi.result), this._account.account.address, this._web3.network);
+        console.log(contract);
+        message = "You can find it in the contracts list"
+        this._contractStorage.addContract(contract);
+    }
+    let title = (error=="")? 'Your contract has been successfully imported' : 'Unable to import contract';
+    console.log( {title:title, message:message, error:error});
+    return {title:title, message:message, error:error}
+  }
 }

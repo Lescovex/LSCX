@@ -16,7 +16,7 @@ export class DialogService{
     openErrorDialog(title, message, error, action?){
         return this.dialog.open(ErrorDialogComponent, {
             width: '660px',
-            height: '195px',
+            height: '210px',
             data: {
               title: title,
               message: message,
@@ -60,7 +60,7 @@ export class DialogService{
             panelClass: 'dialog',
             data: {
               title: contract,
-              
+  
             }
           });
     }

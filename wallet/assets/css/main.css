@@ -465,6 +465,17 @@ div.input-container {
     padding-left: 12px;
 }
 
+.import-contract-right{
+    width: 30%;
+    position: relative;
+}
+.import-contract-right button{
+    position: absolute;
+    bottom : 34px;
+    right: 0;
+    width: 95%;
+}
+
 #resized {
     display: block;
 }
@@ -533,11 +544,12 @@ p.error {
 
 .btn-contract,
 .btn-contract-delete {
+    width: 70px;
     padding: 5px;
     border-radius: 5px;
 }
 
-.btn-contract-delete {
+.contract-list .btn-contract-delete {
     margin-top: 5px;
 }
 
@@ -600,6 +612,9 @@ p.error {
     color: white;
     background-color: #E66978;
     border: none;
+}
+.btn-contract-delete:hover {
+    border: 2px solid #E66978;
 }
 
 .auto-h {
