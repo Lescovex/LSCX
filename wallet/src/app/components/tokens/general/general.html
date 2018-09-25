@@ -2,6 +2,12 @@
 <p *ngIf="_account.account.tokens?.length == 0" class="whiteBox text-center"> You don't have tokens</p>
 <div *ngIf="tokens?.length > 0">
     <input type="checkbox" id="hide-zero" value="false" (click)="toggleHideZero()"/><label for="hide-zero" class="bold">Hide contracts with zero balance</label>
+    <div class="dist" class="sort">
+        <p class="inline bold">Order by: </p>
+        <p class="inline" (click)="changeAlphabetically()">Symbol <span ><img [ngClass]="(alphabetically == 1)? '':'low-opacity'" src="~icons/select_icon.svg"><img [ngClass]="(alphabetically == 2)? '':'low-opacity'" src="~icons/select_icon.svg"></span></p> 
+        <p class="inline" (click)="changeByBalance()">Balance <span><img [ngClass]="(byBalance == 1)? '':'low-opacity'" src="~icons/select_icon.svg"><img [ngClass]="(byBalance == 2)? '':'low-opacity'" src="~icons/select_icon.svg"></span></p>
+    </div>
+    
     <ul class="scroll scrollbar auto-h" id="general-token-list">
         <li *ngFor="let token of tokens, index as  i"  class="whiteBox-extra">
             <a class="pointer" (click)="openExternal(token.contractAddress)">

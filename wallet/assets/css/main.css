@@ -624,8 +624,23 @@ p.error {
     left: 270px;
     right: 15px;
 }
+
 #general-token-list {
     top: 270px;
+}
+
+.sort{
+    margin-left: 27px;
+    margin-top: 5px;
+}
+.sort p {
+    padding: 20px 10px;
+}
+.low-opacity {
+    opacity: 0.3;
+}
+.sort span img:first-child{
+    transform: rotate(180deg);
 }
 
 #hist-market {

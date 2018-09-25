@@ -149,7 +149,6 @@ export class AccountService{
   deleteToken(tokenAdrr){
       if('tokens' in this.account){
         this.account.tokens.forEach(tk=>{
-          console.log(tk.contractAddress, "a borrar", tokenAdrr,tk.contractAddress == tokenAdrr)
           if(tk.contractAddress == tokenAdrr){
             tk.deleted = true;
           }
@@ -167,7 +166,6 @@ export class AccountService{
         tkns = resp.result;
         for(let i = 0; i<tkns.length; i++){
           if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
-            console.log("entra")
             let token: any = {
               contractAddress :  tkns[i].contractAddress,
               tokenName:  tkns[i].tokenName,
@@ -251,7 +249,6 @@ export class AccountService{
 
   startIntervalTokens(){
     return setInterval(()=>{
-      console.log("tokens",this.account.tokens);
       this.updateTokens();
     },3000);
   }
