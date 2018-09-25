@@ -1,3 +1,5 @@
+import { Web3 } from '../services/web3.service';
+
 export class CustomContract{
     public address: string;
     public name: string;
@@ -5,6 +7,7 @@ export class CustomContract{
     public abi: any;
     public account: string;
     public network: number;
+    private _web3: Web3;
 
     constructor(address:string, name:string, abi:any, account:string, network:number) {
         this.address = address;
@@ -12,7 +15,6 @@ export class CustomContract{
         this.type = "custom";
         this.abi = abi;
         this.account = account;
-        this.network = network;
-        
+        this.network = network; 
     }
 }

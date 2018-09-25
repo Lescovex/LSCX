@@ -81,6 +81,7 @@ import { RawTxService } from './services/rawtx.sesrvice'
 import { ContractStorageService } from './services/contractStorage.service'
 import { EtherscanService } from './services/etherscan.service';
 import { MarketService } from './services/market.service';
+import { CustomContractService } from './services/custom-contract.service';
 
 /*Pipes*/
 import { ConverterPipe } from './pipes/converter.pipe';
@@ -191,7 +192,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     RawTxService,
     ContractStorageService,
     EtherscanService,
-    MarketService
+    MarketService,
+    CustomContractService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

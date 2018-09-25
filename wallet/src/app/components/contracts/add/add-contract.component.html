@@ -60,8 +60,8 @@
                 <input type="{{input.type2}}" id="resized" formControlName="{{input.name}}" />
                 <p id="zeros">
                     <span class="hidden">{{getControl(input.name).value}}</span>
-                    <span *ngIf="getControl('contract').value != 'LCX_CYC'">.{{zero.repeat(8)}}</span>
-                    <span *ngIf="getControl('contract').value == 'LCX_CYC'">.{{zero.repeat(18)}}</span>
+                    <span *ngIf="getControl('contract').value != 'LSCX_CYC'">.{{zero.repeat(8)}}</span>
+                    <span *ngIf="getControl('contract').value == 'LSCX_CYC'">.{{zero.repeat(18)}}</span>
                 </p>
             </div>
 

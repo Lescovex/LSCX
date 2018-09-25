@@ -469,6 +469,7 @@ div.input-container {
     width: 30%;
     position: relative;
 }
+
 .import-contract-right button{
     position: absolute;
     bottom : 34px;
@@ -544,13 +545,19 @@ p.error {
 
 .btn-contract,
 .btn-contract-delete {
-    width: 70px;
     padding: 5px;
     border-radius: 5px;
 }
 
 .contract-list .btn-contract-delete {
     margin-top: 5px;
+}
+
+.custom-contract p{
+    padding: 5px;
+}
+.custom-contract button {
+    width: 70px;
 }
 
 .btn-inverse {

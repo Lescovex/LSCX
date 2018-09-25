@@ -7,6 +7,8 @@ import { ContractStorageService } from '../../../services/contractStorage.servic
 import { DialogService } from '../../../services/dialog.service';
 import { Router } from '@angular/router';
 import { Web3 } from '../../../services/web3.service';
+import { CustomContractService } from '../../../services/custom-contract.service';
+import { ContractService } from '../../../services/contract.service';
 
 @Component({
   selector: 'app-select-contract',
@@ -14,12 +16,14 @@ import { Web3 } from '../../../services/web3.service';
 })
 export class SelectContractPage implements OnInit{
   public selected: boolean = false;
+  public contractSelected = "";
   public contracts = [];
   public contractForm: FormGroup;
   public moreInfo = [];
   public functions = [];
-  
-  constructor(public _LSCXcontract: LSCXContractService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
+  public selectedContract:string;
+
+  constructor(public _LSCXcontract: LSCXContractService, private _customContract: CustomContractService, private _contract: ContractService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
     this._contractStorage.checkForAddress();
     if(this._contractStorage.LSCX_Contracts.length == 0 && this._contractStorage.customContracts.length == 0 ){
       this.router.navigate(['/contracts/add'])
@@ -29,7 +33,12 @@ export class SelectContractPage implements OnInit{
     })
 
     if(Object.keys(this._LSCXcontract.contractInfo).length > 0){
-      this.selected = true
+      this.selected = true;
+      this.selectedContract = "LSCX";
+    }
+    if(Object.keys(this._customContract.contractInfo).length > 0){
+      this.selected = true;
+      this.selectedContract = "custom";
     }
   }
 
@@ -37,14 +46,20 @@ export class SelectContractPage implements OnInit{
   }
   
   async setContract(contract){
-    if(!contract.active){
+    if(contract.type !="custom" && !contract.active){
       return false
     }
-    let dialofRef = this._dialog.openLoadingDialog();
-
-    await this._LSCXcontract.setContract(contract);
-    this._LSCXcontract.functions =  this._LSCXcontract.getFunctions();
-    dialofRef.close();
+    let dialogRef = this._dialog.openLoadingDialog();
+    if(contract.type =="custom"){
+      await this._customContract.setContract(JSON.parse(contract.abi), contract);
+      await this._customContract.getFunctions();
+      this.selectedContract = "custom";
+    }else{
+      await this._LSCXcontract.setContract(contract);
+      this._LSCXcontract.functions =  this._LSCXcontract.getFunctions();
+      this.selectedContract = "LSCX";
+    }
+    dialogRef .close();
     this.selected = true;
   }
   
@@ -57,10 +72,12 @@ export class SelectContractPage implements OnInit{
       }
     })
   }
+
   onBack(bool: boolean){
     if(bool){
       this.selected= false;
       this._LSCXcontract.reset();
+      this._customContract.reset();
     }
   }
 }

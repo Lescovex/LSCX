@@ -15,7 +15,7 @@ function createWindow() {
     win.loadURL(`file://${__dirname}/build/index.html`);
 
     // Open the DevTools.
-    //if (ENV == 'dev') win.webContents.openDevTools()
+    if (ENV == 'dev') win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {

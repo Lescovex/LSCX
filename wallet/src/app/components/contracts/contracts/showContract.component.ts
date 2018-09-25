@@ -17,24 +17,23 @@ import { Web3 } from '../../../services/web3.service';
 export class ShowContract implements OnInit{
   @Input() moreInfo;
   @Input() functions;
+  @Input() contractType:string;
+  @Input() contractInfo;
 
   @Output() back = new EventEmitter<boolean>();
 
   protected submited: boolean = false;
-  protected contractInfo: any;
   protected functionForm: FormGroup;
-  
   protected infoFunctions = [];
   protected transFunctions = [];
   protected funct: any;
   protected owner: string;
   protected response: any = null;
   
-  constructor(public _LSCXcontract: LSCXContractService, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
+  constructor(public _LSCXcontract: LSCXContractService,private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
     this.functionForm = new FormGroup({
       functionCtrl: new FormControl(null,Validators.required),
     })
-    this.contractInfo = this._LSCXcontract.contractInfo;
   }
 
   ngOnInit(){
@@ -102,7 +101,6 @@ export class ShowContract implements OnInit{
       dialogRef.close();
       dialogRef = this._dialog.openGasDialog(gasLimit, 40);
       dialogRef.afterClosed().subscribe(async result=>{
-        console.log("result",result);
         if(typeof(result) != 'undefined'){
           let options = JSON.parse(result);
           options.data = data;

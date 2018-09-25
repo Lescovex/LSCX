@@ -19,7 +19,7 @@
             <p class="clear contract-list-addr">{{contract.address}}<span *ngIf="!contract.active"> (Waiting Address)</span></p>
     </div>
     <p *ngIf="_contractStorage.customContracts.length > 0" class=" clear dist title">Other contracts</p>
-    <div *ngFor="let contract of _contractStorage.customContracts, index as i" class="backWhite flex-row">
+    <div *ngFor="let contract of _contractStorage.customContracts, index as i" class="backWhite flex-row custom-contract">
         <p class="flex1 contract-list-addr">{{contract.address}}</p>    
         <button class="btn-contract" (click)="setContract(contract)">Show</button>
         <button class="btn-contract-delete" (click)="deleteContract(contract)">Delete</button>
@@ -27,5 +27,6 @@
 
 </div>
 <ng-template #showContract>
-    <app-show-contract (back)="onBack($event)"[functions]="_LSCXcontract.functions" [moreInfo]="_LSCXcontract.moreInfo"></app-show-contract>
+    <app-show-contract *ngIf="selectedContract=='LSCX'" (back)="onBack($event)" [contractType]="selectedContract" [functions]="_LSCXcontract.functions" [contractInfo]="_LSCXcontract.contractInfo" [moreInfo]="_LSCXcontract.moreInfo"></app-show-contract>
+    <app-show-contract *ngIf="selectedContract=='custom'" (back)="onBack($event)" [contractType]="selectedContract" [functions]="_customContract.functions" [contractInfo]="_customContract.contractInfo" [moreInfo]="_customContract.moreInfo"></app-show-contract>
 </ng-template>

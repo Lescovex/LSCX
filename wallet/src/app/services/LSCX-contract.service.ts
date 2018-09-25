@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 
 import { Web3 } from './web3.service'
 import { AccountService } from './account.service';
 import { EtherscanService } from './etherscan.service';
 import { ContractService } from './contract.service';
-declare var require:any;
-const fs = require('fs')
 
 @Injectable()
 export class LSCXContractService {
@@ -20,7 +17,7 @@ export class LSCXContractService {
 	functions = [];
 	moreInfo = [];
 
-	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _scan: EtherscanService, private _contract: ContractService){	
+	constructor(private _web3 : Web3, private _account: AccountService, private _scan: EtherscanService, private _contract: ContractService){	
 		this.getAbisadnBytecodes();
 	}
 
@@ -280,7 +277,7 @@ export class LSCXContractService {
 		let type = "";
 		for(let i=0; i<this.contracts.length; i++){
 			let byteCode = await this.getBytecode(this.contracts[i]);
-			console.log(byteCode)
+			//console.log(byteCode)
 			if(data.indexOf(byteCode)!=-1){
 				return this.contracts[i]
 			}

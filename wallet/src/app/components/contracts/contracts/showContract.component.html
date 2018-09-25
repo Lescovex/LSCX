@@ -1,7 +1,7 @@
 
 <div id="clear">
     <div>
-        <div class="left">
+        <div *ngIf="contractType=='LSCX'" class="left" >
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_ABT'" src='~icons/LSCX_ABT.svg'>
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_CIF'" src='~icons/LSCX_CIF.svg'>
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_CYC'" src='~icons/LSCX_CYC.svg'>
@@ -11,17 +11,31 @@
                 <p class="contract-list-name">{{contractInfo.address}}</p>
             </div>
         </div>
+        <div *ngIf="contractType=='custom'" class="left">
+            <p class="contract-list-title">{{contractInfo.name}}</p>
+            <p class="contract-list-name">{{contractInfo.address}}</p>
+        </div> 
         <a class="right btn-contract" (click)="goBack()"><img src="~icons/left.svg"> Go back</a>
     </div>
     <ul class="info-list clear dist">
-        <li *ngIf="contractInfo.type != 'LSCX_CYC'" class="half left clear"><p class="title">Total supply:</p> <p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.8-8'}}</p></li>
-        <li *ngIf="contractInfo.type == 'LSCX_CYC'" class="half left clear"><p class="title">Total supply:</p><p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.18-18'}}</p></li>
-        <li class="half right"><p class="title">Standard:</p><p class="whiteBox">{{contractInfo.standard}}</p></li>
-        <li class="half left clear"><p class="title">Decimals:</p><p class="whiteBox">{{contractInfo.decimals}}</p></li>
-        <li *ngFor="let item of moreInfo, index as i" [ngClass]="(i+1)%2!=0 ? 'right' : 'left clear'" class="half">
-            <p class="title">{{(item[0] | separateWords) | titlecase}}:</p>
-            <p class="whiteBox">{{item[1]}}</p>
-        </li>
+        <ng-container *ngIf="contractType=='LSCX'">
+            <li *ngIf="contractInfo.type != 'LSCX_CYC'" class="half left clear"><p class="title">Total supply:</p> <p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.8-8'}}</p></li>
+            <li *ngIf="contractInfo.type == 'LSCX_CYC'" class="half left clear"><p class="title">Total supply:</p><p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.18-18'}}</p></li>
+            <li class="half right"><p class="title">Standard:</p><p class="whiteBox">{{contractInfo.standard}}</p></li>
+            <li class="half left clear"><p class="title">Decimals:</p><p class="whiteBox">{{contractInfo.decimals}}</p></li>
+        </ng-container>
+        <ng-container *ngIf="contractType=='custom'">
+            <li *ngFor="let item of moreInfo, index as i" [ngClass]="(i+1)%2!=0 ? 'left clear' : 'right'" class="half">
+                <p class="title">{{(item[0] | separateWords) | titlecase}}:</p>
+                <p class="whiteBox">{{item[1]}}</p>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="contractType=='LSCX'">
+            <li *ngFor="let item of moreInfo, index as i" [ngClass]="(i+1)%2!=0 ? 'right' : 'left clear'" class="half">
+                <p class="title">{{(item[0] | separateWords) | titlecase}}:</p>
+                <p class="whiteBox">{{item[1]}}</p>
+            </li>
+        </ng-container>
     </ul>
     <div class="dist">
         <h1 class="clear">Contract Functions</h1>

@@ -20,7 +20,6 @@ export class ContractDialogComponent implements OnInit{
 
     }
     ngOnInit(){
-        console.log(this.data.title);
         if(this.data.title == "LSCX_ABT"){
             this.title = 'Asset-Backed Tokens (ABT)';
             this.img = '~icons/LSCX_ABT.svg';

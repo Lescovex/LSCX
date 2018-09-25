@@ -91,8 +91,7 @@ export class AddContractPage {
     let gasLimit;
     try {
       gasLimit = await this._web3.estimateGas(this._account.account.address, "", data, 0);
-      console.log("gaslimit?", gasLimit);
-      
+      //console.log("gaslimit?", gasLimit);  
     }catch(e){
       gasLimit = 3500000;
     }
@@ -100,13 +99,11 @@ export class AddContractPage {
     dialogRef.close();
     dialogRef = this._dialog.openGasDialog(gasLimit, 10);
     dialogRef.afterClosed().subscribe(async result=>{
-      console.log("result",result);
       if(typeof(result) != 'undefined'){
         let options = JSON.parse(result);
         options.data = data;
 
         let txInfo = await this._rawtx.contractCreationRaw(options);
-        console.log(txInfo);
         
         let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
         this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
@@ -123,14 +120,10 @@ export class AddContractPage {
     let loadingDialog = this._dialog.openLoadingDialog();
     let contractAddr = this.getControl('contract').value;
     let isContract = await this._LSCXcontract.checkContract(contractAddr);
-    console.log(isContract)
-    let duplicated = this._contractStorage.isDuplicated(contractAddr, this._account.account.address)
-    console.log(duplicated)
+    let duplicated = this._contractStorage.isDuplicated(contractAddr, this._account.account.address);
     if(duplicated){
-      console.log('duplicated')
       error = "The contract you are are trying to import is a duplicate"
     } else if (isContract!=false && !duplicated){ 
-      console.log("no duplicated");
       let tx = isContract;
       let type = await this._LSCXcontract.checkType(tx.input);
       if(type != ""){
@@ -165,26 +158,22 @@ export class AddContractPage {
   async importCustom(){
     let error = "";
     this.submitedOther = true;
-    console.log(this.customContractForm)
     if(this.customContractForm.invalid){
       return false;
     }
     let loadingDialog = this._dialog.openLoadingDialog();
     let contractAddr = this.customContractForm.controls.contract.value;
     let isContract = await this._LSCXcontract.checkContract(contractAddr);
-    let duplicated = this._contractStorage.isDuplicated(contractAddr, this._account.account.address)
+    let duplicated = this._contractStorage.isDuplicated(contractAddr, this._account.account.address);
     if(duplicated){
-      console.log('duplicated')
       error = "The contract you are are trying to import is a duplicate"
     } else if (isContract!=false && !duplicated){ 
-      console.log("no duplicated");
       let tx = isContract;
       let type = await this._LSCXcontract.checkType(tx.input);
-      console.log(type)
       if(type != ""){
           error = "The contract you are trying to import is a LSCX contract, import with LSCX contracts form"
       }else{
-          let isVerified: any = await this.isVerifiedMessages(contractAddr);
+          let isVerified: any = await this.isVerifiedMessages(contractAddr, this.customContractForm.controls.name.value);
           loadingDialog.close();
           let dialogRef = this._dialog.openErrorDialog(isVerified.title,isVerified.message, isVerified.error); 
           dialogRef.afterClosed().subscribe(()=>{
@@ -232,12 +221,11 @@ export class AddContractPage {
 
   openInfo(){
     let contract = this.getControl('contract').value;
-    console.log("Contract?", contract);
     
     this._dialog.openContractDialog(contract);
   }
 
-  async isVerifiedMessages(contractAddr){
+  async isVerifiedMessages(contractAddr, name){
     let message;
     let error = "";
     let abi = await this._scan.getAbi(contractAddr)
@@ -245,13 +233,11 @@ export class AddContractPage {
         message = "The contract you are are trying to import isn't verify, its code isn't public."
         error = " ";
     }else{
-        let contract = new CustomContract(contractAddr, name, JSON.stringify(abi.result), this._account.account.address, this._web3.network);
-        console.log(contract);
+        let contract = new CustomContract(contractAddr, name, abi.result, this._account.account.address, this._web3.network);
         message = "You can find it in the contracts list"
         this._contractStorage.addContract(contract);
     }
     let title = (error=="")? 'Your contract has been successfully imported' : 'Unable to import contract';
-    console.log( {title:title, message:message, error:error});
     return {title:title, message:message, error:error}
   }
 }

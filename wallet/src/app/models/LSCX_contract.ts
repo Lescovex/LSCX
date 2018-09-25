@@ -23,7 +23,7 @@ export class LSCX_Contract {
         this.totalSupply = info.totalSupply;
         this.type = type;
         this.account = account;
-        this.decimals = (type=="LCX_CYC")? 18 : 8;
+        this.decimals = (type=="LSCX_CYC")? 18 : 8;
         this.setStandard(type);
     }
     
@@ -32,7 +32,7 @@ export class LSCX_Contract {
         this.address = address;
         this.deployHash = hash;
         this.type = type;
-        this.decimals = (type=="LCX_CYC")? 18 : 8;
+        this.decimals = (type=="LSCX_CYC")? 18 : 8;
         this.account = account;
         this.active = true;
         this.name = info.name;
@@ -43,16 +43,16 @@ export class LSCX_Contract {
     
     setStandard(type){
         switch(type){
-            case "LCX_ABT":
+            case "LSCX_ABT":
                 this.standard =  "ERC20 Lescovex ABT";
                 break;
-            case "LCX_CIF":
+            case "LSCX_CIF":
                 this.standard =  "ERC20 Lescovex CIF";
                 break;
-            case "LCX_CYC":
+            case "LSCX_CYC":
                 this.standard =  "ERC20 Lescovex CYC";
                 break;
-            case "LCX_ISC":
+            case "LSCX_ISC":
                 this.standard =  "ERC20 Lescovex ISC";
                 break;
         }
