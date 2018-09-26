@@ -1,4 +1,4 @@
-# Lescovex DEX, Alpha Test Version
+# Lescovex DEX Beta
 Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortes, Enrique Santos
 
 Lescovex DEX is a tool for managing your ethers and ethereum tokens with the possibility of issuing financial contracts and trading them directly on a decentralized OTC market. 
