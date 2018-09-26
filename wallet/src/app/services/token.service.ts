@@ -10,7 +10,8 @@ export class TokenService{
     constructor(private _web3: Web3){
 
     }
-    setToken(contractAddress){
+
+    setToken(contractAddress) {
         this.contractAddress = contractAddress;
         this.token= this._web3.web3.eth.contract(this.tokenAbi).at(contractAddress);
     }
@@ -20,7 +21,7 @@ export class TokenService{
         return txData;
     }
 
-    getSymbol() : Promise<string>{
+    getSymbol() : Promise<string> {
         let self=this
         return new Promise (function (resolve, reject) {
             self.token.symbol.call(function(err, res){  

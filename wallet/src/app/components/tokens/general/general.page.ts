@@ -12,7 +12,7 @@ import { Web3 } from '../../../services/web3.service';
 })
 
 export class GeneralPage implements OnInit, OnDestroy, DoCheck {
-  interval;
+  interval = null;
   tokens:  any[];
   hideZero: boolean;
   allTokens: any[];
@@ -27,15 +27,19 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   }
 
   ngOnInit() {
-    this.setTokens();
-    this.interval = this._account.startIntervalTokens();
   }
+    
 
   ngOnDestroy(){
     clearInterval(this.interval)
   }
 
   ngDoCheck() {
+
+    if(this._account.updated && this.interval==null){
+      this.setTokens();
+      this.interval = this._account.startIntervalTokens();
+    }
     if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.account.tokens)){
       this.setTokens();
       this.allTokens = this._account.account.tokens.filter(x=>x);
