@@ -26,9 +26,9 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     this.allTokens = this._account.account.tokens.filter(x=>x);
   }
 
-  ngOnInit() {
-    this.setTokens();
-    this.interval = this._account.startIntervalTokens();
+  async ngOnInit() {
+    await this.setTokens();
+    this.interval = await this._account.startIntervalTokens();
   }
 
   ngOnDestroy(){
