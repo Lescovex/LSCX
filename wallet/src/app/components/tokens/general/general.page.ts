@@ -27,6 +27,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   }
 
   ngOnInit() {
+
   }
     
 
@@ -52,7 +53,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+this._account.account.address);
   }
 
-  setTokens() {
+  async setTokens() {
     this.tokens =  this._account.account.tokens.filter(token => !token.deleted);
     if(!this.hideZero){
       this.tokens =  this._account.account.tokens.filter(token => !token.deleted);
@@ -60,8 +61,8 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
       this.tokens = this._account.account.tokens.filter(token => token.balance > 0 && !token.deleted);
     }
 
-    this.sortAlphabetically();
-    this.sortByBalance();
+    await this.sortAlphabetically();
+    await this.sortByBalance();
   }
   
   toggleHideZero(){

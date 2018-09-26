@@ -24,6 +24,8 @@ export class AccountService{
   constructor(private http: Http, private _wallet : WalletService, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
     this._scan.getApiKey();
     if(this._scan.apikey != "" && this._web3.infuraKey != ""){
+      console.log("intoConstructor");
+      
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
@@ -101,10 +103,12 @@ export class AccountService{
   }
   
   async getAccountData(){
+    console.log("into getAccoount data");
+    
     this.account = this.getAccount();
     
     if(Object.keys(this.account).length != 0){
-      this.getPendingTx();
+      await this.getPendingTx();
       await this.setData();
       await this.setTokens();
       this.updated=true;
@@ -189,15 +193,15 @@ export class AccountService{
 
   async updateTokenBalances(tokens){
     for(let i = 0; i<tokens.length; i++){
-      tokens[i] = await this.updateTokenBalance(tokens[i])
+      tokens[i] = await this.updateTokenBalance(tokens[i]);        
     }
+    
     return tokens;
   }
-  
+
   async updateTokenBalance(token){
     if(!('balance' in token) || !token.deleted){
       this._token.setToken(token.contractAddress);
-      console.log("update token", this._token.token)
       if(isNaN(token.tokenDecimal)){
         token.tokenName = await this._token.getName();
         token.tokenSymbol = await this._token.getSymbol();
@@ -205,8 +209,10 @@ export class AccountService{
       }      
       let exp = 10 ** token.tokenDecimal;
       let balance : any = await this._token.getBalanceOf(this.account.address);
-      token.balance = balance.div(exp).toNumber();
-    } 
+      
+      token.balance = balance.div(exp).toNumber();  
+    }
+    
     return token
   }
   
