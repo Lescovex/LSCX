@@ -25,6 +25,8 @@ export class AccountService{
     //Hardcode
     this._scan.getApiKey();
     if(this._scan.apikey != "" && this._web3.infuraKey != ""){
+      console.log("intoConstructor");
+      
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
@@ -101,12 +103,14 @@ export class AccountService{
   }
   
   async getAccountData(){
+    console.log("into getAccoount data");
+    
     this.account = this.getAccount();
     
     if(Object.keys(this.account).length != 0){
-      this.getPendingTx();
+      await this.getPendingTx();
       await this.setData();
-      this.setTokens();
+      await this.setTokens();
     }
   }
 
