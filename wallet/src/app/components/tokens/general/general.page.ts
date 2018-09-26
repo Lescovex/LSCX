@@ -32,14 +32,13 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     
 
   ngOnDestroy(){
-    clearInterval(this.interval)
+    this._account.clearIntervalTokens();
   }
 
   ngDoCheck() {
-
-    if(this._account.updated && this.interval==null){
+    if(this._account.updatedTokens && this._account.tokenInterval==null){
       this.setTokens();
-      this.interval = this._account.startIntervalTokens();
+      this._account.startIntervalTokens();
     }
     if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.account.tokens)){
       this.setTokens();

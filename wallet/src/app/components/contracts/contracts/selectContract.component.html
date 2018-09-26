@@ -22,7 +22,7 @@
     <div *ngFor="let contract of _contractStorage.customContracts, index as i" class="backWhite flex-row custom-contract">
         <p class="flex1 contract-list-addr">{{contract.address}}</p>    
         <button class="btn-contract" (click)="setContract(contract)">Show</button>
-        <button class="btn-contract-delete" (click)="deleteContract(contract)">Delete</button>
+        <button class="btn-contract-delete extra" (click)="deleteContract(contract)">Delete</button>
     </div>
 
 </div>

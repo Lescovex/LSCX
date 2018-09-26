@@ -329,6 +329,9 @@ button {
 .red {
     color: #E66978
 }
+.border-red {
+    border:1px solid #E66978;
+}
 
 .grey {
     color: #3C4247;

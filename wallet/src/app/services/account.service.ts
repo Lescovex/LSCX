@@ -14,51 +14,56 @@ import { EtherscanService } from './etherscan.service';
 @Injectable()
 export class AccountService{
   updated = false;
+  updatedTokens = false;
   account : any = {};
   pending: Array<any> = [];
   events : Array<any> = [];
   marginCalls : Array<any> = [];
   interval;
+  tokenInterval;
   apikey: string = "";
 
   constructor(private http: Http, private _wallet : WalletService, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
     this._scan.getApiKey();
-    if(this._scan.apikey != "" && this._web3.infuraKey != ""){
-      console.log("intoConstructor");
-      
+    if(this._scan.apikey != "" && this._web3.infuraKey != ""){     
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
+        this.account.tokkens = [];
       }
     }
   }
 
   async setAccount(account){
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
+      console.log("clear intervals")
       clearInterval(this.interval)
+      this.clearIntervalTokens();
     }
-      this.account = account;
-      localStorage.setItem('acc',JSON.stringify(account.address));
-      this.getPendingTx();
-      await this.startIntervalData();
-      await this.setTokens();
-      this.updated = true;
-      this.router.navigate(['/wallet/global']);
+    this.router.navigate(['/wallet/global']);
+    this.account = account;
+    localStorage.setItem('acc',JSON.stringify(account.address));
+    this.getPendingTx();
+    await this.startIntervalData();
+    await this.setTokens();
+    
   }
 
   async refreshAccountData(){
+      this.updatedTokens = false;
       clearInterval(this.interval)
+      this.clearIntervalTokens();
       this.getPendingTx();
       await this.startIntervalData();
-      await this.setTokens();
-      this.updated = await true;
+      await this.setTokens(); 
   }
   
   refreshAccount(){
     localStorage.removeItem('acc');
     this.getAccountData();
     if(typeof(this.account.address) == "undefined"){
-      clearInterval(this.interval)
+      clearInterval(this.interval);
+      this.clearIntervalTokens();
     }
     this.router.navigate(['/wallet/global']);
   }
@@ -99,7 +104,7 @@ export class AccountService{
       history[i].date = date;
     }
     this.account.history = await history;
-    
+    this.updated=true;
   }
   
   async getAccountData(){
@@ -111,7 +116,7 @@ export class AccountService{
       await this.getPendingTx();
       await this.setData();
       await this.setTokens();
-      this.updated=true;
+      
     }
   }
 
@@ -129,11 +134,14 @@ export class AccountService{
   }
 
   async setTokens(){
+    this.account.tokens = [];
+    this.updatedTokens =false;
     if('address' in this.account){
       this.account.tokens = this.getTokensLocale();
       console.log("tokens local", this.account.tokens)
       await this.updateTokens();
     }
+    this.updatedTokens = true;
   }
 
   saveAccountTokens(){
@@ -261,11 +269,15 @@ export class AccountService{
   }
 
   startIntervalTokens(){
-    return setInterval(()=>{
+    this.tokenInterval = setInterval(()=>{
       if(this.account.tokens != []){
         this.updateTokens();
       }
     },3000);
+  }
+  clearIntervalTokens(){
+    clearInterval(this.tokenInterval);
+    this.tokenInterval = null;
   }
 
   tm(unix_tm) {
