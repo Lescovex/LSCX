@@ -11,6 +11,7 @@ import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
 
 import { Router, NavigationEnd } from '@angular/router';
+const shell = require('electron').shell;
 
 @Component({
   selector: 'cardPage',
@@ -415,4 +416,7 @@ export class CreditCardPage implements OnInit {
         }
       }
 
+      openUrl(url){
+        shell.openExternal(url);
+      }
 }

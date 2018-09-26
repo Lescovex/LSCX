@@ -19,6 +19,12 @@
         <small class="grey block">* Remember that this action may take up <span class="red bold">72 hours</span>.</small>
         <button type="button" name="button" class="btn-inverse" (click)="backPendingTx()">Continue</button>
     </div>
+    <p class="title issues text-right terms">
+        <span class="terms2">
+                    <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')">Terms and conditions: </span> Powered By
+        </span>
+        <span class="pointer" (click)="openUrl('https://chip-chap.com/')"><img class="bottom" src="~images/logo_chipchap-1.png" width="80px"></span>
+    </p>
 </div>
 <ng-template #serviceStatus>
     <div *ngIf="serviceStatus else down" class="backWhite">
@@ -41,7 +47,12 @@
             <button type="button" name="button" class="btn-inverse" (click)="chipchapSwift()">Change!</button>
 
         </div>
-
+        <p class="title issues text-right terms">
+            <span class="terms2">
+                    <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')">Terms and conditions: </span> Powered By
+            </span>
+            <span class="pointer" (click)="openUrl('https://chip-chap.com/')"><img class="bottom" src="~images/logo_chipchap-1.png" width="80px"></span>
+        </p>
     </div>
 </ng-template>
 
@@ -71,16 +82,34 @@
     </div>
     <button type="button" name="button" class="btn-black" (click)="back()">Back</button>
     <button type="button" name="button" class="btn-inverse" (click)="sendEth(ethAddr, amountEth)">Confirm</button>
+    <p class="title issues text-right terms">
+        <span class="terms2">
+                    <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')">Terms and conditions: </span> Powered By
+        </span>
+        <span class="pointer" (click)="openUrl('https://chip-chap.com/')"><img class="bottom" src="~images/logo_chipchap-1.png" width="80px"></span>
+    </p>
 </ng-template>
 
 <ng-template #down>
     <div class="backWhite">
         <h1 class="red text-center">Service not available</h1>
     </div>
+    <p class="title issues text-right terms">
+        <span class="terms2">
+                    <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')">Terms and conditions: </span> Powered By
+        </span>
+        <span class="pointer" (click)="openUrl('https://chip-chap.com/')"><img class="bottom" src="~images/logo_chipchap-1.png" width="80px"></span>
+    </p>
 </ng-template>
 
 <ng-template #success>
     <div class="backWhite">
         <h1 class="green text-center">Recharge successful</h1>
     </div>
+    <p class="title issues text-right terms">
+        <span class="terms2">
+                    <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')">Terms and conditions: </span> Powered By
+        </span>
+        <span class="pointer" (click)="openUrl('https://chip-chap.com/')"><img class="bottom" src="~images/logo_chipchap-1.png" width="80px"></span>
+    </p>
 </ng-template>

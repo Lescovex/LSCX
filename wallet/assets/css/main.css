@@ -329,8 +329,9 @@ button {
 .red {
     color: #E66978
 }
+
 .border-red {
-    border:1px solid #E66978;
+    border: 1px solid #E66978;
 }
 
 .grey {
@@ -354,6 +355,10 @@ button {
 
 .bold {
     font-family: 'Lato-Bold';
+}
+
+.lscx_color {
+    color: #30D67F;
 }
 
 .even {
@@ -388,6 +393,7 @@ select {
     margin-bottom: 20px;
     background-color: #fff;
 }
+
 input[type="checkbox"] {
     height: auto;
     margin: 0 12px;
@@ -468,14 +474,14 @@ div.input-container {
     padding-left: 12px;
 }
 
-.import-contract-right{
+.import-contract-right {
     width: 30%;
     position: relative;
 }
 
-.import-contract-right button{
+.import-contract-right button {
     position: absolute;
-    bottom : 34px;
+    bottom: 34px;
     right: 0;
     width: 95%;
 }
@@ -556,9 +562,10 @@ p.error {
     margin-top: 5px;
 }
 
-.custom-contract p{
+.custom-contract p {
     padding: 5px;
 }
+
 .custom-contract button {
     width: 70px;
 }
@@ -623,6 +630,7 @@ p.error {
     background-color: #E66978;
     border: none;
 }
+
 .btn-contract-delete:hover {
     border: 2px solid #E66978;
 }
@@ -639,17 +647,20 @@ p.error {
     top: 270px;
 }
 
-.sort{
+.sort {
     margin-left: 27px;
     margin-top: 5px;
 }
+
 .sort p {
     padding: 20px 10px;
 }
+
 .low-opacity {
     opacity: 0.3;
 }
-.sort span img:first-child{
+
+.sort span img:first-child {
     transform: rotate(180deg);
 }
 
@@ -972,4 +983,17 @@ td {
 .expected {
     margin: 0;
     margin-top: -2rem;
+}
+
+.terms {
+    right: 3%;
+}
+
+.terms2 {
+    vertical-align: top;
+}
+
+.bottom {
+    vertical-align: bottom;
+    margin-top: -0.3rem;
 }
