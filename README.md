@@ -17,11 +17,11 @@ npm run electron
 
 # Lescovex DEX BETA Binaries Download
 
-[Windows](https://github.com/Lescovex/LSCX/releases/tag/LescovexDEX)
+[Windows](https://github.com/Lescovex/LSCX/releases/tag/Lescovex_DEX_BETA)
 
-[Linux](https://github.com/Lescovex/LSCX/releases/tag/LescovexDEX)
+[Linux](https://github.com/Lescovex/LSCX/releases/tag/Lescovex_DEX_BETA)
 
-[Mac](https://github.com/Lescovex/LSCX/releases/download/LescovexDEX/lescovex-1.0.0.dmg)
+[Mac](https://github.com/Lescovex/LSCX/releases/download/Lescovex_DEX_BETA/lescovex-1.0.0.dmg)
 
 
 # Features
