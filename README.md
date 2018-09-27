@@ -15,7 +15,7 @@ npm install
 
 npm run electron
 
-# Alpha Test Binaries Download
+# Lescovex DEX BETA Binaries Download
 
 [Windows](https://github.com/Lescovex/LSCX/releases/tag/LescovexDEX)
 
