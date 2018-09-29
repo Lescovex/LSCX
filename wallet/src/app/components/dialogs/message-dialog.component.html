@@ -1,7 +1,13 @@
-<div><img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></div>
+<div>
+    <h1 *ngIf="data=='init'" class="text-center">Wellcome to Lescovex DEX App<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+    <h1 *ngIf="data!='init'" class="text-center"><img src='~icons/error_icon.svg'>Error ApiKeys<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+
 <div class="text-center">
-   <p class="dist black">Welcome to Lescovex DEX app</p>
-   <p class="dist">Before using Lescovex DEX app you must insert your apikeys</p>
+   <p class="dist">To use Lescovex DEX app you must insert your apikeys</p>
+</div>
+<div class="dist text-center">
+    <button class="btn-solid" (click)="closeDialog()">OK</button>
 </div>
     
 

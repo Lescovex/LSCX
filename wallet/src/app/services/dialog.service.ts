@@ -6,6 +6,7 @@ import { ErrorDialogComponent } from '../components/dialogs/error-dialog.compone
 import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
 import { DeleteDialog } from '../components/dialogs/confirm-delete.component';
 import { GasDialogComponent } from '../components/dialogs/gas-dialog.component';
+import { MessageDialogComponent } from '../components/dialogs/message-dialog.component';
 import { ContractDialogComponent } from '../components/contracts/add/contract-dialog.component';
 
 
@@ -63,5 +64,15 @@ export class DialogService{
   
             }
           });
+    }
+
+    openApiKeysMessage(action){
+        return this.dialog.open( MessageDialogComponent, {
+            width: '660px',
+            height: '',
+            panelClass: 'dialog',
+            data: action
+          });
+
     }
 }

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, DoCheck } from '@angular/core'
 import { Web3 } from '../../services/web3.service';
 import { EtherscanService } from '../../services/etherscan.service';
 import { AccountService } from '../../services/account.service';
+import { DialogService } from '../../services/dialog.service';
 
 const shell = require('electron').shell;
 
@@ -9,21 +10,42 @@ const shell = require('electron').shell;
   selector: 'app-settings',
   templateUrl: './settings.component.html'
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, DoCheck{
   languages=[{lang:'en', text:"English"}]
   lang = 'en';
   infuraApiKey : string;
+  showErrorDialog = false;
   etherscanApiKey: string;
-  constructor(private _scan: EtherscanService, private _web3 : Web3, private _account: AccountService) {
-    this.infuraApiKey= _web3.infuraKey;
-    this.etherscanApiKey = _scan.apikey;
+  constructor(private _scan: EtherscanService, private _web3 : Web3, private _account: AccountService, private _dialog: DialogService) {
+    this.infuraApiKey= (_web3.infuraKey=="")? null : _web3.infuraKey;
+    this.etherscanApiKey = (_scan.apikey=="")? null: _scan.apikey;
   }
 
-  ngOnInit() {}
+
+  ngOnInit() {
+    if(this.infuraApiKey== null || this.etherscanApiKey==null){
+      Promise.resolve().then(()=>{
+        this._dialog.openApiKeysMessage('init');
+      })
+    }
+  }
+  
+  ngDoCheck() {
+    if((this.infuraApiKey== "" || this.etherscanApiKey== "") && this.showErrorDialog){
+      Promise.resolve().then(()=>{
+        this.showErrorDialog = false;
+        let dialogRef = this._dialog.openApiKeysMessage('error');    
+      })
+    }
+
+  }
 
   setInfuraKey(text?){
     if(typeof(text)!= 'undefined'){
       this.infuraApiKey = text;
+    }else{
+      this.setShowTrue();
+      console.log(this.infuraApiKey, this.etherscanApiKey,this.showErrorDialog)
     }
     this._web3.setInfuraKey(this.infuraApiKey);
     this._web3.setNetwork(this._web3.network);
@@ -34,11 +56,21 @@ export class SettingsComponent implements OnInit {
       }
     }
   }
+
   setEtherscanKey(text?){
     if(typeof(text)!= 'undefined'){
       this.etherscanApiKey = text;
+    }else{
+      this.setShowTrue();
+      console.log(this.infuraApiKey, this.etherscanApiKey,this.showErrorDialog)
     }
     this._scan.setApiKey(this.etherscanApiKey)
+  }
+
+  setShowTrue() {
+    if(this.infuraApiKey!= "" && this.etherscanApiKey!="") {
+      this.showErrorDialog = true;
+    }
   }
   openUrl(url){
     shell.openExternal(url);

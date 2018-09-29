@@ -17,9 +17,7 @@ export class MyApp implements OnInit {
   interval;
   
   constructor(protected _account: AccountService, protected dialog: MdDialog, protected _web3: Web3, protected router : Router, protected _scan: EtherscanService) {
-    console.log(this._scan.apikey=="", this._web3.infuraKey == "")
     if(this._scan.apikey=="" || this._web3.infuraKey == ""){
-      console.log('router')
       this.router.navigate(['/general-settings']);
     }else{
       this.loadingD = this.dialog.open(LoadingDialogComponent, {

@@ -2,8 +2,8 @@
 <div class="radioDiv">
     <input type="radio" id="importTypeK" name="sendTo" value="address" [(ngModel)]="sendTo" />
     <label for="importTypeK" class="black"><span><span></span></span>Etherum address</label>
-    <input type="radio" id="importTypeP" name="sendTo" value="mobile" [(ngModel)]="sendTo" />
-    <label for="importTypeP" class="black"><span><span></span></span>Mobile phone</label>
+    <!--<input type="radio" id="importTypeP" name="sendTo" value="mobile" [(ngModel)]="sendTo" />
+    <label for="importTypeP" class="black"><span><span></span></span>Mobile phone</label>-->
 </div>
 <form (ngSubmit)="sendEth(form)" #form="ngForm">
     <div *ngIf="sendTo == 'address'">
@@ -14,14 +14,14 @@
             <span *ngIf="!receiverAddr.errors?.required && receiverAddr.errors?.invalidAddress" class="error">Invalid receiver address</span>
         </p>
     </div>
-    <div *ngIf="sendTo == 'mobile'">
+    <!--<div *ngIf="sendTo == 'mobile'">
         <label class="title" for="receiverMobile">Receiver mobile</label>
         <input class="block" [ngClass]="{'error': submited && receiverMobile.invalid}" required id="receiverMobile" type="phone" value="" name="receiverMobile" ngModel #receiverMobile="ngModel" />
          <p [ngClass]="{'hidden':!(submited && receiverMobile.invalid)}"  class="error">
             <span *ngIf="receiverMobile.errors?.required" class="error">This field is required</span>
            <span *ngIf="!receiverMobile.errors?.required && receiverMobile.errors?.invalidAddress" class="error">Invalid receiver address</span>
-        </p>s
-    </div>
+        </p>
+    </div>-->
 
     <div class="clear">
         <label class="title" for="amount">Ether amount</label>
