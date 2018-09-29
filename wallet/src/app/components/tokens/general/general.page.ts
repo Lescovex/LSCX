@@ -4,6 +4,7 @@ import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core'
 import { AccountService } from '../../../services/account.service'
 import { TokenService } from '../../../services/token.service';
 import { Web3 } from '../../../services/web3.service';
+import { DialogService } from '../../../services/dialog.service';
 
 
 @Component({
@@ -12,22 +13,24 @@ import { Web3 } from '../../../services/web3.service';
 })
 
 export class GeneralPage implements OnInit, OnDestroy, DoCheck {
-  interval = null;
   tokens:  any[];
   hideZero: boolean;
   allTokens: any[];
   alphabetically: number;
   byBalance: number;
+  dialog = null;
 
-  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3) {
+  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService) {
     this.hideZero = false;
     this.alphabetically = 0;
     this.byBalance = 0;
-    this.allTokens = this._account.account.tokens.filter(x=>x);
+    this.allTokens = this._account.tokens.filter(x=>x);
+    
+
   }
 
   ngOnInit() {
-
+      Promise.resolve().then(() => { this.dialog = this._dialog.openLoadingDialog();});
   }
     
 
@@ -36,13 +39,16 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   }
 
   ngDoCheck() {
+    if(this._account.updatedTokens && this.dialog!=null){
+      this.dialog.close();
+    }
     if(this._account.updatedTokens && this._account.tokenInterval==null){
       this.setTokens();
       this._account.startIntervalTokens();
     }
-    if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.account.tokens)){
+    if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.tokens)){
       this.setTokens();
-      this.allTokens = this._account.account.tokens.filter(x=>x);
+      this.allTokens = this._account.tokens.filter(x=>x);
     }
   }
 
@@ -53,11 +59,11 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   }
 
   async setTokens() {
-    this.tokens =  this._account.account.tokens.filter(token => !token.deleted);
+    this.tokens =  this._account.tokens.filter(token => !token.deleted);
     if(!this.hideZero){
-      this.tokens =  this._account.account.tokens.filter(token => !token.deleted);
+      this.tokens =  this._account.tokens.filter(token => !token.deleted);
     }else{
-      this.tokens = this._account.account.tokens.filter(token => token.balance > 0 && !token.deleted);
+      this.tokens = this._account.tokens.filter(token => token.balance > 0 && !token.deleted);
     }
 
     await this.sortAlphabetically();

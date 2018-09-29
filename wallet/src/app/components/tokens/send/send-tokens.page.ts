@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core'
+import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core'
 
 import * as EthUtil from 'ethereumjs-util';
 import * as EthTx from 'ethereumjs-tx';
@@ -14,8 +14,9 @@ import { RawTxService } from '../../../services/rawtx.sesrvice';
   templateUrl: './send-tokens.html'
 })
 
-export class SendTokensPage implements OnInit, OnDestroy{
-  interval;
+export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
+  tokens:  any[];
+  allTokens: any[];
   addr: string = "";
   receiverAddr: string = "";
   amount: number = 0;
@@ -27,17 +28,35 @@ export class SendTokensPage implements OnInit, OnDestroy{
   submited = false;
 
   constructor(public _rawtx: RawTxService,protected _account: AccountService, private sendDialogService: SendDialogService, private _token : TokenService,) {
-    if('tokens' in this._account.account && this._account.account.tokens.length > 0){
-      this.token = this._account.account.tokens[0];
+    if('tokens' in this._account.account && this._account.tokens.length > 0){
+      this.allTokens = this._account.tokens.filter(x=>x);
+      this.setTokens();
+      this.token = this._account.tokens[0];
     }
   }
 
   ngOnInit() {
-    this.interval = this._account.startIntervalTokens();
+    this.token = this._account.tokens[0];
+  }
+
+  ngDoCheck() {
+    if(this._account.updatedTokens && this._account.tokenInterval==null){
+      this.setTokens();
+    }
+    if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.tokens)){
+      this.setTokens();
+      this.allTokens = this._account.tokens.filter(x=>x);
+    }
   }
 
   ngOnDestroy(){
-    clearInterval(this.interval);
+    this._account.clearIntervalTokens();
+  }
+
+  async setTokens() {
+    let tokens = this._account.tokens.filter(token => token.balance > 0 && !token.deleted);
+    tokens.sort((a,b)=> (a.tokenSymbol).localeCompare(b.tokenSymbol));
+    this.tokens = tokens;
   }
 
   async sendTokens(form) {

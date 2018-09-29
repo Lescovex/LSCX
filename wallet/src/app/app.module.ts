@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MdDialogModule } from '@angular/material';
 
+import { InternationalPhoneModule } from 'ng4-intl-phone';
 
 
 /*Routes*/
@@ -156,6 +157,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ReactiveFormsModule,
     MdDialogModule,
     AppRoutingModule,
+    InternationalPhoneModule
   ],
   exports: [
     MaterialModule,

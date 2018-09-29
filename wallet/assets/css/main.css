@@ -39,6 +39,11 @@ h1 {
     padding-bottom: 10px;
 }
 
+h2 {
+    font-family: "Lato-Bold";
+    font-size: 12pt;
+}
+
 .mat-dialog-container {
     position: relative;
     border-top: 10px solid #30D67F;
@@ -416,6 +421,20 @@ select {
     background-color: #fff;
 }
 
+#show-address {
+    position: relative;
+}
+
+#show-address div:nth-child(2){
+    position: absolute;
+    left: 235px;
+    top: 35px;
+}
+
+#show-address div p:nth-child(2){
+    color: #abb0b2
+}
+
 .issues {
     bottom: 0;
     position: absolute;
@@ -741,22 +760,32 @@ input[type="radio"]+label {
 }
 
 input[type="radio"]+label span {
-    box-shadow: 0 0 0 2px 0.5;
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin: -1px 7px 0 0;
     vertical-align: middle;
     cursor: pointer;
     border-radius: 50%;
+}
+input[type="radio"]+label>span {
+    box-shadow: 0 0 0 2px 0.5;
+    width: 20px;
+    height: 20px;
+    margin: -1px 7px 0 0;
     background-color: white;
+    text-align: center;
+    border: 1px solid #abb0b2;
 }
 
-input[type="radio"]:checked+label span {
-    width: 12px;
-    height: 12px;
+input[type="radio"]+label>span>span {
+    width: 10px;
+    height: 10px;
     background-color: #30D67F;
-    border: 4px solid white;
+    margin-top: -1px;
+    visibility: hidden;
+    z-index: 2;
+}
+
+input[type="radio"]:checked+label>span>span{
+   visibility: visible;
 }
 
 .contract-list {

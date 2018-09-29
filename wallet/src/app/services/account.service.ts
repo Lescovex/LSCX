@@ -16,6 +16,7 @@ export class AccountService{
   updated = false;
   updatedTokens = false;
   account : any = {};
+  tokens: Array<any> = [];
   pending: Array<any> = [];
   events : Array<any> = [];
   marginCalls : Array<any> = [];
@@ -29,7 +30,7 @@ export class AccountService{
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
-        this.account.tokkens = [];
+        this.tokens = [];
       }
     }
   }
@@ -39,10 +40,12 @@ export class AccountService{
       console.log("clear intervals")
       clearInterval(this.interval)
       this.clearIntervalTokens();
+      
     }
     this.router.navigate(['/wallet/global']);
     this.account = account;
     localStorage.setItem('acc',JSON.stringify(account.address));
+    this.tokens = [];
     this.getPendingTx();
     await this.startIntervalData();
     await this.setTokens();
@@ -134,36 +137,38 @@ export class AccountService{
   }
 
   async setTokens(){
-    this.account.tokens = [];
+    console.log("UPDATED TOKENS?",this.updatedTokens);
+    this.tokens = [];
     this.updatedTokens =false;
     if('address' in this.account){
-      this.account.tokens = this.getTokensLocale();
-      console.log("tokens local", this.account.tokens)
+      this.tokens = this.getTokensLocale();
+      console.log("tokens local", this.tokens)
       await this.updateTokens();
     }
     this.updatedTokens = true;
+    console.log("UPDATED TOKENS?",this.updatedTokens);
   }
 
   saveAccountTokens(){
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address.toLowerCase() == this.account.address.toLowerCase());
-      wallet[result].tokens = this.account.tokens;
+      wallet[result].tokens = this.tokens;
     }
   }
   
   addToken(token){
       if('tokens' in this.account){
-        this.account.tokens.push(token);
+        this.tokens.push(token);
       }else{
-        this.account.tokens = [token]
+        this.tokens = [token]
       }
       this.saveAccountTokens();
   }
 
   deleteToken(tokenAdrr){
       if('tokens' in this.account){
-        this.account.tokens.forEach(tk=>{
+        this.tokens.forEach(tk=>{
           if(tk.contractAddress == tokenAdrr){
             tk.deleted = true;
           }
@@ -174,7 +179,7 @@ export class AccountService{
 
   async updateTokens(){
     let self = this;
-    let tokens = this.account.tokens
+    let tokens = this.tokens
     tokens = await this.updateTokenBalances(tokens);
     let resultTokens =  await this._scan.getTokensTransfers(this.account.address).toPromise();
     let tkns : Array<any> = [];
@@ -185,7 +190,7 @@ export class AccountService{
           contractAddress :  tkns[i].contractAddress,
           tokenName:  tkns[i].tokenName,
           tokenSymbol:  tkns[i].tokenSymbol,
-          tkenDecimal: parseInt( tkns[i].tokenDecimal),
+          tokenDecimal: parseInt( tkns[i].tokenDecimal),
           network : self._web3.network,
           deleted: false
         }
@@ -195,22 +200,23 @@ export class AccountService{
         }
       }
     }
-      self.account.tokens = await tokens;
+      self.tokens = await tokens;
       self.saveAccountTokens();
   }
 
   async updateTokenBalances(tokens){
     for(let i = 0; i<tokens.length; i++){
-      tokens[i] = await this.updateTokenBalance(tokens[i]);        
+      tokens[i] = await this.updateTokenBalance(tokens[i]);
     }
     
     return tokens;
   }
 
   async updateTokenBalance(token){
+    console.log("token");
     if(!('balance' in token) || !token.deleted){
       this._token.setToken(token.contractAddress);
-      if(isNaN(token.tokenDecimal)){
+      if(isNaN(token.tokenDecimal)|| token.tokenName=="" || token.tokenName==""){
         token.tokenName = await this._token.getName();
         token.tokenSymbol = await this._token.getSymbol();
         token.tokenDecimal = await this._token.getDecimal();
@@ -268,9 +274,9 @@ export class AccountService{
       
   }
 
-  startIntervalTokens(){
+  async startIntervalTokens(){
     this.tokenInterval = setInterval(()=>{
-      if(this.account.tokens != []){
+      if(this.tokens != []){
         this.updateTokens();
       }
     },3000);

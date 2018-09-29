@@ -1,9 +1,9 @@
 <p *ngIf="this._account.account.tokens?.length == 0" class="whiteBox text-center"> You don't have tokens</p>
-<form *ngIf="this._account.account.tokens?.length > 0" (ngSubmit)="sendTokens(form)" #form="ngForm">
+<form *ngIf="tokens.length > 0" (ngSubmit)="sendTokens(form)" #form="ngForm">
     <div >
         <label class="title" for="token">Tokens</label>
         <select id="tokens" class="block" [(ngModel)]="token" name="token">
-            <option *ngFor="let token of _account.account.tokens, index as i" [ngValue]="token">{{token.tokenName}}-{{token.tokenSymbol}}</option>
+            <option *ngFor="let token of tokens, index as i" [ngValue]="token">{{token.tokenName}}-{{token.tokenSymbol}}</option>
         </select>
     </div>
     <div>

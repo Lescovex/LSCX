@@ -39,7 +39,7 @@ export class SelectAccountDialogComponent implements OnInit{
       this._account.setAccount(this.selectedAcc);
       this._contracStorage.setAccContracts();
       this._LSCXcontract.reset();
-      this._LSCXcontract.reset();
+      this._customContract.reset();
       if(typeof(this._market.socket)!= "undefined"){
         this._market.resetSocket();
       }
