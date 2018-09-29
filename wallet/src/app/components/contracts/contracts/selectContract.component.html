@@ -20,9 +20,11 @@
     </div>
     <p *ngIf="_contractStorage.customContracts.length > 0" class=" clear dist title">Other contracts</p>
     <div *ngFor="let contract of _contractStorage.customContracts, index as i" class="backWhite flex-row custom-contract">
-        <p class="flex1 contract-list-addr">{{contract.address}}</p>    
-        <button class="btn-contract" (click)="setContract(contract)">Show</button>
+        <p class="flex1 bold">{{contract.name}} - <span class="contract-list-addr">{{contract.address}}</span></p> 
+        <div class="right">
+            <button class="btn-contract" (click)="setContract(contract)">Show</button>
         <button class="btn-contract-delete extra" (click)="deleteContract(contract)">Delete</button>
+        </div>     
     </div>
 
 </div>
