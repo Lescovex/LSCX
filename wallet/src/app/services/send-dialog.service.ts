@@ -9,7 +9,7 @@ import { SendDialogComponent } from '../components/dialogs/send-dialog.component
 export class SendDialogService{
     constructor(public dialog: MdDialog){}
 
-    openConfirmSend(tx, to, amount, fees, total, action, token?){
+    openConfirmSend(tx, to, amount, fees, total, action, token?, tokenAmount? ){
         return this.dialog.open(SendDialogComponent, {
             width: '660px',
             height: '400px',
@@ -20,7 +20,8 @@ export class SendDialogService{
                 fees: fees,
                 total: total,
                 action: action,
-                token : token
+                token : token,
+                tokenAmount : tokenAmount
             },
         });
     }

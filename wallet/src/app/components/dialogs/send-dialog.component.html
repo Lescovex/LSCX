@@ -12,8 +12,8 @@
     <div class="flex-row dist">
         <div class="flex1">
             <p class="black">Amount</p>
-            <p *ngIf="data.action != transfer">ETH {{(data.amount| converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
-            <p *ngIf="data.action == 'transfer'">{{data.token}} {{data.amount}}</p>
+            <p *ngIf="data.action != 'transfer'">ETH {{(data.amount| converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
+            <p *ngIf="data.action == 'transfer'">{{data.token}} {{data.tokenAmount}}</p>
         </div>
         <div class="flex1">
             <p class="black">Fees</p>
