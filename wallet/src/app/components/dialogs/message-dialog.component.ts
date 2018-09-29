@@ -1,6 +1,5 @@
 import { Component,  Inject } from '@angular/core';
 import { MdDialogRef } from '@angular/material';
-import {MD_DIALOG_DATA} from '@angular/material';
 
 @Component({
     selector: 'msg-dialog',
@@ -9,7 +8,7 @@ import {MD_DIALOG_DATA} from '@angular/material';
 
 export class MessageDialogComponent{
 
-    constructor(@Inject(MD_DIALOG_DATA) public data: string, public dialogRef: MdDialogRef<MessageDialogComponent>){
+    constructor(public dialogRef: MdDialogRef<MessageDialogComponent>){
 
     }
     closeDialog(){

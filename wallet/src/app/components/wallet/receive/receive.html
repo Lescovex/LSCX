@@ -1,0 +1,15 @@
+
+<div class="whiteBox-extra" id="show-address">
+    <div id="canvas" class="left"></div>
+    <div>
+        <p class="bold">{{_account.account.address}}</p>
+        <p class="">Share this address to receive payments</p>
+    </div>    
+</div>
+
+<h2 class="bold dist">Receive from mobile transfer</h2>
+<form class="dist" (ngSubmit)="receive(form)" #form="ngForm">
+    <label class="title">Seed</label>
+    <input class="block" [ngClass]="{'error': submited && receiverAddr.invalid}"  placeholder="Paste here your seed" required  id="seed" type="text" value="" name="seed" ngModel #seed="ngModel"/>
+    <button type="submit" class="btn-solid right">Receive</button>
+</form>
