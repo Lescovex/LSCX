@@ -96,17 +96,26 @@
         "webpack-merge": "^3.0.0"
     },
     "build": {
+        "asar": true,
         "appId": "Lescovex",
         "mac": {
             "target": "dmg",
             "icon": "./lescovex.png"
         },
         "win": {
-            "icon": "./lescovex.ico"
+            "icon": "./lescovex.ico",
+            "target": "nsis"
         },
         "linux": {
             "target": "AppImage",
             "icon": "./lescovex.png"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": false,
+            "allowElevation": true,
+            "allowToChangeInstallationDirectory": true,
+            "runAfterFinish": true
         },
         "files": [
             "build",
