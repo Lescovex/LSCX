@@ -1,6 +1,6 @@
 <h1 style="text-align: right; font-weight: normal">Balance: ETH {{_account.account.balance | number:'1.2-5':'en'}} </h1>
-<p *ngIf="_account.account.tokens?.length == 0 && _account.updatedTokens" class="whiteBox text-center"> You don't have tokens</p>
-<p *ngIf="! _account.updatedTokens && _account.account.tokens?.length == 0" class="whiteBox text-center"> Loading tokens</p>
+<p *ngIf="_account.tokens?.length == 0 && _account.updatedTokens" class="whiteBox text-center"> You don't have tokens</p>
+<p *ngIf="! _account.updatedTokens && _account.tokens?.length == 0" class="whiteBox text-center"> Loading tokens</p>
 <div *ngIf="tokens?.length > 0">
     <input type="checkbox" id="hide-zero" value="false" (click)="toggleHideZero()"/><label for="hide-zero" class="bold">Hide contracts with zero balance</label>
     <div class="dist" class="sort">

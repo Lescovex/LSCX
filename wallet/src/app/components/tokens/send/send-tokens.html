@@ -1,4 +1,4 @@
-<p *ngIf="this._account.account.tokens?.length == 0" class="whiteBox text-center"> You don't have tokens</p>
+<p *ngIf="this._account.tokens?.length == 0" class="whiteBox text-center"> You don't have tokens</p>
 <form *ngIf="tokens.length > 0" (ngSubmit)="sendTokens(form)" #form="ngForm">
     <div >
         <label class="title" for="token">Tokens</label>
