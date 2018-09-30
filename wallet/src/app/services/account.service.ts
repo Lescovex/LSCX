@@ -216,15 +216,15 @@ export class AccountService{
     console.log("token");
     if(!('balance' in token) || !token.deleted){
       this._token.setToken(token.contractAddress);
-      if(isNaN(token.tokenDecimal)|| token.tokenName=="" || token.tokenName==""){
+      if(isNaN(token.tokenDecimal) ||token.tokenDecimal==0|| token.tokenName=="" || token.tokenSymbol==""){
         token.tokenName = await this._token.getName();
         token.tokenSymbol = await this._token.getSymbol();
         token.tokenDecimal = await this._token.getDecimal();
       }      
       let exp = 10 ** token.tokenDecimal;
       let balance : any = await this._token.getBalanceOf(this.account.address);
-      
-      token.balance = balance.div(exp).toNumber();  
+          
+      token.balance = balance.div(exp).toNumber();
     }
     
     return token
@@ -275,11 +275,15 @@ export class AccountService{
   }
 
   async startIntervalTokens(){
+    let time = 1000;
+    if(this.tokens.length>0){
+      time = this.tokens.length * 500;
+    }
     this.tokenInterval = setInterval(()=>{
       if(this.tokens != []){
         this.updateTokens();
       }
-    },3000);
+    },time);
   }
   clearIntervalTokens(){
     clearInterval(this.tokenInterval);
