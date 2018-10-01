@@ -7,8 +7,8 @@ import { write, readFile } from 'fs';
 declare var require: any;
 
 const fs = require('fs');
-const path = require('path');
-const lescovexPath = process.env.HOME+"/.lescovex";
+const homedir = require('os').homedir();
+const lescovexPath = homedir+"/.lescovex";
 
 @Injectable()
 export class WalletService {
