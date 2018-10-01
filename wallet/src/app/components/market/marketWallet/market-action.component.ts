@@ -16,6 +16,8 @@ export class MarketActionComponent implements OnChanges{
     @Input() deltaAmount: number;
     submited: boolean = false;
     lastAction: string;
+    gasLimit:number;
+    dialogRef;
     constructor(private _market: MarketService, private _rawtx: RawTxService, private sendDialogService: SendDialogService, private _web3: Web3, private _dialog: DialogService) {
         this.lastAction = this.action;
     }
@@ -31,10 +33,11 @@ export class MarketActionComponent implements OnChanges{
           return false
         }
 
-        let dialogRef = this._dialog.openLoadingDialog(); 
+        this.dialogRef = this._dialog.openLoadingDialog(); 
         let params = [];
         let tx;
         let value = 0;
+        let gasLimit =
         console.log(this.token.name)
         console.log("form", form.controls)
         if(this.action != 'deposit' && this.token.name == 'ETH') {
@@ -63,41 +66,78 @@ export class MarketActionComponent implements OnChanges{
                 tx = await this.withdrawToken(params);
                 break;
         }
-        dialogRef.close();
+
         if(tx instanceof Error) {
             this._dialog.openErrorDialog("Unable to "+this.action, "You don't have enough founds", " ");
         } else {
-            this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
+            if(tx != null){
+                this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
+            }
         }
         
     }
 
     async depositEth(params){
-            let data = this._market.getFunctionData(this._market.contractEtherDelta, 'deposit');
-            return await this._rawtx.createRaw(this._market.contractEtherDelta.address, params[0], {data:data}) ;           
+        this.gasLimit= this._market.config.gasDeposit;
+        let data = this._market.getFunctionData(this._market.contractEtherDelta, 'deposit');
+        let gasOpt = await this.openGasDialog();
+        if(gasOpt!=null){
+            let optionsDepositEth = {data:data, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
+            return await this._rawtx.createRaw(this._market.contractEtherDelta.address, params[0],  optionsDepositEth);
+        }
+        return null;    
     }
 
     async withdrawEth(params){
+        this.gasLimit= this._market.config.gasWithdraw;
         let data = this._market.getFunctionData(this._market.contractEtherDelta, 'withdraw', params);
-        return  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , {data:data})
+        let gasOpt = await this.openGasDialog();
+        if(gasOpt!=null){
+            let optionsWithdraw = {data:data, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
+            return  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , optionsWithdraw)
+        }
+        return null;
     }
 
     async depositToken(params){
+        this.gasLimit= this._market.config.gasDeposit;
         let dataApprove = this._market.getFunctionData(this._market.token.contract, 'approve', [this._market.contractEtherDelta.address, params[0]]);
-        let optionsApprove = {data:dataApprove, gasLimit: this._market.config.gasApprove}
-        let txApprove =  await this._rawtx.createRaw(this._market.token.addr, 0 , optionsApprove)
-        let dataDeposit = this._market.getFunctionData(this._market.contractEtherDelta, 'depositToken', [this._market.token.addr,params[0]]);
-        let optionsDeposit = {data:dataDeposit, nonce:1, gasLimit: this._market.config.gasDeposit}
-        let txDeposit =  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , optionsDeposit );
-        let tx: any[] = [txApprove[0], txDeposit[0]];
-        let amount = txApprove[2]+ txDeposit[2];
-        let cost = txApprove[1]+ txDeposit[1];
-        
-        return [tx, cost, amount];
+        let gasOpt = await this.openGasDialog();
+        if(gasOpt!=null){
+            let optionsApprove = {data:dataApprove, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
+            let txApprove =  await this._rawtx.createRaw(this._market.token.addr, 0 , optionsApprove)
+            let dataDeposit = this._market.getFunctionData(this._market.contractEtherDelta, 'depositToken', [this._market.token.addr,params[0]]);
+            let optionsDeposit = {data:dataDeposit, nonce:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
+            let txDeposit =  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , optionsDeposit );
+            let tx: any[] = [txApprove[0], txDeposit[0]];
+            let amount = txApprove[2]+ txDeposit[2];
+            let cost = txApprove[1]+ txDeposit[1];
+            
+            return [tx, cost, amount];
+        }
+        return null;
     }
 
     async withdrawToken(params){
+        this.gasLimit= this._market.config.gasWithdraw;
         let data = this._market.getFunctionData(this._market.contractEtherDelta, 'withdrawToken', [this._market.token.addr,params[0]]);
-        return  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , {data:data})
+        let gasOpt = await this.openGasDialog();
+        if(gasOpt!=null){
+            let optionsWithdraw = {data:data, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
+            return  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , optionsWithdraw)
+        }
+        return null;
+    }
+
+    async openGasDialog(){
+        this.dialogRef.close();
+        let dialogRef = this._dialog.openGasDialog(this.gasLimit, 1);
+        let result = await dialogRef.afterClosed().toPromise();
+        console.log(result);
+        if(typeof(result) != 'undefined'){
+            let obj = JSON.parse(result);
+            return obj;
+        }
+        return null;
     }
 }

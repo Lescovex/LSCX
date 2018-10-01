@@ -85,7 +85,9 @@ export class BuySellPage implements OnInit {
 
     total() {
       let total = this.f.amount * this.f.price;
-      this.f.total = (isNaN(total))? 0 : total
+      let digits = 3
+      let fact= Math.pow(10,digits);
+      this.f.total = (isNaN(total))? 0 : Math.floor(total*fact)/fact;
     }
 
     setInCross() {
@@ -94,11 +96,21 @@ export class BuySellPage implements OnInit {
         this.buyInCross = (this.f.price !== 0 && this.f.price > 1.5 * bestSell) ? "Your order is in cross with the best sell order in the order book (price = " + bestSell + ")." : "";
       }
     }
+
     getCross(amountGet, price){
       if(this.action == 'buy'){
-        return this._market.state.orders.sells.filter(x=>x.availableVolumeBase>=amountGet && parseFloat(x.price)==price)
+        if("sells" in this._market.state.orders){
+          return this._market.state.orders.sells.filter(x=>x.availableVolumeBase>=amountGet && parseFloat(x.price)==price);
+        }else{
+          return [];
+        }
       }else{
-        return this._market.state.orders.buys.filter(x=>x.availableVolume>=amountGet && parseFloat(x.price)==price);
+        if("buys" in this._market.state.orders){
+          return this._market.state.orders.buys.filter(x=>x.availableVolume>=amountGet && parseFloat(x.price)==price);
+        }else{
+          return [];
+        }
+        
       }
     }
 
@@ -120,17 +132,34 @@ export class BuySellPage implements OnInit {
       let hashParams : any[]= [this._market.contractEtherDelta.address].concat(params);
               
       let data =  await this._market.getFunctionData(this._market.contractEtherDelta,'order',params);
-      let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder, gasPrice:this._market.config.ethGasPrice})
-      
       this.loadingDialog.close();
-      this.sendDialogService.openConfirmOrder(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "order", hashParams);
+      let gasOpt = await this.openGasDialog(this._market.config.gasOrder);
+        if(gasOpt != null){
+          let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice });
+          this.sendDialogService.openConfirmOrder(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "order", hashParams);
+        }
     }
 
     async trade(params){
         let data = await this._market.getFunctionData(this._market.contractEtherDelta,'trade',params);
-        let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder, gasPrice:this._market.config.ethGasPrice });
         this.loadingDialog.close();
-        this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
+        let gasOpt = await this.openGasDialog(this._market.config.gasTrade);
+        if(gasOpt != null){
+          let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit:  gasOpt.gasLimit, gasPrice:gasOpt.gasPrice });
+          this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
+        }
+        
     }
+
+    async openGasDialog(gasLimit){
+      let dialogRef = this._dialog.openGasDialog(gasLimit, 1);
+      let result = await dialogRef.afterClosed().toPromise();
+      console.log(result);
+      if(typeof(result) != 'undefined'){
+          let obj = JSON.parse(result);
+          return obj;
+      }
+      return null;
+  }
 
 }
