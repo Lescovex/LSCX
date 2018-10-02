@@ -33,6 +33,9 @@ import { GeneralPage } from './components/tokens/general/general.page';
 import { SendTokensPage } from './components/tokens/send/send-tokens.page';
 import { AddTokenPage } from './components/tokens/add/add.page';
 
+import { HoldersComponent } from './components/holders/holders.component';
+import { HoldersGeneralPage } from './components/holders/general/general.page';
+
 import { ContractsComponent } from './components/contracts/contracts.component';
 import { AddContractPage } from './components/contracts/add/add-contract.component';
 import { SelectContractPage } from './components/contracts/contracts/selectContract.component';
@@ -67,6 +70,8 @@ import { MessageDialogComponent } from './components/dialogs/message-dialog.comp
 import { DeleteDialog } from './components/dialogs/confirm-delete.component';
 import { GasDialogComponent } from './components/dialogs/gas-dialog.component';
 import { ContractDialogComponent } from './components/contracts/add/contract-dialog.component';
+import { WithdrawTxDialog } from './components/holders/general/withdrawTx.component';
+import { WithdrawDialog } from './components/holders/general/withdraw-dialog.component';
 
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
@@ -146,7 +151,11 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ValidateAddressDirective,
     InsuficientFundsDirective,
     CreditCardPage,
-    DeleteDialog
+    DeleteDialog,
+    HoldersComponent,
+    HoldersGeneralPage,
+    WithdrawTxDialog,
+    WithdrawDialog
   ],
   imports: [
     BrowserModule,
@@ -179,7 +188,9 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     MessageDialogComponent,
     GasDialogComponent,
     ContractDialogComponent,
-    DeleteDialog
+    DeleteDialog,
+    WithdrawTxDialog,
+    WithdrawDialog
   ],
   providers: [
     WalletService,

@@ -22,7 +22,7 @@ export class NavComponent implements OnInit {
   route: string = "";
   loadingD;
   interval
-  constructor(location: Location, router: Router,public _account: AccountService,public dialog: MdDialog, public _web3: Web3, private _scan: EtherscanService) {
+  constructor(location: Location, router: Router,public _account: AccountService,public dialog: MdDialog, public _web3: Web3, protected _scan: EtherscanService) {
     router.events.subscribe((val) => {
       if(location.path() != ''){
         this.route = location.path();
