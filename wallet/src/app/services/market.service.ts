@@ -34,7 +34,7 @@ export class MarketService {
 		myFunds: undefined,
 	};
 	sha256;
-
+	lastPrice;
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, ) {
 		
 	}
@@ -260,10 +260,14 @@ export class MarketService {
 		this.getMarket();
 		this.socket.once('market', (market) => {
 			if('orders' in market && 'trades' in market){
-				console.log(market)
+				console.log("market?",market)
 				this.updateOrders(market.orders, this.token, this._account.account.address);
 				this.updateTrades(market.trades, this.token, this._account.account.address);
 				this.state.initialState = true;
+				
+				let len;
+				len = market.trades.length
+				this.lastPrice = market.trades[len-1].price;
 				this.socket.on('orders', (orders) => {
 					//console.log("yeeeeep ORDERS");
 				  	this.updateOrders(orders, this.token, this._account.account.address);

@@ -27,10 +27,10 @@
         </div>
     </a>
 
-    
-    
+
+
 </nav>
-<div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}" id="market" >
+<div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}" id="market">
     <p *ngIf="!_account.account.hasOwnProperty('address'); else content" class="text-center">Select an account</p>
     <ng-template #content>
         <div class="half left" class="market-token">
