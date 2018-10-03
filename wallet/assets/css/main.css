@@ -1,3 +1,4 @@
+/************************ FONTS ************************/
 @font-face {
     font-family: "Lato-Regular";
     src: url("./Lato/Lato-Regular.ttf") format('truetype');
@@ -13,6 +14,7 @@
     src: url("./Lato/Lato-Italic.ttf") format('truetype');
 }
 
+/************************* GENERAL ************************/
 * {
     padding: 0;
     margin: 0;
@@ -28,10 +30,6 @@ body {
     max-height: 100%;
 }
 
-.title-button-navbar {
-    margin-top: 10px;
-}
-
 h1 {
     font-family: "Lato-Regular";
     font-size: 14pt;
@@ -44,114 +42,21 @@ h2 {
     font-size: 12pt;
 }
 
-.mat-dialog-container {
-    position: relative;
-    border-top: 10px solid #30D67F;
-    border-radius: 8px;
-    background-color: #f8f8f8;
-    padding: 15px 35px !important;
+button {
+    cursor: pointer;
 }
 
-.mat-dialog-conatiner .half {
-    width: 49%;
-}
-
-.half {
-    width: 46%;
-}
-
-.half div {
-    display: inline-block;
-}
-
-.mat-dialog-container .buttons {
-    position: absolute;
-    bottom: 20px;
-    width: 590px;
-}
-
-.margin {
-    margin: 15px;
-}
-
-.dist {
-    margin-top: 25px;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.flex-inside {
-    flex-grow: 1;
-    display: flex;
-}
-
-.flex-row {
-    display: flex;
-    flex-direction: row;
-}
-
-.flex1 {
-    flex-grow: 1;
-    flex-basis: 0;
-}
-
-header {
-    height: 73px;
-    min-height: 73px;
-    background-color: #272D33;
-    z-index: 2;
-    position: relative;
-}
-
-header>img {
-    max-height: 30px;
-    margin: 25px 0 0 25px;
-}
-
-#network-select {
-    position: absolute;
-    bottom: 25px;
-    right: 25px;
-    width: 220px;
-    height: 30px;
-    border: 1px solid #444;
-    border-radius: 3px;
-    background-color: rgba(255, 255, 255, 0.05);
-    background-color: rgba(255, 255, 255, 0.1)
-}
-
-#network-select p {
-    color: #888;
-    padding: 6px 15px;
-}
-
-#network-select .select-list {
-    top: 29px;
-    left: 0;
-}
-
-#network-select .select-list>p {
-    margin: 10px;
-}
-
-.sidenav {
-    border-top: 7px solid #fff;
-    display: inline-block;
-    min-width: 250px;
-    max-width: 250px;
+.even {
     background-color: #fff;
-    z-index: 1;
-    box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.2);
 }
 
-.bottomR {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
+.odd {
+    background-color: #e2e2e2
+}
+
+.block {
+    display: block;
+    width: 100%;
 }
 
 .title {
@@ -195,12 +100,192 @@ header>img {
     visibility: hidden;
 }
 
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-inside {
+    flex-grow: 1;
+    display: flex;
+}
+
+.flex1 {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.dist {
+    margin-top: 25px;
+}
+
+.half {
+    width: 46%;
+}
+
+.half div {
+    display: inline-block;
+}
+
+.round {
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+.green {
+    color: #4cc44c
+}
+
+.red {
+    color: #E66978
+}
+
+.border-red {
+    border: 1px solid #E66978;
+}
+
+.grey {
+    color: #3C4247;
+}
+
+.yellow {
+    color: #ffc107;
+}
+
+.italic {
+    font-family: 'Lato-Italic';
+    font-size: 9pt;
+}
+
+.black {
+    color: black;
+    font-family: 'Lato-Bold';
+    padding: 5px 0;
+}
+
+.bold {
+    font-family: 'Lato-Bold';
+}
+
+/************************* DIALOGS *************************/
+.mat-dialog-container {
+    position: relative;
+    border-top: 10px solid #30D67F;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    padding: 15px 35px !important;
+}
+
+.mat-dialog-conatiner .half {
+    width: 49%;
+}
+
+.margin-bottom-dialog{
+    margin-bottom: 70px;
+}
+
+.mat-dialog-container .buttons {
+    position: absolute;
+    bottom: 20px;
+    width: 590px;
+}
+
+.margin {
+    margin: 15px;
+}
+
+.title-button-navbar {
+    margin-top: 10px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/************************* HEADER *************************/
+header {
+    height: 73px;
+    min-height: 73px;
+    background-color: #272D33;
+    z-index: 2;
+    position: relative;
+}
+
+header>img {
+    max-height: 30px;
+    margin: 25px 0 0 25px;
+}
+
+#network-select {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 220px;
+    height: 30px;
+    border: 1px solid #444;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.1)
+}
+
+#network-select p {
+    color: #888;
+    padding: 6px 15px;
+}
+
+#network-select .select-list {
+    top: 29px;
+    left: 0;
+}
+
+#network-select .select-list>p {
+    margin: 10px;
+}
+
+.circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.circle-blue {
+    background-color: #4A90E2;
+}
+
+.circle-red {
+    background-color: #E66978;
+}
+
+/************************* SIDE NAV *************************/
+
+.sidenav {
+    border-top: 7px solid #fff;
+    display: inline-block;
+    min-width: 250px;
+    max-width: 250px;
+    background-color: #fff;
+    z-index: 1;
+    box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.2);
+}
+
+.bottomR {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+
 .main-content {
     flex-grow: 1;
     background-color: #f8f8f8;
     overflow: hidden;
 }
 
+/************************* TOP NAV *************************/
 nav {
     margin-bottom: 50px;
 }
@@ -259,30 +344,11 @@ nav a span {
     width: 100%;
 }
 
-button {
-    cursor: pointer;
-}
-
 .content {
     padding: 15px 20px 15px 20px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-.scrollable-content {
-    height: 100%;
-    overflow-y: scroll;
-}
-
-.scrollable-content::-webkit-scrollbar {
-    display: none;
-}
-
-.round {
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
 }
 
 .list {
@@ -311,105 +377,8 @@ button {
     padding: 3px 0;
 }
 
-.circle {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-
-.circle-blue {
-    background-color: #4A90E2;
-}
-
-.circle-red {
-    background-color: #E66978;
-}
-
-.green {
-    color: #4cc44c
-}
-
-.red {
-    color: #E66978
-}
-
-.border-red {
-    border: 1px solid #E66978;
-}
-
-.grey {
-    color: #3C4247;
-}
-
-.yellow {
-    color: #ffc107;
-}
-
-.italic {
-    font-family: 'Lato-Italic';
-    font-size: 9pt;
-}
-
-.black {
-    color: black;
-    font-family: 'Lato-Bold';
-    padding: 5px 0;
-}
-
-.bold {
-    font-family: 'Lato-Bold';
-}
-
 .lscx_color {
     color: #30D67F;
-}
-
-.even {
-    background-color: #fff;
-}
-
-.odd {
-    background-color: #e2e2e2
-}
-
-.block {
-    display: block;
-    width: 100%;
-}
-
-textarea {
-    resize: none;
-}
-
-input,
-textarea,
-div.input-container,
-.input,
-.whiteBox,
-.whiteBox-extra,
-.backWhite,
-select {
-    padding: 12px;
-    border-radius: 5px;
-    border: 1px solid #abb0b2;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    background-color: #fff;
-}
-
-input[type="checkbox"] {
-    height: auto;
-    margin: 0 12px;
-}
-
-input,
-div.input-container,
-.input,
-.whiteBox,
-select {
-    height: 44px;
 }
 
 .settings {
@@ -446,10 +415,6 @@ select {
     padding: 20px;
 }
 
-textarea {
-    resize: none;
-}
-
 .whiteBox,
 .whiteBox-extra {
     border: none;
@@ -459,21 +424,6 @@ textarea {
 
 .whiteBox-extra {
     padding: 20px
-}
-
-div.input-container {
-    padding: 0;
-    display: flex;
-    flex-direction: row;
-    position: relative;
-}
-
-.input-container input {
-    flex-grow: 1;
-    margin: 0;
-    border: none;
-    z-index: 2;
-    background-color: transparent;
 }
 
 .contractDetail {
@@ -505,24 +455,59 @@ div.input-container {
     width: 95%;
 }
 
-#resized {
-    display: block;
+/**************************** FORMS ****************************/
+input,
+textarea,
+div.input-container,
+.input,
+.whiteBox,
+.whiteBox-extra,
+.backWhite,
+select {
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #abb0b2;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #fff;
 }
 
-#zeros {
-    position: absolute;
-    z-index: 1;
-    cursor: none;
+input[type="checkbox"] {
+    height: auto;
+    margin: 0 12px;
 }
 
-#zeros span:nth-child(2) {
-    margin-left: -1px;
+input,
+div.input-container,
+.input,
+.whiteBox,
+select {
+    height: 44px;
 }
 
 .input-container span,
 .input-container p {
     padding: 14px 12px 14px 0;
     cursor: pointer;
+}
+
+textarea {
+    resize: none;
+}
+
+div.input-container {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+.input-container input {
+    flex-grow: 1;
+    margin: 0;
+    border: none;
+    z-index: 2;
+    background-color: transparent;
 }
 
 input.error,
@@ -551,6 +536,21 @@ p.error {
     outline: none;
 }
 
+#resized {
+    display: block;
+}
+
+#zeros {
+    position: absolute;
+    z-index: 1;
+    cursor: none;
+}
+
+#zeros span:nth-child(2) {
+    margin-left: -1px;
+}
+
+/**************************** BUTTONS ****************************/
 .btn,
 .btn-solid,
 .btn-black,
@@ -569,24 +569,6 @@ p.error {
     color: #fff;
     border: 2px solid transparent;
     cursor: pointer;
-}
-
-.btn-contract,
-.btn-contract-delete {
-    padding: 5px;
-    border-radius: 5px;
-}
-
-.contract-list .btn-contract-delete {
-    margin-top: 5px;
-}
-
-.custom-contract p {
-    padding: 5px;
-}
-
-.custom-contract button {
-    width: 70px;
 }
 
 .btn-inverse {
@@ -630,6 +612,11 @@ p.error {
     margin-top: 10px;
 }
 
+.btn-contract,
+.btn-contract-delete {
+    padding: 5px;
+    border-radius: 5px;
+}
 .extra {
     margin-left: 20px;
 }
@@ -654,138 +641,17 @@ p.error {
     border: 2px solid #E66978;
 }
 
-.auto-h {
-    position: fixed;
-    bottom: 50px;
-    top: 220px;
-    left: 270px;
-    right: 15px;
-}
-
-#general-token-list {
-    top: 270px;
-}
-
-.sort {
-    margin-left: 27px;
+/*********************** CONTRACTS PAGES *************************/
+.contract-list .btn-contract-delete {
     margin-top: 5px;
 }
 
-.sort p {
-    padding: 20px 10px;
+.custom-contract p {
+    padding: 5px;
 }
 
-.low-opacity {
-    opacity: 0.3;
-}
-
-.sort span img:first-child {
-    transform: rotate(180deg);
-}
-
-#hist-market {
-    top: 300px;
-}
-
-#terms ol,
-#terms ul {
-    padding-left: 10px;
-}
-
-#terms div>ol {
-    list-style-type: lower-alpha;
-}
-
-ol ol {
-    list-style-type: decimal;
-}
-
-ol ol ol {
-    list-style-type: lower-roman;
-}
-
-#terms {
-    top: 395px;
-    margin-right: 5px;
-}
-
-.scrollbar::-webkit-scrollbar {
-    margin: -15px;
-}
-
-#terms p,
-#terms li {
-    line-height: 1.5em;
-    padding: 10px 0;
-}
-
-.scroll {
-    overflow-y: scroll;
-    padding-right: 10px;
-}
-
-.scrollbar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 15px;
-    background-color: #000;
-}
-
-.pointer {
-    cursor: pointer;
-}
-
-#address {
-    margin: 10px;
-}
-
-#copy {
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.radioDiv {
-    margin: 10px 0 30px 0;
-}
-
-input[type="radio"] {
-    display: none;
-}
-
-input[type="radio"]+label {
-    margin-right: 30px;
-    cursor: pointer;
-}
-
-input[type="radio"]+label span {
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    border-radius: 50%;
-}
-input[type="radio"]+label>span {
-    box-shadow: 0 0 0 2px 0.5;
-    width: 20px;
-    height: 20px;
-    margin: -1px 7px 0 0;
-    background-color: white;
-    text-align: center;
-    border: 1px solid #abb0b2;
-}
-
-input[type="radio"]+label>span>span {
-    width: 10px;
-    height: 10px;
-    background-color: #30D67F;
-    margin-top: -1px;
-    visibility: hidden;
-    z-index: 2;
-}
-
-input[type="radio"]:checked+label>span>span{
-   visibility: visible;
+.custom-contract button {
+    width: 70px;
 }
 
 .contract-list {
@@ -838,6 +704,154 @@ input[type="radio"]:checked+label>span>span{
     cursor: not-allowed;
     opacity: 0.5
 }
+
+/************************ SCROLLS *****************************/
+.auto-h {
+    position: fixed;
+    bottom: 50px;
+    top: 220px;
+    left: 270px;
+    right: 15px;
+}
+
+#hist-market {
+    top: 300px;
+}
+
+#general-token-list {
+    top: 270px;
+}
+
+.scroll {
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+    background-color: #000;
+}
+
+.scrollbar::-webkit-scrollbar {
+    margin: -15px;
+}
+
+.scrollable-content {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.scrollable-content::-webkit-scrollbar {
+    display: none;
+}
+
+.sort {
+    margin-left: 27px;
+    margin-top: 5px;
+}
+
+.sort p {
+    padding: 20px 10px;
+}
+
+.low-opacity {
+    opacity: 0.3;
+}
+
+.sort span img:first-child {
+    transform: rotate(180deg);
+}
+
+
+/********************** TERMS **********************/
+#terms ol,
+#terms ul {
+    padding-left: 10px;
+}
+
+#terms div>ol {
+    list-style-type: lower-alpha;
+}
+
+ol ol {
+    list-style-type: decimal;
+}
+
+ol ol ol {
+    list-style-type: lower-roman;
+}
+
+#terms {
+    top: 395px;
+    margin-right: 5px;
+}
+
+#terms p,
+#terms li {
+    line-height: 1.5em;
+    padding: 10px 0;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+#address {
+    margin: 10px;
+}
+
+#copy {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/********** CUSTOM RADIO BUTTON **********/
+.radioDiv {
+    margin: 10px 0 30px 0;
+}
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]+label {
+    margin-right: 30px;
+    cursor: pointer;
+}
+
+input[type="radio"]+label span {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 50%;
+}
+input[type="radio"]+label>span {
+    box-shadow: 0 0 0 2px 0.5;
+    width: 20px;
+    height: 20px;
+    margin: -1px 7px 0 0;
+    background-color: white;
+    text-align: center;
+    border: 1px solid #abb0b2;
+}
+
+input[type="radio"]+label>span>span {
+    width: 10px;
+    height: 10px;
+    background-color: #30D67F;
+    margin-top: -1px;
+    visibility: hidden;
+    z-index: 2;
+}
+
+input[type="radio"]:checked+label>span>span{
+   visibility: visible;
+}
+
+/************************** MARKET PAGES ****************************/
 
 .market-token {
     position: relative;
@@ -970,6 +984,8 @@ td {
     padding-left: 15px;
 }
 
+
+/********** WALLET CARD TAB ****************/
 .cardValues {
     width: 90%;
     padding-bottom: 10px;

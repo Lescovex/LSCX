@@ -180,13 +180,13 @@ export class Web3 {
     let self= this;
 
     let AsyncFunction = new Promise (function (resolve, reject) {
-      self.web3.toHex(self.web3.eth.getTransactionCount(address, "pending", function(err, nonce) {
+      self.web3.eth.getTransactionCount(address, "pending", function(err, nonce) {
         if (!err){
           resolve(nonce)
         }else{
           reject(err)
         }
-      }));  
+      });  
     });
 
     return await AsyncFunction;
@@ -196,7 +196,6 @@ export class Web3 {
     let self= this;
 
     let AsyncFunction = new Promise (function (resolve, reject) {
-      let interval;
       self.web3.eth.getTransaction(txhash,function(err,res){
         if (err) {
           reject(err);
@@ -207,6 +206,20 @@ export class Web3 {
     });
     
     return AsyncFunction
+  }
+
+  getGasPrice():Promise<number>{
+    let self= this;
+
+    return new Promise (function (resolve, reject) {
+      self.web3.eth.getGasPrice(function(err,res){
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res.toNumber()); 
+        }
+      })
+    });
   }
 
 }

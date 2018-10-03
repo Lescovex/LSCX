@@ -80,6 +80,7 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
       console.log("result",result);
       if(typeof(result) != 'undefined'){
         let obj = JSON.parse(result);
+        console.log(obj)
         obj.data = txData;
         let tx =  await this._rawtx.createRaw(form.controls.token.value.contractAddress, 0, obj)
         this.sendDialogService.openConfirmSend(tx[0], form.controls.receiverAddr.value, amount, tx[1], tx[1] , 'transfer',form.controls.token.value.tokenSymbol, form.controls.amount.value);

@@ -1,0 +1,28 @@
+
+    <div>
+        <h1 class="text-center" *ngIf="!data.hasOwnProperty('blockNumber')">Tx Not Found<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+        <h1 class="text-center" *ngIf="data.hasOwnProperty('blockNumber') && data.blockNumber==null">Pending Transaction Found<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+        <h1 class="text-center" *ngIf="data.blockNumber!=null">Transaction Found<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+    </div>
+    <div [ngClass]="(data.blockNumber==null || !data.hasOwnProperty('blockNumber'))? 'margin-bottom-dialog': ''">
+        <p *ngIf="data.hasOwnProperty('blockNumber') && data.blockNumber==null">Your transaction was located in the TX Pool of the node you are connected to.<br>It is currently pending (waiting to be mined).</p>
+        <p *ngIf="data.blockNumber!=null">Your transaction was successfully mined and is on the blockchain.</p>
+        <h2 class="dist" >Transaction details</h2>
+        <ul class="list show-tx">
+            <li class="odd"><span class="bold">TxHash: </span>{{data.hash}}</li>
+            <li class="even"><span class="bold">From: </span>{{data.from}}</li>
+            <li class="odd"><span class="bold">To: </span>{{data.to}}</li>
+            <li class="even"><span class="bold">Amount: </span>{{data.value}}</li>
+            <li class="odd"><span class="bold">Nonce: </span>{{data.nonce}}</li>
+            <li class="even"><span class="bold">Gas Limit: </span>{{data.gas}}</li>
+            <li class="odd"><span class="bold">Gas Price: </span>{{data.gasPrice | converter:'fromWei':'gwei'}}Gwei ({{data.gasPrice}} wei)</li>
+            <li class="even"><span class="bold">Data: </span><span *ngIf="data.input!= '0x'">{{data.input}}</span></li>
+        </ul>
+    </div>
+    <div *ngIf="data?.blockNumber==null" class="buttons dist">
+        <button type="button" class="btn-black half left" (click)="closeDialog()">Back</button>
+        <button type="submit" class="btn-inverse half right"(click)="resend()" >Cancel or replace</button>
+    </div>
+
+
+

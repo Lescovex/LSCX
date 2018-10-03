@@ -8,6 +8,8 @@ import { DeleteDialog } from '../components/dialogs/confirm-delete.component';
 import { GasDialogComponent } from '../components/dialogs/gas-dialog.component';
 import { MessageDialogComponent } from '../components/dialogs/message-dialog.component';
 import { ContractDialogComponent } from '../components/contracts/add/contract-dialog.component';
+import { ShowTxDialogComponent } from '../components/dialogs/showTx-dialog.component';
+
 
 
 @Injectable()
@@ -72,7 +74,16 @@ export class DialogService{
             height: '',
             panelClass: 'dialog',
             data: action
-          });
+        });
 
+    }
+    openShowTx(tx){
+        console.log("abre dialogo");
+        return this.dialog.open( ShowTxDialogComponent, {
+            width: '660px',
+            height: '',
+            panelClass: 'dialog',
+            data: tx
+        });
     }
 }

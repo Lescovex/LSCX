@@ -1,5 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { Web3 } from '../../../services/web3.service';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-list',
@@ -15,8 +16,9 @@ export class ListComponent implements OnInit, OnChanges {
     limit = 10;
 
     items: any[];
+    noOpenDialog = false;
 
-    constructor(private _web3: Web3) {
+    constructor(private _web3: Web3, private _dialog: DialogService) {
     }
 
     ngOnInit(): void {
@@ -32,10 +34,22 @@ export class ListComponent implements OnInit, OnChanges {
         }
   
     }
-    openExternal(txHash){
-        const shell = require('electron').shell;
-        let net = (this._web3.network==1) ? "":"ropsten.";
-        shell.openExternal('https://'+net+'etherscan.io/tx/'+txHash);
+
+    async openExternal(tx){
+        if(this.noOpenDialog){
+            return false;
+        }
+        this.noOpenDialog = true;
+        console.log("antes", tx)
+        if(!('blockNumber' in tx)){
+            let tx2 = await this._web3.getTx(tx.hash);
+            if(tx2 != null){
+                tx=tx2;
+            }
+        }
+        console.log("despues",tx)
+        let dialogRef = this._dialog.openShowTx(tx);
+        dialogRef.afterClosed().subscribe(()=>{this.noOpenDialog=false});
     }
 
     getItmes(): void {

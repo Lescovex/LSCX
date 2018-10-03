@@ -107,7 +107,7 @@ export class MarketActionComponent implements OnChanges{
             let optionsApprove = {data:dataApprove, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
             let txApprove =  await this._rawtx.createRaw(this._market.token.addr, 0 , optionsApprove)
             let dataDeposit = this._market.getFunctionData(this._market.contractEtherDelta, 'depositToken', [this._market.token.addr,params[0]]);
-            let optionsDeposit = {data:dataDeposit, nonce:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
+            let optionsDeposit = {data:dataDeposit, nonceIncrement:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
             let txDeposit =  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , optionsDeposit );
             let tx: any[] = [txApprove[0], txDeposit[0]];
             let amount = txApprove[2]+ txDeposit[2];

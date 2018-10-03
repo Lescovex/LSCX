@@ -1,0 +1,26 @@
+<div>
+    <h1 class="text-center">Cancel or Resend Tx<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class="radioDiv">
+    <input type="radio" id="cancel" name="action" value="cancel" [(ngModel)]="action" (click)="setAction('cancel')" />
+    <label for="cancel" class="black"><span><span></span></span>Cancel</label>
+    <input type="radio" id="resend" name="action" value="resend" [(ngModel)]="action" (click)="setAction('resend')" />
+    <label for="resend" class="black"><span><span></span></span>Resend</label>
+</div>
+<div class="margin-bottom-dialog">
+    <h2 class="dist" >Transaction details</h2>
+    <p class="input"><span class="bold">To: </span>{{tx.to}}</p>
+    <p class="input"><span class="bold">Amount: </span>{{tx.value}}</p>
+    <p class="input"><span class="bold">Nonce: </span>{{tx.nonce}}</p>
+    <div class="flex-row">
+        <p class="input flex1"><span class="bold">Gas Limit: </span>{{tx.gas}}</p>
+        <p class="input flex1 extra"><span class="bold">Gas Price: </span>{{tx.gasPrice | converter:'fromWei':'gwei'}}Gwei ({{tx.gasPrice}} wei)</p>
+    </div>
+    <p class="input"><span class="bold">Data: </span><span *ngIf="tx?.input!= '0x'">{{tx.input}}</span></p>
+</div>
+<div class="buttons dist">
+    <button type="button" class="btn-black half left" (click)="closeDialog()">Back</button>
+    <button type="submit" class="btn-inverse half right" (click)="sendTx()">Resend</button>
+</div>
+
+

@@ -11,7 +11,7 @@ export class RawTxService {
 
     }
 
-    async createRaw(receiverAddr: string, amount: number, options?: any){
+    async createRaw(receiverAddr: String, amount: number, options?: any){
         if(typeof(options)=='undefined'){
             options = {}
         }
@@ -20,8 +20,23 @@ export class RawTxService {
         let chainId = this._web3.web3.toHex(this._web3.network);
         let acc = this._account.account;
         let amountW = parseInt(this._web3.web3.toWei(amount,'ether'));
-        let gasPrice  = parseInt(this._web3.web3.toWei('5','gwei'));
-        let nonce = await this._web3.getNonce(acc.address);
+        let gasPrice: number;
+
+        let nonce;
+        if('nonce' in options){
+            nonce = options.nonce;
+        }else{
+            nonce = await this._web3.getNonce(acc.address);
+            if(this._account.pending.length > 0){
+                let pendingNonce = this._account.pending[this._account.pending.length-1].nonce;
+                if(pendingNonce >=  nonce){
+                    nonce = pendingNonce+1;
+                }
+            }
+        }
+        
+        console.log("despues de pending???", nonce)
+
         if('data' in options){
             data = options.data;
         }
@@ -35,13 +50,14 @@ export class RawTxService {
             }
         }
         if('gasPrice' in options){
+
             gasPrice = options.gasPrice;
+        }else{
+            gasPrice = parseInt(this._web3.web3.toWei('5','gwei'));
         }
-        if('nonce' in options){
-            nonce += options.nonce
+        if('nonceIncement' in options){
+            nonce += options.nonceIncrement
         }
-        
-        //console.log("estimate",gasLimit, "price", gasPrice)
 
         let txParams: any = {
             nonce: nonce,
@@ -54,11 +70,8 @@ export class RawTxService {
         if(data != ""){
             txParams.data = this._web3.web3.toHex(data)
         }
-        //console.log(txParams)
-
         
         let tx = new EthTx(txParams);
-        //console.log(gasLimit,gasPrice,amountW)
         let cost = gasLimit*gasPrice+amountW;
         
         let balance =  await this._web3.web3.toWei(this._account.account.balance,'ether');

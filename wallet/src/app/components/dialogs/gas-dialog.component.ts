@@ -11,7 +11,7 @@ import { Web3 } from '../../services/web3.service';
 export class GasDialogComponent implements OnInit{
     submited = false;
     constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<GasDialogComponent>, private _web3: Web3){
-        this.data.gasPrice =this._web3.web3.fromWei(_web3.web3.eth.gasPrice, 'gwei');
+        this.data.gasPrice =(this._web3.web3.fromWei(_web3.web3.eth.gasPrice, 'Gwei')).toFixed(1);
     }
     ngOnInit(){
 

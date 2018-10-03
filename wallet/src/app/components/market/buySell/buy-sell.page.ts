@@ -75,9 +75,7 @@ export class BuySellPage implements OnInit {
       }else{
           this.order();
       }
-      
-      
-     }
+    }
 
     activeButton(action) {
       this.action = action;

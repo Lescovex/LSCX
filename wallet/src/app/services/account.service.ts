@@ -244,7 +244,9 @@ export class AccountService{
   
   async addPendingTx(tx){
     tx.network=this._web3.network;
-    this.pending.push(tx);
+    let pendings = this.pending.filter(x=> x.nonce != tx.nonce);
+    pendings.push(tx);
+    this.pending= pendings;
     if(localStorage.getItem('ethAcc')){
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);

@@ -13,6 +13,8 @@ import { LSCX_Contract } from '../../models/LSCX_contract';
 import { ContractStorageService } from '../../services/contractStorage.service';
 import { MarketService } from '../../services/market.service';
 
+import * as EthUtils from 'ethereumjs-util';
+
 @Component({
   selector: 'send-dialog',
   templateUrl: './send-dialog.component.html'
@@ -20,22 +22,24 @@ import { MarketService } from '../../services/market.service';
 export class SendDialogComponent{
   insufficient = false;
   protected pass;
+  error = ""; 
+  title = "";
+  message = "";
+  txs: any[];
+  
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService, private _market: MarketService) {
     if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
       this.insufficient= true;
+    }
+    if(typeof(this.data.tx.length) == 'undefined'){
+      this.txs = [this.data.tx];
+    }else{
+      this.txs = this.data.tx;
     }
   }
    
 
   async sendTx(pass){
-
-    console.log("network",this._web3.network)
-    let self = this;
-    let error = "";
-    let title = "";
-    let message = "";
-    let txs: any[];
-
     if (typeof(pass)=='undefined' || pass==""){
       return false
     }
@@ -43,73 +47,70 @@ export class SendDialogComponent{
     try{
       privateKey = this._account.getPrivateKey(pass)
     }catch(e){
-      title = "Unable to complete transaction";
-      message = "Something went wrong";
-      error = e.message;
-      self.dialogRef.close();
-      let dialogRef = self.dialogService.openErrorDialog(title,message,error);
+      this.openDialogWhenError(e.message);
       return false
     }
-    if(typeof(this.data.tx.length) == 'undefined'){
-      txs = [this.data.tx]
-    }else{
-      txs = this.data.tx
-    }
-    console.log('antes del for', txs)
-    for(let i=0; i<txs.length; i++){
-      console.log('dentro del forrrrr')
-      txs[i].sign(privateKey);
-      let serialized = "0x"+(txs[i].serialize()).toString('hex');
+
+    for(let i=0; i<this.txs.length; i++){
+      this.txs[i].sign(privateKey);
+      let serialized = "0x"+(this.txs[i].serialize()).toString('hex');
       let sendResult = await this._web3.sendRawTx(serialized);
-     
-      self.dialogRef.close();
+      this.dialogRef.close();
 
       if(sendResult instanceof Error){
-        console.log("error",sendResult);
-        title = "Unable to complete transaction";
-        message = "Something went wrong"
-        error = sendResult.message;
-        self.dialogRef.close();
-        let dialogRef = self.dialogService.openErrorDialog(title,message,error);
+        this.openDialogWhenError(sendResult.message);
+        return false;
       }else{
         console.log("no error",sendResult)
         if(this.data.action == "order") {
-          let hash = await this._market.orderHash(this.data.hashParams)
-          let sign = this._market.signOrder(hash, privateKey);
-          let order = await this._market.placeOrder(this.data.hashParams, sign);
+          await this.sendMarketOrder(privateKey);
         }
 
         let pending: any = null;
         let j = 0;
-        while(pending == null && i<15){
-          pending = await self._web3.getTx(sendResult);
+        let loadingDialog = null;
+        while(pending == null && j<30){
+         this.dialogRef.close();
+          pending = await this._web3.getTx(sendResult);
+          if(pending == null && loadingDialog==null){
+            loadingDialog = this.dialogService.openLoadingDialog();
+          }
           console.log(pending);
           j++;
         }
-        if(i>=15){
-          title = "Unable to complete transaction";
-          message = "Something went wrong"
-          error = "We can not check network confirmation";
-          self.dialogRef.close();
-          let dialogRef = self.dialogService.openErrorDialog(title,message,error);
+        if(j==30){
+          //Create pending object
+          pending = this.createPendingObject(sendResult, i);
+          this._account.addPendingTx(pending);
+          if(i==this.txs.length-1){
+            this.setErroParamsWhenNotConfiramtion();
+            loadingDialog.close();
+            let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);
+            dialogRef.afterClosed().subscribe(result=>{
+              console.log('result', result)
+                if(typeof(result)!= 'undefined' || result != ''){
+                  this.router.navigate(['/wallet/history']);
+                }
+            })
+          }
         }else{
+          if(loadingDialog!=null){
+            loadingDialog.close();
+          }
           pending.timeStamp = Date.now()/1000;
-          self._account.addPendingTx(pending);
+          this._account.addPendingTx(pending);
           if(this.data.action == 'contractDeploy'){
             let contract =  new LSCX_Contract();
             contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
             this._contractStorage.addContract(contract);
             this._contractStorage.checkForAddress();
           }
-          console.log("que pasaaaaa",i==txs.length-1)
-          if(i==txs.length-1){
-            title = "Your transaction has been sent";
-            message = "You can see the progress in the history tab"
-            self.dialogRef.close();
-            console.log(this.data.action)
-            let dialogRef = self.dialogService.openErrorDialog(title, message, error, this.data.action);
+          if(i==this.txs.length-1){
+            this.title = "Your transaction has been sent";
+            this.message = "You can see the progress in the history tab"
+            //self.dialogRef.close();
+            let dialogRef = this.dialogService.openErrorDialog(this.title, this.message, this.error, this.data.action);
             dialogRef.afterClosed().subscribe(result=>{
-              console.log('result', result)
                 if(typeof(result)!= 'undefined' || result != ''){
                   this.router.navigate(['/wallet/history']);
                 }
@@ -122,6 +123,41 @@ export class SendDialogComponent{
 
   closeDialog(){
     this.dialogRef.close();
+  }
+
+  openDialogWhenError(errorMessage){
+    this.title = "Unable to complete transaction";
+    this.message = "Something went wrong"
+    this.error = errorMessage;
+    this.dialogRef.close();
+    this.dialogService.openErrorDialog(this.title,this.message,this.error);
+  }
+
+  setErroParamsWhenNotConfiramtion(){
+    this.title = "Unable to check transaction confirmation";
+    this.message = "Something went wrong"
+    this.error = "We can not check network confirmation, You can see the progress in the history tab";
+  }
+
+  async sendMarketOrder(privateKey){
+    let hash = await this._market.orderHash(this.data.hashParams)
+    let sign = this._market.signOrder(hash, privateKey);
+    await this._market.placeOrder(this.data.hashParams, sign);
+  }
+
+  createPendingObject(hash, index){
+    let obj ={
+      hash: hash,
+      nonce: EthUtils.bufferToInt(this.txs[index].nonce),
+      from: this._account.account.address,
+      to: this.data.to,
+      value: this.data.amount,
+      gas:EthUtils.bufferToInt(this.txs[index].gasLimit),
+      gasPrice:parseInt(EthUtils.bufferToHex(this.txs[index].gasPrice)),
+      input: EthUtils.bufferToHex(this.txs[index].data),
+      timeStamp: Date.now()/1000
+    }
+    return obj
   }
 
 }

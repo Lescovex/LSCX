@@ -66,6 +66,8 @@ import { LoadingDialogComponent } from './components/dialogs/loading-dialog.comp
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
 import { DeleteDialog } from './components/dialogs/confirm-delete.component';
 import { GasDialogComponent } from './components/dialogs/gas-dialog.component';
+import { ShowTxDialogComponent } from './components/dialogs/showTx-dialog.component';
+import { ResendTxDialogComponent } from './components/dialogs/resendTx-dialog.component';
 import { ContractDialogComponent } from './components/contracts/add/contract-dialog.component';
 
 /*Servicies*/
@@ -146,7 +148,9 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ValidateAddressDirective,
     InsuficientFundsDirective,
     CreditCardPage,
-    DeleteDialog
+    DeleteDialog,
+    ShowTxDialogComponent,
+    ResendTxDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -179,7 +183,9 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     MessageDialogComponent,
     GasDialogComponent,
     ContractDialogComponent,
-    DeleteDialog
+    DeleteDialog,
+    ShowTxDialogComponent,
+    ResendTxDialogComponent
   ],
   providers: [
     WalletService,
