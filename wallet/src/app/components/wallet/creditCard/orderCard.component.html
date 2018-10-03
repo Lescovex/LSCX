@@ -1,0 +1,109 @@
+<div class="backWhite">
+    <form id="kyc-form" (ngSubmit)="confirm(form)" #form="ngForm">
+        <div>
+            <h1>Card Type</h1>
+            <p class="bold">Select the card type:</p>
+            <div>
+                <input type="radio" name="input_26" value='Spark MasterCard without name - 10€|10' [(ngModel)]="input_26" id="cardType" (click)="selectType($event.target.value)">
+                <label for="cardType"><span><span></span></span>Spark MasterCard without name - 10€</label>
+            </div>
+            <div class="topDist">
+                <input type="radio" name="input_26" value='Spark MasterCard embossed with your name - 25€|25' [(ngModel)]="input_26" id="cardType2" (click)="selectType($event.target.value)">
+                <label for="cardType2"><span><span></span></span>Spark MasterCard embossed with your name - 25€</label>
+            </div>
+            <div *ngIf="cardTypeDisplay == 'Spark MasterCard without name - 10€|10'">
+                <label for="input_8_47">Quantity</label>
+                <select id="input_8_47" class="block title" required [(ngModel)]="input_8_47" name="input_8_47" #filter="ngModel">
+                    <option class="pointer" disabled value="1">Select a quantity</option>
+                    <option class="pointer" value="1">1</option>
+                    <option class="pointer" value="2">2</option>
+                    <option class="pointer" value="3">3</option>
+                </select>
+            </div>
+            <div *ngIf="cardTypeDisplay == 'Spark MasterCard embossed with your name - 25€|25'">
+                <p>The embossed requires your ID and fabrication takes about 10-15 days.</p>
+                <label for="input_8_40" class="bold">Name to be personalized on the card</label>
+                <input type="text" id="input_8_40" class="block" required [(ngModel)]="input_8_40" name="input_8_40" maxlength='21' ngModel #pername="ngModel">
+                <p class="italic">21 max characters.</p>
+                <p [ngClass]="{'hidden':!(submited && pername.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="pername.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+        </div>
+        <div>
+            <h1>Shipping details</h1>
+            <div>
+                <label for="input_8_1">Name</label>
+                <input type="text" id="input_8_1" class="block" required [(ngModel)]="input_8_1" name="input_8_1" maxlength='21' ngModel #name="ngModel">
+                <p [ngClass]="{'hidden':!(submited && name.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="name.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div>
+                <label for="input_8_2">Last Name</label>
+                <input type="text" id="input_8_2" class="block" required [(ngModel)]="input_8_2" name="input_8_2" maxlength='21' ngModel #last="ngModel">
+                <p [ngClass]="{'hidden':!(submited && last.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="last.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div>
+                <label for="input_8_3">DNI/NIE/Passport</label>
+                <input type="text" id="input_8_3" class="block" required [(ngModel)]="input_8_3" name="input_8_3" maxlength='21' ngModel #id="ngModel">
+                <p [ngClass]="{'hidden':!(submited && id.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="id.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div>
+                <label for="input_8_6">Where did you learn about Spark?</label>
+                <input type="text" id="input_8_3" class="block" required [(ngModel)]="input_8_3" name="input_8_3" maxlength='21' ngModel #id="ngModel">
+                <p [ngClass]="{'hidden':!(submited && id.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="id.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+
+            <label for="">Where did you learn about Spark?</label>
+            <label for="">Street</label>
+            <label for="">Number</label>
+            <label for="">Floor (optional)</label>
+            <label for="">Door (optional)</label>
+            <label for="">Postal Code</label>
+            <label for="">City</label>
+            <label for="">Province</label>
+            <label for="">Country</label>
+            <label for="">Telephone</label>
+            <label for="">E-mail</label>
+
+
+
+
+        </div>
+        <div>
+
+            <div *ngIf="cardTypeDisplay == 'Spark MasterCard without name - 10€|10'">
+                <h1>Shipping Method</h1>
+                <p class="bold">International shipping</p>
+                <div>
+                    <div>
+                        <input type="radio" name="input_36" value='Tourline economic|0' [(ngModel)]="input_36" id="shipType" (click)="shippingType($event.target.value)">
+                        <label for="shipType"><span><span></span></span>Tourline economic</label>
+                    </div>
+                    <div class="topDist">
+                        <input type="radio" name="input_36" value='Tourline express|5' [(ngModel)]="input_36" id="shipType2" (click)="shippingType($event.target.value)">
+                        <label for="shipType2"><span><span></span></span>Tourline express</label>
+                    </div>
+                    <p *ngIf="shippingDisplay == 'Tourline economic|0'" class="italic">Free shipping in 48h max (only continental Spain, Balearic Islands, Ceuta, and Melilla).</p>
+                    <p *ngIf="shippingDisplay == 'Tourline express|5'" class="italic">Tourline 14 Horas (14 Hours) is a service with a delivery time before 14:00h (2 p.m.), the following day. For further information please
+                        <span class=" inline italic lscx_color" (click)="openExternal()">click here</span>. Orders after 16:oo ( 4p.pm.), will be sent on the next business day.</p>
+                </div>
+
+            </div>
+            <div *ngIf="cardTypeDisplay == 'Spark MasterCard embossed with your name - 25€|25'">
+                <h1>Shipping Method</h1>
+                <p class="bold">International shipping</p>
+                <input type="radio" name="input_41" value='Certified Mail (Free)|0' [(ngModel)]="input_41" id="shipping" (click)="shippingType($event.target.value)">
+                <label for="shipping"><span><span></span></span>Certified Mail (Free)</label>
+            </div>
+        </div>
+        <button type="submit" class="btn-inverse btn-default btn-validation right" lang="en">Send <i class="fa fa-arrow-right"></i></button>
+    </form>
+</div>

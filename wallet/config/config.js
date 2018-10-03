@@ -14,7 +14,7 @@ const WINDOW_OPTS = {
     minWidth: 1000,
     minHeight: 720,
     'use-content-size': true,
-    icon : path.join(__dirname ,'../lescovex.png'),
+    icon: path.join(__dirname, '../lescovex.png'),
     webPreferences: {
         allowRunningInsecureContent: false,
         webSecurity: true
@@ -22,27 +22,28 @@ const WINDOW_OPTS = {
 }
 
 const MENU_TEMPLATE = [{
-  label: "Application",
-  submenu: [
-      { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
-      { type: "separator" },
-      { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-  ]}, {
-  label: "Edit",
-  submenu: [
-      { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-      { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-      { type: "separator" },
-      { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-      { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-      { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-      { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-  ]}
-];
+    label: "Application",
+    submenu: [
+        { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+        { type: "separator" },
+        { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); } }
+    ]
+}, {
+    label: "Edit",
+    submenu: [
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+        { type: "separator" },
+        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+    ]
+}];
 
 
 module.exports = {
-  ENV,
-  WINDOW_OPTS,
-  MENU_TEMPLATE
+    ENV,
+    WINDOW_OPTS,
+    MENU_TEMPLATE
 }

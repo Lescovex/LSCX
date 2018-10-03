@@ -1,5 +1,5 @@
-<div *ngIf="pendingTx else serviceStatus" class="backWhite">
-    <div *ngIf="pendingTx == true" class="cardValues">
+<div *ngIf="pendingTx else serviceStatus">
+    <div *ngIf="pendingTx == true" class="cardValues backWhite">
         <p class="title">General status: <span>{{checkResponseStatus}}</span></p>
         <p class="title">Pay IN status: <span>{{checkResponseIn}}</span></p>
         <p class="title">Pay OUT status: <span>{{checkResponseOut}}</span></p>
@@ -28,8 +28,8 @@
     </p>
 </div>
 <ng-template #serviceStatus>
-    <div *ngIf="serviceStatus else down" class="backWhite">
-        <div *ngIf="inputData else detailTx" class="cardValues">
+    <div *ngIf="serviceStatus else down">
+        <div *ngIf="inputData else detailTx" class="cardValues backWhite">
             <div>
                 <label for="Amount" class="title">Amount to withdraw in €:</label>
                 <input type="number" name="Amount" id="Amount" placeholder="€" [(ngModel)]="inputAmount" (input)="checkChange(inputAmount)">
@@ -48,7 +48,13 @@
             <button type="button" name="button" class="btn-inverse" (click)="chipchapSwift()">Change!</button>
 
         </div>
-        <p class="title issues text-right terms">
+        <!--
+             <p *ngIf="orderCard==null" class="issues text-left left terms2">
+            Order your <span class="bold pointer lscx_color" (click)="orderCards()">Spark Mastercard</span>
+        </p>
+        -->
+
+        <p *ngIf="orderCard==null" class="title issues text-right terms">
             <span class="terms2">
                         Powered by: 
                 </span>
@@ -56,41 +62,47 @@
             <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')"> Terms and conditions. </span>
         </p>
     </div>
+    <div *ngIf="orderCard==true" class="content scrollable-content flex-inside">
+        <orderCard></orderCard>
+        <button type="button" name="button" class="btn-black" (click)="cardBack()">Back</button>
+    </div>
 </ng-template>
 
 <ng-template #detailTx>
-    <div class="backWhite cardValues displayInput">
-        <h1 class="">Transaction detail:</h1>
-        <div>
-            <span class="title ">Spark Card Receiver Number:</span>
-            <p class="">{{fiatReceiver}}</p>
+    <div *ngIf="detailTx == true">
+        <div class="backWhite cardValues displayInput">
+            <h1 class="">Transaction detail:</h1>
+            <div>
+                <span class="title ">Spark Card Receiver Number:</span>
+                <p class="">{{fiatReceiver}}</p>
+            </div>
+            <div>
+                <span class="title ">From:</span>
+                <p class="">{{selfAccount}}</p>
+            </div>
+            <div>
+                <span class="title ">To:</span>
+                <p class="">{{ethAddr}}</p>
+            </div>
+            <div>
+                <span class="title ">Amount:</span>
+                <p class="">{{amountEth}} ETH</p>
+            </div>
+            <div>
+                <span class="title ">Send before of:</span>
+                <p class="">{{timeLeft/60}} min</p>
+            </div>
         </div>
-        <div>
-            <span class="title ">From:</span>
-            <p class="">{{selfAccount}}</p>
-        </div>
-        <div>
-            <span class="title ">To:</span>
-            <p class="">{{ethAddr}}</p>
-        </div>
-        <div>
-            <span class="title ">Amount:</span>
-            <p class="">{{amountEth}} ETH</p>
-        </div>
-        <div>
-            <span class="title ">Send before of:</span>
-            <p class="">{{timeLeft/60}} min</p>
-        </div>
-    </div>
-    <button type="button" name="button" class="btn-black" (click)="back()">Back</button>
-    <button type="button" name="button" class="btn-inverse" (click)="sendEth(ethAddr, amountEth)">Confirm</button>
-    <p class="title issues text-right terms">
-        <span class="terms2">
+        <button type="button" name="button" class="btn-black" (click)="back()">Back</button>
+        <button type="button" name="button" class="btn-inverse" (click)="sendEth(ethAddr, amountEth)">Confirm</button>
+        <p class="title issues text-right terms">
+            <span class="terms2">
                     Powered by: 
             </span>
-        <span class="pointer" (click)="openUrl('https://chip-chap.com/')"><img class="bottom" src="~images/logo_chipchap-1.png" width="80px"></span>
-        <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')"> Terms and conditions. </span>
-    </p>
+            <span class="pointer" (click)="openUrl('https://chip-chap.com/')"><img class="bottom" src="~images/logo_chipchap-1.png" width="80px"></span>
+            <span class="bold lscx_color pointer text-right terms2" (click)="openUrl('https://chip-chap.com/legal.html')"> Terms and conditions. </span>
+        </p>
+    </div>
 </ng-template>
 
 <ng-template #down>

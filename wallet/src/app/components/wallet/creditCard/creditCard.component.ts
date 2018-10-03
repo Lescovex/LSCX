@@ -11,6 +11,7 @@ import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
 
 import { Router, NavigationEnd } from '@angular/router';
+import { ERROR_LOGGER } from '../../../../../node_modules/@angular/core/src/errors';
 const shell = require('electron').shell;
 
 @Component({
@@ -48,6 +49,8 @@ export class CreditCardPage implements OnInit {
     public inputData;//ngtemplate servicestatus
     public confirmTx; 
     public successTx;
+    public orderCard;
+    public detailTx;
 
     //input variables
     public inputAmount;
@@ -169,6 +172,7 @@ export class CreditCardPage implements OnInit {
         this.fiatAmount = s;
 
         this.inputData = null;
+        this.detailTx = true;
         this.confirmTx = true;
         this.scale = scl;
         //console.log("this.scale!!!!",this.scale);
@@ -182,7 +186,7 @@ export class CreditCardPage implements OnInit {
 
     chipchapSwift(){
         let val = this.inputAmount;
-        let where
+        let where;
         if(this.inputCardId != null){
             where = this.inputCardId.toString();
         } else{
@@ -418,5 +422,16 @@ export class CreditCardPage implements OnInit {
 
       openUrl(url){
         shell.openExternal(url);
+      }
+
+      orderCards(){
+          this.inputData = null;
+          this.orderCard = true;
+      }
+
+      cardBack(){
+          this.orderCard = null;
+          this.inputData = true;
+          
       }
 }

@@ -1,4 +1,5 @@
 /************************ FONTS ************************/
+
 @font-face {
     font-family: "Lato-Regular";
     src: url("./Lato/Lato-Regular.ttf") format('truetype');
@@ -14,7 +15,9 @@
     src: url("./Lato/Lato-Italic.ttf") format('truetype');
 }
 
+
 /************************* GENERAL ************************/
+
 * {
     padding: 0;
     margin: 0;
@@ -168,7 +171,9 @@ button {
     font-family: 'Lato-Bold';
 }
 
+
 /************************* DIALOGS *************************/
+
 .mat-dialog-container {
     position: relative;
     border-top: 10px solid #30D67F;
@@ -181,7 +186,7 @@ button {
     width: 49%;
 }
 
-.margin-bottom-dialog{
+.margin-bottom-dialog {
     margin-bottom: 70px;
 }
 
@@ -205,7 +210,9 @@ button {
     height: 100vh;
 }
 
+
 /************************* HEADER *************************/
+
 header {
     height: 73px;
     min-height: 73px;
@@ -261,6 +268,7 @@ header>img {
     background-color: #E66978;
 }
 
+
 /************************* SIDE NAV *************************/
 
 .sidenav {
@@ -285,7 +293,9 @@ header>img {
     overflow: hidden;
 }
 
+
 /************************* TOP NAV *************************/
+
 nav {
     margin-bottom: 50px;
 }
@@ -455,7 +465,9 @@ nav a span {
     width: 95%;
 }
 
+
 /**************************** FORMS ****************************/
+
 input,
 textarea,
 div.input-container,
@@ -550,7 +562,9 @@ p.error {
     margin-left: -1px;
 }
 
+
 /**************************** BUTTONS ****************************/
+
 .btn,
 .btn-solid,
 .btn-black,
@@ -617,6 +631,7 @@ p.error {
     padding: 5px;
     border-radius: 5px;
 }
+
 .extra {
     margin-left: 20px;
 }
@@ -641,7 +656,9 @@ p.error {
     border: 2px solid #E66978;
 }
 
+
 /*********************** CONTRACTS PAGES *************************/
+
 .contract-list .btn-contract-delete {
     margin-top: 5px;
 }
@@ -705,7 +722,9 @@ p.error {
     opacity: 0.5
 }
 
+
 /************************ SCROLLS *****************************/
+
 .auto-h {
     position: fixed;
     bottom: 50px;
@@ -768,6 +787,7 @@ p.error {
 
 
 /********************** TERMS **********************/
+
 #terms ol,
 #terms ul {
     padding-left: 10px;
@@ -809,10 +829,13 @@ ol ol ol {
     margin-left: 10px;
 }
 
+
 /********** CUSTOM RADIO BUTTON **********/
+
 .radioDiv {
     margin: 10px 0 30px 0;
 }
+
 input[type="radio"] {
     display: none;
 }
@@ -851,6 +874,7 @@ input[type="radio"]+label>span>span {
 input[type="radio"]:checked+label>span>span {
     visibility: visible;
 }
+
 
 /************************** MARKET PAGES ****************************/
 
@@ -987,9 +1011,11 @@ td {
 
 
 /********** WALLET CARD TAB ****************/
+
 .cardValues {
-    width: 90%;
+    width: 100%;
     padding-bottom: 10px;
+    margin: 0 auto;
 }
 
 .cardValues div span,
@@ -1037,6 +1063,10 @@ td {
 
 .terms2 {
     vertical-align: top;
+}
+
+topDist {
+    margin-top: 20px;
 }
 
 .bottom {

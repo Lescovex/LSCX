@@ -52,6 +52,7 @@ import { MarketHistoryPage } from './components/market/history/market-history.pa
 import { MarketListComponent } from './components/market/history/market-list.component';
 
 import { CreditCardPage } from './components/wallet/creditCard/creditCard.component';
+import { OrderCardComponent } from './components/wallet/creditCard/orderCard.component';
 
 import { SettingsComponent } from './components/settings/settings.component';
 
@@ -153,6 +154,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ValidateAddressDirective,
     InsuficientFundsDirective,
     CreditCardPage,
+    OrderCardComponent,
     DeleteDialog,
     ShowTxDialogComponent,
     ResendTxDialogComponent,
