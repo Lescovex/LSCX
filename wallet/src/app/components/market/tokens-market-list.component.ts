@@ -30,18 +30,27 @@ export class TokensMarketListComponent {
       LSCX_tokens.push({ addr: contract.address, name: contract.symbol, decimals: contract.decimals }) ;
     })
     LSCX_tokens.sort((a, b)=> (a.name).localeCompare(b.name));
-    if('tokens' in this._account.account){
-      this._account.account.tokens.forEach(token=>{
+
+    /*if('tokens' in this._account){
+      this._account.tokens.forEach(token=>{
         if(tokens.findIndex(tk=>tk.addr.toUpperCase()==token.contractAddress.toUpperCase())== -1
         && LSCX_tokens.findIndex(tk=>tk.addr.toUpperCase()==token.contractAddress.toUpperCase())== -1){
           let tokenP = { addr: token.contractAddress, name: token.tokenSymbol, decimals: token.tokenDecimal }
           tokens.push(tokenP);
         };
       })
-    }
+    }*/
     if(typeof(input)!="undefined"){
-      tokens = tokens.filter(token=> token.name.toUpperCase().startsWith(input.toUpperCase()));
-      LSCX_tokens = LSCX_tokens.filter(token=> token.name.toUpperCase().startsWith(input.toUpperCase()));
+      tokens = tokens.filter(token=> {
+        if('name' in token && token.name != ""){
+          return token.name.toUpperCase().startsWith(input.toUpperCase())
+        }
+      });
+      LSCX_tokens = LSCX_tokens.filter(token=> {
+        if('name' in token && token.name != ""){
+          token.name.toUpperCase().startsWith(input.toUpperCase())
+        }
+      });
     }
     this.tokens =  tokens;
     this.LSCX_tokens = LSCX_tokens;
