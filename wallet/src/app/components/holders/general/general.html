@@ -4,7 +4,7 @@
     <p class="title ">LSCX Balance: <span class="inlineBlock"> {{balance}}</span></p>
     <div *ngIf="holdedOf>0">
         <p class="title">Holded amount: <span class="inlineBlock">{{holdedOf}}</span></p>
-        <p class="title">Withdraw expected amount: <span>ETH {{(expected| converter:'fromWei':'ether') | number:'1.2-8':'en'}}</span></p>
+        <p class="title">Withdraw expected amount: <span>ETH {{(expected| converter:'fromWei':'ether')}}</span></p>
 
         <button class="btn-solid dist extra" (click)="withdraw()">Withdraw Reward</button>
     </div>

@@ -22,7 +22,7 @@ import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
   templateUrl: './general.html'
 })
 
-export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
+export class HoldersGeneralPage implements OnInit {
   
   protected LSCX_Addr;
   protected LSCX_Abi;
@@ -48,15 +48,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
   ngOnInit() {
       this.setContract()
   }
-    
 
-  ngOnDestroy(){
-    
-  }
-
-  ngDoCheck() {
-   
-  }
   async setContract(){
     this.getAbi();
     if(this._web3.network == 3){
@@ -66,7 +58,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
       
     }
     if(this._web3.network == 1  ){
-      this.LSCX_Addr = "0xdC33d6c4997Ed9c6f07644ECA9C0ba72a6882052";
+      this.LSCX_Addr = "0x5bf5f85480848eB92AF31E610Cd65902bcF22648";
       
       console.log("Mainnet Contract");
       
@@ -80,6 +72,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
   getAbi(){
     this.LSCX_Abi = require('../../../../assets/abi/LSCX_Holders.json');
   }
+
   async load(){
     let amount = await this.getUserBalance();
     let decimals = await this.getDecimals();
@@ -94,8 +87,10 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
     let totalSupply = await this.getTotalSupply();
     console.log("totalsupply",totalSupply);
     
+    //let expectedAmount;
     console.log("expectedWithdraw", (holded * contractBalance)/totalSupply);
-    this.expected = (holded * contractBalance)/totalSupply;
+    //expectedAmount = (holded * contractBalance)/totalSupply;
+    this.expected =  (holded * contractBalance)/totalSupply;;
 
     this.loadingD.close();
     //2592000 equal to 30 days
@@ -125,7 +120,6 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
         } else {
           resolve(res.toNumber());
           console.log("res?",res);
-          
         }
       });
     });
@@ -146,8 +140,6 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
   }
   getContractBalance(): Promise<number>{
     let self=this;
-    console.log("contractBalance?");
-    
     return new Promise (function (resolve, reject) {
       self.LSCX_Contract.contractBalance.call(function(err, res){  
         if (err) {
@@ -161,9 +153,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
     });
   }
   getTotalSupply(): Promise<number>{
-    let self=this;
-    console.log("entras aqui?");
-    
+    let self=this;   
     return new Promise (function (resolve, reject) {
       self.LSCX_Contract.totalSupply.call(function(err, res){  
         if (err) {
@@ -171,7 +161,6 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
         } else {
           resolve(res.toNumber());
           console.log("res?",res);
-          
         }
       });
     });
@@ -186,27 +175,14 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
     }catch(e){
       gasLimit = await this._web3.blockGas();
     }
-    console.log("gasLimit?", gasLimit);
     
     let dialogRef = this._dialog.openGasDialog(await gasLimit, 1);
     dialogRef.afterClosed().subscribe(async result=>{
-      /*
-      console.log("result",result);
-      if(typeof(result) != 'undefined'){
-        let obj = JSON.parse(result);
-
-        if(typeof(form.controls.trans_data.value)!="undefined" && form.controls.trans_data.value != ""){
-          obj.data = form.controls.trans_data.value;
-        }
-        tx =  await this._rawtx.createRaw(receiver, form.controls.amount.value, obj)
-        this.sendDialogService.openConfirmSend(tx[0], receiver, tx[2],tx[1]-tx[2], tx[1], "send");
-      }
-      */
-      console.log("result del dialogref?",result);
+     
       
       let dialogRef2 = this.dialog.open( WithdrawTxDialog, {
         width: '660px',
-        height: '450px',
+        height: '350px',
         data : {
           contract: this._account.account.address,
           fees: gasLimit,
@@ -214,7 +190,11 @@ export class HoldersGeneralPage implements OnInit, OnDestroy, DoCheck {
         }
       }); 
       let self = this;
-      dialogRef2.afterClosed().subscribe(async function(pass){
+      dialogRef2.afterClosed().subscribe(async result=> {
+        let res = JSON.parse(result)
+        let pass = res.pass;
+        console.log("pass", pass);
+        
         let title = "Unable to withdraw tokens";
         let message = "Something went wrong"
         let error ="";
