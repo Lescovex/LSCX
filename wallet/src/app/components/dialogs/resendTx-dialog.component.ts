@@ -54,7 +54,9 @@ export class ResendTxDialogComponent implements OnInit{
     }
     async setGasPrice(){
         let gasPrice = await this._web3.getGasPrice();
-        gasPrice = this._web3.web3.toWei(this._web3.web3.fromWei(gasPrice, 'Gwei').toFixed(1), "Gwei");
+        console.log("gasPrice",gasPrice);
+        gasPrice = this._web3.web3.toWei(parseFloat(this._web3.web3.fromWei(gasPrice, 'Gwei')).toFixed(1), "Gwei");
+        console.log("gasPrice",gasPrice);
         this.cancelTx.gasPrice = gasPrice*2;
         this.newTx.gasPrice = gasPrice*2;
     }

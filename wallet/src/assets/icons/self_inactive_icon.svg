@@ -12,7 +12,7 @@
    viewBox="0 0 16 15"
    version="1.1"
    id="svg9510"
-   sodipodi:docname="self_icon.svg"
+   sodipodi:docname="self_icon_inactive.svg"
    inkscape:version="0.92.3 (d244b95, 2018-08-02)">
   <metadata
      id="metadata9514">
@@ -59,31 +59,31 @@
      stroke-width="1"
      fill="none"
      fill-rule="evenodd"
-     style="stroke:#000000;stroke-opacity:1">
+     style="stroke:#abb0b2;stroke-opacity:1">
     <g
        id="on-receive-on"
        transform="translate(-68.000000, -29.000000)"
        stroke="#32445E"
-       style="stroke:#000000;stroke-opacity:1">
+       style="stroke:#abb0b2;stroke-opacity:1">
       <g
          id="Group-4"
          transform="translate(51.000000, 29.000000)"
-         style="stroke:#000000;stroke-opacity:1">
+         style="stroke:#abb0b2;stroke-opacity:1">
         <g
            id="Group-2"
-           style="stroke:#000000;stroke-opacity:1">
+           style="stroke:#abb0b2;stroke-opacity:1">
           <g
              id="Group-3"
              transform="translate(18.000000, 0.000000)"
-             style="stroke:#000000;stroke-opacity:1">
+             style="stroke:#abb0b2;stroke-opacity:1">
             <path
                d="M14,10 L14,13.3337029 C14,13.7017738 13.7079586,14 13.3640692,14 L0.622175195,14 C0.278285844,14 0,13.7017738 0,13.3337029 L0,10"
                id="Shape"
-               style="stroke:#000000;stroke-opacity:1" />
+               style="stroke:#abb0b2;stroke-opacity:1" />
             <g
                id="Group"
                transform="translate(7.000000, 5.500000) scale(1, -1) translate(-7.000000, -5.500000) translate(4.000000, 0.000000)"
-               style="stroke:#000000;stroke-opacity:1" />
+               style="stroke:#abb0b2;stroke-opacity:1" />
           </g>
         </g>
       </g>
@@ -115,9 +115,9 @@
     <g
        id="g2115"
        transform="matrix(1.1178237,0,0,1.1178237,-0.80767713,-0.0284335)"
-       style="stroke:#000000;stroke-opacity:1">
+       style="stroke:#abb0b2;stroke-opacity:1">
       <path
-         style="fill:none;stroke:#000000;stroke-width:1.13929915;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#abb0b2;stroke-width:1.13929915;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 4.4253178,4.4173727 c -2.153072,-4.59216086 -0.00728,-8.6183286 3.1382418,-8.5487286 3.3366524,0.073829 5.3230924,3.51165264 3.2018004,8.5487286"
          id="path2092"
          inkscape:connector-curvature="0"
@@ -126,7 +126,7 @@
          transform="rotate(-62.776263,3.8742145,0.90159329)"
          id="Shape-Copy-3"
          points="1 0 1 3 4 3"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.13929915;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-rule:evenodd;stroke:#abb0b2;stroke-width:1.13929915;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>
 </svg>

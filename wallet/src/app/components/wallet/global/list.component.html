@@ -15,8 +15,12 @@
                         <p class="text-right pending" [ngClass]="{'hidden': transaction.from != address.toLowerCase()}">Total gas: ({{(transaction.gasUsed * transaction.gasPrice) | converter:'fromWei':'ether'}})</p>
                     </a>
                     <a *ngIf="transaction.blockNumber==null" class="pending pointer" (click)="openExternal(transaction)">
-                        <span *ngIf="transaction.from == address.toLowerCase()" class="pointer"><img src="~icons/send_inactive_icon.svg"> ETH sent</span>
-                        <span *ngIf="transaction.to == address.toLowerCase()" class="pointer"><img src="~icons/receive_inactive_icon.svg"> ETH received</span> (Pending...)
+                        <span class="pointer" *ngIf="transaction.from == address.toLowerCase() && transaction.to == address.toLowerCase(); else normalTx"><img src="~icons/self_inactive_icon.svg"> ETH self</span>
+                        <ng-template #normalTx>
+                            <span class="pointer" *ngIf="transaction.from == address.toLowerCase()"><img src="~icons/send_inactive_icon.svg"> ETH sent</span>
+                            <span class="pointer" *ngIf="transaction.to == address.toLowerCase()"><img src="~icons/receive_inactive_icon.svg"> ETH received</span>
+                        </ng-template>
+                         (Pending...)
                         <span class="right pointer"> ETH {{transaction.value | converter:'fromWei':'ether'}}</span>
                     </a>
                 </li>
