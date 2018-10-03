@@ -42,12 +42,12 @@ export class TokensMarketListComponent {
     }*/
     if(typeof(input)!="undefined"){
       tokens = tokens.filter(token=> {
-        if('name' in token && token.name != ""){
+        if('name' in token && typeof(token.name)!="undefined" && token.name != ""){
           return token.name.toUpperCase().startsWith(input.toUpperCase())
         }
       });
       LSCX_tokens = LSCX_tokens.filter(token=> {
-        if('name' in token && token.name != ""){
+        if('name' in token && typeof(token.name)!="undefined" && token.name != ""){
           token.name.toUpperCase().startsWith(input.toUpperCase())
         }
       });
