@@ -394,13 +394,13 @@ nav a span {
     position: relative;
 }
 
-#show-address div:nth-child(2){
+#show-address div:nth-child(2) {
     position: absolute;
     left: 235px;
     top: 35px;
 }
 
-#show-address div p:nth-child(2){
+#show-address div p:nth-child(2) {
     color: #abb0b2
 }
 
@@ -828,6 +828,7 @@ input[type="radio"]+label span {
     cursor: pointer;
     border-radius: 50%;
 }
+
 input[type="radio"]+label>span {
     box-shadow: 0 0 0 2px 0.5;
     width: 20px;
@@ -847,8 +848,8 @@ input[type="radio"]+label>span>span {
     z-index: 2;
 }
 
-input[type="radio"]:checked+label>span>span{
-   visibility: visible;
+input[type="radio"]:checked+label>span>span {
+    visibility: visible;
 }
 
 /************************** MARKET PAGES ****************************/

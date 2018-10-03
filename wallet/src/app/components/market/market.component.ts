@@ -10,6 +10,7 @@ import { MarketService } from '../../services/market.service';
 })
 export class MarketComponent{
   protected showList: boolean = false;
+  protected price;
   interval;
   constructor(public _account:AccountService, private _market: MarketService) {
     this._market.setMarket();
@@ -23,7 +24,8 @@ export class MarketComponent{
     this.showList = !this.showList
   }
   onSelect(show:boolean) {
-    this.showList = show
+    this.showList = show;
+    this.price = 0;
   }
   toggleShow() {
     this.showList = ! this.showList;

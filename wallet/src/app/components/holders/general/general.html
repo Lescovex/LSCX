@@ -1,0 +1,14 @@
+<p *ngIf="balance == 0" class="whiteBox red text-center"> You don't have LSCX tokens</p>
+<div class="backWhite" *ngIf="balance > 0">
+
+    <p class="title ">LSCX Balance: <span class="inlineBlock"> {{balance}}</span></p>
+    <div *ngIf="holdedOf>0">
+        <p class="title">Holded amount: <span class="inlineBlock">{{holdedOf}}</span></p>
+        <p class="title">Withdraw expected amount: <span>ETH {{(expected| converter:'fromWei':'ether')}}</span></p>
+
+        <button class="btn-solid dist extra" (click)="withdraw()">Withdraw Reward</button>
+    </div>
+    <div *ngIf="holdedOf == 0">
+        <p class="title lscx_color text-center">You've to hold 30 days before withdraw your reward</p>
+    </div>
+</div>

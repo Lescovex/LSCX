@@ -1,0 +1,17 @@
+<nav class="flex-row">
+    <a routerLink="general" routerLinkActive="active" #general="routerLinkActive">
+        <div>
+            <span>
+                <img class="top-nav-img" *ngIf="general.isActive" src='~icons/token_generaltab_icon.svg'>
+                <img class="top-nav-img" *ngIf="!general.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">LSCX Holders Panel</p>
+        </div>
+    </a>
+</nav>
+<div class="content flex-inside">
+    <p *ngIf="!_account.account?.address; else content" class="text-center">Select an account</p>
+    <ng-template #content>
+        <router-outlet></router-outlet>
+    </ng-template>
+</div>

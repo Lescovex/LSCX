@@ -14,6 +14,9 @@ import { GeneralPage } from './components/tokens/general/general.page'
 import { SendTokensPage } from './components/tokens/send/send-tokens.page'
 import { AddTokenPage } from './components/tokens/add/add.page'
 
+import { HoldersComponent } from './components/holders/holders.component';
+import { HoldersGeneralPage } from './components/holders/general/general.page';
+
 import { ContractsComponent } from './components/contracts/contracts.component'
 import { AddContractPage } from './components/contracts/add/add-contract.component'
 import { SelectContractPage } from './components/contracts/contracts/selectContract.component'
@@ -45,6 +48,12 @@ const routes: Routes = [
       { path: 'general', component: GeneralPage },
       { path: 'send-tokens', component: SendTokensPage },
       { path: 'add', component: AddTokenPage },
+    ]
+  },
+  { path: 'holders', component: HoldersComponent,
+    children: [
+      { path: '', redirectTo: 'general', pathMatch: 'full' },
+      { path: 'general', component: HoldersGeneralPage }
     ]
   },
   { path: 'contracts', component: ContractsComponent,

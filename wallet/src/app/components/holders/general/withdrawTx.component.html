@@ -1,0 +1,41 @@
+<div>
+    <h1 class="text-center">Withdraw Reward <img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<form class="dist" (ngSubmit)="confirm(form)" #form="ngForm">
+    <div class="margin">
+        <p><span class="dark">Account:</span> {{data.contract}}</p>
+        <div class="flex-row dist">
+            <div style="flex:1">
+                <p class="dark">Gas Price</p>
+                <p>ETH {{(data.fees | converter:'fromWei':'gwei') | number:'1.2-8':'en'}}</p>
+            </div>
+            <div style="flex:1">
+                <p class="dark">Gas Limit</p>
+                <p>{{data.cost}}</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div *ngIf="!insufficient">
+        <div class="dist">
+            <label class="title block">Password*</label>
+            <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" ngModel required #ps="ngModel" />
+
+            <p [ngClass]="{'hidden':!(submited && ps.invalid)}" class="error">
+                <span *ngIf="ps.errors?.required" class="left error">This field is required</span>
+            </p>
+        </div>
+        <div class="buttons">
+            <button class="btn-black btn-clear half left" (click)="closeDialog()">Back</button>
+            <button type="submit" class="btn-inverse half right">Withdraw</button>
+        </div>
+
+    </div>
+    <div *ngIf="insufficient" class="dist">
+        <p class="error-founds input text-center dist">You don't have sufficient founds</p>
+        <div class="buttons text-center">
+            <button class="btn half" (click)="closeDialog()">Back</button>
+        </div>
+    </div>
+</form>

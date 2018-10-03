@@ -1,6 +1,6 @@
 <div id="account">
     <div *ngIf="_account?.account" mdTooltip="{{_account.account.name}}" mdTooltipPosition="right">
-        <p >{{_account.account.name}}</p>
+        <p>{{_account.account.name}}</p>
     </div>
 </div>
 <button class="link" routerLink="/wallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #wallet="routerLinkActive">
@@ -18,7 +18,13 @@
     </div>
     <span class="title-button-left">Tokens</span>
 </button>
-
+<button class="link" routerLink="/holders" [disabled]="_web3. infuraKey == '' ||_scan.apikey == ''" routerLinkActive="active" #holders="routerLinkActive">
+    <div>
+        <img *ngIf="holders.isActive" src="~icons/token_generaltab_activeNav.svg" alt="settings_icon">
+        <img *ngIf="!holders.isActive" src="~icons/token_generaltab_inactive_icon.svg" alt="settings_icon">
+    </div>
+    <span class="title-button-left">LSCX Holders</span>
+</button>
 <button class="link" routerLink="/contracts" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #contracts="routerLinkActive">
     <div>
         <img *ngIf="contracts.isActive" src="~icons/contracts_icon.svg" alt="contracts_icon">
@@ -46,4 +52,3 @@
     <button *ngIf="_account.account.hasOwnProperty('address')" class="btn-solid" (click)="openSelectAccount()">My accounts</button>
     <button class="btn-solid" (click)="openAddAccount()">Add account</button>
 </div>
-
