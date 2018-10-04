@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core'
+import { Http } from '@angular/http';
 
 /*Services*/
 import { AccountService } from '../../../services/account.service';
@@ -15,18 +16,29 @@ import { DialogService } from '../../../services/dialog.service';
 })
 
 export class SendPage implements OnInit {
-  public countries =  require('../../../../assets/json/countries.json');
-  public prefixes = require('../../../../assets/json/phonePrefixes.json');
+  public prefixes:any[];s 
   protected sendTo: string;
-  submited = false;
+  public country: any;
+  public submited:boolean;
+  public showPrefixes:boolean;
 
-  constructor(public _web3: Web3,private _account: AccountService, private _wallet: WalletService, protected _dialog: DialogService, protected sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
+  constructor(private http: Http, private _web3: Web3,private _account: AccountService, private _wallet: WalletService, private _dialog: DialogService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
     this.sendTo = "address";
-   
+    this.prefixes = require('../../../../assets/json/phonePrefixes.json');
+    this.showPrefixes =false;
+    this.submited =false;
+    this.prefixes.map(x=> x.flag = x.code.toLowerCase()+".svg");  
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let ipResponse = await this.http.get("https://ipinfo.io").map(res => res.json()).toPromise();
+    let code = ipResponse.country;
+    this.country = this.prefixes.find(x=> x.code == code);
+    console.log(this.country);
   }
+  toggleShow(){
+    this.showPrefixes = !this.showPrefixes;
+}
 
   async sendEth(form) {
     this.submited = true;

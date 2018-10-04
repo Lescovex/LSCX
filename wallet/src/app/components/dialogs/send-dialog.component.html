@@ -39,6 +39,8 @@
     </div>
     <div class="buttons">
         <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
-        <button class="btn-inverse half right" (click)="sendTx(pass)">Send</button>
+        <button *ngIf="data.action == 'withdraw'" class="btn-inverse half right" (click)="sendTx(pass)">Withdraw</button>
+        <button *ngIf="data.action == 'contractDeploy'" class="btn-inverse half right" (click)="sendTx(pass)">Deploy</button>
+        <button *ngIf="data.action != 'contractDeploy' && data.action != 'withdraw'" class="btn-inverse half right" (click)="sendTx(pass)">Send</button>
     </div>
 </div>

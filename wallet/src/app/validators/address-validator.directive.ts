@@ -11,11 +11,11 @@ export function ValidateAddress(control: AbstractControl): {[key: string]: boole
 @Directive({
     selector: '[invalidAddress][formControlName],[invalidAddress][formControl],[invalidAddress][ngModel]',
     providers: [{provide: NG_VALIDATORS, useExisting: ValidateAddressDirective, multi: true}]
-  })
-  export class ValidateAddressDirective implements Validator {
+})
+export class ValidateAddressDirective implements Validator {
     
     validate(c: FormControl): {[key: string]: any} {
         const invalidAddress = (!EthUtil.isValidAddress(c.value));
         return invalidAddress ? {"invalidAddress": invalidAddress} : null;
     }
-  } 
+} 

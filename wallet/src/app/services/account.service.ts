@@ -1,7 +1,4 @@
 import { Injectable} from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router'
 
 import { WalletService } from './wallet.service'
@@ -24,7 +21,7 @@ export class AccountService{
   tokenInterval;
   apikey: string = "";
 
-  constructor(private http: Http, private _wallet : WalletService, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
+  constructor(private _wallet : WalletService, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
     this._scan.getApiKey();
     if(this._scan.apikey != "" && this._web3.infuraKey != ""){     
       this.getAccountData();
@@ -89,7 +86,9 @@ export class AccountService{
     let addr = this.account.address;
     let self= this;
     this._web3.web3.eth.getBalance(addr,(err,result)=>{
-      self.account.balance = self._web3.web3.fromWei(result.toNumber(),'ether');
+      if(typeof(result)!= "undefined") {
+        self.account.balance = self._web3.web3.fromWei(result.toNumber(),'ether');
+      }
     })
     let history = await this._scan.getHistory(addr);
 

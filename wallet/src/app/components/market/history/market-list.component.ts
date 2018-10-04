@@ -28,7 +28,7 @@ export class MarketListComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-       setInterval(async()=>{this.blockNumber = await this._web3.blockNumber()})
+        setInterval(async()=>{this.blockNumber = await this._web3.blockNumber()})
     }
     
     ngOnChanges(): void {
