@@ -86,7 +86,9 @@ export class AccountService{
     let addr = this.account.address;
     let self= this;
     this._web3.web3.eth.getBalance(addr,(err,result)=>{
-      self.account.balance = self._web3.web3.fromWei(result.toNumber(),'ether');
+      if(typeof(result)!= "undefined") {
+        self.account.balance = self._web3.web3.fromWei(result.toNumber(),'ether');
+      }
     })
     let history = await this._scan.getHistory(addr);
 
