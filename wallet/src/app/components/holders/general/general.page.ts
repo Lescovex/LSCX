@@ -7,8 +7,7 @@ import { Web3 } from '../../../services/web3.service';
 import { DialogService } from '../../../services/dialog.service';
 import { MdDialog } from '@angular/material';
 import { WalletService } from "../../../services/wallet.service";
-import { WithdrawDialog } from './withdraw-dialog.component';
-import { WithdrawTxDialog } from './withdrawTx.component';
+
 import * as EthTx from 'ethereumjs-tx';
 import * as EthUtil from 'ethereumjs-util'
 
@@ -16,6 +15,8 @@ import { Router } from '@angular/router';
 
 //dialogs
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
+import { RawTxService } from '../../../services/rawtx.sesrvice';
+import { SendDialogService } from '../../../services/send-dialog.service';
 
 @Component({
   selector: 'general-page',
@@ -34,7 +35,7 @@ export class HoldersGeneralPage implements OnInit {
   protected holdedOf;
   protected expected;
 
-  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private router : Router) {
+  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private  _rawTx:RawTxService, private sendDialogService: SendDialogService) {
     Promise.resolve().then(() => { 
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
@@ -75,7 +76,7 @@ export class HoldersGeneralPage implements OnInit {
 
   async load(){
     let amount = await this.getUserBalance();
-    let decimals = await this.getDecimals();
+    let decimals = 8;
     this.balance = amount / Math.pow(10,decimals);
     
     let holded = await this.getHoldedOf();
@@ -111,19 +112,7 @@ export class HoldersGeneralPage implements OnInit {
       });
     });
   }
-  getDecimals(): Promise<number>{
-    let self=this;
-    return new Promise (function (resolve, reject) {
-      self.LSCX_Contract.decimals.call(function(err, res){  
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res.toNumber());
-          console.log("res?",res);
-        }
-      });
-    });
-  }
+
   getHoldedOf(): Promise<number>{
     let self=this;
     return new Promise (function (resolve, reject) {
@@ -138,6 +127,7 @@ export class HoldersGeneralPage implements OnInit {
       });
     });
   }
+
   getContractBalance(): Promise<number>{
     let self=this;
     return new Promise (function (resolve, reject) {
@@ -152,6 +142,7 @@ export class HoldersGeneralPage implements OnInit {
       });
     });
   }
+  
   getTotalSupply(): Promise<number>{
     let self=this;   
     return new Promise (function (resolve, reject) {
@@ -167,6 +158,13 @@ export class HoldersGeneralPage implements OnInit {
   }
 
   async withdraw(){
+    this.loadingD = this.dialog.open(LoadingDialogComponent, {
+      width: '660px',
+      height: '150px',
+      disableClose: true,
+    });
+
+    let withdrawData = await this.withdrawReward();
     let gasPrice = 10000000000;
     let gasLimit;
 
@@ -175,74 +173,24 @@ export class HoldersGeneralPage implements OnInit {
     }catch(e){
       gasLimit = 1000000;
     }
-    
-    let dialogRef = this._dialog.openGasDialog(await gasLimit, gasPrice);
-    dialogRef.afterClosed().subscribe(async result=>{
-      console.log("gasResult?",result);
-      let data = JSON.parse(result)
-      let gasLimit = data.gasLimit;
-      let gasPrice = data.gasPrice;
-      
-      let dialogRef2 = this.dialog.open( WithdrawTxDialog, {
-        width: '660px',
-        height: '350px',
-        data : {
-          contract: this._account.account.address,
-          fees: gasPrice,
-          cost: gasLimit
-        }
-      }); 
-      let self = this;
-      dialogRef2.afterClosed().subscribe(async result=> {
-        let res = JSON.parse(result)
-        console.log("result???",result);
-        
-        let pass = res.pass;
-        console.log("pass", pass);
-        
-        let title = "Unable to withdraw tokens";
-        let message = "Something went wrong"
-        let error ="";
-        let dialogRef2;
-        if(typeof(pass)== 'undefined' || pass==""){
-          return false;
-        }else{
-          dialogRef2 = self.dialog.open( WithdrawDialog,
-            {
-              width: '660px',
-              height: '150px',
-              disableClose: true,
-            }
-          )
-            let tx2Data = await self.withdrawReward();
-            let txInfo2 = await self.unsignedTx(self.LSCX_Addr ,tx2Data, gasLimit, gasPrice);
-            
-            let serialized2 = self.serializeTx(txInfo2[0],pass);
-            let sendResult2 = await self._web3.sendRawTx(serialized2);
-            if(sendResult2 instanceof Error){
-              let error = sendResult2.message;
-              dialogRef2.close();
-              dialogRef2 = self._dialog.openErrorDialog(title,message,error);
-            }else{
-              
-              let pending: any = await self._web3.getTx(sendResult2);
-              pending.timeStamp = Date.now()/1000;
-              self._account.addPendingTx(pending);
-              title = "Transaction has been sended";
-              message = "You can see the transaction in the history tab"
-              dialogRef2.close();
-              dialogRef2 = self._dialog.openErrorDialog(title,message,error, 'redirect');
-              dialogRef2.afterClosed().subscribe(result=>{
-                  self.router.navigate(['/wallet/history']);
-            })
-            }
-          }
-      });
-    })
 
+    this.loadingD.close();
+    let dialogRef = this._dialog.openGasDialog(gasLimit, gasPrice);
+    let result = await dialogRef.afterClosed().toPromise();
+    console.log(result);
+    let options:any = null;
+    if(typeof(result) != 'undefined'){
+        options = JSON.parse(result);
+        options.data =  withdrawData;
+    }
+    if(options!=null){
+      let tx =  await this._rawTx.createRaw(this.LSCX_Addr, 0 , options)
+      let amount = 0;
+      let cost = tx[1];
+      console.log(tx)
+      this.sendDialogService.openConfirmSend(tx[0], this.LSCX_Addr, 0, tx[1], tx[1],'withdraw');
+    }
     //let amount = this._web3.web3.toWei(this.taboowBroker.buyValue);
-    
-
   }
 
   withdrawReward():string{

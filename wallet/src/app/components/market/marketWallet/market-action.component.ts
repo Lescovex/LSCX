@@ -37,7 +37,6 @@ export class MarketActionComponent implements OnChanges{
         let params = [];
         let tx;
         let value = 0;
-        let gasLimit =
         console.log(this.token.name)
         console.log("form", form.controls)
         if(this.action != 'deposit' && this.token.name == 'ETH') {

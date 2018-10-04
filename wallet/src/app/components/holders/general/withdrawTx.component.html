@@ -6,11 +6,11 @@
         <p><span class="dark">Account:</span> {{data.contract}}</p>
         <div class="flex-row dist">
             <div style="flex:1">
-                <p class="dark">Gas Price</p>
+                <p class="title">Gas Price</p>
                 <p>Gwei {{(data.fees | converter:'fromWei':'gwei') | number:'1.2-8':'en'}}</p>
             </div>
             <div style="flex:1">
-                <p class="dark">Gas Limit</p>
+                <p class="title">Gas Limit</p>
                 <p>{{data.cost}}</p>
             </div>
         </div>
