@@ -1073,3 +1073,13 @@ topDist {
     vertical-align: bottom;
     margin-top: -0.3rem;
 }
+
+#marginBott {
+    margin-bottom: 100px
+}
+
+.width40 {
+    width: 40%;
+    margin-right: 9%;
+    height: 100px;
+}

@@ -173,25 +173,30 @@ export class HoldersGeneralPage implements OnInit {
     try{
       gasLimit = await this._web3.estimateGas(this._account.account.address, this.LSCX_Addr, "", parseInt(this.expected));
     }catch(e){
-      gasLimit = await this._web3.blockGas();
+      gasLimit = 1000000;
     }
     
-    let dialogRef = this._dialog.openGasDialog(await gasLimit, 1);
+    let dialogRef = this._dialog.openGasDialog(await gasLimit, gasPrice);
     dialogRef.afterClosed().subscribe(async result=>{
-     
+      console.log("gasResult?",result);
+      let data = JSON.parse(result)
+      let gasLimit = data.gasLimit;
+      let gasPrice = data.gasPrice;
       
       let dialogRef2 = this.dialog.open( WithdrawTxDialog, {
         width: '660px',
         height: '350px',
         data : {
           contract: this._account.account.address,
-          fees: gasLimit,
-          cost: gasPrice
+          fees: gasPrice,
+          cost: gasLimit
         }
       }); 
       let self = this;
       dialogRef2.afterClosed().subscribe(async result=> {
         let res = JSON.parse(result)
+        console.log("result???",result);
+        
         let pass = res.pass;
         console.log("pass", pass);
         
@@ -210,7 +215,7 @@ export class HoldersGeneralPage implements OnInit {
             }
           )
             let tx2Data = await self.withdrawReward();
-            let txInfo2 = await self.unsignedTx(self.LSCX_Addr ,tx2Data,1000000);
+            let txInfo2 = await self.unsignedTx(self.LSCX_Addr ,tx2Data, gasLimit, gasPrice);
             
             let serialized2 = self.serializeTx(txInfo2[0],pass);
             let sendResult2 = await self._web3.sendRawTx(serialized2);
@@ -245,8 +250,8 @@ export class HoldersGeneralPage implements OnInit {
     return txData
   }
 
-  async unsignedTx(contractAddr,txData, gas, amount?){
-    let gasLimit = gas;
+  async unsignedTx(contractAddr,txData, gLimit, gprice, amount?){
+    let gasLimit = gLimit;
     
     //console.log(amount,"---", gasLimit*2)
     let chainId;
@@ -261,7 +266,7 @@ export class HoldersGeneralPage implements OnInit {
     console.log("account unsignedTxs", acc);
     
     let amountW = (typeof(amount) == "undefined")? 0 : amount;
-    let gasPrice  = this._web3.web3.toWei('10','gwei');
+    let gasPrice  = gprice;
     let nonce = await this._web3.getNonce(acc.address)
     console.log("nonce de este account", nonce);
     console.log("contractAddr", contractAddr);

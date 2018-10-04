@@ -49,10 +49,12 @@
 
         </div>
         <!--
-             <p *ngIf="orderCard==null" class="issues text-left left terms2">
+        <p *ngIf="orderCard==null" class="issues text-left left terms2">
             Order your <span class="bold pointer lscx_color" (click)="orderCards()">Spark Mastercard</span>
         </p>
         -->
+
+
 
         <p *ngIf="orderCard==null" class="title issues text-right terms">
             <span class="terms2">
@@ -64,7 +66,10 @@
     </div>
     <div *ngIf="orderCard==true" class="content scrollable-content flex-inside">
         <orderCard></orderCard>
-        <button type="button" name="button" class="btn-black" (click)="cardBack()">Back</button>
+        <div id="marginBott">
+            <button type="button" name="button" class="btn-black" (click)="cardBack()">Back</button>
+        </div>
+
     </div>
 </ng-template>
 

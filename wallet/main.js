@@ -17,7 +17,7 @@ function createWindow() {
             label: 'FromScratch',
             submenu: [{
                 label: 'Quit',
-                accelerator: 'CmdOrCtrl+Q',
+                accelerator: 'Cmd+Q',
                 click: function() {
                     app.quit();
                 }
@@ -26,29 +26,29 @@ function createWindow() {
             label: 'Edit',
             submenu: [{
                 label: 'Undo',
-                accelerator: 'CmdOrCtrl+Z',
+                accelerator: 'Cmd+Z',
                 selector: 'undo:'
             }, {
                 label: 'Redo',
-                accelerator: 'Shift+CmdOrCtrl+Z',
+                accelerator: 'Shift+Cmd+Z',
                 selector: 'redo:'
             }, {
                 type: 'separator'
             }, {
                 label: 'Cut',
-                accelerator: 'CmdOrCtrl+X',
+                accelerator: 'Cmd+X',
                 selector: 'cut:'
             }, {
                 label: 'Copy',
-                accelerator: 'CmdOrCtrl+C',
+                accelerator: 'Cmd+C',
                 selector: 'copy:'
             }, {
                 label: 'Paste',
-                accelerator: 'CmdOrCtrl+V',
+                accelerator: 'Cmd+V',
                 selector: 'paste:'
             }, {
                 label: 'Select All',
-                accelerator: 'CmdOrCtrl+A',
+                accelerator: 'Cmd+A',
                 selector: 'selectAll:'
             }]
         }];

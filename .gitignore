@@ -4,5 +4,6 @@
 
 /wallet/package-lock.json
 /wallet/.vscode
+/wallet/.DS_Store
 
 /wallet/dist

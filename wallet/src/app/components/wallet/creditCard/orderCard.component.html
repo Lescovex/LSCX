@@ -1,86 +1,195 @@
 <div class="backWhite">
+    <!--
+        <form method='post' enctype='multipart/form-data' id='gform_8' action='https://www.tarjetaspark.es/en/order/'>        
+        -->
     <form id="kyc-form" (ngSubmit)="confirm(form)" #form="ngForm">
         <div>
-            <h1>Card Type</h1>
+            <h1 class="lscx_color">Card Type</h1>
             <p class="bold">Select the card type:</p>
-            <div>
-                <input type="radio" name="input_26" value='Spark MasterCard without name - 10€|10' [(ngModel)]="input_26" id="cardType" (click)="selectType($event.target.value)">
-                <label for="cardType"><span><span></span></span>Spark MasterCard without name - 10€</label>
+
+            <div class="clear dist">
+                <div class="clear">
+                    <input type="radio" name="input_26" value='Spark MasterCard without name - 10€|10' [(ngModel)]="input_26" id="cardType" (click)="selectType($event.target.value)">
+                    <label for="cardType"><span><span></span></span>Spark MasterCard without name - 10€</label>
+                </div>
+                <div class="clear">
+                    <input type="radio" name="input_26" value='Spark MasterCard embossed with your name - 25€|25' [(ngModel)]="input_26" id="cardType2" (click)="selectType($event.target.value)">
+                    <label for="cardType2"><span><span></span></span>Spark MasterCard embossed with your name - 25€</label>
+                </div>
             </div>
-            <div class="topDist">
-                <input type="radio" name="input_26" value='Spark MasterCard embossed with your name - 25€|25' [(ngModel)]="input_26" id="cardType2" (click)="selectType($event.target.value)">
-                <label for="cardType2"><span><span></span></span>Spark MasterCard embossed with your name - 25€</label>
-            </div>
-            <div *ngIf="cardTypeDisplay == 'Spark MasterCard without name - 10€|10'">
-                <label for="input_8_47">Quantity</label>
-                <select id="input_8_47" class="block title" required [(ngModel)]="input_8_47" name="input_8_47" #filter="ngModel">
-                    <option class="pointer" disabled value="1">Select a quantity</option>
+
+            <div class="dist" *ngIf="cardTypeDisplay == 'Spark MasterCard without name - 10€|10'">
+                <label for="input_47">Quantity</label>
+                <select id="input_47" class="block title" required [(ngModel)]="input_47" name="input_47" #quantity="ngModel">
+                    <option class="pointer" disabled value="Select a quantity">Select a quantity</option>
                     <option class="pointer" value="1">1</option>
                     <option class="pointer" value="2">2</option>
                     <option class="pointer" value="3">3</option>
                 </select>
+                <p [ngClass]="{'hidden':!(submited && quantity.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="quantity.errors?.required" class="error">This field is required</span>
+                </p>
             </div>
-            <div *ngIf="cardTypeDisplay == 'Spark MasterCard embossed with your name - 25€|25'">
+            <div class="dist" *ngIf="cardTypeDisplay == 'Spark MasterCard embossed with your name - 25€|25'">
                 <p>The embossed requires your ID and fabrication takes about 10-15 days.</p>
-                <label for="input_8_40" class="bold">Name to be personalized on the card</label>
-                <input type="text" id="input_8_40" class="block" required [(ngModel)]="input_8_40" name="input_8_40" maxlength='21' ngModel #pername="ngModel">
+                <label for="input_40" class="bold dist">Name to be personalized on the card</label>
+                <input type="text" id="input_40" class="block" required [(ngModel)]="input_40" name="input_40" place='21' ngModel #pername="ngModel">
                 <p class="italic">21 max characters.</p>
                 <p [ngClass]="{'hidden':!(submited && pername.invalid)}" class="error" max-width="14px">
                     <span *ngIf="pername.errors?.required" class="error">This field is required</span>
                 </p>
             </div>
         </div>
-        <div>
-            <h1>Shipping details</h1>
-            <div>
-                <label for="input_8_1">Name</label>
-                <input type="text" id="input_8_1" class="block" required [(ngModel)]="input_8_1" name="input_8_1" maxlength='21' ngModel #name="ngModel">
+        <div class="clear dist">
+            <h1 class="lscx_color">Shipping details</h1>
+            <div class="width40 left">
+                <label for="input_1">Name</label>
+                <input type="text" id="input_1" class="block" required [(ngModel)]="input_1" name="input_1" placeholder='Name' ngModel #name="ngModel">
                 <p [ngClass]="{'hidden':!(submited && name.invalid)}" class="error" max-width="14px">
                     <span *ngIf="name.errors?.required" class="error">This field is required</span>
                 </p>
             </div>
-            <div>
-                <label for="input_8_2">Last Name</label>
-                <input type="text" id="input_8_2" class="block" required [(ngModel)]="input_8_2" name="input_8_2" maxlength='21' ngModel #last="ngModel">
+            <div class="width40 right">
+                <label for="input_2">Last Name</label>
+                <input type="text" id="input_2" class="block" required [(ngModel)]="input_2" name="input_2" placeholder='Last Name' ngModel #last="ngModel">
                 <p [ngClass]="{'hidden':!(submited && last.invalid)}" class="error" max-width="14px">
                     <span *ngIf="last.errors?.required" class="error">This field is required</span>
                 </p>
             </div>
-            <div>
-                <label for="input_8_3">DNI/NIE/Passport</label>
-                <input type="text" id="input_8_3" class="block" required [(ngModel)]="input_8_3" name="input_8_3" maxlength='21' ngModel #id="ngModel">
+            <div class="width40 left">
+                <label for="input_3">DNI/NIE/Passport</label>
+                <input type="text" id="input_3" class="block" required [(ngModel)]="input_3" name="input_3" placeholder='DNI/NIE/Passport' ngModel #id="ngModel">
                 <p [ngClass]="{'hidden':!(submited && id.invalid)}" class="error" max-width="14px">
                     <span *ngIf="id.errors?.required" class="error">This field is required</span>
                 </p>
             </div>
-            <div>
-                <label for="input_8_6">Where did you learn about Spark?</label>
-                <input type="text" id="input_8_3" class="block" required [(ngModel)]="input_8_3" name="input_8_3" maxlength='21' ngModel #id="ngModel">
-                <p [ngClass]="{'hidden':!(submited && id.invalid)}" class="error" max-width="14px">
-                    <span *ngIf="id.errors?.required" class="error">This field is required</span>
+            <div class="width40 right">
+                <label for="input_6">Where did you learn about Spark?</label>
+                <select id="input_6" class="block title" [(ngModel)]="input_6" name="input_6" #where="ngModel">
+                        <option class="pointer" disabled value="Choose an option">Choose an option</option>
+                        <option class="pointer" value="Search engine">Search engine</option>
+                        <option class="pointer" value="Social network">Social network</option>
+                        <option class="pointer" value="Kiosk">Kiosk</option>
+                        <option class="pointer" value="Gas station">Gas station</option>
+                        <option class="pointer" value="Personal recommendation">Personal recommendation</option>
+                        <option class="pointer" value="Advertisement">Advertisement</option>
+                        <option class="pointer" value="Other">Other</option>
+                    </select>
+
+            </div>
+            <div class="width40 left">
+                <label for="input_4">Street</label>
+                <input type="text" id="input_4" class="block" required [(ngModel)]="input_4" name="input_4" placeholder='Street' ngModel #street="ngModel">
+                <p [ngClass]="{'hidden':!(submited && street.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="street.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 right">
+                <label for="input_5">Number</label>
+                <input type="text" id="input_5" class="block" required [(ngModel)]="input_5" name="input_5" placeholder='Number' ngModel #number="ngModel">
+                <p [ngClass]="{'hidden':!(submited && number.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="number.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 left">
+                <label for="input_7">Floor (optional)</label>
+                <input type="text" id="input_7" class="block" [(ngModel)]="input_7" name="input_7" placeholder='Floor (optional)' ngModel #floor="ngModel">
+                <p [ngClass]="{'hidden':!(submited && floor.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="floor.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 right">
+                <label for="input_9">Door (optional)</label>
+                <input type="text" id="input_9" class="block" [(ngModel)]="input_9" name="input_9" placeholder='Door (optional)' ngModel #door="ngModel">
+                <p [ngClass]="{'hidden':!(submited && door.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="door.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 left">
+                <label for="input_10">Postal Code</label>
+                <input type="text" id="input_10" class="block" required [(ngModel)]="input_10" placeholder='Postal Code' name="input_10" ngModel #post="ngModel">
+                <p [ngClass]="{'hidden':!(submited && post.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="post.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 right">
+                <label for="input_11">City</label>
+                <input type="text" id="input_11" class="block" required [(ngModel)]="input_11" placeholder='City' name="input_11" ngModel #city="ngModel">
+                <p [ngClass]="{'hidden':!(submited && city.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="city.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 left">
+                <label for="input_12">Province</label>
+                <input type="text" id="input_12" class="block" required [(ngModel)]="input_12" name="input_12" placeholder='Province' ngModel #city="ngModel">
+                <p [ngClass]="{'hidden':!(submited && city.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="city.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 right">
+                <label for="input_38">Country</label>
+                <select id="input_38" class="block title" required [(ngModel)]="input_38" name="input_38" #country="ngModel">
+                    <option class="pointer" disabled value="Select a country">Select a country</option>
+                    <option value='Andorra'>Andorra</option>
+                    <option value='Austria'>Austria</option>
+                    <option value='Belgium'>Belgium</option>
+                    <option value='Bulgaria'>Bulgaria</option>
+                    <option value='Croatia'>Croatia</option>
+                    <option value='Cyprus'>Cyprus</option>
+                    <option value='Czech Republic'>Czech Republic</option>
+                    <option value='Denmark'>Denmark</option>
+                    <option value='Estonia'>Estonia</option>
+                    <option value='Finland'>Finland</option>
+                    <option value='France'>France</option>
+                    <option value='Germany'>Germany</option>
+                    <option value='Greece'>Greece</option>
+                    <option value='Hungary'>Hungary</option>
+                    <option value='Iceland'>Iceland</option>
+                    <option value='Ireland'>Ireland</option>
+                    <option value='Italy'>Italy</option>
+                    <option value='Latvia'>Latvia</option>
+                    <option value='Liechtenstein'>Liechtenstein</option>
+                    <option value='Lithuania'>Lithuania</option>
+                    <option value='Luxembourg'>Luxembourg</option>
+                    <option value='Malta'>Malta</option>
+                    <option value='Monaco'>Monaco</option>
+                    <option value='Netherlands'>Netherlands</option>
+                    <option value='Norway'>Norway</option>
+                    <option value='Poland'>Poland</option>
+                    <option value='Portugal'>Portugal</option>
+                    <option value='Romania'>Romania</option>
+                    <option value='San Marino'>San Marino</option>
+                    <option value='Slovakia'>Slovakia</option>
+                    <option value='Slovenia'>Slovenia</option>
+                    <option value='Spain'>Spain</option>
+                    <option value='Sweden'>Sweden</option>
+                    <option value='Switzerland'>Switzerland</option>
+                    <option value='United Kingdom'>United Kingdom</option>
+                    <option value='Vatican City'>Vatican City</option>
+                </select>
+                <p [ngClass]="{'hidden':!(submited && country.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="country.errors?.required" class="error">This field is required</span>
                 </p>
             </div>
 
-            <label for="">Where did you learn about Spark?</label>
-            <label for="">Street</label>
-            <label for="">Number</label>
-            <label for="">Floor (optional)</label>
-            <label for="">Door (optional)</label>
-            <label for="">Postal Code</label>
-            <label for="">City</label>
-            <label for="">Province</label>
-            <label for="">Country</label>
-            <label for="">Telephone</label>
-            <label for="">E-mail</label>
-
-
-
-
+            <div class="width40 left">
+                <label for="input_22">Telephone</label>
+                <input type="text" id="input_22" class="block" required [(ngModel)]="input_22" name="input_22" placeholder='Telephone' ngModel #phone="ngModel">
+                <p [ngClass]="{'hidden':!(submited && phone.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="phone.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+            <div class="width40 right">
+                <label for="input_13">E-mail</label>
+                <input type="text" id="input_13" class="block" required [(ngModel)]="input_13" name="input_13" placeholder='E-Mail' ngModel #mail="ngModel">
+                <p [ngClass]="{'hidden':!(submited && mail.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="mail.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
         </div>
-        <div>
-
-            <div *ngIf="cardTypeDisplay == 'Spark MasterCard without name - 10€|10'">
-                <h1>Shipping Method</h1>
+        <div class="clear">
+            <div *ngIf="cardTypeDisplay == 'Spark MasterCard without name - 10€|10'" class="dist">
+                <h1 class="lscx_color">Shipping Method</h1>
                 <p class="bold">International shipping</p>
                 <div>
                     <div>
@@ -92,17 +201,50 @@
                         <label for="shipType2"><span><span></span></span>Tourline express</label>
                     </div>
                     <p *ngIf="shippingDisplay == 'Tourline economic|0'" class="italic">Free shipping in 48h max (only continental Spain, Balearic Islands, Ceuta, and Melilla).</p>
-                    <p *ngIf="shippingDisplay == 'Tourline express|5'" class="italic">Tourline 14 Horas (14 Hours) is a service with a delivery time before 14:00h (2 p.m.), the following day. For further information please
-                        <span class=" inline italic lscx_color" (click)="openExternal()">click here</span>. Orders after 16:oo ( 4p.pm.), will be sent on the next business day.</p>
+                    <p *ngIf="shippingDisplay == 'Tourline express|5'" class="italic">Tourline 14 Hours is a service with a delivery time before 14:00h (2PM), the following day. For further information please
+                        <span class=" inline italic lscx_color pointer" (click)="openExternal()">click here</span>. Orders after 16:00h ( 4PM), will be sent on the next business day.</p>
                 </div>
 
             </div>
-            <div *ngIf="cardTypeDisplay == 'Spark MasterCard embossed with your name - 25€|25'">
-                <h1>Shipping Method</h1>
+            <div *ngIf="cardTypeDisplay == 'Spark MasterCard embossed with your name - 25€|25'" class="dist">
+                <h1 class="lscx_color">Shipping Method</h1>
                 <p class="bold">International shipping</p>
-                <input type="radio" name="input_41" value='Certified Mail (Free)|0' [(ngModel)]="input_41" id="shipping" (click)="shippingType($event.target.value)">
+                <input type="radio" name="input_41" value='Certified Mail (Free)|0' [(ngModel)]="input_41" id="shipping">
                 <label for="shipping"><span><span></span></span>Certified Mail (Free)</label>
             </div>
+        </div>
+        <div class="clear dist">
+            <h1 class="lscx_color">Payment Details</h1>
+            <div>
+                <label for="input_8">Payment method</label>
+                <select id="input_8" class="block title" required [(ngModel)]="input_8" name="input_8" #payment="ngModel">
+                        <option class="pointer" disabled value="Choose an option">Choose an option</option>
+                        <!--<option value='Credit Card'>Credit Card</option>-->
+                        <option value='Bank Deposit or Bank Transfer'>Bank Deposit or Bank Transfer</option>
+                </select>
+
+                <p [ngClass]="{'hidden':!(submited && payment.invalid)}" class="error" max-width="14px">
+                    <span *ngIf="payment.errors?.required" class="error">This field is required</span>
+                </p>
+            </div>
+        </div>
+        <div class="dist">
+            <p class="bold inlineBlock">Total</p>
+            <h1 class="lscx_color inline">{{total}}€</h1>
+
+        </div>
+        <div class="hidden">
+            <input type="text" id="state_8" class="block" required [(ngModel)]="state_8" name="state_8" value="WyJ7XCIyNlwiOltcIjljOWFlMWQ0OTNkNzQ3ODJmN2M2Yjk1NGM4MDQ3ZGMwXCIsXCIwYmY0NTFhYWRjMTMyM2I5M2FlYmMzZmE4MDQ4ZWViY1wiXSxcIjQ3XCI6W1wiZTEwNzJkNTEyNWEzMmI5Zjk0NzRjMzFjMmNkMDYzODNcIixcImU0MjNiMzEzNjk1Yjc5N2I2MDJkM2IyZjUzNjk4NzcwXCIsXCI2Y2JmOWNmNTNiODg2MmU5M2RjZDI2MjM3OThjZjE3NFwiXSxcIjM2XCI6W1wiY2VkODc2MTEzYWY2NzNlYmNmZTVkNmIyMmU3ZTZlNjRcIixcImU3MzA2NjI5MTdkMzcxOTliNDNiMGUzODFhYjI2YTg4XCJdLFwiMzdcIjpbXCJhYzk5NjNiMWIyMTI1MWZlNWY2ZGFjNzgyMGRiZDBhMVwiLFwiOTJhNGYzNzU3MzkzZTEyMGYxMzY1OTM5NGQyZDdiZjJcIl0sXCI0MVwiOltcIjYzYjY5YjFmMzhlMmQzMzliOThmYWI5MjQ1MGZiMWU2XCJdfSIsIjNiYmQxNWRkMGI5OWM5ZDYyNjcxYjNmNjkyMTIzYTU4Il0="
+                ngModel #state="ngModel">
+            <input type="text" id="is_submit_8" class="block" required [(ngModel)]="is_submit_8" name="is_submit_8" value="1" ngModel #sub="ngModel">
+            <input type="text" id="gform_submit" class="block" required [(ngModel)]="gform_submit" name="gform_submit" value="8" ngModel #sub="ngModel">
+            <input type="text" id="gform_target_page_number_8" class="block" required [(ngModel)]="gform_target_page_number_8" name="gform_target_page_number_8" value="0" ngModel #target="ngModel">
+            <input type="text" id="gform_source_page_number_8" class="block" required [(ngModel)]="gform_source_page_number_8" name="gform_source_page_number_8" value="1" ngModel #source="ngModel">
+        </div>
+        <div class="dist">
+            <input name='choice_8_14_1' type='checkbox' value='I accept the &lt;a href=&quot;https://www.tarjetaspark.es/wp-content/uploads/2018/05/180424_booklet_esp_completo.pdf&quot; target=&quot;_blank&quot; style=&quot;font-weight:bold&quot;&gt;terms and conditions&lt;/a&gt; and the &lt;a href=&quot;https://www.tarjetaspark.es/privacy&quot; target=&quot;_blank&quot; style=&quot;font-weight:bold&quot;&gt;privacy policy&lt;/a&gt;'
+                id='choice_8_14_1' tabindex='75' [(ngModel)]="choice_8_14_1" required ngModel #check/>
+            <p class="inline"> I accept the <span class="pointer lscx_color" (click)="terms()">terms and conditions</span> and the <span class="pointer lscx_color" (click)="privacy()">privacy policy</span>.</p>
         </div>
         <button type="submit" class="btn-inverse btn-default btn-validation right" lang="en">Send <i class="fa fa-arrow-right"></i></button>
     </form>
