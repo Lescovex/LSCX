@@ -1,9 +1,11 @@
 
 <div class="radioDiv">
-    <input type="radio" id="importTypeK" name="sendTo" value="address" [(ngModel)]="sendTo" />
-    <label for="importTypeK" class="black"><span><span></span></span>Etherum address</label>
-    <!--<input type="radio" id="importTypeP" name="sendTo" value="mobile" [(ngModel)]="sendTo" />
-    <label for="importTypeP" class="black"><span><span></span></span>Mobile phone</label>-->
+    <input type="radio" id="address" name="sendTo" value="address" [(ngModel)]="sendTo" />
+    <label for="address" class="black"><span><span></span></span>Etherum address</label>
+    <!--<input type="radio" id="mobile" name="sendTo" value="mobile" [(ngModel)]="sendTo" />
+    <label for="mobile" class="black"><span><span></span></span>Mobile phone</label>
+    <input type="radio" id="email" name="sendTo" value="email" [(ngModel)]="sendTo" />
+    <label for="email" class="black"><span><span></span></span>Email</label>-->
 </div>
 <form (ngSubmit)="sendEth(form)" #form="ngForm">
     <div *ngIf="sendTo == 'address'">
@@ -14,12 +16,33 @@
             <span *ngIf="!receiverAddr.errors?.required && receiverAddr.errors?.invalidAddress" class="error">Invalid receiver address</span>
         </p>
     </div>
-    <!--<div *ngIf="sendTo == 'mobile'">
+    <!--<div *ngIf="sendTo == 'mobile'" >
         <label class="title" for="receiverMobile">Receiver mobile</label>
-        <input class="block" [ngClass]="{'error': submited && receiverMobile.invalid}" required id="receiverMobile" type="phone" value="" name="receiverMobile" ngModel #receiverMobile="ngModel" />
-         <p [ngClass]="{'hidden':!(submited && receiverMobile.invalid)}"  class="error">
-            <span *ngIf="receiverMobile.errors?.required" class="error">This field is required</span>
-           <span *ngIf="!receiverMobile.errors?.required && receiverMobile.errors?.invalidAddress" class="error">Invalid receiver address</span>
+        <div class="flex-row">
+            <div class="inline">
+                <div class="input" (click)="toggleShow()">
+                    <p><img [src]="'assets/icons/flags/'+country.flag"> {{country.name}} <span class="grey">(+{{country.dial_code}})</span></p>
+                </div>
+                <ul *ngIf="showPrefixes" class="select-list">
+                    <li *ngFor="let item of prefixes"><img [src]="'assets/icons/flags/'+item.flag"> {{item.name}} <span class="grey">(+{{item.dial_code}})</span></li>
+                </ul>
+                <input type="hidden" name="prefix" [(ngModel)]="country" ngModel #prefix="ngModel">
+            </div>
+            <div class="flex1">
+                <input class="block" [ngClass]="{'error': submited && receiverMobile.invalid}" required inavelidphone id="receiverMobile" type="phone" value="" name="receiverMobile" ngModel #receiverMobile="ngModel" />
+                <p [ngClass]="{'hidden':!(submited && receiverMobile.invalid)}"  class="error">
+                    <span *ngIf="receiverMobile.errors?.required" class="error">This field is required</span>
+                <span *ngIf="!receiverMobile.errors?.required && receiverMobile.errors?.invalidAddress" class="error">Invalid receiver address</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="sendTo == 'email'">
+        <label class="title" for="receiverEmail">Receiver email</label>
+        <input class="block" [ngClass]="{'error': submited && receiverEmail.invalid}" required email id="receiverEmail" type="email" value="" name="receiverEmail" ngModel #receiverEmail="ngModel" />
+         <p [ngClass]="{'hidden':!(submited && receiverEmail.invalid)}"  class="error">
+            <span *ngIf="receiverEmail.errors?.required" class="error">This field is required</span>
+           <span *ngIf="!receiverEmail.errors?.required && receiverEmail.errors?.email" class="error">Invalid receiver email</span>
         </p>
     </div>-->
 
