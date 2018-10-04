@@ -20,7 +20,7 @@ export class SendPage implements OnInit {
   protected sendTo: string;
   submited = false;
 
-  constructor(public _web3: Web3,private _account: AccountService, private _wallet: WalletService, private _dialog: DialogService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
+  constructor(public _web3: Web3,private _account: AccountService, private _wallet: WalletService, protected _dialog: DialogService, protected sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
     this.sendTo = "address";
    
   }

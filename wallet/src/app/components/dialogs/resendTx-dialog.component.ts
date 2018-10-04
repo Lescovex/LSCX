@@ -18,7 +18,7 @@ export class ResendTxDialogComponent implements OnInit{
     cancelTx: Transaction;
     action:String;
 
-    constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<ResendTxDialogComponent>, private _web3: Web3, private _rawTx: RawTxService, private dialog: MdDialog){
+    constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<ResendTxDialogComponent>, private _web3: Web3, private _rawTx: RawTxService, protected dialog: MdDialog){
         this.newTx = new Transaction(this.data);
         this.setCancelTx();
         this.setGasPrice();

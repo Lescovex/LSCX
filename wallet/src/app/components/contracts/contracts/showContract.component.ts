@@ -78,6 +78,8 @@ export class ShowContract implements OnInit{
     let params = this._forms.getValues(this.funct.inputs, this.functionForm, this.contractInfo.type);
     if(this.funct.constant){  
       let response = await this._LSCXcontract.callFunction(this._LSCXcontract.contract, this.funct.name, params);
+      console.log("response", response);
+      
       if(this.funct.decimals == 'decimals'){
         let number = parseInt(response.toString()) /Math.pow(10,this.contractInfo.decimals);
 				let zero = '0'
@@ -91,6 +93,8 @@ export class ShowContract implements OnInit{
     }else{
       let dialogRef = this._dialog.openLoadingDialog();
       let data = await this._LSCXcontract.getFunctionData(this.funct.name, params);
+      console.log("function data?", data);
+      
       let gasLimit;
       try {
         gasLimit = await this._web3.estimateGas(this._account.account.address,this.contractInfo.address, data, 0);
