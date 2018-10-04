@@ -7,11 +7,11 @@
     </div>
     <div>
         <p><label class="title" for="lang">Infura API token</label> Get a Infura Api token and paste here. <a class="pointer" (click)="openUrl('https://infura.io/register')">Infura Web Page</a></p>
-        <input type="text" class="block" [(ngModel)]="infuraApiKey" (blur)="setInfuraKey()" (keypress.enter)="setInfuraKey()" (paste)="setInfuraKey($event.clipboardData.getData('text/plain'))">
+        <input type="text" class="block" [(ngModel)]="infuraApiKey" (blur)="setInfuraKey()" (keypress.enter)="setInfuraKey()" (paste)="setInfuraKey($event.target.value)">
     </div>
     <div>
         <p><label class="title" for="lang">Etherscan API token</label> Get a Etherscan Api key and paste here. <a class="pointer" (click)="openUrl('https://ropsten.etherscan.io/apis')">Etherscan Web Page</a></p>
-        <input type="text" class="block" [(ngModel)]="etherscanApiKey" (blur)="setEtherscanKey()" (keypress.enter)="setEtherscanKey()" (paste)="setEtherscanKey($event.clipboardData.getData('text/plain'))">
+        <input type="text" class="block" [(ngModel)]="etherscanApiKey" (blur)="setEtherscanKey()" (keypress.enter)="setEtherscanKey()" (paste)="setEtherscanKey($event.target.value)">
     </div>
 
     <div>
