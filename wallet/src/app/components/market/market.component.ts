@@ -12,7 +12,7 @@ export class MarketComponent{
   protected showList: boolean = false;
   protected price;
   interval;
-  constructor(public _account:AccountService, private _market: MarketService) {
+  constructor(public _account:AccountService, protected _market: MarketService) {
     this._market.setMarket();
   }
 

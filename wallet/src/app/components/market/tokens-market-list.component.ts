@@ -58,6 +58,8 @@ export class TokensMarketListComponent {
   
   selectToken(token){
     //console.log("cons",token)
+    console.log("selectToken?", token);
+    
     this._market.resetSocket(token);
     this.show.emit(false);
     

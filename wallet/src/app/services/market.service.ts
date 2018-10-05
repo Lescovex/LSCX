@@ -49,18 +49,32 @@ export class MarketService {
 	}
 
 	setToken(token?) {
+		console.log("dentro del setToken?");
+		console.log("que es token????",token);
+		
 		if(typeof(token)=="undefined"){
+			console.log("entras?");
+			
 			let localToken = this.getLocalStorageToken();
+			console.log("getLocalToken",localToken);
+			
 			if(localToken !=null && this.config.tokens.find(token=>token.addr == localToken.addr) != null){
 				this.token = localToken;
+				console.log("this token de setToken en marketService",this.token);
+				
 			}else if ( localToken !=null && 'tokens' in this._account.account && this._account.account.tokens.find(token=> token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network) != null){
 				this.token = localToken;
+				console.log("this token de setToken en marketService primer else",this.token);
+				
 			}else{
 				this.token = this.config.tokens[1]; 
+				console.log("this token de setToken en marketService segundo else",this.token);
 			}
 		}else{
 			this.token = token;
+			console.log("this token de setToken en marketService tercer else",this.token);
 		}
+		
 		this.saveLocalStorageToken();
 		this.setTokenContract();
 		this.resetTokenBalances();
@@ -74,7 +88,34 @@ export class MarketService {
 		}
 	}
 	saveLocalStorageToken(){
-		localStorage.setItem('marketToken', JSON.stringify(this.token));
+		console.log("entras en saveLocalstorageItem?");
+		console.log("Contenido del this token", this.token);
+		
+		if(this.token != null && this.token.addr != null){
+			console.log("entras en el primer if de token y token addr distinto a null?");
+			
+			localStorage.removeItem('marketToken');	
+			console.log("remove item?");
+			
+			let almacena = 0;
+			console.log(almacena);
+			let obj ={
+				addr: this.token.addr,
+				balance: this.token.balance,
+				decimals: this.token.decimals,
+				name: this.token.name
+			}
+			
+			
+			localStorage.setItem('marketToken', JSON.stringify(obj));	
+			console.log("setitem?");
+			
+		}else{
+			localStorage.removeItem('marketToken');	
+		}
+		let contenido = JSON.parse(localStorage.getItem('marketToken'))
+		console.log("contenido localstorage", contenido);
+		
 	}
 
 
@@ -85,10 +126,16 @@ export class MarketService {
 	}
 
 	setTokenContract() {
+		console.log("entras en setTokenContract¿?");
+		
 		this.token.contract = this.contractToken.at(this.token.addr);
+		console.log("setTokenContract", this.token.contract);
+		
 	}
 
 	setMarket(token?){
+		console.log("dentro del setMarket?");
+		
 		this.setCongif();
 		this.setContracts();
 		this.eth = this.config.tokens[0];
@@ -99,6 +146,8 @@ export class MarketService {
 	}
 
 	setSha256(){
+		console.log("dentro del setSha256");
+		
 		let abi = [{"constant": true, "inputs": [{"name": "contrato","type": "address"},{"name": "tokenGet","type": "address"},{"name": "amountGet","type": "uint256"},{"name": "tokenGive","type": "address"},
 				{"name": "amountGive","type": "uint256"},{"name": "expires","type": "uint256"},{"name": "nonce","type": "uint256"}],
 				"name": "gethash", 	"outputs": [{"name": "","type": "bytes32"}],"payable": false,"stateMutability": "pure","type": "function"}]
@@ -112,6 +161,8 @@ export class MarketService {
 	}
 
 	setSocket(){
+		console.log("dentro del setSocket?");
+		
 		this.socket = io.connect(this.config.socketServer[0], { transports: ['websocket'] });
 		this.socket.on('connect', () => {
 			//console.log('socket connected', this.socket);
@@ -119,7 +170,9 @@ export class MarketService {
 		this.waitForMarket();
 	}
 
-	resetSocket(token?) {
+	async resetSocket(token?) {
+		console.log("resetSocket dentro?",token);
+		
 		this.socket.close();
 		this.state = {
 			initialState: false,
@@ -129,11 +182,18 @@ export class MarketService {
 			myOrders: undefined,
 		};
 		if(typeof(token)== 'undefined'){
+			console.log("resetSocket", token);
+			
 			this.setToken();
 		}else{
-			this.setToken(token)
+			console.log("resetsocket hay token?",token);
+			if(token.addr != null){
+				this.setToken(token)
+			}else{
+				this.setToken();
+			}
 		}
-		this.setSocket();
+		await this.setSocket();
 	}
 
 	
@@ -150,16 +210,20 @@ export class MarketService {
 			balance = this._account.account.balance
 		}else{
 			console.log("this.token.contract",this.token.contract);
+			if(this.token.contract != null){
+				console.log("estas dentro del getBalance?");
+				
+				let value = await this._contract.callFunction(this.token.contract, 'balanceOf', [this._account.account.address]);
+				console.log("value q devuelve el getBalance", value);
+				
+				let x = value.toString();
+				let resBig = new BigNumber(x);
+				let y = resBig.div(Math.pow(10,this.token.decimals));
+				
+				balance = y.toNumber();
+				console.log("balance de dentro del getBalance",balance);
+			}
 			
-			let value = await this._contract.callFunction(this.token.contract, 'balanceOf', [this._account.account.address]);
-			console.log("value q devuelve el getBalance", value);
-			
-			let x = value.toString();
-	  		let resBig = new BigNumber(x);
-			let y = resBig.div(Math.pow(10,this.token.decimals));
-			
-			balance = y.toNumber();
-			console.log("balance de dentro del getBalance",balance);
 			
 		}
 		return balance;
@@ -226,6 +290,8 @@ export class MarketService {
 	}
 
 	resetTokenBalances() {
+		console.log("entras en resetTokenBalances?");
+		
 		this.token.balance = null;
 		this.etherdeltaBalances.token = null;
 	}
@@ -402,14 +468,24 @@ export class MarketService {
 	}
 
 	getLocalState() {
+		console.log("getLocalStateFunction");
+		
 		if(localStorage.getItem('market')){
+			console.log("getLocalStateFunction dentro del if");
+			
 			let market = JSON.parse(localStorage.getItem('market'));
 			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network.toString() in x);
 			if(index != -1){
+				console.log("getLocalStateFunction dentro del segundo if");
+				
 				if('myFunds' in market[index][this._web3.network.toString()]) {
 					this.state.myFunds = market[index][this._web3.network.toString()].myFunds.filter(x=>x.tokenAddr==0x0000000000000000000000000000000000000000 ||x.token.Addr==this.token.addr)
+					console.log("getLocalStateFunction dentro del tercer if");
+					
 				}
 				if(this.token.addr in market[index][this._web3.network.toString()]){
+					console.log("getLocalStateFunction dentro del cuatro if");
+					
 					this.state.myOrders = market[index][this._web3.network.toString()][this.token.addr].myOrders;
 					this.state.myTrades = market[index][this._web3.network.toString()][this.token.addr].myTrades;
 				}
