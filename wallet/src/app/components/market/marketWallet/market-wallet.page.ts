@@ -10,7 +10,7 @@ import { MarketService } from '../../../services/market.service';
 export class MarketWalletPage implements OnInit, OnDestroy {
   action : string;
   interval;
-  constructor(public _account:AccountService, private _market: MarketService) {
+  constructor(public _account:AccountService, protected _market: MarketService) {
     this.action = 'deposit'
   }
   async ngOnInit() {

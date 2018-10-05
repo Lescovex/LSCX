@@ -1,8 +1,7 @@
-
 <div id="clear">
     <p class="backWhite border-red"><span class="bold">Attention:</span> decimal positions are not shown for this contract, inputs and outputs are not in token unit, but in weis (1 wei is the smallest possible bit of token).</p>
     <div>
-        <div *ngIf="contractType=='LSCX'" class="left" >
+        <div *ngIf="contractType=='LSCX'" class="left">
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_ABT'" src='~icons/LSCX_ABT.svg'>
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_CIF'" src='~icons/LSCX_CIF.svg'>
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_CYC'" src='~icons/LSCX_CYC.svg'>
@@ -15,15 +14,27 @@
         <div *ngIf="contractType=='custom'" class="left">
             <p class="contract-list-title">{{contractInfo.name}}</p>
             <p class="contract-list-name">{{contractInfo.address}}</p>
-        </div> 
+        </div>
         <a class="right btn-contract" (click)="goBack()"><img src="~icons/left.svg"> Go back</a>
     </div>
     <ul class="info-list clear dist">
         <ng-container *ngIf="contractType=='LSCX'">
-            <li *ngIf="contractInfo.type != 'LSCX_CYC'" class="half left clear"><p class="title">Total supply:</p> <p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.8-8'}}</p></li>
-            <li *ngIf="contractInfo.type == 'LSCX_CYC'" class="half left clear"><p class="title">Total supply:</p><p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.18-18'}}</p></li>
-            <li class="half right"><p class="title">Standard:</p><p class="whiteBox">{{contractInfo.standard}}</p></li>
-            <li class="half left clear"><p class="title">Decimals:</p><p class="whiteBox">{{contractInfo.decimals}}</p></li>
+            <li *ngIf="contractInfo.type != 'LSCX_CYC'" class="half left clear">
+                <p class="title">Total supply:</p>
+                <p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.8-8'}}</p>
+            </li>
+            <li *ngIf="contractInfo.type == 'LSCX_CYC'" class="half left clear">
+                <p class="title">Total supply:</p>
+                <p class="whiteBox">{{decimalsOutput(contractInfo.totalSupply) | number:'1.18-18'}}</p>
+            </li>
+            <li class="half right">
+                <p class="title">Standard:</p>
+                <p class="whiteBox">{{contractInfo.standard}}</p>
+            </li>
+            <li class="half left clear">
+                <p class="title">Decimals:</p>
+                <p class="whiteBox">{{contractInfo.decimals}}</p>
+            </li>
         </ng-container>
         <ng-container *ngIf="contractType=='custom'">
             <li *ngFor="let item of moreInfo, index as i" [ngClass]="(i+1)%2!=0 ? 'left clear' : 'right'" class="half">
@@ -55,17 +66,16 @@
                 <div *ngFor="let input of funct.inputs, index as i" [ngClass]="(i+1)%2==0 ? 'right' : 'left clear'" class="half">
                     <label class="title" for="{{input.name}}">{{(input.name | separateWords) | titlecase}} <span>- {{input.type}} *</span></label>
                     <input *ngIf="input.decimals != 'decimals'" formControlName="{{input.name}}" type="{{input.type2}}" class="block" [ngClass]="{'error': submited && getControl(input.name).errors!= null}">
-                    <input *ngIf="input.decimals == 'decimals'" type="{{input.type2}}" id="resized" formControlName="{{input.name}}" class="block" placeholder="0.{{('0').repeat(contractInfo.decimals)}}" [ngClass]="{'error': submited && getControl(input.name).errors!= null}"/>
+                    <input *ngIf="input.decimals == 'decimals'" type="{{input.type2}}" id="resized" formControlName="{{input.name}}" class="block" placeholder="0.{{('0').repeat(contractInfo.decimals)}}" [ngClass]="{'error': submited && getControl(input.name).errors!= null}"
+                    />
                 </div>
             </ng-container>
             <div id="contract-response" class="input-container clear dist" *ngIf="submited && response != null">
                 <p><span class="black">{{(funct?.name  | separateWords)| titlecase}}:</span> {{response}}</p>
             </div>
-            <div *ngIf="function!={}" class="clear right" >
-                <button  type="submit" class="btn-inverse">Submit</button>
+            <div *ngIf="function!={}" class="clear right">
+                <button type="submit" class="btn-inverse">Submit</button>
             </div>
         </form>
     </div>
 </div>
-    
-    

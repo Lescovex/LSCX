@@ -1,30 +1,29 @@
-
 <div *ngIf="!selected; else showContract">
     <p *ngIf="_contractStorage.LSCX_Contracts.length == 0" class="whiteBox text-center">You don't have contracts.</p>
     <p *ngIf="_contractStorage.LSCX_Contracts.length > 0" class="title">Lescovex contracts</p>
     <div *ngFor="let contract of _contractStorage.LSCX_Contracts, index as i" class="backWhite half contract-list" [ngClass]="[{true :'right', false: 'left clear'}[(i+1)%2==0],{true:'contract-list-active', false: 'contract-list-disabled'}[contract.active]]">
-            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ABT'" src='~icons/LSCX_ABT.svg'>
-            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CIF'" src='~icons/LSCX_CIF.svg'>
-            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CYC'" src='~icons/LSCX_CYC.svg'>
-            <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ISC'" src='~icons/LSCX_ISC.svg'>
-            <div class="center">
-                <p class="contract-list-title">{{contract.symbol}}</p>
-                <p class="contract-list-name">{{contract.name}}</p>
-            </div>
-            <div >
-                <button class="btn-contract block" (click)="setContract(contract)">Show</button>
-                <button class="btn-contract-delete block" (click)="deleteContract(contract)">Delete</button>
-            </div>
-            
-            <p class="clear contract-list-addr">{{contract.address}}<span *ngIf="!contract.active"> (Waiting Address)</span></p>
+        <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ABT'" src='~icons/LSCX_ABT.svg'>
+        <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CIF'" src='~icons/LSCX_CIF.svg'>
+        <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_CYC'" src='~icons/LSCX_CYC.svg'>
+        <img class="left select-contract-icon" *ngIf="contract.type=='LSCX_ISC'" src='~icons/LSCX_ISC.svg'>
+        <div class="center">
+            <p class="contract-list-title">{{contract.symbol}}</p>
+            <p class="contract-list-name">{{contract.name}}</p>
+        </div>
+        <div>
+            <button class="btn-contract block" (click)="setContract(contract)">Show</button>
+            <button class="btn-contract-delete block" (click)="deleteContract(contract)">Delete</button>
+        </div>
+
+        <p class="clear contract-list-addr">{{contract.address}}<span *ngIf="!contract.active"> (Waiting Address)</span></p>
     </div>
     <p *ngIf="_contractStorage.customContracts.length > 0" class=" clear dist title">Other contracts</p>
     <div *ngFor="let contract of _contractStorage.customContracts, index as i" class="backWhite flex-row custom-contract">
-        <p class="flex1 bold">{{contract.name}} - <span class="contract-list-addr">{{contract.address}}</span></p> 
+        <p class="flex1 bold">{{contract.name}} - <span class="contract-list-addr">{{contract.address}}</span></p>
         <div class="right">
             <button class="btn-contract" (click)="setContract(contract)">Show</button>
-        <button class="btn-contract-delete extra" (click)="deleteContract(contract)">Delete</button>
-        </div>     
+            <button class="btn-contract-delete extra" (click)="deleteContract(contract)">Delete</button>
+        </div>
     </div>
 
 </div>

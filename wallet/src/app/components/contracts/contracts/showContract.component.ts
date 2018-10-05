@@ -10,6 +10,9 @@ import { DialogService } from '../../../services/dialog.service';
 import { Router } from '@angular/router';
 import { Web3 } from '../../../services/web3.service';
 
+import BigNumber from 'bignumber.js/bignumber';
+
+
 @Component({
   selector: 'app-show-contract',
   templateUrl: './showContract.component.html',
@@ -29,8 +32,9 @@ export class ShowContract implements OnInit{
   protected funct: any;
   protected owner: string;
   protected response: any = null;
-  
-  constructor(public _LSCXcontract: LSCXContractService,private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _dialog: DialogService, private router : Router, private _web3: Web3) {
+  protected function;
+
+  constructor(public _LSCXcontract: LSCXContractService,protected _forms: FormsService, private _rawtx: RawTxService, protected sendDialogService : SendDialogService, protected _account: AccountService, protected _dialog: DialogService, protected router : Router, protected _web3: Web3) {
     this.functionForm = new FormGroup({
       functionCtrl: new FormControl(null,Validators.required),
     })
@@ -76,24 +80,35 @@ export class ShowContract implements OnInit{
       return false
     }
     let params = this._forms.getValues(this.funct.inputs, this.functionForm, this.contractInfo.type);
-    if(this.funct.constant){  
+    if(this.funct.constant){
+      
       let response = await this._LSCXcontract.callFunction(this._LSCXcontract.contract, this.funct.name, params);
-      console.log("response", response);
+      
+      let x = response.toString();
+      let resBig = new BigNumber(x);
+      
       
       if(this.funct.decimals == 'decimals'){
-        let number = parseInt(response.toString()) /Math.pow(10,this.contractInfo.decimals);
+      
+        let y = resBig.div(Math.pow(10,this.contractInfo.decimals));
+      
+        let number = y.toNumber();
+        
 				let zero = '0'
-				this.response = number.toLocaleString('en') + "."+zero.repeat(this.contractInfo.decimals)
+        this.response = number.toLocaleString('en') + "."+zero.repeat(this.contractInfo.decimals)
+
+        
       }else if(this.funct.decimals == "eth"){
         let number = this._web3.web3.fromWei(parseInt(response.toString()),'ether')
-				this.response = number.toLocaleString('en')
+        this.response = number.toLocaleString('en')
+
       }else{
         this.response = response;
+
       }
     }else{
       let dialogRef = this._dialog.openLoadingDialog();
       let data = await this._LSCXcontract.getFunctionData(this.funct.name, params);
-      console.log("function data?", data);
       
       let gasLimit;
       try {
