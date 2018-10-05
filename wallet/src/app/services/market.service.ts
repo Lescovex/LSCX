@@ -149,8 +149,18 @@ export class MarketService {
 		if(this.token.name =="ETH"){
 			balance = this._account.account.balance
 		}else{
+			console.log("this.token.contract",this.token.contract);
+			
 			let value = await this._contract.callFunction(this.token.contract, 'balanceOf', [this._account.account.address]);
-			balance = parseInt(value.toString())/Math.pow(10,this.token.decimals)
+			console.log("value q devuelve el getBalance", value);
+			
+			let x = value.toString();
+	  		let resBig = new BigNumber(x);
+			let y = resBig.div(Math.pow(10,this.token.decimals));
+			
+			balance = y.toNumber();
+			console.log("balance de dentro del getBalance",balance);
+			
 		}
 		return balance;
 	}
@@ -222,6 +232,8 @@ export class MarketService {
 
 	async setBalances() {
 		this.token.balance = await this.getBalance();
+		console.log("this.token.balance",this.token.balance);
+		
 		if(this.token.name =="ETH"){
 			this.etherdeltaBalances.token = await this.getEtherdeltaEther();
 		}else{
@@ -267,7 +279,9 @@ export class MarketService {
 				
 				let len;
 				len = market.trades.length
-				this.lastPrice = market.trades[len-1].price;
+				if(len > 0){
+					this.lastPrice = market.trades[len-1].price;
+				}
 				this.socket.on('orders', (orders) => {
 					//console.log("yeeeeep ORDERS");
 				  	this.updateOrders(orders, this.token, this._account.account.address);
