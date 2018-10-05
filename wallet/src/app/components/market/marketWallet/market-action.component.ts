@@ -29,6 +29,8 @@ export class MarketActionComponent implements OnChanges{
     }
     async onSubmit(form){
         console.log("submit form?");
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!thisAction after submit?????????????????????????????", this.action);
+        
         
         this.submited = true;
         if(form.invalid){
@@ -66,9 +68,9 @@ export class MarketActionComponent implements OnChanges{
                 //console.log('withTk', form);
                 tx = await this.withdrawToken(params);
                 break;
-        }
-
-        if(tx instanceof Error) {
+        }        
+      
+        if(tx instanceof Error == true) {
             this._dialog.openErrorDialog("Unable to "+this.action, "You don't have enough founds", " ");
         } else {
             if(tx != null){
