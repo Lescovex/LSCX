@@ -92,21 +92,13 @@ export class MarketService {
 		console.log("Contenido del this token", this.token);
 		
 		if(this.token != null && this.token.addr != null){
-			console.log("entras en el primer if de token y token addr distinto a null?");
-			
-			localStorage.removeItem('marketToken');	
-			console.log("remove item?");
-			
-			let almacena = 0;
-			console.log(almacena);
+			localStorage.removeItem('marketToken');
 			let obj ={
 				addr: this.token.addr,
 				balance: this.token.balance,
 				decimals: this.token.decimals,
 				name: this.token.name
 			}
-			
-			
 			localStorage.setItem('marketToken', JSON.stringify(obj));	
 			console.log("setitem?");
 			
@@ -118,7 +110,6 @@ export class MarketService {
 		
 	}
 
-
 	setContracts() {	
 		this.contractEtherDelta = this._contract.contractInstance(this.getAbi('etherdelta'),this.config.contractEtherDeltaAddrs[0].addr);
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
@@ -126,11 +117,7 @@ export class MarketService {
 	}
 
 	setTokenContract() {
-		console.log("entras en setTokenContract¿?");
-		
-		this.token.contract = this.contractToken.at(this.token.addr);
-		console.log("setTokenContract", this.token.contract);
-		
+		this.token.contract = this.contractToken.at(this.token.addr)
 	}
 
 	setMarket(token?){
@@ -209,22 +196,14 @@ export class MarketService {
 		if(this.token.name =="ETH"){
 			balance = this._account.account.balance
 		}else{
-			console.log("this.token.contract",this.token.contract);
+			
 			if(this.token.contract != null){
-				console.log("estas dentro del getBalance?");
-				
 				let value = await this._contract.callFunction(this.token.contract, 'balanceOf', [this._account.account.address]);
-				console.log("value q devuelve el getBalance", value);
-				
 				let x = value.toString();
 				let resBig = new BigNumber(x);
 				let y = resBig.div(Math.pow(10,this.token.decimals));
-				
 				balance = y.toNumber();
-				console.log("balance de dentro del getBalance",balance);
 			}
-			
-			
 		}
 		return balance;
 	}
@@ -290,15 +269,12 @@ export class MarketService {
 	}
 
 	resetTokenBalances() {
-		console.log("entras en resetTokenBalances?");
-		
 		this.token.balance = null;
 		this.etherdeltaBalances.token = null;
 	}
 
 	async setBalances() {
 		this.token.balance = await this.getBalance();
-		console.log("this.token.balance",this.token.balance);
 		
 		if(this.token.name =="ETH"){
 			this.etherdeltaBalances.token = await this.getEtherdeltaEther();

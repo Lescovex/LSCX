@@ -28,6 +28,8 @@ export class MarketActionComponent implements OnChanges{
         }
     }
     async onSubmit(form){
+        console.log("submit form?");
+        
         this.submited = true;
         if(form.invalid){
           return false

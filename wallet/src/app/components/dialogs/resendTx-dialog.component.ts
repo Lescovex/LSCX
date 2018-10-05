@@ -1,6 +1,8 @@
 import { Component,  Inject, OnInit} from '@angular/core';
 import { MdDialog, MdDialogRef, MD_DIALOG_DATA } from '@angular/material';
 import { Web3 } from '../../services/web3.service';
+
+import { AccountService } from '../../services/account.service';
 import { Transaction } from '../../models/transaction'
 import { RawTxService } from '../../services/rawtx.sesrvice';
 import { SendDialogComponent } from '../dialogs/send-dialog.component';
@@ -18,8 +20,10 @@ export class ResendTxDialogComponent implements OnInit{
     cancelTx: Transaction;
     action:String;
 
-    constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<ResendTxDialogComponent>, private _web3: Web3, private _rawTx: RawTxService, protected dialog: MdDialog){
+    constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<ResendTxDialogComponent>, private _web3: Web3, private _rawTx: RawTxService, protected dialog: MdDialog, protected _account: AccountService){
         this.newTx = new Transaction(this.data);
+        console.log("this.data del resend?",this.data);
+        
         this.setCancelTx();
         this.setGasPrice();
         this.setAction('resend');
@@ -62,11 +66,19 @@ export class ResendTxDialogComponent implements OnInit{
     }
 
     async sendTx(){
+ 
+        let x = await this._web3.getNonce(this._account.account.address);
+        console.log("X es el nonce que me toca???",x);
+        if(this.tx.nonce >= x){
+            x = this.tx.nonce
+        }
         let options: any = {
             gasLimit: this.tx.gas,
             gasPrice: this.tx.gasPrice,
-            nonce: this.tx.nonce
+            nonce: x
         }
+        console.log("this.tx??????",this.tx);
+       
 
         if(this.tx.input != "0x") {
             options.data = this.tx.input;

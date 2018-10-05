@@ -7,11 +7,14 @@ import * as EthTx from 'ethereumjs-tx';
 
 @Injectable()
 export class RawTxService {
-    constructor(private _account: AccountService, private _web3: Web3){
+    constructor(protected _account: AccountService, private _web3: Web3){
 
     }
 
     async createRaw(receiverAddr: String, amount: number, options?: any){
+        console.log("dentro del createRAW!!!!!!!!");
+        console.log("hay options?", options);
+        
         if(typeof(options)=='undefined'){
             options = {}
         }
@@ -21,21 +24,27 @@ export class RawTxService {
         let acc = this._account.account;
         let amountW = parseInt(this._web3.web3.toWei(amount,'ether'));
         let gasPrice: number;
-
+        console.log("Antes de la declaracion del nonce!!!!!!");
+        
         let nonce;
         if('nonce' in options){
             nonce = options.nonce;
+            console.log("nonce?",nonce);
+            
         }else{
             nonce = await this._web3.getNonce(acc.address);
+            console.log("dentro del else web3 getNonce");
+            
             if(this._account.pending.length > 0){
                 let pendingNonce = this._account.pending[this._account.pending.length-1].nonce;
+                
                 if(pendingNonce >=  nonce){
+                    
                     nonce = pendingNonce+1;
+                    
                 }
             }
         }
-        
-        console.log("despues de pending???", nonce)
 
         if('data' in options){
             data = options.data;
