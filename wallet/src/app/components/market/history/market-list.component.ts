@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input , OnDestroy} from '@angular/core';
 import { Web3 } from '../../../services/web3.service';
 import { MarketService } from '../../../services/market.service';
 import { RawTxService } from '../../../services/rawtx.sesrvice';
@@ -9,7 +9,7 @@ import { SendDialogService } from '../../../services/send-dialog.service';
   selector: 'app-market-list',
   templateUrl: './market-list.component.html',
 })
-export class MarketListComponent implements OnInit, OnChanges {
+export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     @Input() history: any[];
     @Input() address: "string";
     @Input() action: "string";
@@ -19,6 +19,7 @@ export class MarketListComponent implements OnInit, OnChanges {
     totalPages:number = 0;
     page:number = 1;
     limit:number = 15;
+    interval;
 
     items: any[];
 
@@ -28,7 +29,11 @@ export class MarketListComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        setInterval(async()=>{this.blockNumber = await this._web3.blockNumber()})
+        this.interval = setInterval(async()=>{
+            let blockNum = await this._web3.blockNumber();
+            console.log(typeof(blockNum))
+            this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
+        });
     }
     
     ngOnChanges(): void {
@@ -37,6 +42,10 @@ export class MarketListComponent implements OnInit, OnChanges {
             this.getItmes();
         }
   
+    }
+
+    ngOnDestroy(): void {
+        clearImmediate(this.interval);
     }
 
     openExternal(txHash){

@@ -69,7 +69,8 @@ export class Web3 {
     return new Promise((resolve, reject)=>{
       self.web3.eth.getBlockNumber((err, result)=>{
         if(err){
-          resolve(err)
+          let blockNumber = self.web3.eth.blockNumber;
+          resolve(blockNumber);
         }else{
           resolve(result)
         }

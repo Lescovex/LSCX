@@ -3,5 +3,7 @@
     <button class="extra" [ngClass]="(action == 'myOrders') ? 'btn-solid':'btn-inverse'"(click)="activeButton('myOrders')">Orders</button>
     <button class="extra" [ngClass]="(action == 'myFunds') ? 'btn-solid':'btn-inverse'"(click)="activeButton('myFunds')">Funds</button>
 </div>
-
-<app-market-list [action]="action" [address]="_account.account.address" [history]="history"></app-market-list>
+<p *ngIf="intervalLoops>40;else marketHistory" class="whiteBox dist">It is not possible to show the market history at this time</p>
+<ng-template #marketHistory>
+    <app-market-list [action]="action" [address]="_account.account.address" [history]="history"></app-market-list>
+</ng-template>

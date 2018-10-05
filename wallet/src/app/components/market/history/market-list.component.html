@@ -35,7 +35,8 @@
             <tr>
                 <td>{{order.price.toString() | number:"1.8-8":"en"}}</td>
                 <td>{{order.ethAvailableVolume| number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
-                <td>{{order.expires-blockNumber}}</td>
+                <td *ngIf ="blockNumber != null">{{order.expires-blockNumber}}</td>
+                <td *ngIf ="blockNumber == null" class="red">Not available</td>
                 <!--<td><a (click)="cancelOrder(order)">Cancel</a></td>-->
             </tr>
         </tbody>       

@@ -18,9 +18,11 @@ export class MarketHistoryPage implements DoCheck {
   currentToken: any;
   currentState:any;
   loadingDialog;
+  intervalLoops:number;
 
   constructor(protected _account: AccountService, private _contract: ContractService, private _market: MarketService, private _dialog: DialogService, private _web3: Web3) {
     this.action = "myTrades";
+    this.intervalLoops = 0;
     this.lastAction = "myTrades";
     this.getHistory(this.action);
     this.currentState = this._market.state.myTrades;
@@ -42,13 +44,23 @@ export class MarketHistoryPage implements DoCheck {
 
   activeButton(action){
     this.loadingDialog = this._dialog.openLoadingDialog();
-
+    this.intervalLoops = 0;
     let interval = setInterval(()=>{
+      this.intervalLoops++;
       if(this._market.state.initialState == true){
+        this.intervalLoops = 0;
         this.getHistory(action);
         this.action = action;
-        this.loadingDialog.close();
+        if (this.loadingDialog != null) {
+          this.loadingDialog.close();
+        }
         clearInterval(interval);
+      }
+      if(this.intervalLoops>40){
+        if (this.loadingDialog != null) {
+          this.loadingDialog.close();
+          this.loadingDialog = null;
+        }
       }
     },500)
   }
@@ -76,10 +88,8 @@ export class MarketHistoryPage implements DoCheck {
     let marketOrders =  this._market.state.myOrders;
     let buys = (typeof(marketOrders)=="undefined")? [] : marketOrders.buys;
     let sells = (typeof(marketOrders)=="undefined")? [] : marketOrders.sells;
-    //console.log(buys, sells)
     let orders = buys;
     orders.concat(sells);
-    //console.log("sells",orders)
     orders.sort((a,b)=>{
       return a.price - b.price || a.amountGet - b.amountGet
     })
