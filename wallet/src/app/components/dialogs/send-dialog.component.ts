@@ -50,18 +50,18 @@ export class SendDialogComponent{
       this.openDialogWhenError(e.message);
       return false
     }
-
+    
     for(let i=0; i<this.txs.length; i++){
       this.txs[i].sign(privateKey);
+      
       let serialized = "0x"+(this.txs[i].serialize()).toString('hex');
       let sendResult = await this._web3.sendRawTx(serialized);
       this.dialogRef.close();
-
+      
       if(sendResult instanceof Error){
         this.openDialogWhenError(sendResult.message);
         return false;
-      }else{
-        console.log("no error",sendResult)
+      }else{      
         if(this.data.action == "order") {
           await this.sendMarketOrder(privateKey);
         }
@@ -69,16 +69,15 @@ export class SendDialogComponent{
         let pending: any = null;
         let j = 0;
         let loadingDialog = null;
-        while(pending == null && j<30){
+        while(pending == null && j<60){
          this.dialogRef.close();
           pending = await this._web3.getTx(sendResult);
           if(pending == null && loadingDialog==null){
             loadingDialog = this.dialogService.openLoadingDialog();
           }
-          console.log(pending);
           j++;
         }
-        if(j==30){
+        if(j==60){
           //Create pending object
           pending = this.createPendingObject(sendResult, i);
           this._account.addPendingTx(pending);
@@ -87,7 +86,6 @@ export class SendDialogComponent{
             loadingDialog.close();
             let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);
             dialogRef.afterClosed().subscribe(result=>{
-              console.log('result', result)
                 if(typeof(result)!= 'undefined' || result != ''){
                   this.router.navigate(['/wallet/history']);
                 }

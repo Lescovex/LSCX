@@ -28,10 +28,6 @@ export class MarketActionComponent implements OnChanges{
         }
     }
     async onSubmit(form){
-        console.log("submit form?");
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!thisAction after submit?????????????????????????????", this.action);
-        
-        
         this.submited = true;
         if(form.invalid){
           return false
@@ -41,13 +37,11 @@ export class MarketActionComponent implements OnChanges{
         let params = [];
         let tx;
         let value = 0;
-        console.log(this.token.name)
-        console.log("form", form.controls)
+        
         if(this.action != 'deposit' && this.token.name == 'ETH') {
             value = parseInt(this._web3.web3.toWei(form.controls.amount.value, 'ether'));
         } else if(this.token.name != 'ETH') {
             value = parseFloat(form.controls.amount.value)*Math.pow(10,this.token.decimals);
-          console.log("value",value)
         } else {
             value = form.controls.amount.value;
         }
@@ -58,18 +52,17 @@ export class MarketActionComponent implements OnChanges{
                 tx = await this.depositEth(params);
                 break;
             case (this.action == "deposit" && this.token.name != "ETH"):
-                console.log('depTk')
                 tx = await this.depositToken(params);
                 break;
             case (this.action == "withdraw" && this.token.name == "ETH"): 
                 tx = await this.withdrawEth(params);
                 break;
             case (this.action == "withdraw" && this.token.name != "ETH"):
-                //console.log('withTk', form);
+        
                 tx = await this.withdrawToken(params);
                 break;
         }        
-      
+        
         if(tx instanceof Error == true) {
             this._dialog.openErrorDialog("Unable to "+this.action, "You don't have enough founds", " ");
         } else {
@@ -105,10 +98,13 @@ export class MarketActionComponent implements OnChanges{
     async depositToken(params){
         this.gasLimit= this._market.config.gasDeposit;
         let dataApprove = this._market.getFunctionData(this._market.token.contract, 'approve', [this._market.contractEtherDelta.address, params[0]]);
+        
         let gasOpt = await this.openGasDialog();
+
         if(gasOpt!=null){
+            
             let optionsApprove = {data:dataApprove, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
-            let txApprove =  await this._rawtx.createRaw(this._market.token.addr, 0 , optionsApprove)
+            let txApprove =  await this._rawtx.createRaw(this._market.token.addr, 0 , optionsApprove);
             let dataDeposit = this._market.getFunctionData(this._market.contractEtherDelta, 'depositToken', [this._market.token.addr,params[0]]);
             let optionsDeposit = {data:dataDeposit, nonceIncrement:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
             let txDeposit =  await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0 , optionsDeposit );
@@ -136,7 +132,7 @@ export class MarketActionComponent implements OnChanges{
         this.dialogRef.close();
         let dialogRef = this._dialog.openGasDialog(this.gasLimit, 1);
         let result = await dialogRef.afterClosed().toPromise();
-        console.log(result);
+        
         if(typeof(result) != 'undefined'){
             let obj = JSON.parse(result);
             return obj;

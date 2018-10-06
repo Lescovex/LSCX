@@ -45,10 +45,6 @@ export class EtherscanService {
 		let historyResp = await this.getTx(address).toPromise();
 		let internalResp = await this.getInternalTx(address).toPromise()
 		
-		console.log("historyResp",historyResp);
-		console.log("internalResp", internalResp);
-		
-		
 		let history = historyResp.result;
 		let intHistory  = internalResp.result;
 		for(let i =0; i<intHistory.length; i++){

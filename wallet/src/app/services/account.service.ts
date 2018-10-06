@@ -34,7 +34,6 @@ export class AccountService{
 
   async setAccount(account){
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
-      console.log("clear intervals")
       clearInterval(this.interval)
       this.clearIntervalTokens();
       
@@ -110,8 +109,6 @@ export class AccountService{
   }
   
   async getAccountData(){
-    console.log("into getAccoount data");
-    
     this.account = this.getAccount();
     
     if(Object.keys(this.account).length != 0){
@@ -136,16 +133,14 @@ export class AccountService{
   }
 
   async setTokens(){
-    console.log("UPDATED TOKENS?",this.updatedTokens);
     this.tokens = [];
     this.updatedTokens =false;
     if('address' in this.account){
       this.tokens = this.getTokensLocale();
-      console.log("tokens local", this.tokens)
+      
       await this.updateTokens();
     }
     this.updatedTokens = true;
-    console.log("UPDATED TOKENS?",this.updatedTokens);
   }
 
   saveAccountTokens(){
@@ -212,7 +207,6 @@ export class AccountService{
   }
 
   async updateTokenBalance(token){
-    console.log("token");
     if(!('balance' in token) || !token.deleted){
       this._token.setToken(token.contractAddress);
       if(isNaN(token.tokenDecimal) ||token.tokenDecimal==0|| token.tokenName=="" || token.tokenSymbol==""){

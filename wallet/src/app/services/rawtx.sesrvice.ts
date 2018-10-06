@@ -12,8 +12,6 @@ export class RawTxService {
     }
 
     async createRaw(receiverAddr: String, amount: number, options?: any){
-        console.log("dentro del createRAW!!!!!!!!");
-        console.log("hay options?", options);
         
         if(typeof(options)=='undefined'){
             options = {}
@@ -24,29 +22,24 @@ export class RawTxService {
         let acc = this._account.account;
         let amountW = parseInt(this._web3.web3.toWei(amount,'ether'));
         let gasPrice: number;
-        console.log("Antes de la declaracion del nonce!!!!!!");
         
         let nonce;
-        if('nonce' in options){
+        if('nonce' in options){            
             nonce = options.nonce;
-            console.log("nonce?",nonce);
             
         }else{
             nonce = await this._web3.getNonce(acc.address);
-            console.log("dentro del else web3 getNonce");
             
             if(this._account.pending.length > 0){
                 let pendingNonce = this._account.pending[this._account.pending.length-1].nonce;
                 
-                if(pendingNonce >=  nonce){
-                    
+                if(pendingNonce >=  nonce){   
                     nonce = pendingNonce+1;
-                    
                 }
             }
         }
 
-        if('data' in options){
+        if('data' in options){    
             data = options.data;
         }
         if('gasLimit' in options){
@@ -59,15 +52,16 @@ export class RawTxService {
             }
         }
         if('gasPrice' in options){
-
+            
             gasPrice = options.gasPrice;
         }else{
             gasPrice = parseInt(this._web3.web3.toWei('5','gwei'));
         }
-        if('nonceIncement' in options){
+
+        if(options.nonceIncrement != null){
             nonce += options.nonceIncrement
         }
-
+        
         let txParams: any = {
             nonce: nonce,
             gasPrice: gasPrice,
@@ -85,24 +79,19 @@ export class RawTxService {
         
         let balance =  await this._web3.web3.toWei(this._account.account.balance,'ether');
         balance = parseInt(balance);
-        //console.log(cost ,balance)
 
         return [tx,cost,amountW]
 
     }
 
     async contractCreationRaw(options){
-        //console.log('dentro')
-        console.log("optiooooons", options);
         
         let chainId = this._web3.web3.toHex(this._web3.network);
         let acc = this._account.account;
         let nonce = await this._web3.getNonce(acc.address);
-        console.log(options.gasPrice);
         
         let gasPrice  = this._web3.web3.toHex(options.gasPrice);
         let gasLimit = options.gasLimit
-
         
         let txParams = {
             nonce: nonce,
@@ -113,7 +102,7 @@ export class RawTxService {
         }
         
         let tx = new EthTx(txParams);
-        //console.log(txParams, tx)
+
         let cost = gasLimit*gasPrice;
         let balance =  this._web3.web3.toWei(this._account.account.balance,'ether');
         
