@@ -107,7 +107,7 @@ export class WalletService {
 
   delete(addr):void{
     this.wallet = this.wallet.filter(x => x.address != addr);
-    //console.log(index);
+    
     if(this.wallet == []){
       localStorage.removeItem('ethAcc');
     }else{
@@ -132,12 +132,12 @@ export class WalletService {
 
   checkFileSaved(v3){
     let files = fs.readdirSync(lescovexPath);
-    console.log("FILES", files);
+    
     for(let i=0; i<files.length; i++){
       if(files[i].indexOf(v3.address)){
-        console.log("SAVED");
+      
         let data = fs.readFileSync(lescovexPath+"/"+files[i]);
-        console.log(data==JSON.stringify(v3));
+    
       }
     }
   }

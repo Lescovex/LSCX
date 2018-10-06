@@ -34,7 +34,7 @@ export class SendPage implements OnInit {
     let ipResponse = await this.http.get("https://ipinfo.io").map(res => res.json()).toPromise();
     let code = ipResponse.country;
     this.country = this.prefixes.find(x=> x.code == code);
-    console.log(this.country);
+    
   }
   toggleShow(){
     this.showPrefixes = !this.showPrefixes;
@@ -42,7 +42,7 @@ export class SendPage implements OnInit {
 
   async sendEth(form) {
     this.submited = true;
-    console.log(form.controls)
+    
     if(form.invalid){
       return false;
     }
@@ -58,10 +58,10 @@ export class SendPage implements OnInit {
 
     try{
       if(typeof(form.controls.trans_data.value)!="undefined" && form.controls.trans_data.value != "" ){
-        console.log("con data")
+        
         gasLimit = await this._web3.estimateGas(this._account.account.address, receiver, this._web3.web3.toHex(form.controls.trans_data.value), parseInt(this._web3.web3.toWei(form.controls.amount.value,'ether')));
       } else {
-        console.log("sin data")
+        
         gasLimit = await this._web3.estimateGas(this._account.account.address, receiver, "", parseInt(this._web3.web3.toWei(form.controls.amount.value,'ether')))
       }
     }catch(e){
@@ -70,7 +70,7 @@ export class SendPage implements OnInit {
 
     let dialogRef = this._dialog.openGasDialog(await gasLimit, 1);
     dialogRef.afterClosed().subscribe(async result=>{
-      console.log("result",result);
+      
       if(typeof(result) != 'undefined'){
         let obj = JSON.parse(result);
 
@@ -93,17 +93,17 @@ export class SendPage implements OnInit {
     const wordList = eval('bip39.wordlists.'+wordName);//o require del json
     
     const mnemonic = bip39.generateMnemonic(strength, rng, wordList);
-    console.log("MNEMONIC", mnemonic)
+    
     let seed = bip39.mnemonicToSeed(mnemonic);
     const isMnemonicValid = bip39.validateMnemonic(mnemonic, wordList);
     
     const hdwallet = hdkey.fromMasterSeed(seed);
-    console.log(hdwallet)
+    
     const privateKey= hdwallet.privateKey;
 
     let wallet = this._wallet.accountFromPrivatekey(privateKey);
 
-    console.log(wallet.getAddressString());
+    
     return wallet.getAddressString().toString();
   }
 

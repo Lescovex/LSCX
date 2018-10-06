@@ -11,7 +11,6 @@ export class ContractStorageService {
     constructor(private _web3: Web3, private _account: AccountService){
         this.setContracts();
         this.setAccContracts();
-        //console.log("CONTRACTS", this.contracts, this.accContracts)
     }
 
     setContracts(){
@@ -28,7 +27,7 @@ export class ContractStorageService {
     }
 
     deletContract(contract){
-        console.log(this.contracts);
+        
         this.contracts= this.contracts.filter(c=> JSON.stringify(c) !=JSON.stringify(contract));
         this.saveContracts();
         this.setAccContracts();
@@ -62,18 +61,18 @@ export class ContractStorageService {
                     pending.push(index)
                 }
             })
-            //console.log("pending",pending)
+            
             if(pending.length==0){
                 clearInterval(checkInterval)
             }
             for(let i=0; i<pending.length; i++){
                 let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);
-                //console.log("cAddr",contractAddr)
+                
                 if(contractAddr!= null){
                     this.contracts[pending[i]].address = contractAddr
                     this.contracts[pending[i]].active = true;
                 }
-                //console.log(this.contracts);
+                
                 this.saveContracts();
             }
 

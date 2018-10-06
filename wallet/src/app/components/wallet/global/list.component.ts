@@ -24,7 +24,7 @@ export class ListComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        //console.log(this.items.length)
+        
     }
     
     ngOnChanges(): void {
@@ -40,14 +40,14 @@ export class ListComponent implements OnInit, OnChanges {
             return false;
         }
         this.noOpenDialog = true;
-        console.log("antes", tx)
+        
         if(!('blockNumber' in tx)){
             let tx2 = await this._web3.getTx(tx.hash);
             if(tx2 != null){
                 tx=tx2;
             }
         }
-        console.log("despues",tx)
+        
         let dialogRef = this._dialog.openShowTx(tx);
         dialogRef.afterClosed().subscribe(()=>{this.noOpenDialog=false});
     }
@@ -56,7 +56,7 @@ export class ListComponent implements OnInit, OnChanges {
         let from = this.limit*(this.page-1);
         let to = from + this.limit;
         this.items = this.history.slice(from, to);
-        //console.log("from",from, "to",to,"   ",this.items)
+        
     }
 
     goToPage(n: number): void {

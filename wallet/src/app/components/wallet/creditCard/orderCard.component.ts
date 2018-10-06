@@ -71,7 +71,7 @@ export class OrderCardComponent implements OnInit {
     }
     
     selectType(type){
-        console.log(type);
+        
         this.cardTypeDisplay = type;
         if(this.shippingDisplay != null){
             this.shippingDisplay = null;
@@ -156,9 +156,9 @@ export class OrderCardComponent implements OnInit {
             } 
         }
 
-        console.log(obj);
+        
         let postData =  JSON.stringify(obj);
-        console.log(postData);
+        
 
 
         if(error==""){
@@ -173,15 +173,13 @@ export class OrderCardComponent implements OnInit {
                 
                 
                 this.http.post(url, postData, {headers: headers}).subscribe(async res =>{
-               
+                    resolve(res.json()); // test this
                     
                     
                     console.log(res);
                     console.log(res.url);
                     
-                    //this.kycAddrStatusText = res.statusText;
-                    
-                    //shell.openExternal(res.url);
+       
                     
                 }, err =>{
                 
@@ -196,7 +194,7 @@ export class OrderCardComponent implements OnInit {
     }
 
     shippingType(type){
-        console.log(type);
+        
         this.shippingDisplay = type;
         if(this.input_26 == 'Spark MasterCard without name - 10€|10'){
             this.cardTypeValue = 10;

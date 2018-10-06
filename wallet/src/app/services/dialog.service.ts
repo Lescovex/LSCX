@@ -78,7 +78,7 @@ export class DialogService{
 
     }
     openShowTx(tx){
-        console.log("abre dialogo");
+        
         return this.dialog.open( ShowTxDialogComponent, {
             width: '660px',
             height: '',

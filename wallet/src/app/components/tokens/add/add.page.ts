@@ -19,11 +19,11 @@ export class AddTokenPage implements OnInit {
   isToken = false;
 
   constructor(protected _account: AccountService, private _token: TokenService, private router: Router, private _dialog: DialogService) {
-    // console.log('SendPage')
+    
   }
 
   ngOnInit() {
-    // console.log("Inited, ", devp2p)
+    
   }
   async setTokenInfo(){
     let error= false;
@@ -32,7 +32,7 @@ export class AddTokenPage implements OnInit {
       try{
         this.token.tokenSymbol = await this._token.getSymbol();
       }catch(e){
-        //console.log(e)
+        
         error = true;
       }
       if(!error){

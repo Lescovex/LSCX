@@ -18,7 +18,7 @@ export class WithdrawTxDialog{
     submited;
     
     constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogService: DialogService,  protected _account: AccountService, private _web3: Web3, private dialogRef: MdDialogRef<WithdrawTxDialog>){
-        console.log(data);
+        
         if(_web3.web3.toWei(this._account.account.balance,'ether') < data.cost ){
             this.insufficient= true;
         }
@@ -29,7 +29,7 @@ export class WithdrawTxDialog{
         let error = "";
         let title = "";
         let message = "";
-        console.log('confirm', form)
+    
         this.submited = true;
         if(form.invalid){
             return false;

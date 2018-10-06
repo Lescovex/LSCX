@@ -136,9 +136,6 @@ export class CreditCardPage implements OnInit {
         this.scope = cred.scope;
         this.tokenType = cred.token_type;
         this.credentials = data;
-
-        //console.log("credentials setted!");
-        
     }
     setPublicTikerByEthCurrency(data){
         this.EURxETH = data;
@@ -175,11 +172,9 @@ export class CreditCardPage implements OnInit {
         this.detailTx = true;
         this.confirmTx = true;
         this.scale = scl;
-        //console.log("this.scale!!!!",this.scale);
+        
         
         this.amountEth = this.amountWei/Math.pow(10,this.scale);
-        
-        //console.log("amount in Eth????", this.amountEth);
         
         this.loadingD.close();
     }
@@ -227,7 +222,6 @@ export class CreditCardPage implements OnInit {
                     this.http.post(this.url +  path, JSON.stringify(userData),  {headers: headers}).subscribe(res =>{
                         resolve(res.json());
                         let response = res.json();
-                        //console.log("response????",response);
                         
                         let txId = response.id;
                         let payIn = response.pay_in_info;
@@ -236,7 +230,7 @@ export class CreditCardPage implements OnInit {
                         this.setTxInfo(txId,payIn.address, payIn.amount, payIn.expires_in, payOut.card_id, payOut.amount, payIn.scale);
                                         
                     }, err =>{
-                        //console.log(err);
+                        
                         reject(err);
                         this.loadingD.close();
                     });
@@ -289,7 +283,7 @@ export class CreditCardPage implements OnInit {
                 }
                            
             }, err =>{
-                //console.log(err);
+                
                 reject(err);
             });
         });
@@ -314,7 +308,6 @@ export class CreditCardPage implements OnInit {
                 this.setServiceStatus(response.swift_methods["eth-spark"].status);
                 
             }, err =>{
-                //console.log(err);
                 reject(err);
             });
         });
@@ -338,7 +331,7 @@ export class CreditCardPage implements OnInit {
                     this.setPublicTikerByEthCurrency(setData);
                     
                 }, err =>{
-                    //console.log(err);
+                    
                     reject(err);
                 });
         });
@@ -379,7 +372,7 @@ export class CreditCardPage implements OnInit {
 
                 this.chipchapSwiftResponse();
  
-                //console.log(count);
+                
                 count++;
                     if(this.checkResponseIn == "received"){
                         this.setSuccess();

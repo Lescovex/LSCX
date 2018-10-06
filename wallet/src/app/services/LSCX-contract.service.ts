@@ -96,7 +96,7 @@ export class LSCXContractService {
 	}
 
 	async getContractData(): Promise<any[]>{
-		//console.log(this.contract)
+		
 		let functions = this.contract.abi.filter(data=>{
 			return data['constant']==true && data['inputs'].length==0 && data.name!='name' && data.name!= 'totalSupply' && data.name !='symbol' && data.name!= 'standard' && data.name != 'decimals'
 		});
@@ -277,7 +277,7 @@ export class LSCXContractService {
 		let type = "";
 		for(let i=0; i<this.contracts.length; i++){
 			let byteCode = await this.getBytecode(this.contracts[i]);
-			//console.log(byteCode)
+			
 			if(data.indexOf(byteCode)!=-1){
 				return this.contracts[i]
 			}

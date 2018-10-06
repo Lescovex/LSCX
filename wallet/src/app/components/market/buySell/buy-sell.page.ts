@@ -56,7 +56,7 @@ export class BuySellPage implements OnInit {
       
       let amount = (this.action == 'buy')? ethAmount : tokenAmount;
       let matchs = this.getCross(amount, price);
-      //console.log(matchs)
+      
 
       if(matchs.length>0){
         let testTrade = false;
@@ -152,7 +152,7 @@ export class BuySellPage implements OnInit {
     async openGasDialog(gasLimit){
       let dialogRef = this._dialog.openGasDialog(gasLimit, 1);
       let result = await dialogRef.afterClosed().toPromise();
-      console.log(result);
+      
       if(typeof(result) != 'undefined'){
           let obj = JSON.parse(result);
           return obj;

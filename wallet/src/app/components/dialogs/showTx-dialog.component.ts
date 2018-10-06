@@ -18,7 +18,6 @@ export class ShowTxDialogComponent implements OnInit{
     }
 
     closeDialog(){
-        console.log('close')
         this.dialogRef.close();
     }
 

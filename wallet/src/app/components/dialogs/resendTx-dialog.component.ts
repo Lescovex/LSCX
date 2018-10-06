@@ -22,7 +22,6 @@ export class ResendTxDialogComponent implements OnInit{
 
     constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<ResendTxDialogComponent>, private _web3: Web3, private _rawTx: RawTxService, protected dialog: MdDialog, protected _account: AccountService){
         this.newTx = new Transaction(this.data);
-        console.log("this.data del resend?",this.data);
         
         this.setCancelTx();
         this.setGasPrice();
@@ -46,7 +45,6 @@ export class ResendTxDialogComponent implements OnInit{
     }
 
     closeDialog(){
-        console.log('close')
         this.dialogRef.close();
     }
 
@@ -58,9 +56,9 @@ export class ResendTxDialogComponent implements OnInit{
     }
     async setGasPrice(){
         let gasPrice = await this._web3.getGasPrice();
-        console.log("gasPrice",gasPrice);
+        
         gasPrice = this._web3.web3.toWei(parseFloat(this._web3.web3.fromWei(gasPrice, 'Gwei')).toFixed(1), "Gwei");
-        console.log("gasPrice",gasPrice);
+        
         this.cancelTx.gasPrice = gasPrice*2;
         this.newTx.gasPrice = gasPrice*2;
     }
@@ -68,7 +66,6 @@ export class ResendTxDialogComponent implements OnInit{
     async sendTx(){
  
         let x = await this._web3.getNonce(this._account.account.address);
-        console.log("X es el nonce que me toca???",x);
         if(this.tx.nonce >= x){
             x = this.tx.nonce
         }
@@ -77,8 +74,6 @@ export class ResendTxDialogComponent implements OnInit{
             gasPrice: this.tx.gasPrice,
             nonce: x
         }
-        console.log("this.tx??????",this.tx);
-       
 
         if(this.tx.input != "0x") {
             options.data = this.tx.input;

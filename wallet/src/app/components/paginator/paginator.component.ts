@@ -25,7 +25,7 @@ export class PaginatorComponent{
 
     onPage(n: number): void {
         this.goPage.emit(n);
-        //console.log(this.count, n, this.currentPage)
+        
     }
 
 }

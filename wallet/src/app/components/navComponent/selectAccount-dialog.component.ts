@@ -23,7 +23,7 @@ export class SelectAccountDialogComponent implements OnInit{
   selectedAcc;
 
   constructor(public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, private _contracStorage: ContractStorageService, private _wallet: WalletService, private _LSCXcontract: LSCXContractService,private _customContract: CustomContractService, private _market: MarketService) {
-    console.log(this.dialogRef)
+    
   }
   ngOnInit(){
     this.selectedAcc = this._account.account;

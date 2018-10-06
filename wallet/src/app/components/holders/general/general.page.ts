@@ -55,13 +55,9 @@ export class HoldersGeneralPage implements OnInit {
     if(this._web3.network == 3){
       this.LSCX_Addr = "0xB2F524a6825F8986Ea6eE1e6908738CFF13c5B31";
       
-      console.log("Testnet Contract");
-      
     }
     if(this._web3.network == 1  ){
       this.LSCX_Addr = "0x5bf5f85480848eB92AF31E610Cd65902bcF22648";
-      
-      console.log("Mainnet Contract");
       
     }
     if(this._web3.infuraKey != ''){
@@ -83,18 +79,13 @@ export class HoldersGeneralPage implements OnInit {
     this.holdedOf = holded / Math.pow(10, decimals);
 
     let contractBalance = await this.getContractBalance();
-    console.log("contractBalance", contractBalance);
 
     let totalSupply = await this.getTotalSupply();
-    console.log("totalsupply",totalSupply);
     
-    //let expectedAmount;
-    console.log("expectedWithdraw", (holded * contractBalance)/totalSupply);
-    //expectedAmount = (holded * contractBalance)/totalSupply;
     this.expected =  (holded * contractBalance)/totalSupply;;
 
     this.loadingD.close();
-    //2592000 equal to 30 days
+
 
   }
 
@@ -106,8 +97,6 @@ export class HoldersGeneralPage implements OnInit {
           reject(err);
         } else {
           resolve(res.toNumber());
-          console.log("res?",res);
-          
         }
       });
     });
@@ -121,8 +110,6 @@ export class HoldersGeneralPage implements OnInit {
           reject(err);
         } else {
           resolve(res.toNumber());
-          console.log("res?",res);
-          
         }
       });
     });
@@ -136,8 +123,6 @@ export class HoldersGeneralPage implements OnInit {
           reject(err);
         } else {
           resolve(res.toNumber());
-          console.log("res?",res);
-          
         }
       });
     });
@@ -151,7 +136,6 @@ export class HoldersGeneralPage implements OnInit {
           reject(err);
         } else {
           resolve(res.toNumber());
-          console.log("res?",res);
         }
       });
     });
@@ -177,7 +161,7 @@ export class HoldersGeneralPage implements OnInit {
     this.loadingD.close();
     let dialogRef = this._dialog.openGasDialog(gasLimit, gasPrice);
     let result = await dialogRef.afterClosed().toPromise();
-    console.log(result);
+    
     let options:any = null;
     if(typeof(result) != 'undefined'){
         options = JSON.parse(result);
@@ -187,10 +171,10 @@ export class HoldersGeneralPage implements OnInit {
       let tx =  await this._rawTx.createRaw(this.LSCX_Addr, 0 , options)
       let amount = 0;
       let cost = tx[1];
-      console.log(tx)
+    
       this.sendDialogService.openConfirmSend(tx[0], this.LSCX_Addr, 0, tx[1], tx[1],'withdraw');
     }
-    //let amount = this._web3.web3.toWei(this.taboowBroker.buyValue);
+    
   }
 
   withdrawReward():string{
@@ -201,7 +185,7 @@ export class HoldersGeneralPage implements OnInit {
   async unsignedTx(contractAddr,txData, gLimit, gprice, amount?){
     let gasLimit = gLimit;
     
-    //console.log(amount,"---", gasLimit*2)
+    
     let chainId;
     if(this._web3.network == 1){
       chainId = "0x1";
@@ -211,14 +195,10 @@ export class HoldersGeneralPage implements OnInit {
     }
     
     let acc = this._account.account;
-    console.log("account unsignedTxs", acc);
     
     let amountW = (typeof(amount) == "undefined")? 0 : amount;
     let gasPrice  = gprice;
-    let nonce = await this._web3.getNonce(acc.address)
-    console.log("nonce de este account", nonce);
-    console.log("contractAddr", contractAddr);
-    
+    let nonce = await this._web3.getNonce(acc.address);
 
     let txParams = {
       nonce: nonce,

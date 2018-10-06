@@ -29,7 +29,7 @@ export class CustomContractService {
     async setContract(abi, contract){
 		this.contract = this._contract.contractInstance(abi,contract.address);
 		this.contractInfo = {address :contract.address, name: contract.name};
-		console.log(contract, this.contractInfo)
+		
 		this.moreInfo= await this.getContractData(); 
 		let history = await this._scan.getHistory(contract.address);
 		for(let i =0; i<history.length; i++){

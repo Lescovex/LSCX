@@ -41,7 +41,7 @@ export class TokenService{
                 if (err) {
                     reject(err);
                 } else {
-                    //console.log(res.toNumber());
+                    
                     resolve(res.toNumber());
                 }
             });

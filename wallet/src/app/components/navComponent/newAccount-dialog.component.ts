@@ -41,7 +41,7 @@ export class NewAccountDialogComponent {
 
     if(this.checkPass(pass, pass2) == false){
       this.checkPassErr = true;
-      //console.log('error')
+      
       return false
     }
     if(pass==null || pass2 == null){
@@ -65,9 +65,9 @@ export class NewAccountDialogComponent {
         this._account.getAccountData();
       }
     }catch(e){
-      //console.log("e?", e);
+      
       error = "Account name and password are required fields, please, try it again.";
-      //error= e.message;
+      
       
     }
     let title = (error=="")? 'Your account has been successfully created' : 'Unable to create account';

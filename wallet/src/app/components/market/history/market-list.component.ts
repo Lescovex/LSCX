@@ -31,7 +31,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         this.getItmes();
         this.interval = setInterval(async()=>{
             let blockNum = await this._web3.blockNumber();
-            console.log(typeof(blockNum))
+            
             this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
         });
     }
@@ -55,7 +55,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     async cancelOrder(order) {
-        console.log(order)
+        
         let dialogRef = this._dialog.openLoadingDialog();
         let data = await this._market.getFunctionData(this._market.contractEtherDelta,'cancelOrder', [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.v, order.r, order.s])
         let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder });
@@ -67,7 +67,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         let from = this.limit*(this.page-1);
         let to = from + this.limit;
         this.items = this.history.slice(from, to);
-        //console.log("from",from, "to",to,"   ",this.items)
+        
     }
 
     goToPage(n: number): void {

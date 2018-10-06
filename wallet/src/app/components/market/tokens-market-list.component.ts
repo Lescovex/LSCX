@@ -56,10 +56,7 @@ export class TokensMarketListComponent {
     this.LSCX_tokens = LSCX_tokens;
   }
   
-  selectToken(token){
-    //console.log("cons",token)
-    console.log("selectToken?", token);
-    
+  selectToken(token){    
     this._market.resetSocket(token);
     this.show.emit(false);
     

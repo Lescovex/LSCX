@@ -45,7 +45,7 @@ export class SettingsComponent implements OnInit, DoCheck{
       this.infuraApiKey = text;
     }else{
       this.setShowTrue();
-      console.log(this.infuraApiKey, this.etherscanApiKey,this.showErrorDialog)
+      
     }
     this._web3.setInfuraKey(this.infuraApiKey);
     this._web3.setNetwork(this._web3.network);
@@ -62,7 +62,7 @@ export class SettingsComponent implements OnInit, DoCheck{
       this.etherscanApiKey = text;
     }else{
       this.setShowTrue();
-      console.log(this.infuraApiKey, this.etherscanApiKey,this.showErrorDialog)
+      
     }
     this._scan.setApiKey(this.etherscanApiKey)
   }

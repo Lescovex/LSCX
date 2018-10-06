@@ -63,7 +63,7 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
 
   async sendTokens(form) {
     this.submited = true;
-    console.log(form)
+    
     if(form.invalid){
       return false;
     }
@@ -71,16 +71,16 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
     this._token.setToken(form.controls.token.value.contractAddress);
     let receiver = form.controls.receiverAddr.value;
     let amount = parseFloat(form.controls.amount.value) * Math.pow(10,parseInt(form.controls.token.value.tokenDecimal));
-    console.log(amount);
+    
     let txData = await this._token.getDataTransfer(receiver, Math.floor(amount));
     let gasLimit = 250000;
 
     let dialogRef = this._dialog.openGasDialog(await gasLimit, 1);
     dialogRef.afterClosed().subscribe(async result=>{
-      console.log("result",result);
+      
       if(typeof(result) != 'undefined'){
         let obj = JSON.parse(result);
-        console.log(obj)
+        
         obj.data = txData;
         let tx =  await this._rawtx.createRaw(form.controls.token.value.contractAddress, 0, obj)
         this.sendDialogService.openConfirmSend(tx[0], form.controls.receiverAddr.value, amount, tx[1], tx[1] , 'transfer',form.controls.token.value.tokenSymbol, form.controls.amount.value);

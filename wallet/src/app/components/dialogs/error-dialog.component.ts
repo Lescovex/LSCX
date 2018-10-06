@@ -17,7 +17,6 @@ export class ErrorDialogComponent implements OnInit{
     closeDialog(){
         let self= this;
         if(typeof(this.data.action != 'undefined')){
-            //console.log(this.data.action);
             this.dialogRef.close(this.data.action);
         }
         this.dialogRef.close();

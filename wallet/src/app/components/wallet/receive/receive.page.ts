@@ -20,7 +20,7 @@ export class ReceivePage implements OnInit {
   }
 
   ngOnInit() {
-    // console.log("Inited, ", devp2p)
+    
     QRcode.toCanvas(this._account.account.address , { errorCorrectionLevel: 'H' }, function (err, canvas) {
       let canvasCont = document.getElementById('canvas')
       canvasCont.appendChild(canvas)
@@ -28,7 +28,7 @@ export class ReceivePage implements OnInit {
   }
 
   receive(form){
-    console.log(form)
+    
     const bip39 = require('bip39');
     const hdkey = require('hdkey');
 

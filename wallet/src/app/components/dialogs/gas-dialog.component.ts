@@ -17,12 +17,10 @@ export class GasDialogComponent implements OnInit{
 
     }
     closeDialog(){
-        console.log('close')
         this.dialogRef.close();
     }
 
     confirm(form){
-        console.log('confirm', form)
         this.submited = true;
         if(form.invalid){
             return false;
