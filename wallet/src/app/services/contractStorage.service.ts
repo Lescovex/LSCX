@@ -58,7 +58,8 @@ export class ContractStorageService {
             let pending = [];
             this.contracts.forEach((contract, index)=> {
                 if(contract.active==false){
-                    pending.push(index)
+                    pending.push(index);
+
                 }
             })
             
@@ -66,9 +67,10 @@ export class ContractStorageService {
                 clearInterval(checkInterval)
             }
             for(let i=0; i<pending.length; i++){
+
                 let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);
                 
-                if(contractAddr!= null){
+                if(contractAddr!= null){                    
                     this.contracts[pending[i]].address = contractAddr
                     this.contracts[pending[i]].active = true;
                 }

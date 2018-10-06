@@ -145,6 +145,7 @@ export class Web3 {
   async getTxContractAddress(txhash){
     let self= this;
     let interval;
+    
     let AsyncFunction = new Promise (function (resolve, reject) {      
       self.web3.eth.getTransactionReceipt(txhash, function(err, res) {
         if (!err){

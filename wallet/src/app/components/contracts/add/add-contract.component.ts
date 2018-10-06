@@ -54,13 +54,13 @@ export class AddContractPage {
       let inputs = [];
       //Remove prev controls
       if(this.contract != null){
-        //console.log("dentro remove");
+      
         inputs = this._LSCXcontract.getConstructor(this.abi);
         this.constructorForm = this._forms.removeControls(inputs, this.constructorForm);
       }
       
       this.contract = contract;
-      //console.log("get abi");
+      
       this.abi = await this._LSCXcontract.getAbi(contract);
       
       inputs = this._LSCXcontract.getConstructor(this.abi);
@@ -91,7 +91,7 @@ export class AddContractPage {
     let gasLimit;
     try {
       gasLimit = await this._web3.estimateGas(this._account.account.address, "", data, 0);
-      //console.log("gaslimit?", gasLimit);  
+      
     }catch(e){
       gasLimit = 3500000;
     }
