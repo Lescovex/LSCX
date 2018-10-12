@@ -8,8 +8,6 @@ import { AccountService } from '../../../services/account.service';
 import { WalletService } from '../../../services/wallet.service';
 
 
-
-
 @Component({
   selector: 'receive-page',
   templateUrl: './receive.html',

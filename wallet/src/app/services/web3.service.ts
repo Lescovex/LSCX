@@ -5,20 +5,15 @@ import * as Web3L from 'web3';
 @Injectable()
 export class Web3 {
   web3: Web3L;
-  infuraKey = "";
+  infuraKey = "d975dfec3852411890cd72311dd91184";
   network: number;
   constructor(){
     this.getIntialNetwork();
-    this.getInfuraKey();
-    if(this.infuraKey!=""){
-      if (typeof this.web3 !== 'undefined') {
+    if (typeof this.web3 !== 'undefined') {
         this.web3= new Web3L(this.web3.currentProvider);
-      } else {  
+    } else {  
         // set the provider you want from Web3.providers
         this.setProvider();
-      }
-    }else{
-      this.web3= new Web3L()
     }
   }
 
@@ -30,15 +25,6 @@ export class Web3 {
     }
       apikeys.inf = apikey;
       localStorage.setItem('apikeys', JSON.stringify(apikeys));
-  }
-
-  getInfuraKey(){
-    if(localStorage.getItem('apikeys')){
-      let apikeys : any = JSON.parse(localStorage.getItem('apikeys'));
-      if('inf' in apikeys){
-        this.infuraKey = apikeys.inf;
-      }
-    }
   }
 
   estimateGas(from, to, data, amount?):Promise<number>{
@@ -94,7 +80,7 @@ export class Web3 {
 
   setProvider(){
     let net = (this.network==1)? 'mainnet' : 'ropsten'
-    let url= "https://"+net+".infura.io/"+this.infuraKey;
+    let url= "https://"+net+".infura.io/v3/"+this.infuraKey;
     this.web3 = new Web3L(new Web3L.providers.HttpProvider(url));
   }
 

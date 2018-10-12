@@ -6,7 +6,7 @@
     <div>
         <label class="title" for="password">Password</label>
         <div class="input-container" [ngClass]="{'error': pass.invalid && (pass.dirty || pass.touched || submited )}">
-            <input required type="password" value=""  name="password" [(ngModel)]="password" #pass="ngModel"/>
+            <input required type="password" value="" name="password" [(ngModel)]="password" #pass="ngModel"/>
             <span class="right" (click)="showPassword()">{{message}}</span>
         </div>
         <div><p class="error" [ngClass]="{'hidden': !(pass.errors?.required && (pass.dirty || pass.touched || submited ))}">Password required</p></div>

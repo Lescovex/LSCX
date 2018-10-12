@@ -26,7 +26,7 @@ export class WalletService {
     }
   }
 
-  newAccount(name, pass) {
+  newAccount(name, pass):void {
 
     let wallet = EthWallet.generate();
     this.addAccount(wallet, pass, name);
@@ -49,7 +49,7 @@ export class WalletService {
       }
   }
 
-  importAccountPrivate(name, privateKey,  pass){
+  importAccountPrivate(name, privateKey,  pass):void{
     let acc:any = {}
     let wallet;
     let error = false;

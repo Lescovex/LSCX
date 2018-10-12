@@ -32,7 +32,6 @@ export class ListComponent implements OnInit, OnChanges {
         if(this.page==1){
             this.getItmes();
         }
-  
     }
 
     async openExternal(tx){
@@ -56,7 +55,6 @@ export class ListComponent implements OnInit, OnChanges {
         let from = this.limit*(this.page-1);
         let to = from + this.limit;
         this.items = this.history.slice(from, to);
-        
     }
 
     goToPage(n: number): void {

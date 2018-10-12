@@ -62,7 +62,6 @@ export class AddTokenPage implements OnInit {
         this._account.addToken(this.token),
         this.router.navigate(['/tokens/general']);
       }
-      
     }
   }
 
@@ -73,8 +72,7 @@ export class AddTokenPage implements OnInit {
       tokenDecimal : 18,
       tokenName : '',
       tokenBalance: 0
-
-  }
+    }
     this.isToken=false;
     
   }

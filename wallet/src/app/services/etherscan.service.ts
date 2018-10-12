@@ -9,6 +9,7 @@ import { Web3 } from "./web3.service"
 export class EtherscanService {
 	apikey = "";
 	constructor(private _web3 : Web3, private http: Http){	
+		this.getApiKey();
 	}
 	setApiKey(apikey){
 		this.apikey = apikey;
@@ -23,7 +24,7 @@ export class EtherscanService {
 	getApiKey(){
 		if(localStorage.getItem("apikeys")){
 		  let apikeys : any = JSON.parse(localStorage.getItem("apikeys"));
-		  if("inf" in apikeys){
+		  if("eth" in apikeys){
 			this.apikey  = apikeys.eth;
 		  }
 		}

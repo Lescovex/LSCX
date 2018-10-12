@@ -25,8 +25,6 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     this.alphabetically = 0;
     this.byBalance = 0;
     this.allTokens = this._account.tokens.filter(x=>x);
-    
-
   }
 
   ngOnInit() {

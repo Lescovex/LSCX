@@ -216,7 +216,7 @@ export class AccountService{
       }      
       let exp = 10 ** token.tokenDecimal;
       let balance : any = await this._token.getBalanceOf(this.account.address);
-          
+      
       token.balance = balance.div(exp).toNumber();
     }
     
@@ -280,6 +280,7 @@ export class AccountService{
       }
     },time);
   }
+
   clearIntervalTokens(){
     clearInterval(this.tokenInterval);
     this.tokenInterval = null;

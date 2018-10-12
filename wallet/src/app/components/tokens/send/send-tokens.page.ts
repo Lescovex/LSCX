@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core'
+import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
 
 import * as EthUtil from 'ethereumjs-util';
 import * as EthTx from 'ethereumjs-tx';
