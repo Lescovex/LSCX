@@ -70,7 +70,12 @@ export class ShowContract implements OnInit{
       if(this.funct.payable){
         this.functionForm.addControl('ethAmount', new FormControl(0, [Validators.required, Validators.min(0)]));
       }
-      let element = document.getElementById('contract');
+      setTimeout(()=>{
+        let el = document.getElementById('button');
+        if (el) el.scrollIntoView({behavior: "smooth", block: "start", inline: "end"});
+      },50)
+      
+
     }
   }
 
