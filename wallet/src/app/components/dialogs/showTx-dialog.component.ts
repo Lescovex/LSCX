@@ -30,4 +30,10 @@ export class ShowTxDialogComponent implements OnInit{
           });
     }
 
+    openExternal(txHash){
+        const shell = require('electron').shell;
+        let net = (this._web3.network==1) ? "":"ropsten.";
+        shell.openExternal('https://'+net+'etherscan.io/tx/'+txHash);
+}
+
 }

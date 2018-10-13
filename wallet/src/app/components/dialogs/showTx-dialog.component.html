@@ -9,14 +9,14 @@
         <p *ngIf="data.blockNumber!=null">Your transaction was successfully mined and is on the blockchain.</p>
         <h2 class="dist" >Transaction details</h2>
         <ul class="list show-tx">
-            <li class="odd"><span class="bold">TxHash: </span>{{data.hash}}</li>
+            <li class="odd pointer" (click)="openExternal(data.hash)"><span class="bold">TxHash: </span>{{data.hash}}</li>
             <li class="even"><span class="bold">From: </span>{{data.from}}</li>
             <li class="odd"><span class="bold">To: </span>{{data.to}}</li>
             <li class="even"><span class="bold">Amount: </span>{{data.value}}</li>
             <li class="odd"><span class="bold">Nonce: </span>{{data.nonce}}</li>
             <li class="even"><span class="bold">Gas Limit: </span>{{data.gas}}</li>
             <li class="odd"><span class="bold">Gas Price: </span>{{data.gasPrice | converter:'fromWei':'gwei'}}Gwei ({{data.gasPrice}} wei)</li>
-            <li class="even"><span class="bold">Data: </span><span *ngIf="data.input!= '0x'">{{data.input}}</span></li>
+            <li class="even flex-row"><p class="bold">Data: </p><p class="flex1 text-overflow-ellipsis" *ngIf="data.input!= '0x'"> {{data.input}}</p></li>
         </ul>
     </div>
     <div *ngIf="data?.blockNumber==null" class="buttons dist">

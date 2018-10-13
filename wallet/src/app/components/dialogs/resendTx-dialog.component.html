@@ -16,7 +16,7 @@
         <p class="input flex1"><span class="bold">Gas Limit: </span>{{tx.gas}}</p>
         <p class="input flex1 extra"><span class="bold">Gas Price: </span>{{tx.gasPrice | converter:'fromWei':'gwei'}}Gwei ({{tx.gasPrice}} wei)</p>
     </div>
-    <p class="input"><span class="bold">Data: </span><span *ngIf="tx?.input!= '0x'">{{tx.input}}</span></p>
+    <p class="input flex-row"><span class="bold">Data: </span><span class="flex1 text-overflow-ellipsis" *ngIf="tx?.input!= '0x'">{{tx.input}}</span></p>
 </div>
 <div class="buttons dist">
     <button type="button" class="btn-black half left" (click)="closeDialog()">Back</button>
