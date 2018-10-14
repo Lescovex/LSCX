@@ -1,4 +1,4 @@
-pragma solidity ^0.4.9;
+pragma solidity 0.4.9;
 
 contract SafeMath {
   function safeMul(uint a, uint b) internal returns (uint) {
@@ -155,10 +155,33 @@ contract LescovexMarket is SafeMath {
   uint public feeMake; //percentage times (1 ether)
   uint public feeTake; //percentage times (1 ether)
   uint public feeRebate; //percentage times (1 ether)
+  uint public feeMarket; //
+  uint public id = 0;
+  uint public tikersId = 0;
+  
 
   mapping (address => mapping (address => uint)) public tokens; //mapping of token addresses to mapping of account balances (token=0 means Ether)
   mapping (address => mapping (bytes32 => bool)) public orders; //mapping of user accounts to mapping of order hashes to booleans (true = submitted by user, equivalent to offchain signature)
   mapping (address => mapping (bytes32 => uint)) public orderFills; //mapping of user accounts to mapping of order hashes to uints (amount of order that has been filled)
+  
+  //mapping (uint => mapping (address => mapping (bytes32 => bool))) public savedOrders
+  mapping (uint => orderInfo) public ordersInfo;
+  mapping (uint => tikerInfo) public tikers;
+
+  struct orderInfo {
+    address owner;
+    address tokenGet;
+    uint amountGet;
+    address tokenGive; 
+    uint amountGive;
+    uint expires;
+    uint nonce;
+    bytes32 hashed;
+  }
+  struct tikerInfo{
+    address token;
+    string name;
+  }
 
   event Order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user);
   event Cancel(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user, uint8 v, bytes32 r, bytes32 s);
@@ -211,6 +234,10 @@ contract LescovexMarket is SafeMath {
     if (feeRebate_ < feeRebate || feeRebate_ > feeTake) throw;
     feeRebate = feeRebate_;
   }
+  function changeFeeMarket(uint _feeMarket){
+    if (msg.sender != admin) throw;
+    feeMarket = _feeMarket;
+  }
 
   function deposit() payable {
     
@@ -220,6 +247,15 @@ contract LescovexMarket is SafeMath {
     tokens[0][feeAccount] = safeAdd(tokens[0][feeAccount], feeTakeXfer);
     Deposit(0, msg.sender, msg.value - feeTakeXfer, tokens[0][msg.sender]);
     Deposit(0, feeAccount, feeTakeXfer, tokens[0][feeAccount]);
+  }
+  function tiker(address _token, string _tokenName) payable {
+    if (msg.value != feeMarket) throw;
+    tikers[tikersId].token = _token;
+    tikers[tikersId].name = _tokenName;
+    tikersId++;
+
+    tokens[0][feeAccount] = safeAdd(tokens[0][feeAccount], msg.value);
+    Deposit(0, feeAccount, msg.value, tokens[0][feeAccount]);
   }
 
   function withdraw(uint amount) {
@@ -257,6 +293,16 @@ contract LescovexMarket is SafeMath {
   function order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce) {
     bytes32 hash = sha256(this, tokenGet, amountGet, tokenGive, amountGive, expires, nonce);
     orders[msg.sender][hash] = true;
+
+    ordersInfo[id].owner = msg.sender;
+    ordersInfo[id].tokenGet = tokenGet;
+    ordersInfo[id].amountGet = amountGet;
+    ordersInfo[id].tokenGive = tokenGive;
+    ordersInfo[id].amountGive = amountGive;
+    ordersInfo[id].expires = expires;
+    ordersInfo[id].nonce = nonce;
+    ordersInfo[id].hashed = hash;
+
     Order(tokenGet, amountGet, tokenGive, amountGive, expires, nonce, msg.sender);
   }
 
