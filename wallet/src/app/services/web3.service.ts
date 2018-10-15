@@ -27,6 +27,17 @@ export class Web3 {
       localStorage.setItem('apikeys', JSON.stringify(apikeys));
   }
 
+  getBalance(addr):Promise<number>{
+    let self= this;
+    return new Promise((resolve, reject)=>{
+      this.web3.eth.getBalance(addr,(err,result)=>{
+        if(typeof(result)!= "undefined") {
+          resolve(parseFloat(self.web3.fromWei(result.toNumber(),'ether')));
+        }
+      })
+    })
+  }
+
   estimateGas(from, to, data, amount?):Promise<number>{
     let options: any={from}
     
@@ -136,14 +147,13 @@ export class Web3 {
       self.web3.eth.getTransactionReceipt(txhash, function(err, res) {
         if (!err){
           if(res!= null){
-            if(res.contractAddress!= null){
               resolve(res.contractAddress)
-            }
+          }else{
+            resolve(null)
           } 
         }
       })
-    });
-      
+    });    
     return await AsyncFunction;
   }
 
@@ -163,12 +173,13 @@ export class Web3 {
 
     return await AsyncFunction;
   }
+
   async getNonce(address){
 
     let self= this;
 
     let AsyncFunction = new Promise (function (resolve, reject) {
-      self.web3.eth.getTransactionCount(address, "pending", function(err, nonce) {
+      self.web3.eth.getTransactionCount(address, function(err, nonce) {
         if (!err){
           resolve(nonce)
         }else{
