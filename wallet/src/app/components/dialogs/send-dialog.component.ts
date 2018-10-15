@@ -13,6 +13,8 @@ import { LSCX_Contract } from '../../models/LSCX_contract';
 import { ContractStorageService } from '../../services/contractStorage.service';
 import { MarketService } from '../../services/market.service';
 
+import { AlternativeSending } from '../../models/alternativeSending';
+
 import * as EthUtils from 'ethereumjs-util';
 
 @Component({
@@ -43,13 +45,16 @@ export class SendDialogComponent{
     if (typeof(pass)=='undefined' || pass==""){
       return false
     }
-    let privateKey;
-    try{
-      privateKey = this._account.getPrivateKey(pass)
-    }catch(e){
-      this.openDialogWhenError(e.message);
+
+    if('seedOptions' in this.data) {
+      let seedOptions = this.data.seedOptions
+      let alternativeSending =new AlternativeSending(seedOptions.seed, seedOptions.to, this._account.account.address, "hash", this.data.amount.toString(), this._web3.network);
+      console.log(alternativeSending);
       return false
     }
+
+    let privateKey =  this.getPrivate(pass);
+    if(privateKey == null) return false;
     
     for(let i=0; i<this.txs.length; i++){
       this.txs[i].sign(privateKey);
@@ -98,10 +103,7 @@ export class SendDialogComponent{
           pending.timeStamp = Date.now()/1000;
           this._account.addPendingTx(pending);
           if(this.data.action == 'contractDeploy'){
-            let contract =  new LSCX_Contract();
-            contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
-            this._contractStorage.addContract(contract);
-            this._contractStorage.checkForAddress();
+            this.addLSCXContract(sendResult);
           }
           if(i==this.txs.length-1){
             this.title = "Your transaction has been sent";
@@ -121,6 +123,24 @@ export class SendDialogComponent{
 
   closeDialog(){
     this.dialogRef.close();
+  }
+
+  getPrivate(pass):string{
+    let privateKey;
+    try{
+      privateKey = this._account.getPrivateKey(pass)
+    }catch(e){
+      this.openDialogWhenError(e.message);
+      privateKey = null;
+    }
+    return privateKey;
+  }
+
+  addLSCXContract(hash) {
+    let contract =  new LSCX_Contract();
+    contract.deployContract(hash, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
+    this._contractStorage.addContract(contract);
+    this._contractStorage.checkForAddress();
   }
 
   openDialogWhenError(errorMessage){

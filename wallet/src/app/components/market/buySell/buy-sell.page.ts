@@ -5,7 +5,7 @@ import { AccountService } from '../../../services/account.service';
 import { MarketService } from '../../../services/market.service';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
-import { RawTxService } from '../../../services/rawtx.sesrvice';
+import { RawTx } from '../../../models/rawtx';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { BigNumber } from 'bignumber.js';
 import { ContractService } from '../../../services/contract.service';
@@ -26,7 +26,7 @@ export class BuySellPage implements OnInit {
     protected submited: boolean = false;
     private interval;
     private loadingDialog;
-    constructor(public _account:AccountService, private _market: MarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3, private _rawtx : RawTxService) {
+    constructor(public _account:AccountService, private _market: MarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
     }
 
@@ -133,8 +133,9 @@ export class BuySellPage implements OnInit {
       this.loadingDialog.close();
       let gasOpt = await this.openGasDialog(this._market.config.gasOrder);
         if(gasOpt != null){
-          let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice });
-          this.sendDialogService.openConfirmOrder(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "order", hashParams);
+          let tx = new RawTx(this._account,this._market.contractEtherDelta.address,new BigNumber(0),gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
+          //let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice });
+          this.sendDialogService.openConfirmOrder(tx.tx, this._market.contractEtherDelta.address, tx.amount,tx.gas, tx.cost, "order", hashParams);
         }
     }
 
@@ -143,8 +144,8 @@ export class BuySellPage implements OnInit {
         this.loadingDialog.close();
         let gasOpt = await this.openGasDialog(this._market.config.gasTrade);
         if(gasOpt != null){
-          let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit:  gasOpt.gasLimit, gasPrice:gasOpt.gasPrice });
-          this.sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
+          let tx = new RawTx(this._account,this._market.contractEtherDelta.address,new BigNumber(0),gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
+          this.sendDialogService.openConfirmSend(tx.tx, this._market.contractEtherDelta.address, tx.amount,tx.gas, tx.cost, "send");
         }
         
     }

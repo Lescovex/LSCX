@@ -2,8 +2,10 @@
 <div class="radioDiv">
     <input type="radio" id="address" name="sendTo" value="address" [(ngModel)]="sendTo" />
     <label for="address" class="black"><span><span></span></span>Etherum address</label>
-    <!--<input type="radio" id="mobile" name="sendTo" value="mobile" [(ngModel)]="sendTo" />
-    <label for="mobile" class="black"><span><span></span></span>Mobile phone</label>
+    <!--<ng-container *ngIf="_web3.network==1">
+        <input type="radio" id="mobile" name="sendTo" value="mobile" [(ngModel)]="sendTo" />
+        <label for="mobile" class="black"><span><span></span></span>Mobile phone</label>
+    </ng-container>
     <input type="radio" id="email" name="sendTo" value="email" [(ngModel)]="sendTo" />
     <label for="email" class="black"><span><span></span></span>Email</label>-->
 </div>
@@ -21,18 +23,16 @@
         <div class="flex-row">
             <div class="inline">
                 <div class="input" (click)="toggleShow()">
-                    <p><img [src]="'assets/icons/flags/'+country.flag"> {{country.name}} <span class="grey">(+{{country.dial_code}})</span></p>
+                    <p class="flex-row prefix-select"><img class="flag" [src]="'assets/icons/flags/'+country.flag"><span class="flex1 text-overflow-ellipsis"> {{country.name}} </span><span class="grey">(+{{country.dial_code}})</span><img class="right" src="~icons/select_icon.svg"></p>
                 </div>
-                <ul *ngIf="showPrefixes" class="select-list">
-                    <li *ngFor="let item of prefixes"><img [src]="'assets/icons/flags/'+item.flag"> {{item.name}} <span class="grey">(+{{item.dial_code}})</span></li>
-                </ul>
+                <dropdown-prefixes *ngIf="showPrefixes" [countries]="countries" (update)="onSelectCountry($event)" ></dropdown-prefixes>
                 <input type="hidden" name="prefix" [(ngModel)]="country" ngModel #prefix="ngModel">
             </div>
-            <div class="flex1">
-                <input class="block" [ngClass]="{'error': submited && receiverMobile.invalid}" required inavelidphone id="receiverMobile" type="phone" value="" name="receiverMobile" ngModel #receiverMobile="ngModel" />
+            <div class="flex1 extra">
+                <input class="block" type="tel" pattern="[0-9]{4,14}" [ngClass]="{'error': submited && receiverMobile.invalid}" required invalidphone id="receiverMobile"  value="" name="receiverMobile" ngModel #receiverMobile="ngModel" />
                 <p [ngClass]="{'hidden':!(submited && receiverMobile.invalid)}"  class="error">
                     <span *ngIf="receiverMobile.errors?.required" class="error">This field is required</span>
-                <span *ngIf="!receiverMobile.errors?.required && receiverMobile.errors?.invalidAddress" class="error">Invalid receiver address</span>
+                    <span *ngIf="!receiverMobile.errors?.required && receiverMobile.errors?.pattern" class="error">Invalid receiver phone</span>
                 </p>
             </div>
         </div>
@@ -64,3 +64,8 @@
         <input class="block" id="trans_data" type="text" value="" name="trans_data" placeholder="e.g. Market supplys payment" ngModel #trans_data="ngModel"/>
     </div>
 </form>
+
+<!--<div>
+    <label class="title" for="lang">Terms of use</label>
+    <div class="scroll scrollbar settings auto-h" id="sendings-bottom"></div>
+</div>-->

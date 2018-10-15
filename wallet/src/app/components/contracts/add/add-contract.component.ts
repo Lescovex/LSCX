@@ -5,7 +5,6 @@ import { ValidateAddress } from '../../../validators/address-validator.directive
 
 import { LSCXContractService } from '../../../services/LSCX-contract.service'
 import { FormsService } from '../../../services/forms.service'
-import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { LSCX_Contract } from '../../../models/LSCX_contract';
 import { CustomContract } from '../../../models/CustomContract';
@@ -16,6 +15,7 @@ import { Web3 } from '../../../services/web3.service';
 import { ContractDialogComponent } from './contract-dialog.component';
 import { MdDialog } from '@angular/material';
 import { EtherscanService } from '../../../services/etherscan.service';
+import { DeployRawTx } from '../../../models/rawtx';
 
 @Component({
   selector: 'app-add-contract',
@@ -34,7 +34,7 @@ export class AddContractPage {
   public zero = "0";
   public contracts=['Asset-Backed Tokens (ABT)', 'Crypto Currencies (CYC)', 'Income Smart Contract (ISC)', 'Crypto Investment Fund (CIF)'];
 
-  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3, public dialog: MdDialog, private _scan: EtherscanService) {
+  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3, public dialog: MdDialog, private _scan: EtherscanService) {
     this.constructorForm =  new FormGroup({
       contract:new FormControl(null,Validators.required),
     })
@@ -101,12 +101,11 @@ export class AddContractPage {
     dialogRef.afterClosed().subscribe(async result=>{
       if(typeof(result) != 'undefined'){
         let options = JSON.parse(result);
-        options.data = data;
 
-        let txInfo = await this._rawtx.contractCreationRaw(options);
+        let tx = new DeployRawTx(this._account, options.gasLimit, options.gasPrice, this._web3.network, "0x"+data)
         
         let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
-        this.sendDialogService.openConfirmDeploy(txInfo[0], 0, txInfo[1], txInfo[1], 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
+        this.sendDialogService.openConfirmDeploy(tx.tx, 0, tx.gas, tx.cost, 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
       }
     })
   }

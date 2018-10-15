@@ -15,8 +15,9 @@ import { Router } from '@angular/router';
 
 //dialogs
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
-import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { SendDialogService } from '../../../services/send-dialog.service';
+import BigNumber from 'bignumber.js';
+import { RawTx } from '../../../models/rawtx';
 
 @Component({
   selector: 'general-page',
@@ -35,7 +36,7 @@ export class HoldersGeneralPage implements OnInit {
   protected holdedOf;
   protected expected;
 
-  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private  _rawTx:RawTxService, private sendDialogService: SendDialogService) {
+  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private sendDialogService: SendDialogService) {
     Promise.resolve().then(() => { 
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
@@ -165,14 +166,12 @@ export class HoldersGeneralPage implements OnInit {
     let options:any = null;
     if(typeof(result) != 'undefined'){
         options = JSON.parse(result);
-        options.data =  withdrawData;
+
     }
     if(options!=null){
-      let tx =  await this._rawTx.createRaw(this.LSCX_Addr, 0 , options)
-      let amount = 0;
-      let cost = tx[1];
+      let tx =   new RawTx  (this._account,this.LSCX_Addr,new BigNumber(0),options.gasLimit, options.gasPrice, this._web3.network, withdrawData);
     
-      this.sendDialogService.openConfirmSend(tx[0], this.LSCX_Addr, 0, tx[1], tx[1],'withdraw');
+      this.sendDialogService.openConfirmSend(tx.tx, this.LSCX_Addr, 0, tx.gas, tx.cost,'withdraw');
     }
     
   }

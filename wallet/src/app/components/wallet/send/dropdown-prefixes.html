@@ -1,0 +1,4 @@
+<ul id="flag-list" class="select-list scrollbar">
+    <li id="{{item.name}}" *ngFor="let item of countries" (click)="onSelectCountry(item)"><img class="flag" [src]="'assets/icons/flags/'+item.flag"> {{item.name}} <span class="grey">(+{{item.dial_code}})</span></li>
+</ul>
+<div class="overlay" (click)="closeDropdown()"></div>

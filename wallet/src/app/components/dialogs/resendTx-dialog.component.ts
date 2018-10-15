@@ -4,8 +4,10 @@ import { Web3 } from '../../services/web3.service';
 
 import { AccountService } from '../../services/account.service';
 import { Transaction } from '../../models/transaction'
-import { RawTxService } from '../../services/rawtx.sesrvice';
 import { SendDialogComponent } from '../dialogs/send-dialog.component';
+
+import { ResendTx } from '../../models/rawtx';
+import BigNumber from 'bignumber.js';
 
 
 @Component({
@@ -20,7 +22,7 @@ export class ResendTxDialogComponent implements OnInit{
     cancelTx: Transaction;
     action:String;
 
-    constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<ResendTxDialogComponent>, private _web3: Web3, private _rawTx: RawTxService, protected dialog: MdDialog, protected _account: AccountService){
+    constructor(@Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<ResendTxDialogComponent>, private _web3: Web3, protected dialog: MdDialog, protected _account: AccountService){
         this.newTx = new Transaction(this.data);
         
         this.setCancelTx();
@@ -57,38 +59,44 @@ export class ResendTxDialogComponent implements OnInit{
     async setGasPrice(){
         let gasPrice = await this._web3.getGasPrice();
         
-        gasPrice = this._web3.web3.toWei(parseFloat(this._web3.web3.fromWei(gasPrice, 'Gwei')).toFixed(1), "Gwei");
-        
+        gasPrice = parseInt(this._web3.web3.toWei(parseFloat(this._web3.web3.fromWei(gasPrice, 'Gwei')).toFixed(1), "Gwei"));
+        console.log(gasPrice,parseInt(this.data.gasPrice), gasPrice <= parseInt(this.data.gasPrice))
+        if(gasPrice <= parseInt(this.data.gasPrice)){
+            console.log("dentro cambio gas")
+            gasPrice = this.data.gasPrice;
+        }
+        console.log(gasPrice*2)
         this.cancelTx.gasPrice = gasPrice*2;
         this.newTx.gasPrice = gasPrice*2;
     }
 
     async sendTx(){
  
-        let x = await this._web3.getNonce(this._account.account.address);
+        /*let x = await this._web3.getNonce(this._account.account.address);
         if(this.tx.nonce >= x){
             x = this.tx.nonce
         }
         let options: any = {
             gasLimit: this.tx.gas,
             gasPrice: this.tx.gasPrice,
-            nonce: x
-        }
-
+            nonce: this.tx.nonce
+        }*/
+        let data = "";
         if(this.tx.input != "0x") {
-            options.data = this.tx.input;
+           data  = this.tx.input;
         }
-        let rawTx = await this._rawTx.createRaw(this.tx.to, this._web3.web3.fromWei(this.tx.value,'ether'),options);
+        //let rawTx = await this._rawTx.createRaw(this.tx.to, this._web3.web3.fromWei(this.tx.value,'ether'),options);
+        let rawTx = new ResendTx(this._account, this.tx.to, new BigNumber(this.tx.value),this.tx.gas, this.tx.gasPrice,this._web3.network, data, this.tx.nonce)
         this.dialogRef.close();
         this.dialog.open(SendDialogComponent, {
             width: '660px',
             height: '400px',
             data:{
-                tx: rawTx[0],
+                tx: rawTx.tx,
                 to: this.tx.to,
-                amount: rawTx[2],
-                fees:  rawTx[1]- rawTx[2],
-                total:  rawTx[1],
+                amount: this.tx.value,
+                fees:  rawTx.gas,
+                total:  rawTx.cost,
                 action: 'send',
 
             }

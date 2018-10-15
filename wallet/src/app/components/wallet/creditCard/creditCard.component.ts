@@ -3,15 +3,16 @@ import { Http, HttpModule, Headers } from '@angular/http';
 
 import * as EthUtil from 'ethereumjs-util';
 import * as EthTx from 'ethereumjs-tx';
+import { RawTx } from '../../../models/rawtx';
 import { AccountService } from '../../../services/account.service';
 import { Web3 } from '../../../services/web3.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
-import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
 
 import { Router, NavigationEnd } from '@angular/router';
 import { ERROR_LOGGER } from '../../../../../node_modules/@angular/core/src/errors';
+import BigNumber from 'bignumber.js';
 const shell = require('electron').shell;
 
 @Component({
@@ -97,7 +98,7 @@ export class CreditCardPage implements OnInit {
     }
 
 
-    constructor(private dialog: MdDialog, private http: Http, public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService, private router : Router) {
+    constructor(private dialog: MdDialog, private http: Http, public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private router : Router) {
    
           if(localStorage.getItem('pendingTx')){
             let x = localStorage.getItem('pendingTx'); 
@@ -349,8 +350,6 @@ export class CreditCardPage implements OnInit {
     async sendEth(receiverAddr: string, amount: number, trans_data? : string) {
         //BEFORE PROD: change otherAddress to receiverAddr
         
-
-        
         await this.chipchapSwiftStatus();
 
         let count=0;
@@ -358,9 +357,13 @@ export class CreditCardPage implements OnInit {
         if(this.checkAmount(amount) == false || this.checkAddress(receiverAddr) == false){
             return false;
         }
+        let gasLimit = 21000;
+        let gasPrice = await this._web3.getGasPrice();
         
-        let tx =  await this._rawtx.createRaw(receiverAddr, amount);
-        this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send");
+        let amountBN = new BigNumber(this._web3.web3.toWei(amount,"ether"));
+        let tx =  new RawTx(this._account,receiverAddr,amountBN,22000, gasPrice, this._web3.network, "");
+        //await this._rawtx.createRaw(receiverAddr, amount);
+        this.sendDialogService.openConfirmSend(tx.tx, receiverAddr, tx.amount, tx.gas, tx.cost, "send");
 
         localStorage.setItem("pendingTx", JSON.stringify(this.tx_id));
         this.pendingTx = true;

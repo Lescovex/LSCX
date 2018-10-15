@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core'
 
-// import * as devp2p from 'ethereumjs-devp2p'
-declare var require: any;
 import * as QRcode from 'qrcode';
 
 import { AccountService } from '../../../services/account.service';
@@ -35,7 +33,6 @@ export class ReceivePage implements OnInit {
     const privateKey= hdwallet.privateKey;
 
     let wallet = this._wallet.accountFromPrivatekey(privateKey);
-    console.log(wallet.getAddressString());
   }
 
 }

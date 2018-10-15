@@ -1,13 +1,11 @@
 import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
-
-import * as EthUtil from 'ethereumjs-util';
-import * as EthTx from 'ethereumjs-tx';
+import { RawTx } from '../../../models/rawtx';
+import BigNumber from 'bignumber.js';
 
 /*Services*/
 import { AccountService } from '../../../services/account.service'
 import { SendDialogService } from '../../../services/send-dialog.service'
 import { TokenService } from '../../../services/token.service'
-import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
 
@@ -29,7 +27,7 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
   }
   submited = false;
 
-  constructor(public _rawtx: RawTxService,protected _account: AccountService, private _web3: Web3, private sendDialogService: SendDialogService, private _token : TokenService,private _dialog: DialogService) {
+  constructor(protected _account: AccountService, private _web3: Web3, private sendDialogService: SendDialogService, private _token : TokenService,private _dialog: DialogService) {
     if('tokens' in this._account.account && this._account.tokens.length > 0){
       this.allTokens = this._account.tokens.filter(x=>x);
       this.setTokens();
@@ -82,8 +80,9 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
         let obj = JSON.parse(result);
         
         obj.data = txData;
-        let tx =  await this._rawtx.createRaw(form.controls.token.value.contractAddress, 0, obj)
-        this.sendDialogService.openConfirmSend(tx[0], form.controls.receiverAddr.value, amount, tx[1], tx[1] , 'transfer',form.controls.token.value.tokenSymbol, form.controls.amount.value);
+        console.log(amount, form.controls.token.value.tokenSymbol, form.controls.amount.value);
+        let tx =  new RawTx( this._account,form.controls.token.value.contractAddress,new BigNumber(0),obj.gasLimit, obj.gasPrice, this._web3.network, txData);
+        this.sendDialogService.openConfirmSend(tx.tx, form.controls.receiverAddr.value, amount, tx.gas, tx.cost, 'transfer',form.controls.token.value.tokenSymbol, form.controls.amount.value);
       }
     });
   }

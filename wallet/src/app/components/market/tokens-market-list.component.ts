@@ -30,16 +30,6 @@ export class TokensMarketListComponent {
       LSCX_tokens.push({ addr: contract.address, name: contract.symbol, decimals: contract.decimals }) ;
     })
     LSCX_tokens.sort((a, b)=> (a.name).localeCompare(b.name));
-
-    /*if('tokens' in this._account){
-      this._account.tokens.forEach(token=>{
-        if(tokens.findIndex(tk=>tk.addr.toUpperCase()==token.contractAddress.toUpperCase())== -1
-        && LSCX_tokens.findIndex(tk=>tk.addr.toUpperCase()==token.contractAddress.toUpperCase())== -1){
-          let tokenP = { addr: token.contractAddress, name: token.tokenSymbol, decimals: token.tokenDecimal }
-          tokens.push(tokenP);
-        };
-      })
-    }*/
     if(typeof(input)!="undefined"){
       tokens = tokens.filter(token=> {
         if('name' in token && typeof(token.name)!="undefined" && token.name != ""){

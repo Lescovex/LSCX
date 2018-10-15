@@ -353,6 +353,7 @@ nav a span {
     display: block;
     width: 100%;
 }
+/*-------------------- CONTENT ----------------------------*/
 
 .content {
     padding: 15px 20px 15px 20px;
@@ -385,6 +386,24 @@ nav a span {
 
 .info-list li {
     padding: 3px 0;
+}
+.prefix-select {
+    width: 200px;
+}
+.flag {
+    width: 20px;
+    max-height: 15px;
+    margin-right: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+.flag+span {
+   max-width: 100px;
+}
+.prefix {
+    width: 50px;
+}
+#flag-list {
+    margin-top: -21px;
 }
 
 .lscx_color {
@@ -476,7 +495,7 @@ div.input-container,
 .whiteBox-extra,
 .backWhite,
 select {
-    padding: 12px;
+    padding: 14px 12px;
     border-radius: 5px;
     border: 1px solid #abb0b2;
     margin-top: 10px;
@@ -675,7 +694,7 @@ p.error {
     position: relative;
 }
 
-.contract-list * {
+.contract-list *, .text-overflow-ellipsis{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -739,6 +758,10 @@ p.error {
 
 #general-token-list {
     top: 270px;
+}
+
+#sendings-bottom {
+    top: 605px;
 }
 
 .scroll {
@@ -906,8 +929,6 @@ input[type="radio"]:checked+label>span>span {
     top: 0;
     left: 0;
     height: 100%;
-    opacity: 0.5;
-    background-color: black;
 }
 
 #token-list {
