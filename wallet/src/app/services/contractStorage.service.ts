@@ -61,20 +61,16 @@ export class ContractStorageService {
                     pending.push(index);
 
                 }
-            })
-            
+            })    
             if(pending.length==0){
                 clearInterval(checkInterval)
             }
             for(let i=0; i<pending.length; i++){
-
-                let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);
-                
+                let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);                
                 if(contractAddr!= null){                    
                     this.contracts[pending[i]].address = contractAddr
                     this.contracts[pending[i]].active = true;
                 }
-                
                 this.saveContracts();
             }
 
