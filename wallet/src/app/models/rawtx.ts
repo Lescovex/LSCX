@@ -8,13 +8,13 @@ export class BaseRawTx {
     gas: number;
     amount: number;
 
-    constructor(to: String, amount: BigNumber, gasLimit: number, gasPrice:number, chainId:number) {
+    constructor(to: String, amount: BigNumber, gasLimit: number, gasPrice:number,  network:any) {
         let txParams: any = {
             gasPrice: "0x"+gasPrice.toString(16),
             gasLimit: gasLimit,
             to: to,
             value: "0x"+amount.toString(16),
-            chainId:chainId
+            chainId:network.chain
         }
         this.tx = new EthTx(txParams);
         this.gas = gasPrice*gasLimit;
@@ -49,8 +49,8 @@ export class BaseRawTx {
 }
 
 export class RawTx extends BaseRawTx {
-    constructor(account: any, to: String, amount: BigNumber, gasLimit: number, gasPrice:number, chainId:number, data: string) {
-        super(to, amount, gasLimit, gasPrice, chainId);
+    constructor(account: any, to: String, amount: BigNumber, gasLimit: number, gasPrice:number, network:any, data: string) {
+        super(to, amount, gasLimit, gasPrice, network);
         super.setTxNonce(account).then();
         if(data!="") {
             super.setTxData(data);
@@ -58,8 +58,8 @@ export class RawTx extends BaseRawTx {
     }
 }
 export class RawTxIncrementedNonce extends BaseRawTx {
-    constructor(account: any, to: String, amount: BigNumber, gasLimit: number, gasPrice:number, chainId:number, data: string, nonceIncrement:number) {
-        super(to, amount, gasLimit, gasPrice, chainId);
+    constructor(account: any, to: String, amount: BigNumber, gasLimit: number, gasPrice:number, network:any, data: string, nonceIncrement:number) {
+        super(to, amount, gasLimit, gasPrice, network);
         this.setIncrementedNonce(account,nonceIncrement);
         super.setTxData(data);
     }
@@ -78,16 +78,16 @@ export class RawTxIncrementedNonce extends BaseRawTx {
 
 
 export class DeployRawTx extends BaseRawTx{
-    constructor(account: any, gasLimit: number, gasPrice:number, chainId:number, data:string) {
-        super("", new BigNumber(0), gasLimit, gasPrice, chainId);
+    constructor(account: any, gasLimit: number, gasPrice:number, network:any, data:string) {
+        super("", new BigNumber(0), gasLimit, gasPrice, network);
         super.setTxNonce(account).then();
         super.setTxData(data);
     }
 }
 
 export class ResendTx extends BaseRawTx{
-    constructor(account: any, to: String, amount: BigNumber, gasLimit: number, gasPrice:number, chainId:number, data: string, nonce:number) {
-        super(to, amount, gasLimit, gasPrice, chainId);
+    constructor(account: any, to: String, amount: BigNumber, gasLimit: number, gasPrice:number, network:any, data: string, nonce:number) {
+        super(to, amount, gasLimit, gasPrice, network);
         this.tx.nonce = nonce;
         if(data!="") {
             super.setTxData(data);

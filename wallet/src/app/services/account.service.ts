@@ -56,11 +56,10 @@ export class AccountService{
       clearInterval(this.interval)
       this.clearIntervalTokens();
       this.getPendingTx();
-      console.log(this.tokens)
       await this.startIntervalData();
       this.newUpdateTokens = true;
       await this.setTokens();
-      console.log(this.tokens)
+
   }
   
   refreshAccount(){
@@ -180,10 +179,8 @@ export class AccountService{
         this.newUpdateTokens=false;
       }
       if(this.newUpdateTokens==true){
-        console.log("newUpdate Balances");
         return false;
       }else{
-        console.log("update tokens"+i +"---"+this.newUpdateTokens);
         tokens[i] = await this.updateTokenBalance(tokens[i]);
       }
     }
@@ -192,11 +189,9 @@ export class AccountService{
     tkns = resultTokens.result;
     for(let i = 0; i<tkns.length; i++){
       if(i==0) {
-        console.log(i, "  ", this.newUpdateTokens);
         this.newUpdateTokens=false;
       }
       if(this.newUpdateTokens==true){
-        console.log("newUpdate NewTokens");
         return false;
       }
       if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){  

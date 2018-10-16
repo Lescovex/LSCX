@@ -511,8 +511,8 @@ input[type="checkbox"] {
 input,
 div.input-container,
 .input,
-.whiteBox,
-select {
+.whiteBox
+{
     height: 44px;
 }
 
