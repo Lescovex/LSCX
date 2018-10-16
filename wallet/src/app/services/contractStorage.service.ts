@@ -68,23 +68,12 @@ export class ContractStorageService {
             if(pending.length==0){
                 clearInterval(checkInterval)
             }
-<<<<<<< HEAD
-            for(let i=0; i < pending.length; i++){
-                
-                
-                let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);
-                
-                
-=======
             for(let i=0; i<pending.length; i++){
                 let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);                
->>>>>>> a185a7f2184fc81eff888b853bac65a65d46f75b
                 if(contractAddr!= null){                    
                     this.contracts[pending[i]].address = contractAddr;
                     this.contracts[pending[i]].active = true;
-<<<<<<< HEAD
-                    this.saveContracts();
-                    
+
                     let info = JSON.parse(localStorage.getItem("deployInfo"));
                     
                     let _compilerversion;
@@ -110,7 +99,7 @@ export class ContractStorageService {
                     
                     let self = this;
                     
-                    await fs.readFile("./src/LSCX-contracts/LSCX_ABT.sol", function(err, data) {
+                    await fs.readFile("./src/LSCX-contracts/"+info.contract+".sol", function(err, data) {
                         if (err) {
                             return console.log(err);
                         }
@@ -118,8 +107,9 @@ export class ContractStorageService {
                             var x = data.toString();
                             _sourceCode = x;
 
-                            let network = (self._web3.network == 1)? "": "-ropsten";
-                            let url = "https://"+network+"etherscan.io/address/"+contractAddr;
+                            this._scan.setUrlStarts();
+                            let url = "https://"+this.scan.urlStarts+"etherscan.io/address/"+contractAddr;
+                            
                             let headers = new Headers();
                             headers.append('Content-Type', 'text/html');
                             console.log("start pause");
@@ -156,12 +146,9 @@ export class ContractStorageService {
                         }
                     });
                     
-                }           
                 
-=======
                 }
                 this.saveContracts();
->>>>>>> a185a7f2184fc81eff888b853bac65a65d46f75b
             }
 
         },3000);

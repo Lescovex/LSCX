@@ -94,8 +94,9 @@ export class EtherscanService {
 	}
 	
 	getConstructorArgs(contractAddr){
-		let network = (this._web3.network == 1)? "": "-ropsten";
-		let url = "https://"+network+"etherscan.io/address/"+contractAddr;
+		this.setUrlStarts();
+		
+		let url = "https://"+this.urlStarts+"etherscan.io/address/"+contractAddr;
 		let headers = new Headers();
 		headers.append('Content-Type', 'text/html');
 		this.http.get(url,  {headers: headers}).subscribe((res:any) =>{
@@ -119,36 +120,33 @@ export class EtherscanService {
 	}
 
 	async setVerified(_contractAddr, _sourceCode, _contractName, _compilerversion, _constructorArguments){
-		let network = (this._web3.network == 1)? "": "-ropsten";
-		//let x = encodeURIComponent(_sourceCode)
+		this.setUrlStarts();
+		
 		let x = encodeURIComponent(_sourceCode).replace(/%20/g, '+').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\!/g,"%21").replace(/\'/g,"%27");
 		console.log(x);
 		
-		let url = "https://api"+network+".etherscan.io/api";
+		let url = "https://api"+this.urlStarts+".etherscan.io/api";
 	
 		console.log("addr",_contractAddr);
 		console.log("name",_contractName);
 		console.log("version",_compilerversion);
 		console.log("arguments",_constructorArguments);
 		
-		let params = new URLSearchParams;
-			params.append('apikey', this.apikey);
-			params.append('module', 'contract');
-			params.append('action', 'verifysourcecode');
-			params.append('contractaddress', _contractAddr);
-			params.append('contractname', _contractName);
-			params.append('commpilerversion', _compilerversion);
-			params.append('optimizationUsed', "1");
-			params.append('runs', "200");
-			params.append('constructorArguements', _constructorArguments);
-			params.append('sourceCode', x);
-
-	
-		let headers = new Headers();
-		//application/json, text/plain, */*
-		headers.append('Content-Type', 'application/json; charset=UTF-8');
+		const formData = new FormData();
 		
-		this.http.post(url, params, {headers: headers}).subscribe(async res =>{
+		// append your data
+		formData.append('apikey',this.apikey);
+		formData.append('module', 'contract');
+		formData.append('action', 'verifysourcecode');
+		formData.append('contractaddress', _contractAddr);
+		formData.append('contractname', _contractName);
+		formData.append('compilerVersion', _compilerversion);
+		formData.append('optimizationUsed', '1');
+		formData.append('runs', '200');
+		formData.append('constructorArguements', _constructorArguments);
+		formData.append('sourceCode', x);
+		
+		this.http.post(url,formData).subscribe(async res =>{
             console.log("res post form?",res);
             
         }, err =>{

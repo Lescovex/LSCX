@@ -50,49 +50,6 @@ export class AddContractPage {
       contract:new FormControl(null,[Validators.required, ValidateAddress]),
       name: new FormControl(null,Validators.required)
     })
-    
-    let self = this;
-    fs.readFile("./src/LSCX-contracts/LSCX_ABT.sol", function(err, data) {
-      if (err) {
-          return console.log(err);
-      }
-      if (data) {
-          var x = data.toString();
-          let _sourceCode = x;  
-          //console.log(_sourceCode);
-          let y = encodeURIComponent(_sourceCode).replace(/%20/g, '+').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\!/g,"%21").replace(/\'/g,"%27");
-          console.log(y);
-          let url = "https://api.etherscan.io/api";
-       
-          const formData = new FormData();
-          //sftqhval3tkervdy59pdg6y64bbcuecpxuc1edhgqezc7pabjg
-          // append your data
-          formData.append('apikey', 'JDVE27WHYITCKM7Q2DMBC3N65VDIZ74HHJ');
-          formData.append('module', 'contract');
-          formData.append('action', 'verifysourcecode');
-          formData.append('contractaddress', '0x8c2c5e0a30b7587cfaec8f0c2e249eed6ebd71df');
-          formData.append('contractname', 'Lescovex_ABT');
-          formData.append('compilerVersion', 'v0.4.19+commit.c4cbbb05');
-          formData.append('optimizationUsed', '1');
-          formData.append('runs', '200');
-          formData.append('constructorArguements', '00000000000000000000000000000000000000000000000000000002dd231b0000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000002c01f02ecc2f65e84f2cd2d5eee9ae50b9c608450000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000003617364000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000046161647300000000000000000000000000000000000000000000000000000000');
-          formData.append('sourceCode', y);
-
-          let headers = new Headers();
-          //application/json, text/plain, */*
-          headers.append('Content-Type', 'application/json');
-          
-          self.http.post(url, formData).subscribe(async res =>{
-                  console.log("res post form?",res);
-                  
-              }, err =>{
-                  console.log(err);
-                
-          });
-      }
-  });
-    
-    
   }
 
   async getConstructor(){

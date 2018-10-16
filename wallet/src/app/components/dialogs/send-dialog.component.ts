@@ -103,15 +103,7 @@ export class SendDialogComponent{
           pending.timeStamp = Date.now()/1000;
           this._account.addPendingTx(pending);
           if(this.data.action == 'contractDeploy'){
-<<<<<<< HEAD
-            let contract =  new LSCX_Contract();
-            contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
-            this._contractStorage.addContract(contract);
-            
-            this._contractStorage.checkForAddress();
-=======
             this.addLSCXContract(sendResult);
->>>>>>> a185a7f2184fc81eff888b853bac65a65d46f75b
           }
           if(i==this.txs.length-1){
             this.title = "Your transaction has been sent";
