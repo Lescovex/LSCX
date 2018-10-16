@@ -10,20 +10,20 @@ import { Order } from '../models/order';
 import { Trade } from '../models/trade';
 
 declare var require: any;
-const io = require('socket.io-client');
-
+//const io = require('socket.io-client');
+import * as EthAbi from 'ethereumjs-abi';
 import * as EthUtil from 'ethereumjs-util';
 
 
 @Injectable()
-export class MarketService {
+export class LSCXMarketService {
 	config: any;
 	token: any;
 	eth: any;
-	contractEtherDelta: any = {};
+	contractMarket: any = {};
 	contractToken: any = {};
 	contractReserveToken: any = {};
-	etherdeltaBalances: any = {token:null, eth:null};
+	marketBalances: any = {token:null, eth:null};
 	socket;
 	state: any = {
 		initialState: false,
@@ -45,7 +45,11 @@ export class MarketService {
 	}
 
 	getAbi(file) {
-		return require('../../libs/market-lib/smart_contract/'+file+'.sol.json');
+		if(file!= "market") {
+			return require('../../libs/market-lib/smart_contract/'+file+'.sol.json');
+		}else{
+			return require('../../LSCX-contracts/market.json');
+		}
 	}
 
 	setToken(token?) {		
@@ -96,7 +100,7 @@ export class MarketService {
 	}
 
 	setContracts() {	
-		this.contractEtherDelta = this._contract.contractInstance(this.getAbi('etherdelta'),this.config.contractEtherDeltaAddrs[0].addr);
+		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractEtherDeltaAddrs[0].addr);
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
 		this.contractReserveToken = this._web3.web3.eth.contract(this.getAbi('reservetoken'));
 	}
@@ -111,7 +115,7 @@ export class MarketService {
 		this.eth = this.config.tokens[0];
 		this.setToken(token);
 		this.getLocalState();
-		this.setSocket();
+		//this.setSocket();
 		this.setSha256();
 	}
 
@@ -122,14 +126,18 @@ export class MarketService {
 				"name": "gethash", 	"outputs": [{"name": "","type": "bytes32"}],"payable": false,"stateMutability": "pure","type": "function"}]
 		let address = '';
 		if(this._web3.network.chain==1){
-			address = '0x7b74ad8391111b3d71d95fef3b32b333f1f5d6c0';
-		}else{
-			address = '0x338692dfa7a3c6455b25daa831229a949f320844';
+			address = "0x7b74ad8391111b3d71d95fef3b32b333f1f5d6c0";
+		}
+		if(this._web3.network.chain==3) {
+			address = "0x338692dfa7a3c6455b25daa831229a949f320844";
+		}
+		if(this._web3.network.chain == 42) {
+			address = "0x648a2D48F05e6E102CccD4037a3448B1c5DF5c24"
 		}
 		this.sha256 = this._contract.contractInstance(abi, address);
 	}
 
-	setSocket(){
+	/*setSocket(){
 		
 		this.socket = io.connect(this.config.socketServer[0], { transports: ['websocket'] });
 		this.socket.on('connect', () => {
@@ -159,7 +167,7 @@ export class MarketService {
 			}
 		}
 		await this.setSocket();
-	}
+	}*/
 
 	
 	getFunctionData(contract, functionName:string, params?) {
@@ -223,43 +231,45 @@ export class MarketService {
 			s: sig.s
 		}
 		
-		let self = this;
+		let orderString= JSON.stringify(order);
+		let orderByte = EthAbi.rawEncode([ 'string' ], [orderString]);
+		/*let self = this;
 		return new Promise((resolve, reject) => {
 			self.socket.emit('message', order);
 			self.socket.once('messageResult', (messageResult) => {
 			  if (!messageResult) reject();
 			  resolve(messageResult);
 			});
-		  });
+		  });*/
 	}
 	
 
-	async getEtherdeltaBalance() {
-		let balance = await this._contract.callFunction(this.contractEtherDelta, 'balanceOf', [this.token.addr, this._account.account.address]);
+	async getMarketBalance() {
+		let balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.token.addr, this._account.account.address]);
 		let value : number = parseInt(balance.toString())/Math.pow(10,this.token.decimals);
 		return value;
 	}
 
-	async getEtherdeltaEther() {
-		let balance = await this._contract.callFunction(this.contractEtherDelta, 'balanceOf', [this.config.tokens[0].addr, this._account.account.address]);
+	async getMarketEther() {
+		let balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.config.tokens[0].addr, this._account.account.address]);
 		let value:number = parseInt(balance.toString())/Math.pow(10,18);
 		return value
 	}
 
 	resetTokenBalances() {
 		this.token.balance = null;
-		this.etherdeltaBalances.token = null;
+		this.marketBalances.token = null;
 	}
 
 	async setBalances() {
 		this.token.balance = await this.getBalance();
 		
 		if(this.token.name =="ETH"){
-			this.etherdeltaBalances.token = await this.getEtherdeltaEther();
+			this.marketBalances.token = await this.getMarketEther();
 		}else{
-			this.etherdeltaBalances.token = await this.getEtherdeltaBalance();
+			this.marketBalances.token = await this.getMarketBalance();
 		}		
-		this.etherdeltaBalances.eth = await this.getEtherdeltaEther();
+		this.marketBalances.eth = await this.getMarketEther();
 	}
 
 	async balancesInterval() {
@@ -268,7 +278,7 @@ export class MarketService {
 		},2000)
 	}
 
-	waitForMarket(){
+	/*waitForMarket(){
 		let self = this;
 		new Promise((resolve, reject) => {
 			setTimeout(() => {
@@ -330,7 +340,7 @@ export class MarketService {
 				}, 2000);
 			}		
 		});
-	}
+	}*/
 
 	updateFunds(funds){
 		let self = this;

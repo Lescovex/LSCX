@@ -1,0 +1,29 @@
+{
+    "contractEtherDelta": "smart_contract/etherdelta.sol",
+    "contractToken": "smart_contract/token.sol",
+    "contractReserveToken": "smart_contract/reservetoken.sol",
+    "contractMarket": [
+      { "addr": "0x67b3E06E458A93F873Ca7C36412E93235E61E7e0", "info": "Deployed 10/16/2018" },
+      { "addr": "0x0000000000000000000000000000000000000000", "info": "Zero contract" }
+    ],
+    "ethTestnet": "ropsten",
+    "ethChainId": 3,
+    "ethGasPrice": 20000000000,
+    "ethAddr": "0x0000000000000000000000000000000000000000",
+    "ethAddrPrivateKey": "",
+    "gasApprove": 250000,
+    "gasDeposit": 250000,
+    "gasWithdraw": 250000,
+    "gasTrade": 250000,
+    "gasOrder": 250000,
+    "minOrderSize": 0.001,
+
+    "tokens": [
+      { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
+      { "addr": "0x40aade55175aaeed9c88612c3ed2ff91d8943964", "name": "1ST", "decimals": 18 }
+    ],
+    "defaultPair": { "token": "1ST", "base": "ETH" },
+    "pairs": [
+      { "token": "1ST", "base": "ETH" }
+    ]
+  }

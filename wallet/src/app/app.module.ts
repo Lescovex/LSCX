@@ -88,6 +88,7 @@ import { FormsService } from './services/forms.service'
 import { ContractStorageService } from './services/contractStorage.service'
 import { EtherscanService } from './services/etherscan.service';
 import { MarketService } from './services/market.service';
+import { LSCXMarketService } from './services/LSCX-market.service';
 import { CustomContractService } from './services/custom-contract.service';
 
 /*Pipes*/
@@ -211,6 +212,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ContractStorageService,
     EtherscanService,
     MarketService,
+    LSCXMarketService,
     CustomContractService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
