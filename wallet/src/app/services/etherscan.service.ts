@@ -3,6 +3,7 @@ import { Http, Headers, RequestOptions } from "@angular/http";
 import "rxjs/add/operator/map";
 
 import { Web3 } from "./web3.service"
+import { resolve } from "dns";
 const shell = require('electron').shell;
 
 
@@ -120,8 +121,32 @@ export class EtherscanService {
 		formData.append('constructorArguements', _constructorArguments);
 		formData.append('sourceCode', x);
 		
+		let self = this;
 		this.http.post(url,formData).subscribe(async res =>{
-            console.log("res post form?",res);
+			console.log("res post form?",res);
+			let body = res.json();
+			console.log("body del response?",body);
+			if(body.status == "1" && body.message =="OK"){
+				console.log("STATUS 1");
+				let url2 = "https://api"+self.urlStarts+".etherscan.io/api";
+				const data = new FormData();
+				data.append('module', "contract");
+				data.append('action', 'checkverifystatus');
+				data.append('guid', body.result);
+				let headers = new Headers;
+
+				let data2 ={
+					module: 'contract',
+					action: 'checkverifystatus',
+					guid: body.result
+				}
+
+				self.http.get(url2+"?module=contract&action=checkverifystatus&guid="+body.result).map(ans => ans.json()).subscribe(async (res:any) =>{
+					console.log("res de checkVerify",res);
+
+				})
+			}
+			
             
         }, err =>{
             console.log(err);
