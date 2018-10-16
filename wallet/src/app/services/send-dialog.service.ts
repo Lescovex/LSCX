@@ -25,6 +25,7 @@ export class SendDialogService{
             },
         });
     }
+
     openConfirmDeploy(tx, amount, fees, total, action, contract){
         return this.dialog.open(SendDialogComponent, {
             width: '660px',
@@ -51,6 +52,22 @@ export class SendDialogService{
                 total: total,
                 action: action,
                 hashParams: hashParams
+            },
+        });
+    }
+
+    openConfirmAlternativeSend(tx, to, amount, fees, total, action, seedOptions ){
+        return this.dialog.open(SendDialogComponent, {
+            width: '660px',
+            height: '400px',
+            data:{
+                tx: tx,
+                to: to,
+                amount: amount,
+                fees: fees,
+                total: total,
+                action: action,
+                seedOptions: seedOptions
             },
         });
     }

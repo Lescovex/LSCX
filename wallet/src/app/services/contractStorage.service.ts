@@ -64,20 +64,25 @@ export class ContractStorageService {
                     pending.push(index);        
 
                 }
-            })
-            
+            })    
             if(pending.length==0){
                 clearInterval(checkInterval)
             }
+<<<<<<< HEAD
             for(let i=0; i < pending.length; i++){
                 
                 
                 let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);
                 
                 
+=======
+            for(let i=0; i<pending.length; i++){
+                let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);                
+>>>>>>> a185a7f2184fc81eff888b853bac65a65d46f75b
                 if(contractAddr!= null){                    
                     this.contracts[pending[i]].address = contractAddr;
                     this.contracts[pending[i]].active = true;
+<<<<<<< HEAD
                     this.saveContracts();
                     
                     let info = JSON.parse(localStorage.getItem("deployInfo"));
@@ -153,6 +158,10 @@ export class ContractStorageService {
                     
                 }           
                 
+=======
+                }
+                this.saveContracts();
+>>>>>>> a185a7f2184fc81eff888b853bac65a65d46f75b
             }
 
         },3000);

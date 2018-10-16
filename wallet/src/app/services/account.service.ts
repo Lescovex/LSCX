@@ -12,6 +12,7 @@ import { EtherscanService } from './etherscan.service';
 export class AccountService{
   updated = false;
   updatedTokens = false;
+  newUpdateTokens = false;
   account : any = {};
   tokens: Array<any> = [];
   pending: Array<any> = [];
@@ -27,6 +28,7 @@ export class AccountService{
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
+        this.newUpdateTokens = true;
         this.tokens = [];
       }
     }
@@ -44,6 +46,7 @@ export class AccountService{
     this.tokens = [];
     this.getPendingTx();
     await this.startIntervalData();
+    this.newUpdateTokens = true;
     await this.setTokens();
     
   }
@@ -54,7 +57,9 @@ export class AccountService{
       this.clearIntervalTokens();
       this.getPendingTx();
       await this.startIntervalData();
-      await this.setTokens(); 
+      this.newUpdateTokens = true;
+      await this.setTokens();
+
   }
   
   refreshAccount(){
@@ -84,20 +89,16 @@ export class AccountService{
   async setData(){
     let addr = this.account.address;
     let self= this;
-    this._web3.web3.eth.getBalance(addr,(err,result)=>{
-      if(typeof(result)!= "undefined") {
-        self.account.balance = self._web3.web3.fromWei(result.toNumber(),'ether');
-      }
-    })
+    self.account.balance = await this._web3.getBalance(addr);
     let history = await this._scan.getHistory(addr);
 
     for(let i = 0; i<this.pending.length; i++){
       let result = history.findIndex(x => (x.hash).toLowerCase() == this.pending[i].hash.toLowerCase());
-      if(result == -1){
+      let result2 = history.findIndex(x => x.nonce == this.pending[i].nonce && x.from.toLowerCase() == this.account.address.toLowerCase());
+      if(result == -1 && result2 == -1){
         history.unshift(this.pending[i]);
       }else{
-        this.pending.splice(i,1)
-        this.removePendingTx();
+        this.removePendingTx(i);
       }    
     }
     for(let i =0; i<history.length; i++){
@@ -136,8 +137,7 @@ export class AccountService{
     this.tokens = [];
     this.updatedTokens =false;
     if('address' in this.account){
-      this.tokens = this.getTokensLocale();
-      
+      this.tokens = this.getTokensLocale(); 
       await this.updateTokens();
     }
     this.updatedTokens = true;
@@ -174,12 +174,27 @@ export class AccountService{
   async updateTokens(){
     let self = this;
     let tokens = this.tokens
-    tokens = await this.updateTokenBalances(tokens);
+    for(let i = 0; i<tokens.length; i++){
+      if(i==0) {
+        this.newUpdateTokens=false;
+      }
+      if(this.newUpdateTokens==true){
+        return false;
+      }else{
+        tokens[i] = await this.updateTokenBalance(tokens[i]);
+      }
+    }
     let resultTokens =  await this._scan.getTokensTransfers(this.account.address).toPromise();
     let tkns : Array<any> = [];
     tkns = resultTokens.result;
     for(let i = 0; i<tkns.length; i++){
-      if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
+      if(i==0) {
+        this.newUpdateTokens=false;
+      }
+      if(this.newUpdateTokens==true){
+        return false;
+      }
+      if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){  
         let token: any = {
           contractAddress :  tkns[i].contractAddress,
           tokenName:  tkns[i].tokenName,
@@ -196,14 +211,6 @@ export class AccountService{
     }
       self.tokens = await tokens;
       self.saveAccountTokens();
-  }
-
-  async updateTokenBalances(tokens){
-    for(let i = 0; i<tokens.length; i++){
-      tokens[i] = await this.updateTokenBalance(tokens[i]);
-    }
-    
-    return tokens;
   }
 
   async updateTokenBalance(token){
@@ -249,7 +256,8 @@ export class AccountService{
     await this.setData();
   }
 
-  removePendingTx(){
+  removePendingTx(index){
+    this.pending.splice(index,1);
     let wallet = JSON.parse(localStorage.getItem('ethAcc'));
     let result = wallet.findIndex(x => x.address == this.account.address);
     wallet[result].pending = this.pending;

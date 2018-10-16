@@ -3,7 +3,6 @@ import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/fo
 
 import { LSCXContractService } from '../../../services/LSCX-contract.service';
 import { FormsService } from '../../../services/forms.service';
-import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { AccountService } from '../../../services/account.service';
 import { DialogService } from '../../../services/dialog.service';
@@ -11,6 +10,7 @@ import { Router } from '@angular/router';
 import { Web3 } from '../../../services/web3.service';
 
 import BigNumber from 'bignumber.js/bignumber';
+import { RawTx } from '../../../models/rawtx';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class ShowContract implements OnInit{
   protected response: any = null;
   protected function;
 
-  constructor(public _LSCXcontract: LSCXContractService,protected _forms: FormsService, private _rawtx: RawTxService, protected sendDialogService : SendDialogService, protected _account: AccountService, protected _dialog: DialogService, protected router : Router, protected _web3: Web3) {
+  constructor(public _LSCXcontract: LSCXContractService,protected _forms: FormsService, protected sendDialogService : SendDialogService, protected _account: AccountService, protected _dialog: DialogService, protected router : Router, protected _web3: Web3) {
     this.functionForm = new FormGroup({
       functionCtrl: new FormControl(null,Validators.required),
     })
@@ -130,12 +130,13 @@ export class ShowContract implements OnInit{
           options.data = data;
           let amount = 0;
           if(this.funct.payable){
-            amount =  parseFloat(this.getControl('ethAmount').value)
+            amount =  parseInt(this._web3.web3.toWei(this.getControl('ethAmount').value, "ether"));
           }
-          let tx =  await this._rawtx.createRaw(this.contractInfo.address, amount, {data:data})
+          let tx = new RawTx(this._account,this.contractInfo.address,new BigNumber(amount),options.gasLimit, options.gasPrice, this._web3.network, data);
+
           dialogRef.close();
           //tx, to, amount, fees, total, action, token?
-          this.sendDialogService.openConfirmSend(tx[0], this.contractInfo.address, tx[2],tx[1]-tx[2], tx[1], "send");
+          this.sendDialogService.openConfirmSend(tx.tx, this.contractInfo.address, tx.amount,tx.gas, tx.cost, "send");
         }
       });
     }

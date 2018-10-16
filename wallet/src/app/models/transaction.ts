@@ -1,10 +1,10 @@
 export class Transaction {
-    to:String;
+    to:string;
     value: number;
     nonce : number;
     gas:number;
     gasPrice: number;
-    input: String;
+    input: string;
 
     constructor(obj){
         this.to = obj.to;

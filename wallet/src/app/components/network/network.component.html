@@ -2,7 +2,7 @@
 <div *ngIf="show" class="select-list">
     <p>The default network for Ether transactions is MainNet (main network)</p>
     <ul>
-        <li *ngFor="let net of networks" (click)="selectNetwork(net)">{{net.name}}</li>
+        <li *ngFor="let net of NETWORKS" (click)="selectNetwork(net)">{{net.name}}</li>
     </ul>
 </div>
 <div *ngIf="show" class="overlay" (click)="toggleShow()"></div>

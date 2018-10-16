@@ -6,7 +6,6 @@ import * as EthTx from 'ethereumjs-tx';
 import { AccountService } from '../../../services/account.service';
 import { Web3 } from '../../../services/web3.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
-import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
 
@@ -63,7 +62,7 @@ export class OrderCardComponent implements OnInit {
 
     protected state_8 ="WyJ7XCIyNlwiOltcIjljOWFlMWQ0OTNkNzQ3ODJmN2M2Yjk1NGM4MDQ3ZGMwXCIsXCIwYmY0NTFhYWRjMTMyM2I5M2FlYmMzZmE4MDQ4ZWViY1wiXSxcIjQ3XCI6W1wiZTEwNzJkNTEyNWEzMmI5Zjk0NzRjMzFjMmNkMDYzODNcIixcImU0MjNiMzEzNjk1Yjc5N2I2MDJkM2IyZjUzNjk4NzcwXCIsXCI2Y2JmOWNmNTNiODg2MmU5M2RjZDI2MjM3OThjZjE3NFwiXSxcIjM2XCI6W1wiY2VkODc2MTEzYWY2NzNlYmNmZTVkNmIyMmU3ZTZlNjRcIixcImU3MzA2NjI5MTdkMzcxOTliNDNiMGUzODFhYjI2YTg4XCJdLFwiMzdcIjpbXCJhYzk5NjNiMWIyMTI1MWZlNWY2ZGFjNzgyMGRiZDBhMVwiLFwiOTJhNGYzNzU3MzkzZTEyMGYxMzY1OTM5NGQyZDdiZjJcIl0sXCI0MVwiOltcIjYzYjY5YjFmMzhlMmQzMzliOThmYWI5MjQ1MGZiMWU2XCJdfSIsIjNiYmQxNWRkMGI5OWM5ZDYyNjcxYjNmNjkyMTIzYTU4Il0="
 
-    constructor(private dialog: MdDialog, private http: Http, public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService, private router : Router) {
+    constructor(private dialog: MdDialog, private http: Http, public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private router : Router) {
         
     }
     ngOnInit(){

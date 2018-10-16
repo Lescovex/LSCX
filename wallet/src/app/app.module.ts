@@ -7,8 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MdDialogModule } from '@angular/material';
 
-import { InternationalPhoneModule } from 'ng4-intl-phone';
-
 
 /*Routes*/
 import { AppRoutingModule } from './app.routes';
@@ -24,6 +22,7 @@ import { PaginatorComponent } from './components/paginator/paginator.component';
 import { WalletComponent } from './components/wallet/wallet.component';
 import { GlobalPage } from './components/wallet/global/global.page';
 import { SendPage } from './components/wallet/send/send.page';
+import { DropdownPrefixes } from './components/wallet/send/dropdown-prefixes.componenet';
 import { ReceivePage } from './components/wallet/receive/receive.page';
 import { ListComponent } from './components/wallet/global/list.component';
 import { WsettingsPage } from './components/wallet/wsettings/wsettings.page';
@@ -86,7 +85,6 @@ import { TokenService } from './services/token.service';
 import { ContractService } from './services/contract.service';
 import { LSCXContractService } from './services/LSCX-contract.service';
 import { FormsService } from './services/forms.service'
-import { RawTxService } from './services/rawtx.sesrvice'
 import { ContractStorageService } from './services/contractStorage.service'
 import { EtherscanService } from './services/etherscan.service';
 import { MarketService } from './services/market.service';
@@ -113,6 +111,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     WalletComponent,
     GlobalPage,
     SendPage,
+    DropdownPrefixes,
     ReceivePage,
     WsettingsPage,
     SettingsComponent,
@@ -171,8 +170,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     FormsModule,
     ReactiveFormsModule,
     MdDialogModule,
-    AppRoutingModule,
-    InternationalPhoneModule
+    AppRoutingModule
   ],
   exports: [
     MaterialModule,
@@ -210,7 +208,6 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ContractService,
     LSCXContractService,
     FormsService,
-    RawTxService,
     ContractStorageService,
     EtherscanService,
     MarketService,

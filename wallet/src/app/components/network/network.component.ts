@@ -13,7 +13,7 @@ import { CustomContractService } from '../../services/custom-contract.service';
     templateUrl: './network.component.html',
 })
 export class NetWorkComponent implements OnInit, DoCheck{
-    networks: any[] = [{chain:1, name: "Main Ethereum Network"}, {chain:3, name: "Ropsten Test Network"}]
+    NETWORKS: any[] = [{chain:1, name: "Main Ethereum Network", urlStarts:"mainnet"}, {chain:3, name: "Ropsten Test Network", urlStarts:"ropsten"}, {chain:42, name: "Kovan Test Network", urlStarts:"kovan"}]
     net: any;
     show: boolean = false;
     loading: boolean =  false;
@@ -22,7 +22,18 @@ export class NetWorkComponent implements OnInit, DoCheck{
 
     }
     ngOnInit(){
-        this.net = (this._web3.network == 1)? this.networks[0]: this.networks[1];
+        switch (this._web3.network.chain) {
+            case 1: 
+                this.net = this.NETWORKS[0];
+                break;
+            case 3:
+                this.net = this.NETWORKS[1];
+                break;
+            case 42:
+                this.net = this.NETWORKS[2];
+                break;
+
+        }
     }
 
     ngDoCheck(){
@@ -46,7 +57,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this.loading = true;
         this.dialog = this._dialog.openLoadingDialog();
         this.net = network;
-        this._web3.setNetwork(network.chain);
+        this._web3.setNetwork(network);
         
         if('address' in this._account.account){
                 this._contractStorage.setAccContracts();

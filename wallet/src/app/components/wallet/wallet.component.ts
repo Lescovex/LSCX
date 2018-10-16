@@ -10,7 +10,13 @@ export class WalletComponent implements OnInit {
 
   constructor(public _account:AccountService, protected _web3: Web3) {
   }
+
   ngOnInit() {
+  }
+
+  maxHeight(){
+    var mainContent = document.getElementsByClassName('main-content')[0];
+    return mainContent.getBoundingClientRect().height-110;
   }
    
 }

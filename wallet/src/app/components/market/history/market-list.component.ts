@@ -1,9 +1,11 @@
 import { Component, OnInit, OnChanges, Input , OnDestroy} from '@angular/core';
 import { Web3 } from '../../../services/web3.service';
 import { MarketService } from '../../../services/market.service';
-import { RawTxService } from '../../../services/rawtx.sesrvice';
 import { DialogService } from '../../../services/dialog.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
+import { RawTx } from '../../../models/rawtx';
+import BigNumber from 'bignumber.js';
+import { AccountService } from '../../../services/account.service';
 
 @Component({
   selector: 'app-market-list',
@@ -23,7 +25,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
 
     items: any[];
 
-    constructor(private _web3: Web3, protected _market: MarketService, private _rawtx: RawTxService, private _dialog: DialogService, private _sendDialogService: SendDialogService) {
+    constructor(private _web3: Web3, protected _market: MarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService ) {
     }
 
     ngOnInit(): void {
@@ -58,9 +60,10 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         
         let dialogRef = this._dialog.openLoadingDialog();
         let data = await this._market.getFunctionData(this._market.contractEtherDelta,'cancelOrder', [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.v, order.r, order.s])
-        let tx = await this._rawtx.createRaw(this._market.contractEtherDelta.address, 0, {data:data, gasLimit: this._market.config.gasOrder });
+        let gasPrice = await this._web3.getGasPrice();
+        let tx =  new RawTx(this._account, this._market.contractEtherDelta.address, new BigNumber(0), this._market.config.gasOrder, gasPrice, this._web3.network, data);
         dialogRef.close();
-        this._sendDialogService.openConfirmSend(tx[0], this._market.contractEtherDelta.address, tx[2],tx[1]-tx[2], tx[1], "send");
+        this._sendDialogService.openConfirmSend(tx.tx, this._market.contractEtherDelta.address, tx.amount,tx.gas, tx.cost, "send");
     }
 
     getItmes(): void {
