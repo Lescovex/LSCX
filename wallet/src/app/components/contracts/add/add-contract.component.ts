@@ -99,88 +99,12 @@ export class AddContractPage {
 
     let getinfo = this.constructorForm;
     console.log("getInfo?????",getinfo);
-    let encodedConstructorArgs;
-    let text;
-    let len;
-    let argsTo;
-
-    if(getinfo.value.contract = "LSCX_ABT"){        
-      let initialSupply = getinfo.value.initialSupply;
-        let y :number = + initialSupply;
-        text = y.toString(16);
-        for (let i = 0; text.length < 64; i++) {
-          text = "0"+text;
-        }
-        
-        let encodedInitialSupply = text;
-
-      let contractName = getinfo.value.contractName;
-        text = Buffer.from(contractName, 'utf8').toString('hex');
-        console.log(text);
-        for (let i = 0; text.length < 64; i++) {
-          text = "0"+text;
-        }
-        let encodedContractName = text;
-
-      let tokenSymbol = getinfo.value.tokenSymbol;
-        text = Buffer.from(tokenSymbol, 'utf8').toString('hex');
-        console.log(text);
-        for (let i = 0; text.length < 64; i++) {
-          text = "0"+text;
-        }
-        let encondedTokenSymbol = text;
-
-      let contractOwner = getinfo.value.contractOwner;
-        len = contractOwner.length;
-        text = contractOwner.slice(2, len)
-        for (let i = 0; text.length < 64; i++) {
-          text = "0"+text;
-         
-        }
-        console.log("text after for?",text);
-      let encodedContractOwner = text;
-
-      let price = getinfo.value.price;
-        let z :number = + price;
-        text = z.toString(16);
-        for (let i = 0; text.length < 64; i++) {
-          text = "0"+text;
-        }
-        let encodedPrice = text;
-
-      encodedConstructorArgs = encodedInitialSupply + encodedContractName + encondedTokenSymbol + encodedContractOwner + encodedPrice;
-      console.log("encodedConstructorArgs",encodedConstructorArgs);
-      argsTo ={
-        contract : getinfo.value.contract,
-        encodedArgs :encodedConstructorArgs
-      }
-    }
     
-    if(getinfo.value.contract = "LSCX_ISC"){
-      let initialSupply = getinfo.value.initialSupply;
-      let contractName = getinfo.value.contractName;
-      let tokenSymbol = getinfo.value.tokenSymbol;
-      let contractHoldTime = getinfo.value.contractHoldTime;
-      let contractOwner = getinfo.value.contractOwner;
+    let argsTo;
+    argsTo ={
+      contract : getinfo.value.contract,
+    }
       
-    }
-    if(getinfo.value.contract = "LSCX_CYC"){
-      let initialSupply = getinfo.value.initialSupply;
-      let contractName = getinfo.value.contractName;
-      let tokenSymbol = getinfo.value.tokenSymbol;
-      let contractOwner = getinfo.value.contractOwner;  
-      
-    }
-    if(getinfo.value.contract = "LSCX_CIF"){
-      let initialSupply = getinfo.value.initialSupply;
-      let contractName = getinfo.value.contractName;
-      let tokenSymbol = getinfo.value.tokenSymbol;
-      let contractHoldTime = getinfo.value.contractHoldTime;
-      let contractHoldMax = getinfo.value.contractHoldMax;
-      let contractMaxSupply = getinfo.value.contractMaxSupply
-      let contractOwner = getinfo.value.contractOwner;
-    }
-   
     localStorage.setItem("deployInfo",JSON.stringify(argsTo))
     
     try {

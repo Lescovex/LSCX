@@ -93,32 +93,6 @@ export class EtherscanService {
     	shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+address);
 	}
 	
-	getConstructorArgs(contractAddr){
-		this.setUrlStarts();
-		
-		let url = "https://"+this.urlStarts+"etherscan.io/address/"+contractAddr;
-		let headers = new Headers();
-		headers.append('Content-Type', 'text/html');
-		this.http.get(url,  {headers: headers}).subscribe((res:any) =>{
-			
-			let x = res._body;
-			let len = x.length;
-			console.log(len);
-			
-			let y = x.split("pre")[4];
-			console.log("cutted",y);
-			y = y.split(">")[1];
-			console.log("second cut", y);
-			y = y.split("<")[0];
-			console.log("third cut", y);
-			return y;
-		   }, err =>{
-			 console.log(err);
-			
-		   });
-	
-	}
-
 	async setVerified(_contractAddr, _sourceCode, _contractName, _compilerversion, _constructorArguments){
 		this.setUrlStarts();
 		
