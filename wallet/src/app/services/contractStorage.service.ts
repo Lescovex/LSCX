@@ -107,9 +107,13 @@ export class ContractStorageService {
                             var x = data.toString();
                             _sourceCode = x;
 
-                            this._scan.setUrlStarts();
-                            let url = "https://"+this.scan.urlStarts+"etherscan.io/address/"+contractAddr;
-                            
+                            self._scan.setUrlStarts();
+                            let net = self._scan.urlStarts.replace("-", "");
+                            if(net!=""){
+                                net = net+".";
+                            }
+                            let url = "https://"+net+"etherscan.io/address/"+contractAddr;
+
                             let headers = new Headers();
                             headers.append('Content-Type', 'text/html');
                             console.log("start pause");
