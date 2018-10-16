@@ -30,11 +30,12 @@ export class HoldersGeneralPage implements OnInit {
   protected LSCX_Abi;
   protected LSCX_Contract;
 
-  public loadingD;
+  public loadingD = null;
 
   protected balance;
   protected holdedOf;
   protected expected;
+  private nowNetwork: any;
 
   constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private sendDialogService: SendDialogService) {
     Promise.resolve().then(() => { 
@@ -48,24 +49,46 @@ export class HoldersGeneralPage implements OnInit {
   }
 
   ngOnInit() {
-      this.setContract()
+    this.getAbi();
+    this.setContract();
+  }
+
+  ngDoCheck() {
+    if(JSON.stringify(this.nowNetwork)!= JSON.stringify(this._web3.network)){
+      Promise.resolve().then(()=>{
+        this.loadingD = this._dialog.openLoadingDialog();
+      })
+      this.setContract();
+    }
   }
 
   async setContract(){
-    this.getAbi();
-    if(this._web3.network == 3){
+    this.nowNetwork = this._web3.network;
+    if(this._web3.network.chain == 3){
       this.LSCX_Addr = "0xB2F524a6825F8986Ea6eE1e6908738CFF13c5B31";
       
     }
-    if(this._web3.network == 1  ){
+    if(this._web3.network.chain == 1  ){
       this.LSCX_Addr = "0x5bf5f85480848eB92AF31E610Cd65902bcF22648";
       
     }
-    if(this._web3.infuraKey != ''){
-      this.LSCX_Contract = this._web3.web3.eth.contract(this.LSCX_Abi).at(this.LSCX_Addr);
+    if(this._web3.network.chain !=42){
+      if(this._web3.infuraKey != ''){
+        this.LSCX_Contract = this._web3.web3.eth.contract(this.LSCX_Abi).at(this.LSCX_Addr);
+        
+      }
+      await this.load();
+    } else{
+      ///Don't have contract in Kovan
+      this.balance = 0;
+      let interval = setInterval(()=>{
+        if(this.loadingD!= null){
+          this.loadingD.close();
+          clearInterval(interval);
+        }
+      }, 500);
       
     }
-    await this.load();
   }
   getAbi(){
     this.LSCX_Abi = require('../../../../assets/abi/LSCX_Holders.json');
@@ -86,8 +109,7 @@ export class HoldersGeneralPage implements OnInit {
     this.expected =  (holded * contractBalance)/totalSupply;;
 
     this.loadingD.close();
-
-
+    this.loadingD = null;
   }
 
   getUserBalance(): Promise<number>{

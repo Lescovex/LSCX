@@ -5,6 +5,7 @@ import { AccountService } from '../../../services/account.service'
 import { TokenService } from '../../../services/token.service';
 import { Web3 } from '../../../services/web3.service';
 import { DialogService } from '../../../services/dialog.service';
+import { EtherscanService } from '../../../services/etherscan.service';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   byBalance: number;
   dialog = null;
 
-  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService) {
+  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, private _scan: EtherscanService) {
     this.hideZero = false;
     this.alphabetically = 0;
     this.byBalance = 0;
@@ -43,6 +44,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     if(this._account.updatedTokens && this._account.tokenInterval==null){
       this.setTokens();
       this._account.startIntervalTokens();
+      this.allTokens = this._account.tokens.filter(x=>x);
     }
     if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.tokens)){
       this.setTokens();
@@ -51,9 +53,10 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   }
 
   openExternal(txHash){
-    const shell = require('electron').shell;
+    this._scan.openTokenUrl(txHash, this._account.account.address)
+    /*const shell = require('electron').shell;
     let net = (this._web3.network == 1) ? "" : "ropsten.";
-    shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+this._account.account.address);
+    shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+this._account.account.address);*/
   }
 
   async setTokens() {

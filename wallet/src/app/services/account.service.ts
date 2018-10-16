@@ -12,6 +12,7 @@ import { EtherscanService } from './etherscan.service';
 export class AccountService{
   updated = false;
   updatedTokens = false;
+  newUpdateTokens = false;
   account : any = {};
   tokens: Array<any> = [];
   pending: Array<any> = [];
@@ -27,6 +28,7 @@ export class AccountService{
       this.getAccountData();
       if('address' in this.account){
         this.startIntervalData();
+        this.newUpdateTokens = true;
         this.tokens = [];
       }
     }
@@ -44,6 +46,7 @@ export class AccountService{
     this.tokens = [];
     this.getPendingTx();
     await this.startIntervalData();
+    this.newUpdateTokens = true;
     await this.setTokens();
     
   }
@@ -53,8 +56,11 @@ export class AccountService{
       clearInterval(this.interval)
       this.clearIntervalTokens();
       this.getPendingTx();
+      console.log(this.tokens)
       await this.startIntervalData();
-      await this.setTokens(); 
+      this.newUpdateTokens = true;
+      await this.setTokens();
+      console.log(this.tokens)
   }
   
   refreshAccount(){
@@ -132,8 +138,7 @@ export class AccountService{
     this.tokens = [];
     this.updatedTokens =false;
     if('address' in this.account){
-      this.tokens = this.getTokensLocale();
-      
+      this.tokens = this.getTokensLocale(); 
       await this.updateTokens();
     }
     this.updatedTokens = true;
@@ -170,12 +175,31 @@ export class AccountService{
   async updateTokens(){
     let self = this;
     let tokens = this.tokens
-    tokens = await this.updateTokenBalances(tokens);
+    for(let i = 0; i<tokens.length; i++){
+      if(i==0) {
+        this.newUpdateTokens=false;
+      }
+      if(this.newUpdateTokens==true){
+        console.log("newUpdate Balances");
+        return false;
+      }else{
+        console.log("update tokens"+i +"---"+this.newUpdateTokens);
+        tokens[i] = await this.updateTokenBalance(tokens[i]);
+      }
+    }
     let resultTokens =  await this._scan.getTokensTransfers(this.account.address).toPromise();
     let tkns : Array<any> = [];
     tkns = resultTokens.result;
     for(let i = 0; i<tkns.length; i++){
-      if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
+      if(i==0) {
+        console.log(i, "  ", this.newUpdateTokens);
+        this.newUpdateTokens=false;
+      }
+      if(this.newUpdateTokens==true){
+        console.log("newUpdate NewTokens");
+        return false;
+      }
+      if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){  
         let token: any = {
           contractAddress :  tkns[i].contractAddress,
           tokenName:  tkns[i].tokenName,
@@ -192,14 +216,6 @@ export class AccountService{
     }
       self.tokens = await tokens;
       self.saveAccountTokens();
-  }
-
-  async updateTokenBalances(tokens){
-    for(let i = 0; i<tokens.length; i++){
-      tokens[i] = await this.updateTokenBalance(tokens[i]);
-    }
-    
-    return tokens;
   }
 
   async updateTokenBalance(token){

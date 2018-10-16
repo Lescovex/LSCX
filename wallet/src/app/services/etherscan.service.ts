@@ -3,11 +3,13 @@ import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 
 import { Web3 } from "./web3.service"
+const shell = require('electron').shell;
 
 
 @Injectable()
 export class EtherscanService {
 	apikey = "";
+	urlStarts = "";
 	constructor(private _web3 : Web3, private http: Http){	
 		this.getApiKey();
 	}
@@ -29,16 +31,19 @@ export class EtherscanService {
 		  }
 		}
 	}
+	setUrlStarts(){
+		this.urlStarts = (this._web3.network.chain == 1)? "": "-"+this._web3.network.urlStarts;
+	}
 
 	getTx(address:string){
-		let network = (this._web3.network == 1)? "": "-ropsten"
-		let url = "https://api"+network+".etherscan.io/api?module=account&action=txlist&address="+address+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
+		this.setUrlStarts();
+		let url = "https://api"+this.urlStarts+".etherscan.io/api?module=account&action=txlist&address="+address+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
 		return this.http.get(url).map(res => res.json());
 	}
 	
 	getInternalTx(address:string){
-		let network = (this._web3.network == 1)? "": "-ropsten"
-		let url = "https://api"+network+".etherscan.io/api?module=account&action=txlistinternal&address="+address+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
+		this.setUrlStarts();
+		let url = "https://api"+this.urlStarts+".etherscan.io/api?module=account&action=txlistinternal&address="+address+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
 		return this.http.get(url).map(res => res.json());
 	}
 
@@ -67,17 +72,27 @@ export class EtherscanService {
 	}
 
 	getTokensTransfers(addr){
-		let network = (this._web3.network == 1)? "": "-ropsten"
-    let url = "https://api"+network+".etherscan.io/api?module=account&action=tokentx&address="+addr+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
+		this.setUrlStarts();
+		console.log(this.urlStarts);
+    	let url = "https://api"+this.urlStarts+".etherscan.io/api?module=account&action=tokentx&address="+addr+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
    
-    return this.http.get(url).map(res => res.json());
+    	return this.http.get(url).map(res => res.json());
 	}
 	
 	getAbi(contractAddr){
-		let network = (this._web3.network == 1)? "": "-ropsten";
-		let url = "https://api"+network+".etherscan.io/api?module=contract&action=getabi&address="+contractAddr+"&apikey="+this.apikey;
+		this.setUrlStarts();
+		let url = "https://api"+this.urlStarts+".etherscan.io/api?module=contract&action=getabi&address="+contractAddr+"&apikey="+this.apikey;
 		return this.http.get(url).map(res => res.json()).toPromise();
 	}
+
+	openTokenUrl(txHash, address){
+		let net = this.urlStarts.replace("-", "");
+		if(net!=""){
+			net = net+".";
+		}
+    	shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+address);
+	}
+	
 
 
 	

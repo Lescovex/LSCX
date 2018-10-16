@@ -6,7 +6,8 @@ import * as Web3L from 'web3';
 export class Web3 {
   web3: Web3L;
   infuraKey = "d975dfec3852411890cd72311dd91184";
-  network: number;
+  network: any;
+  NETWORKS: any[] = [{chain:1, name: "Main Ethereum Network", urlStarts:"mainnet"}, {chain:3, name: "Ropsten Test Network", urlStarts:"ropsten"}, {chain:42, name: "Kovan Test Network", urlStarts:"kovan"}];
   constructor(){
     this.getIntialNetwork();
     if (typeof this.web3 !== 'undefined') {
@@ -17,14 +18,25 @@ export class Web3 {
     }
   }
 
-  setInfuraKey(apikey){
-    this.infuraKey = apikey;
-    let apikeys: any = {};
-    if(localStorage.getItem('apikeys')){
-      apikeys = JSON.parse(localStorage.getItem('apikeys'));
+  setProvider(){
+    let net = this.network.urlStarts;
+    let url= "https://"+net+".infura.io/v3/"+this.infuraKey;
+    this.web3 = new Web3L(new Web3L.providers.HttpProvider(url));
+  }
+
+  setNetwork(networkObj:any){
+    this.network = networkObj;
+    localStorage.setItem('network', JSON.stringify(this.network.chain))
+    this.setProvider();
+  }
+
+  getIntialNetwork() {
+    if(!localStorage.getItem('network')){
+      this.network = this.NETWORKS[0]
+    }else{
+      let chain = JSON.parse(localStorage.getItem('network'));
+      this.network = this.NETWORKS.find(x=> x.chain == chain);
     }
-      apikeys.inf = apikey;
-      localStorage.setItem('apikeys', JSON.stringify(apikeys));
   }
 
   getBalance(addr):Promise<number>{
@@ -87,27 +99,6 @@ export class Web3 {
         }
       })
     });
-  }
-
-  setProvider(){
-    let net = (this.network==1)? 'mainnet' : 'ropsten'
-    let url= "https://"+net+".infura.io/v3/"+this.infuraKey;
-    this.web3 = new Web3L(new Web3L.providers.HttpProvider(url));
-  }
-
-  setNetwork(network:number){
-    this.network = network;
-    localStorage.setItem('network', JSON.stringify(network))
-    let net = (this.network==1)? 'mainnet' : 'ropsten'
-    this.setProvider();
-  }
-
-  getIntialNetwork() {
-    if(!localStorage.getItem('network')){
-      this.network = 1
-    }else{
-      this.network = JSON.parse(localStorage.getItem('network'));
-    }
   }
 
   async getTxStatus(txhash){
