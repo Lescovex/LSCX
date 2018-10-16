@@ -159,15 +159,17 @@ contract LescovexMarket is SafeMath {
   uint public id = 0;
   uint public tikersId = 0;
   bytes32[] public encoded;
+  string[] public ordersInfo;
 
   mapping (address => mapping (address => uint)) public tokens; //mapping of token addresses to mapping of account balances (token=0 means Ether)
   mapping (address => mapping (bytes32 => bool)) public orders; //mapping of user accounts to mapping of order hashes to booleans (true = submitted by user, equivalent to offchain signature)
   mapping (address => mapping (bytes32 => uint)) public orderFills; //mapping of user accounts to mapping of order hashes to uints (amount of order that has been filled)
   
   //mapping (uint => mapping (address => mapping (bytes32 => bool))) public savedOrders
-  mapping (uint => orderInfo) public ordersInfo;
+  //mapping (uint => orderInfo) public ordersInfo;
   mapping (uint => tikerInfo) public tikers;
 
+/*
   struct orderInfo {
     address owner;
     address tokenGet;
@@ -177,7 +179,11 @@ contract LescovexMarket is SafeMath {
     uint expires;
     uint nonce;
     bytes32 hashed;
+    uint8 v; 
+    bytes32 r; 
+    bytes32 s;
   }
+  */
   struct tikerInfo{
     address token;
     string name;
@@ -290,31 +296,21 @@ contract LescovexMarket is SafeMath {
     return tokens[token][user];
   }
 
-  function order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce) {
+  function order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, string data) {
     bytes32 hash = sha256(this, tokenGet, amountGet, tokenGive, amountGive, expires, nonce);
     orders[msg.sender][hash] = true;
 
-    ordersInfo[id].owner = msg.sender;
-    ordersInfo[id].tokenGet = tokenGet;
-    ordersInfo[id].amountGet = amountGet;
-    ordersInfo[id].tokenGive = tokenGive;
-    ordersInfo[id].amountGive = amountGive;
-    ordersInfo[id].expires = expires;
-    ordersInfo[id].nonce = nonce;
-    ordersInfo[id].hashed = hash;
-    encodeData(this, msg.sender, tokenGet, amountGet, tokenGive, amountGive, expires, nonce, hash);
+    ordersInfo.push(data);
     id++;
+    
     Order(tokenGet, amountGet, tokenGive, amountGive, expires, nonce, msg.sender);
   }
-  function encodeData(address _this, address _owner, address _tokenGet, uint _amountGet, address _tokenGive, uint _amountGive, uint _expires, uint _nonce, bytes32 _hash) public{
-    bytes32 x = keccak256(_this, _owner, _tokenGet, _amountGet, _tokenGive, _amountGive, _expires, _nonce, _hash);
-    encoded.push(x);
+  
+  function ordersInfoLength() constant returns(uint256){
+      return ordersInfo.length;
   }
-  function encodedLength() constant returns(uint256){
-      return encoded.length;
-  }
-  function encodedInfo() constant returns(bytes32[]){
-    return encoded;
+  function ordersInfoStored() constant returns(bytes32[]){
+    return ordersInfo;
   }
 
   function trade(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user, uint8 v, bytes32 r, bytes32 s, uint amount) {

@@ -101,6 +101,7 @@ export class SendDialogComponent{
             let contract =  new LSCX_Contract();
             contract.deployContract(sendResult, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
             this._contractStorage.addContract(contract);
+            
             this._contractStorage.checkForAddress();
           }
           if(i==this.txs.length-1){

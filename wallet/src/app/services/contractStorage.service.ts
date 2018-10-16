@@ -1,6 +1,9 @@
 import { Injectable} from '@angular/core';
 import { Web3 } from './web3.service';
 import { AccountService } from './account.service';
+import { EtherscanService } from './etherscan.service';
+import { Http, Headers, RequestOptions } from "@angular/http";
+var fs = require('fs');
 
 @Injectable()
 export class ContractStorageService {
@@ -8,7 +11,7 @@ export class ContractStorageService {
     LSCX_Contracts: Array<any>;
     customContracts: Array<any>;
 
-    constructor(private _web3: Web3, private _account: AccountService){
+    constructor(private _web3: Web3, private _account: AccountService, protected _scan : EtherscanService, protected http : Http){
         this.setContracts();
         this.setAccContracts();
     }
@@ -58,7 +61,7 @@ export class ContractStorageService {
             let pending = [];
             this.contracts.forEach((contract, index)=> {
                 if(contract.active==false){
-                    pending.push(index);
+                    pending.push(index);        
 
                 }
             })
@@ -66,16 +69,90 @@ export class ContractStorageService {
             if(pending.length==0){
                 clearInterval(checkInterval)
             }
-            for(let i=0; i<pending.length; i++){
-
+            for(let i=0; i < pending.length; i++){
+                
+                
                 let contractAddr = await this._web3.getTxContractAddress(this.contracts[pending[i]].deployHash);
                 
-                if(contractAddr!= null){                    
-                    this.contracts[pending[i]].address = contractAddr
-                    this.contracts[pending[i]].active = true;
-                }
                 
-                this.saveContracts();
+                if(contractAddr!= null){                    
+                    this.contracts[pending[i]].address = contractAddr;
+                    this.contracts[pending[i]].active = true;
+                    this.saveContracts();
+                    
+                    let info = JSON.parse(localStorage.getItem("deployInfo"));
+                    
+                    let _compilerversion;
+                    let _contractName;
+                    let _sourceCode:string;
+
+                    if(info.contract == "LSCX_ABT"){
+                        _compilerversion = "v0.4.19+commit.c4cbbb05"
+                        _contractName = "Lescovex_ABT";
+                    }
+                    if(info.contract == "LSCX_CIF"){
+                        _compilerversion = "v0.4.19+commit.c4cbbb05"
+                        _contractName = "Lescovex_CIF";
+                    }
+                    if(info.contract == "LSCX_CYC"){
+                        _compilerversion = "v0.4.24+commit.e67f0147"
+                        _contractName = "Lescovex_CYC";
+                    }
+                    if(info.contract == "LSCX_ISC"){
+                        _compilerversion = "v0.4.24+commit.e67f0147";
+                        _contractName = "Lescovex_ISC";
+                    }
+                    
+                    let self = this;
+                    
+                    await fs.readFile("./src/LSCX-contracts/LSCX_ABT.sol", function(err, data) {
+                        if (err) {
+                            return console.log(err);
+                        }
+                        if (data) {
+                            var x = data.toString();
+                            _sourceCode = x;
+
+                            let network = (self._web3.network == 1)? "": "-ropsten";
+                            let url = "https://"+network+"etherscan.io/address/"+contractAddr;
+                            let headers = new Headers();
+                            headers.append('Content-Type', 'text/html');
+                            console.log("start pause");
+                            setTimeout(function(){
+                                //do what you need here
+                                console.log("paused 30 seconds");
+                                
+                                self.http.get(url,  {headers: headers}).subscribe((res:any) =>{
+                                    console.log("response", res)
+                                    let x = res._body;
+                                    console.log("responsebody", x);
+                                    
+                                    let len = x.length                        
+                                    let y = x.split("pre")[4];
+                                    console.log("primersplit",y);
+                                    
+                                    let z = y.split(">")[1];
+                                    console.log("segundosplit",z)
+                                    let a =z.split("<")[0];
+                                    console.log("tercersplit",a);
+                                    
+                                    let _constructorArguments = a;
+                                    console.log(_constructorArguments);
+                                    
+                                    self._scan.setVerified(contractAddr, _sourceCode, _contractName, _compilerversion, _constructorArguments)
+    
+                                }, err =>{
+                                    console.log(err);
+                                    
+                                });
+                            }, 30000);
+                            
+                            
+                        }
+                    });
+                    
+                }           
+                
             }
 
         },3000);

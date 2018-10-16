@@ -17,12 +17,20 @@ import { ContractDialogComponent } from './contract-dialog.component';
 import { MdDialog } from '@angular/material';
 import { EtherscanService } from '../../../services/etherscan.service';
 
+import * as Web3L from 'web3';
+import { first } from '../../../../../node_modules/rxjs/operator/first';
+var querystring = require("querystring");
+var fs = require('fs');
+import { Http, Headers, RequestOptions } from "@angular/http";
+
 @Component({
   selector: 'app-add-contract',
   templateUrl: './add-contract.component.html',
 })
 
 export class AddContractPage {
+  web3: Web3L;
+
   public contract = null;
   public abi;
   public constructorForm: FormGroup;
@@ -34,7 +42,7 @@ export class AddContractPage {
   public zero = "0";
   public contracts=['Asset-Backed Tokens (ABT)', 'Crypto Currencies (CYC)', 'Income Smart Contract (ISC)', 'Crypto Investment Fund (CIF)'];
 
-  constructor(public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3, public dialog: MdDialog, private _scan: EtherscanService) {
+  constructor(public http: Http, public _LSCXcontract: LSCXContractService, private _fb: FormBuilder, private _forms: FormsService, private _rawtx: RawTxService, private sendDialogService : SendDialogService, private _account: AccountService, private _contractStorage: ContractStorageService, private _dialog: DialogService, private router: Router, private _web3: Web3, public dialog: MdDialog, private _scan: EtherscanService) {
     this.constructorForm =  new FormGroup({
       contract:new FormControl(null,Validators.required),
     })
@@ -42,9 +50,51 @@ export class AddContractPage {
       contract:new FormControl(null,[Validators.required, ValidateAddress]),
       name: new FormControl(null,Validators.required)
     })
+    
+    let self = this;
+    fs.readFile("./src/LSCX-contracts/LSCX_ABT.sol", function(err, data) {
+      if (err) {
+          return console.log(err);
+      }
+      if (data) {
+          var x = data.toString();
+          let _sourceCode = x;  
+          //console.log(_sourceCode);
+          let y = encodeURIComponent(_sourceCode).replace(/%20/g, '+').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\!/g,"%21").replace(/\'/g,"%27");
+          console.log(y);
+          let url = "https://api.etherscan.io/api";
+       
+          const formData = new FormData();
+          //sftqhval3tkervdy59pdg6y64bbcuecpxuc1edhgqezc7pabjg
+          // append your data
+          formData.append('apikey', 'JDVE27WHYITCKM7Q2DMBC3N65VDIZ74HHJ');
+          formData.append('module', 'contract');
+          formData.append('action', 'verifysourcecode');
+          formData.append('contractaddress', '0x8c2c5e0a30b7587cfaec8f0c2e249eed6ebd71df');
+          formData.append('contractname', 'Lescovex_ABT');
+          formData.append('compilerVersion', 'v0.4.19+commit.c4cbbb05');
+          formData.append('optimizationUsed', '1');
+          formData.append('runs', '200');
+          formData.append('constructorArguements', '00000000000000000000000000000000000000000000000000000002dd231b0000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000002c01f02ecc2f65e84f2cd2d5eee9ae50b9c608450000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000003617364000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000046161647300000000000000000000000000000000000000000000000000000000');
+          formData.append('sourceCode', y);
+
+          let headers = new Headers();
+          //application/json, text/plain, */*
+          headers.append('Content-Type', 'application/json');
+          
+          self.http.post(url, formData).subscribe(async res =>{
+                  console.log("res post form?",res);
+                  
+              }, err =>{
+                  console.log(err);
+                
+          });
+      }
+  });
+    
+    
   }
 
-  
   async getConstructor(){
     
     let contract = this.getControl('contract').value
@@ -89,6 +139,93 @@ export class AddContractPage {
 
     let data = await this._LSCXcontract.getDeployContractData(type, byteCode, args);
     let gasLimit;
+
+    let getinfo = this.constructorForm;
+    console.log("getInfo?????",getinfo);
+    let encodedConstructorArgs;
+    let text;
+    let len;
+    let argsTo;
+
+    if(getinfo.value.contract = "LSCX_ABT"){        
+      let initialSupply = getinfo.value.initialSupply;
+        let y :number = + initialSupply;
+        text = y.toString(16);
+        for (let i = 0; text.length < 64; i++) {
+          text = "0"+text;
+        }
+        
+        let encodedInitialSupply = text;
+
+      let contractName = getinfo.value.contractName;
+        text = Buffer.from(contractName, 'utf8').toString('hex');
+        console.log(text);
+        for (let i = 0; text.length < 64; i++) {
+          text = "0"+text;
+        }
+        let encodedContractName = text;
+
+      let tokenSymbol = getinfo.value.tokenSymbol;
+        text = Buffer.from(tokenSymbol, 'utf8').toString('hex');
+        console.log(text);
+        for (let i = 0; text.length < 64; i++) {
+          text = "0"+text;
+        }
+        let encondedTokenSymbol = text;
+
+      let contractOwner = getinfo.value.contractOwner;
+        len = contractOwner.length;
+        text = contractOwner.slice(2, len)
+        for (let i = 0; text.length < 64; i++) {
+          text = "0"+text;
+         
+        }
+        console.log("text after for?",text);
+      let encodedContractOwner = text;
+
+      let price = getinfo.value.price;
+        let z :number = + price;
+        text = z.toString(16);
+        for (let i = 0; text.length < 64; i++) {
+          text = "0"+text;
+        }
+        let encodedPrice = text;
+
+      encodedConstructorArgs = encodedInitialSupply + encodedContractName + encondedTokenSymbol + encodedContractOwner + encodedPrice;
+      console.log("encodedConstructorArgs",encodedConstructorArgs);
+      argsTo ={
+        contract : getinfo.value.contract,
+        encodedArgs :encodedConstructorArgs
+      }
+    }
+    
+    if(getinfo.value.contract = "LSCX_ISC"){
+      let initialSupply = getinfo.value.initialSupply;
+      let contractName = getinfo.value.contractName;
+      let tokenSymbol = getinfo.value.tokenSymbol;
+      let contractHoldTime = getinfo.value.contractHoldTime;
+      let contractOwner = getinfo.value.contractOwner;
+      
+    }
+    if(getinfo.value.contract = "LSCX_CYC"){
+      let initialSupply = getinfo.value.initialSupply;
+      let contractName = getinfo.value.contractName;
+      let tokenSymbol = getinfo.value.tokenSymbol;
+      let contractOwner = getinfo.value.contractOwner;  
+      
+    }
+    if(getinfo.value.contract = "LSCX_CIF"){
+      let initialSupply = getinfo.value.initialSupply;
+      let contractName = getinfo.value.contractName;
+      let tokenSymbol = getinfo.value.tokenSymbol;
+      let contractHoldTime = getinfo.value.contractHoldTime;
+      let contractHoldMax = getinfo.value.contractHoldMax;
+      let contractMaxSupply = getinfo.value.contractMaxSupply
+      let contractOwner = getinfo.value.contractOwner;
+    }
+   
+    localStorage.setItem("deployInfo",JSON.stringify(argsTo))
+    
     try {
       gasLimit = await this._web3.estimateGas(this._account.account.address, "", data, 0);
       

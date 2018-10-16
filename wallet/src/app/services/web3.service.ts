@@ -134,6 +134,9 @@ export class Web3 {
     
     let AsyncFunction = new Promise (function (resolve, reject) {      
       self.web3.eth.getTransactionReceipt(txhash, function(err, res) {
+        console.log("hay error?",err);
+        console.log("hay response?", res);
+        
         if (!err){
           if(res!= null){
             if(res.contractAddress!= null){
