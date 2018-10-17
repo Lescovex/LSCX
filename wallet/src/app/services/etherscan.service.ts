@@ -11,6 +11,7 @@ const shell = require('electron').shell;
 export class EtherscanService {
 	apikey = "";
 	urlStarts = "";
+	checkInterval;
 	constructor(private _web3 : Web3, private http: Http){	
 		this.getApiKey();
 	}
@@ -98,14 +99,14 @@ export class EtherscanService {
 		this.setUrlStarts();
 		
 		let x = encodeURIComponent(_sourceCode).replace(/%20/g, '+').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\!/g,"%21").replace(/\'/g,"%27");
-		console.log(x);
+		//console.log(x);
 		
 		let url = "https://api"+this.urlStarts+".etherscan.io/api";
 	
-		console.log("addr",_contractAddr);
-		console.log("name",_contractName);
-		console.log("version",_compilerversion);
-		console.log("arguments",_constructorArguments);
+		//console.log("addr",_contractAddr);
+		//console.log("name",_contractName);
+		//console.log("version",_compilerversion);
+		//console.log("arguments",_constructorArguments);
 		
 		const formData = new FormData();
 		
@@ -123,11 +124,11 @@ export class EtherscanService {
 		
 		let self = this;
 		this.http.post(url,formData).subscribe(async res =>{
-			console.log("res post form?",res);
+			//console.log("res post form?",res);
 			let body = res.json();
-			console.log("body del response?",body);
+			//console.log("body del response?",body);
 			if(body.status == "1" && body.message =="OK"){
-				console.log("STATUS 1");
+				//console.log("STATUS 1");
 				let url2 = "https://api"+self.urlStarts+".etherscan.io/api";
 				const data = new FormData();
 				data.append('module', "contract");
@@ -140,11 +141,14 @@ export class EtherscanService {
 					action: 'checkverifystatus',
 					guid: body.result
 				}
+				this.checkInterval = setInterval(()=>{
+					self.http.get(url2+"?module=contract&action=checkverifystatus&guid="+body.result).map(ans => ans.json()).subscribe(async (res:any) =>{
+						//console.log("res de checkVerify",res);
+						clearInterval(self.checkInterval);
+					})
+				  },10000);
 
-				self.http.get(url2+"?module=contract&action=checkverifystatus&guid="+body.result).map(ans => ans.json()).subscribe(async (res:any) =>{
-					console.log("res de checkVerify",res);
-
-				})
+				
 			}
 			
             

@@ -61,7 +61,11 @@ import { AddAccountDialogComponent } from './components/navComponent/addAccount-
 import { NewAccountDialogComponent } from './components/navComponent/newAccount-dialog.component';
 import { ImportAccountDialogComponent } from './components/navComponent/importAccount-dialog.component';
 import { SendDialogComponent } from './components/dialogs/send-dialog.component';
+<<<<<<< HEAD
 import { SendOrderDialogComponent } from './components/dialogs/send-order-dialog.component';
+=======
+import { NetworkDialogComponent } from "./components/dialogs/network-dialog.component";
+>>>>>>> e5e627358fb4a7a3fb22d1a9912c4c34866eb26a
 import { DeleteComponent } from './components/wallet/wsettings/confirm-delete.component';
 import { JSONDialogComponent } from './components/wallet/wsettings/json-dialog.component';
 import { PrivateKeyDialogComponent } from './components/wallet/wsettings/privatekey-dialog.component';
@@ -131,6 +135,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     LoadingDialogComponent,
     JSONDialogComponent,
     PrivateKeyDialogComponent,
+    NetworkDialogComponent,
     ListComponent,
     PaginatorComponent,
     TokensComponent,
@@ -200,7 +205,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ShowTxDialogComponent,
     ResendTxDialogComponent,
     WithdrawTxDialog,
-    WithdrawDialog
+    WithdrawDialog,
+    NetworkDialogComponent
   ],
   providers: [
     WalletService,

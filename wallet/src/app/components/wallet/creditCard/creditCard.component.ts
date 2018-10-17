@@ -9,6 +9,7 @@ import { Web3 } from '../../../services/web3.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
+import { NetworkDialogComponent } from "../../dialogs/network-dialog.component";
 
 import { Router, NavigationEnd } from '@angular/router';
 import { ERROR_LOGGER } from '../../../../../node_modules/@angular/core/src/errors';
@@ -96,7 +97,7 @@ export class CreditCardPage implements OnInit {
         receiver:"",
         amount:""
     }
-
+    dialogRef;
 
     constructor(private dialog: MdDialog, private http: Http, public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private router : Router) {
    
@@ -116,18 +117,34 @@ export class CreditCardPage implements OnInit {
     }
   
     async ngOnInit() {
-        if(localStorage.getItem('pendingTx')){
-            let x = localStorage.getItem('pendingTx'); 
-            this.tx_id = JSON.parse(x);
+        if(this._web3.network.chain != 1){
+            Promise.resolve().then(() => { 
+                this.dialogRef = this.dialog.open(NetworkDialogComponent, {
+                    width: '660px',
+                    height: '200px',
+                    disableClose: false
+                  });
+                  this.dialogRef.afterClosed().subscribe(async result=>{
+                    this.router.navigate(["/wallet/global"]);
+                })
+              });
             
-            this.pendingTx = true;
-            await this.chipchapSwiftResponse();
             
-          }else{
-            this.serviceStatus = true;
-            this.inputData = true;
-            this.chipchapSwiftStatus();
-          }
+        }else{
+            if(localStorage.getItem('pendingTx')){
+                let x = localStorage.getItem('pendingTx'); 
+                this.tx_id = JSON.parse(x);
+                
+                this.pendingTx = true;
+                await this.chipchapSwiftResponse();
+                
+              }else{
+                this.serviceStatus = true;
+                this.inputData = true;
+                this.chipchapSwiftStatus();
+              }
+        }
+        
     }
 
     setCredentials(data){
