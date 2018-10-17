@@ -158,8 +158,6 @@ contract LescovexMarket is SafeMath {
   uint public feeMarket; //
   uint public id = 0;
   uint public tikersId = 0;
-  bytes32[] public ordersData;
-  bytes32[] public tikersData;
 
   mapping (address => mapping (address => uint)) public tokens; //mapping of token addresses to mapping of account balances (token=0 means Ether)
   mapping (address => mapping (bytes32 => bool)) public orders; //mapping of user accounts to mapping of order hashes to booleans (true = submitted by user, equivalent to offchain signature)
@@ -183,9 +181,11 @@ contract LescovexMarket is SafeMath {
     bytes32 r; 
     bytes32 s;
   }
+  
   struct tikerInfo{
     address token;
     string name;
+    uint decimals;
   }
 
   event Order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user);
@@ -253,23 +253,17 @@ contract LescovexMarket is SafeMath {
     Deposit(0, msg.sender, msg.value - feeTakeXfer, tokens[0][msg.sender]);
     Deposit(0, feeAccount, feeTakeXfer, tokens[0][feeAccount]);
   }
-  function tiker(address _token, string _tokenName, bytes32 data) payable {
+  function tiker(address _token, string _tokenName, uint _decimals) payable {
     if (msg.value != feeMarket) throw;
     
     tikers[tikersId].token = _token;
     tikers[tikersId].name = _tokenName;
+    tikers[tikersId].decimals = _decimals;
     
     tikersId++;
-    tikersData.push(data);
     
     tokens[0][feeAccount] = safeAdd(tokens[0][feeAccount], msg.value);
     Deposit(0, feeAccount, msg.value, tokens[0][feeAccount]);
-  }
-   function tikersDataLength() constant returns(uint256){
-      return tikersData.length;
-  }
-  function tikersDataInfo() constant returns(bytes32[]){
-    return tikersData;
   }
 
   function withdraw(uint amount) {
@@ -304,10 +298,9 @@ contract LescovexMarket is SafeMath {
     return tokens[token][user];
   }
 
-  function order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, bytes32 data) {
+  function order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, uint8 v, bytes32 r, bytes32 s) {
     bytes32 hash = sha256(this, tokenGet, amountGet, tokenGive, amountGive, expires, nonce);
     orders[msg.sender][hash] = true;
-
 
     ordersInfo[id].owner = msg.sender;
     ordersInfo[id].tokenGet = tokenGet;
@@ -317,17 +310,12 @@ contract LescovexMarket is SafeMath {
     ordersInfo[id].expires = expires;
     ordersInfo[id].nonce = nonce;
     ordersInfo[id].hashed = hash;
-  
-    ordersData.push(data);
+    ordersInfo[id].v = v;
+    ordersInfo[id].r = r;
+    ordersInfo[id].s = s;
+
     id++;
     Order(tokenGet, amountGet, tokenGive, amountGive, expires, nonce, msg.sender);
-  }
- 
-  function orderLength() constant returns(uint256){
-      return ordersData.length;
-  }
-  function ordersDataInfo() constant returns(bytes32[]){
-    return ordersData;
   }
 
   function trade(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user, uint8 v, bytes32 r, bytes32 s, uint amount) {
