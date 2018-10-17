@@ -23,6 +23,8 @@ export class BuySellPage implements OnInit {
       total: 0,
       expires : 10000
     }
+    private tokenAmount:number;
+    private ethAmount: number;
     protected buyInCross: string;
     protected submited: boolean = false;
     private interval;
@@ -46,15 +48,17 @@ export class BuySellPage implements OnInit {
       if(form.invalid) return false;
       this.loadingDialog = this._dialog.openLoadingDialog();
       let price =new BigNumber(this.f.price);
-      let tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
-      let ethAmount = Math.floor(this.f.total*Math.pow(10,18));
+      this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
+      this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
+      console.log(price, this.tokenAmount, this.ethAmount);
+      let amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
 
-      /*if(this.action == "buy" && this.f.total >= this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount >= this._LSCXmarket.marketBalances.token){
+      if(this.action == "buy" && this.f.total >= this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount >= this._LSCXmarket.marketBalances.token){
         this.loadingDialog.close();
         let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
         return false
       }
-      
+      /*
       let amount = (this.action == 'buy')? ethAmount : tokenAmount;
       let matchs = this.getCross(amount, price);
       
@@ -118,32 +122,22 @@ export class BuySellPage implements OnInit {
 
       let block  = await this._web3.blockNumber();
       let ethAddr =  this._LSCXmarket.config.tokens[0].addr;
-      let nonce = await this._web3.getNonce(this._account.account.address);
-      let tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
-      let ethAmount = Math.floor(this.f.total*Math.pow(10,18));
-
+      let nonce = await this.getNonce();
       let params: any[];
-
+      console.log(this._LSCXmarket.marketBalances.eth, this._LSCXmarket.marketBalances.token);
       if(this.action == "buy" && this.f.total <= this._LSCXmarket.marketBalances.eth){
-          params = [this._LSCXmarket.token.addr, tokenAmount, ethAddr, ethAmount, block + this.f.expires, nonce]
+          params = [this._LSCXmarket.token.addr, this.tokenAmount, ethAddr, this.ethAmount, block + this.f.expires, nonce]
       } else if (this.action == "sell" && this.f.amount <= this._LSCXmarket.marketBalances.token){
-          params = [ethAddr, ethAmount, this._LSCXmarket.token.addr, tokenAmount, block +this.f.expires, nonce]
+          params = [ethAddr, this.ethAmount, this._LSCXmarket.token.addr, this.tokenAmount, block +this.f.expires, nonce]
       }
+     
       let hashParams : any[]= [this._LSCXmarket.contractMarket.address].concat(params);
-      let hash = await this._LSCXmarket.orderHash(hashParams);
-      let privateKey = this._account.getPrivateKey("jamave1990");
-      let sign = this._LSCXmarket.signOrder(hash, privateKey);
-      let byte = await this._LSCXmarket.placeOrder(hashParams, sign);
-      
-      params.push(byte);
-              
-      let data =  await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'order',params);
+      console.log("Buy/sell", params, hashParams);
       this.loadingDialog.close();
       let gasOpt = await this.openGasDialog(this._LSCXmarket.config.gasOrder);
         if(gasOpt != null){
-          let tx = new RawTx(this._account,this._LSCXmarket.contractMarket.address,new BigNumber(0),gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
-          //let tx = await this._rawtx.createRaw(this._LSCXmarket.contractMarket.address, 0, {data:data, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice });
-          //this.sendDialogService.openConfirmOrder(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount,tx.gas, tx.cost, "order", hashParams);
+          let gas = gasOpt.gasLimit * gasOpt.gasPrice;
+          this.sendDialogService.openConfirmOrder(this._LSCXmarket.contractMarket.address, gas, "order", hashParams, gasOpt);
         }
     }
 
@@ -167,6 +161,18 @@ export class BuySellPage implements OnInit {
           return obj;
       }
       return null;
+  }
+
+  async getNonce(){
+    let nonce = await this._web3.getNonce(this._account.account.address);
+    //para ver ultimo nonce real
+    let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
+    let historyNonce =history[0].nonce;
+    console.log(history[0].nonce, historyNonce);
+    if(historyNonce>= nonce){
+        nonce = parseInt(historyNonce)+1;
+    }
+    return nonce;
   }
 
 }

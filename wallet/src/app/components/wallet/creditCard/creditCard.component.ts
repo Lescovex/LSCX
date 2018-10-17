@@ -362,6 +362,7 @@ export class CreditCardPage implements OnInit {
         
         let amountBN = new BigNumber(this._web3.web3.toWei(amount,"ether"));
         let tx =  new RawTx(this._account,receiverAddr,amountBN,22000, gasPrice, this._web3.network, "");
+        await tx.setTxNonce(this._account);
         //await this._rawtx.createRaw(receiverAddr, amount);
         this.sendDialogService.openConfirmSend(tx.tx, receiverAddr, tx.amount, tx.gas, tx.cost, "send");
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input , OnDestroy} from '@angular/core';
 import { Web3 } from '../../../services/web3.service';
-import { MarketService } from '../../../services/market.service';
+import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { DialogService } from '../../../services/dialog.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { RawTx } from '../../../models/rawtx';
@@ -25,7 +25,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
 
     items: any[];
 
-    constructor(private _web3: Web3, protected _market: MarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService ) {
+    constructor(private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService ) {
     }
 
     ngOnInit(): void {
@@ -59,11 +59,11 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     async cancelOrder(order) {
         
         let dialogRef = this._dialog.openLoadingDialog();
-        let data = await this._market.getFunctionData(this._market.contractEtherDelta,'cancelOrder', [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.v, order.r, order.s])
+        let data = await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'cancelOrder', [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.v, order.r, order.s])
         let gasPrice = await this._web3.getGasPrice();
-        let tx =  new RawTx(this._account, this._market.contractEtherDelta.address, new BigNumber(0), this._market.config.gasOrder, gasPrice, this._web3.network, data);
+        let tx =  new RawTx(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), this._LSCXmarket.config.gasOrder, gasPrice, this._web3.network, data);
         dialogRef.close();
-        this._sendDialogService.openConfirmSend(tx.tx, this._market.contractEtherDelta.address, tx.amount,tx.gas, tx.cost, "send");
+        this._sendDialogService.openConfirmSend(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount,tx.gas, tx.cost, "send");
     }
 
     getItmes(): void {

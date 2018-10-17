@@ -125,7 +125,7 @@ export class AccountService{
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);
       if(wallet[result].hasOwnProperty('tokens')){
-        let tokens = wallet[result].tokens.filter(x=> x.network == this._web3.network)
+        let tokens = wallet[result].tokens.filter(x=> x.network == this._web3.network.chain)
         return tokens;
       }else{
         return [];
@@ -237,13 +237,13 @@ export class AccountService{
       let wallet = JSON.parse(localStorage.getItem('ethAcc'));
       let result = wallet.findIndex(x => x.address == this.account.address);
       if(wallet[result].hasOwnProperty('pending')){
-        this.pending= wallet[result].pending.filter(x=> x.network == this._web3.network);
+        this.pending= wallet[result].pending.filter(x=> x.network == this._web3.network.chain);
       }
     }
   }
   
   async addPendingTx(tx){
-    tx.network=this._web3.network;
+    tx.network=this._web3.network.chain;
     let pendings = this.pending.filter(x=> x.nonce != tx.nonce);
     pendings.push(tx);
     this.pending= pendings;

@@ -3,7 +3,7 @@
     "contractToken": "smart_contract/token.sol",
     "contractReserveToken": "smart_contract/reservetoken.sol",
     "contractMarket": [
-      { "addr": "0x67b3E06E458A93F873Ca7C36412E93235E61E7e0", "info": "Deployed 10/16/2018" },
+      { "addr": "0x0797bb0439F159ff203A3e6A177edbb41fa5B455", "info": "Deployed 10/17/2018" },
       { "addr": "0x0000000000000000000000000000000000000000", "info": "Zero contract" }
     ],
     "ethTestnet": "ropsten",
@@ -15,7 +15,7 @@
     "gasDeposit": 250000,
     "gasWithdraw": 250000,
     "gasTrade": 250000,
-    "gasOrder": 250000,
+    "gasOrder": 400000,
     "minOrderSize": 0.001,
 
     "tokens": [

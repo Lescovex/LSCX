@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { AccountService } from '../../services/account.service';
-import { MarketService } from '../../services/market.service';
+import { LSCXMarketService } from '../../services/LSCX-market.service';
 
 
 @Component({
@@ -12,8 +12,8 @@ export class MarketComponent{
   protected showList: boolean = false;
   protected price;
   interval;
-  constructor(public _account:AccountService, protected _market: MarketService) {
-    this._market.setMarket();
+  constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService) {
+    this._LSCXmarket.setMarket();
   }
 
   maxHeight() {

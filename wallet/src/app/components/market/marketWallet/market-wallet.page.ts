@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core'
 
 import { AccountService } from '../../../services/account.service'
 import { MarketService } from '../../../services/market.service';
+import { LSCXMarketService } from '../../../services/LSCX-market.service';
 
 @Component({
   selector: 'app-market-wallet',
@@ -10,11 +11,11 @@ import { MarketService } from '../../../services/market.service';
 export class MarketWalletPage implements OnInit, OnDestroy {
   action : string;
   interval;
-  constructor(public _account:AccountService, protected _market: MarketService) {
-    this.action = 'deposit'
+  constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService ) {
+    this.action = 'deposit';
   }
   async ngOnInit() {
-    this.interval = await this._market.balancesInterval();
+    this.interval = await this._LSCXmarket.balancesInterval();
   }
   ngOnDestroy(){
     clearInterval(this.interval)

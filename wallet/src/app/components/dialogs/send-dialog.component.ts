@@ -138,7 +138,7 @@ export class SendDialogComponent{
 
   addLSCXContract(hash) {
     let contract =  new LSCX_Contract();
-    contract.deployContract(hash, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network);
+    contract.deployContract(hash, this.data.contract.info, this.data.contract.type, this._account.account.address, this._web3.network.chain);
     this._contractStorage.addContract(contract);
     this._contractStorage.checkForAddress();
   }

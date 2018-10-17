@@ -119,9 +119,7 @@ export class AddContractPage {
     dialogRef.afterClosed().subscribe(async result=>{
       if(typeof(result) != 'undefined'){
         let options = JSON.parse(result);
-
-        let tx = new DeployRawTx(this._account, options.gasLimit, options.gasPrice, this._web3.network, "0x"+data)
-        
+        let tx = new DeployRawTx(this._account, options.gasLimit, options.gasPrice, this._web3.network, "0x"+data)    
         let contractInfo =  this._forms.getValuesObject(this.inputs, this.constructorForm);
         this.sendDialogService.openConfirmDeploy(tx.tx, 0, tx.gas, tx.cost, 'contractDeploy', {type:this.getControl('contract').value, info: contractInfo})
       }
@@ -146,7 +144,7 @@ export class AddContractPage {
       if(type != ""){
         let contract = new LSCX_Contract();
         let info= await this._LSCXcontract.getContractModelData(type,contractAddr)
-        contract.importContract(contractAddr,tx.hash, type, this._account.account.address, info, this._web3.network);
+        contract.importContract(contractAddr,tx.hash, type, this._account.account.address, info, this._web3.network.chain);
         try{
           this._contractStorage.addContract(contract);
         }catch(e){
@@ -250,7 +248,7 @@ export class AddContractPage {
         message = "The contract you are are trying to import isn't verify, its code isn't public."
         error = " ";
     }else{
-        let contract = new CustomContract(contractAddr, name, abi.result, this._account.account.address, this._web3.network);
+        let contract = new CustomContract(contractAddr, name, abi.result, this._account.account.address, this._web3.network.chain);
         message = "You can find it in the contracts list"
         this._contractStorage.addContract(contract);
     }

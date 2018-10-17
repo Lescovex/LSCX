@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 /*Dialog*/
 import { MdDialog } from '@angular/material';
 import { SendDialogComponent } from '../components/dialogs/send-dialog.component';
+import { SendOrderDialogComponent } from '../components/dialogs/send-order-dialog.component';
 
 
 @Injectable()
@@ -40,18 +41,18 @@ export class SendDialogService{
         });
     }
 
-    openConfirmOrder(tx, to, amount, fees, total, action, hashParams){
-        return this.dialog.open(SendDialogComponent, {
+    openConfirmOrder(to, fees, action, hashParams, gasOptions){
+        return this.dialog.open(SendOrderDialogComponent, {
             width: '660px',
             height: '400px',
             data:{
-                tx: tx,
                 to: to,
-                amount: amount,
+                amount: 0,
                 fees: fees,
-                total: total,
+                total: fees,
                 action: action,
-                hashParams: hashParams
+                params: hashParams,
+                gasOpt: gasOptions
             },
         });
     }

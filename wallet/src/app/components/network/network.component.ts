@@ -1,5 +1,5 @@
 import { Component, OnInit, DoCheck }  from '@angular/core'
-import { MarketService } from '../../services/market.service';
+
 import { Web3 } from '../../services/web3.service';
 import { AccountService } from '../../services/account.service';
 import { DialogService } from '../../services/dialog.service';
@@ -7,6 +7,7 @@ import { DialogService } from '../../services/dialog.service';
 import { ContractStorageService } from '../../services/contractStorage.service';
 import { LSCXContractService } from '../../services/LSCX-contract.service';
 import { CustomContractService } from '../../services/custom-contract.service';
+import { LSCXMarketService } from '../../services/LSCX-market.service';
 
 @Component({
     selector: 'app-network',
@@ -18,7 +19,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
     show: boolean = false;
     loading: boolean =  false;
     dialog;
-    constructor(private _market: MarketService, private _web3: Web3, private _account: AccountService, private _dialog: DialogService, private _LSCXcontract: LSCXContractService, private _customContract: CustomContractService, private _contractStorage: ContractStorageService) {
+    constructor(private _LSCXmarket: LSCXMarketService, private _web3: Web3, private _account: AccountService, private _dialog: DialogService, private _LSCXcontract: LSCXContractService, private _customContract: CustomContractService, private _contractStorage: ContractStorageService) {
 
     }
     ngOnInit(){
@@ -61,8 +62,8 @@ export class NetWorkComponent implements OnInit, DoCheck{
         
         if('address' in this._account.account){
                 this._contractStorage.setAccContracts();
-                this._market.setMarket();
-                this._market.resetSocket();
+                this._LSCXmarket.setMarket();
+                //this._LSCXmarket.resetSocket();
                 this._LSCXcontract.reset();
                 this._customContract.reset();
                 await this._account.refreshAccountData();

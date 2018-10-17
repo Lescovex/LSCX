@@ -40,7 +40,18 @@ export class LSCXMarketService {
 	}
 
 	setCongif() {
-		let file = (this._web3.network == 1)? 'main': 'testnet';
+		let file = "";
+		switch(this._web3.network.chain) {
+			case 1: 
+				file = "main";
+				break;
+			case 3: 
+				file = "testnet";
+				break;
+			case 42:
+				file = "kovan";
+				break;
+		}
 		this.config= require('../../libs/market-lib/config/'+file+'.json');
 	}
 
@@ -52,14 +63,13 @@ export class LSCXMarketService {
 		}
 	}
 
-	setToken(token?) {		
+	setToken(token?) {	
 		if(typeof(token)=="undefined"){	
 			let localToken = this.getLocalStorageToken();
-			
 			if(localToken !=null && this.config.tokens.find(token=>token.addr == localToken.addr) != null){
 				this.token = localToken;
 				
-			}else if ( localToken !=null && 'tokens' in this._account.account && this._account.account.tokens.find(token=> token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network) != null){
+			}else if ( localToken !=null && 'tokens' in this._account.account && this._account.account.tokens.find(token=> token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network.chain) != null){
 				this.token = localToken;
 				
 			}else{
@@ -99,8 +109,8 @@ export class LSCXMarketService {
 		
 	}
 
-	setContracts() {	
-		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractEtherDeltaAddrs[0].addr);
+	setContracts() {
+		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractMarket[0].addr);
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
 		this.contractReserveToken = this._web3.web3.eth.contract(this.getAbi('reservetoken'));
 	}
@@ -182,7 +192,6 @@ export class LSCXMarketService {
 		if(this.token.name =="ETH"){
 			balance = this._account.account.balance
 		}else{
-			
 			if(this.token.contract != null){
 				let value = await this._contract.callFunction(this.token.contract, 'balanceOf', [this._account.account.address]);
 				let x = value.toString();
@@ -230,17 +239,6 @@ export class LSCXMarketService {
 			r: sig.r,
 			s: sig.s
 		}
-		
-		let orderString= JSON.stringify(order);
-		let orderByte = EthAbi.rawEncode([ 'string' ], [orderString]);
-		/*let self = this;
-		return new Promise((resolve, reject) => {
-			self.socket.emit('message', order);
-			self.socket.once('messageResult', (messageResult) => {
-			  if (!messageResult) reject();
-			  resolve(messageResult);
-			});
-		  });*/
 	}
 	
 
@@ -435,17 +433,17 @@ export class LSCXMarketService {
 		
 		if(localStorage.getItem('market')){	
 			let market = JSON.parse(localStorage.getItem('market'));
-			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network.toString() in x);
+			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network.chain.toString() in x);
 			if(index != -1){
 				
-				if('myFunds' in market[index][this._web3.network.toString()]) {
-					this.state.myFunds = market[index][this._web3.network.toString()].myFunds.filter(x=>x.tokenAddr==0x0000000000000000000000000000000000000000 ||x.token.Addr==this.token.addr)
+				if('myFunds' in market[index][this._web3.network.chain.toString()]) {
+					this.state.myFunds = market[index][this._web3.network.chain.toString()].myFunds.filter(x=>x.tokenAddr==0x0000000000000000000000000000000000000000 ||x.token.Addr==this.token.addr)
 
 				}
-				if(this.token.addr in market[index][this._web3.network.toString()]){
+				if(this.token.addr in market[index][this._web3.network.chain.toString()]){
 					
-					this.state.myOrders = market[index][this._web3.network.toString()][this.token.addr].myOrders;
-					this.state.myTrades = market[index][this._web3.network.toString()][this.token.addr].myTrades;
+					this.state.myOrders = market[index][this._web3.network.chain.toString()][this.token.addr].myOrders;
+					this.state.myTrades = market[index][this._web3.network.chain.toString()][this.token.addr].myTrades;
 				}
 			}
 		}
@@ -464,14 +462,14 @@ export class LSCXMarketService {
 					account: this._account.account.address,
 					myFunds: this.state.myFunds
 				}
-				marketObj[this._web3.network.toString()]={}
-				marketObj[this._web3.network.toString()][this.token.addr] = tokenStatus;
+				marketObj[this._web3.network.chain.toString()]={}
+				marketObj[this._web3.network.chain.toString()][this.token.addr] = tokenStatus;
 				market.push(marketObj);
-			}else if(this._web3.network.toString() in market[index]){
-				market[index][this._web3.network.toString()][this.token.addr] = tokenStatus;
+			}else if(this._web3.network.chain.toString() in market[index]){
+				market[index][this._web3.network.chain.toString()][this.token.addr] = tokenStatus;
 			}else{
-				market[index][this._web3.network.toString()]={}
-				market[index][this._web3.network.toString()][this.token.addr] = tokenStatus;
+				market[index][this._web3.network.chain.toString()]={}
+				market[index][this._web3.network.chain.toString()][this.token.addr] = tokenStatus;
 			}
 			localStorage.setItem('market', JSON.stringify(market))
 		}else{
@@ -479,8 +477,8 @@ export class LSCXMarketService {
 				account: this._account.account.address,
 				myFunds: this.state.myFunds
 			}
-			marketObj[this._web3.network.toString()]={}
-			marketObj[this._web3.network.toString()][this.token.address] = tokenStatus;
+			marketObj[this._web3.network.chain.toString()]={}
+			marketObj[this._web3.network.chain.toString()][this.token.address] = tokenStatus;
 			localStorage.setItem('market', JSON.stringify([marketObj]))
 		}
 	}
@@ -502,4 +500,5 @@ export class LSCXMarketService {
 		return new BigNumber(String(eth))
 		.times(new BigNumber(10 ** decimals));
 	}
+
 }

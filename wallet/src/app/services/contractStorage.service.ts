@@ -3,6 +3,7 @@ import { Web3 } from './web3.service';
 import { AccountService } from './account.service';
 import { EtherscanService } from './etherscan.service';
 import { Http, Headers, RequestOptions } from "@angular/http";
+import { LSCXMarketService } from './LSCX-market.service';
 var fs = require('fs');
 
 @Injectable()
@@ -11,7 +12,7 @@ export class ContractStorageService {
     LSCX_Contracts: Array<any>;
     customContracts: Array<any>;
 
-    constructor(private _web3: Web3, private _account: AccountService, protected _scan : EtherscanService, protected http : Http){
+    constructor(private _web3: Web3, private _account: AccountService,private LSCXmarket: LSCXMarketService, protected _scan : EtherscanService, protected http : Http){
         this.setContracts();
         this.setAccContracts();
     }
@@ -25,8 +26,8 @@ export class ContractStorageService {
     }
 
     setAccContracts(){
-        this.LSCX_Contracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network && contract.type != "custom");
-        this.customContracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network && contract.type == "custom");
+        this.LSCX_Contracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network.chain && contract.type != "custom");
+        this.customContracts = this.contracts.filter(contract=> contract.account == this._account.account.address && contract.network == this._web3.network.chain && contract.type == "custom");
     }
 
     deletContract(contract){
@@ -158,6 +159,7 @@ export class ContractStorageService {
         },3000);
         
     }
+    
 
     saveContracts(){
         if(this.contracts == []) {

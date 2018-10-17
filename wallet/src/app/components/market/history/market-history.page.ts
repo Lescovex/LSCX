@@ -20,24 +20,24 @@ export class MarketHistoryPage implements DoCheck {
   loadingDialog;
   intervalLoops:number;
 
-  constructor(protected _account: AccountService, private _contract: ContractService, private _market: MarketService, private _dialog: DialogService, private _web3: Web3) {
+  constructor(protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: MarketService, private _dialog: DialogService, private _web3: Web3) {
     this.action = "myTrades";
     this.intervalLoops = 0;
     this.lastAction = "myTrades";
     this.getHistory(this.action);
-    this.currentState = this._market.state.myTrades;
-    this.currentToken = this._market.token.name; 
+    this.currentState = this._LSCXmarket.state.myTrades;
+    this.currentToken = this._LSCXmarket.token.name; 
   }
 
   async ngDoCheck() {
-    if(this.currentToken != this._market.token.name){
-      this.currentToken = this._market.token.name;
+    if(this.currentToken != this._LSCXmarket.token.name){
+      this.currentToken = this._LSCXmarket.token.name;
       Promise.resolve().then(() => { this.activeButton(this.action)});
     }
 
-    if(JSON.stringify(this.currentState) != JSON.stringify(this._market.state[this.action]) && this.lastAction == this.action) {
+    if(JSON.stringify(this.currentState) != JSON.stringify(this._LSCXmarket.state[this.action]) && this.lastAction == this.action) {
       this.lastAction = this.action;
-      this.currentState = this._market.state[this.action];
+      this.currentState = this._LSCXmarket.state[this.action];
       this.getHistory(this.action);
     }
   }
@@ -47,7 +47,7 @@ export class MarketHistoryPage implements DoCheck {
     this.intervalLoops = 0;
     let interval = setInterval(()=>{
       this.intervalLoops++;
-      if(this._market.state.initialState == true){
+      if(this._LSCXmarket.state.initialState == true){
         this.intervalLoops = 0;
         this.getHistory(action);
         this.action = action;
@@ -80,12 +80,12 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyTrades(): any[] {
-    let trades = this._market.state.myTrades;
+    let trades = this._LSCXmarket.state.myTrades;
     return (typeof(trades) == 'undefined')? [] : trades;
   }
 
   getMyOrders(): any[] {
-    let marketOrders =  this._market.state.myOrders;
+    let marketOrders =  this._LSCXmarket.state.myOrders;
     let buys = (typeof(marketOrders)=="undefined")? [] : marketOrders.buys;
     let sells = (typeof(marketOrders)=="undefined")? [] : marketOrders.sells;
     let orders = buys;
@@ -97,13 +97,24 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyFunds(): any[] {
-    let funds = this._market.state.myFunds;
+    let funds = this._LSCXmarket.state.myFunds;
     return (typeof(funds) == 'undefined')? [] : funds;
   }
 
   openExternal(txHash){
     const shell = require('electron').shell;
-    let net = (this._web3.network==1) ? "":"ropsten.";
+    let net : string;
+    switch(this._web3.network) {
+      case 1: 
+        net ="";
+        break;
+      case 3: 
+        net ="ropsten.";
+        break;
+      case 42: 
+        net ="";
+        break;
+    }
     shell.openExternal('https://'+net+'etherscan.io/tx/'+txHash);
 }
 }
