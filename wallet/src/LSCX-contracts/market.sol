@@ -166,7 +166,7 @@ contract LescovexMarket is SafeMath {
   mapping (address => mapping (bytes32 => uint)) public orderFills; //mapping of user accounts to mapping of order hashes to uints (amount of order that has been filled)
   
   //mapping (uint => mapping (address => mapping (bytes32 => bool))) public savedOrders
- /*
+ 
   mapping (uint => orderInfo) public ordersInfo;
   mapping (uint => tikerInfo) public tikers;
 
@@ -187,7 +187,7 @@ contract LescovexMarket is SafeMath {
     address token;
     string name;
   }
-*/
+
   event Order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user);
   event Cancel(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user, uint8 v, bytes32 r, bytes32 s);
   event Trade(address tokenGet, uint amountGet, address tokenGive, uint amountGive, address get, address give);
@@ -256,8 +256,9 @@ contract LescovexMarket is SafeMath {
   function tiker(address _token, string _tokenName, bytes32 data) payable {
     if (msg.value != feeMarket) throw;
     
-    //tikers[tikersId].token = _token;
-    //tikers[tikersId].name = _tokenName;
+    tikers[tikersId].token = _token;
+    tikers[tikersId].name = _tokenName;
+    
     tikersId++;
     tikersData.push(data);
     
@@ -307,7 +308,7 @@ contract LescovexMarket is SafeMath {
     bytes32 hash = sha256(this, tokenGet, amountGet, tokenGive, amountGive, expires, nonce);
     orders[msg.sender][hash] = true;
 
-/*
+
     ordersInfo[id].owner = msg.sender;
     ordersInfo[id].tokenGet = tokenGet;
     ordersInfo[id].amountGet = amountGet;
@@ -316,7 +317,7 @@ contract LescovexMarket is SafeMath {
     ordersInfo[id].expires = expires;
     ordersInfo[id].nonce = nonce;
     ordersInfo[id].hashed = hash;
-  */  
+  
     ordersData.push(data);
     id++;
     Order(tokenGet, amountGet, tokenGive, amountGive, expires, nonce, msg.sender);
