@@ -29,7 +29,7 @@
             <p class="title-button-navbar">Receive</p>
         </div>
     </a>
-    <a [class.disabled]="_web3.network.chain != 1" routerLink="card" routerLinkActive="active" #card="routerLinkActive">
+    <a routerLink="card" routerLinkActive="active" #card="routerLinkActive">
         <div (click)="checkNetwork()">
             <span>
                 <img class="top-nav-img" *ngIf="card.isActive" src='~icons/token_generaltab_icon.svg'>
