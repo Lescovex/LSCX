@@ -118,15 +118,18 @@ export class CreditCardPage implements OnInit {
   
     async ngOnInit() {
         if(this._web3.network.chain != 1){
-            
-            this.dialogRef = this.dialog.open(NetworkDialogComponent, {
-                width: '660px',
-                height: '200px',
-                disableClose: false
+            Promise.resolve().then(() => { 
+                this.dialogRef = this.dialog.open(NetworkDialogComponent, {
+                    width: '660px',
+                    height: '200px',
+                    disableClose: false
+                  });
+                  this.dialogRef.afterClosed().subscribe(async result=>{
+                    this.router.navigate(["/wallet/global"]);
+                })
               });
-            this.dialogRef.afterClosed().subscribe(async result=>{
-                this.router.navigate(["/wallet/global"]);
-            })
+            
+            
         }else{
             if(localStorage.getItem('pendingTx')){
                 let x = localStorage.getItem('pendingTx'); 
