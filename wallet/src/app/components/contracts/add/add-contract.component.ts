@@ -98,7 +98,7 @@ export class AddContractPage {
     let gasLimit;
 
     let getinfo = this.constructorForm;
-    console.log("getInfo?????",getinfo);
+    //console.log("getInfo?????",getinfo);
     
     let argsTo;
     argsTo ={
