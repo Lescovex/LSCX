@@ -331,7 +331,7 @@ contract LescovexMarket is SafeMath {
   function trade(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user, uint8 v, bytes32 r, bytes32 s, uint amount) {
     //amount is in amountGet terms
     bytes32 hash = sha256(this, tokenGet, amountGet, tokenGive, amountGive, expires, nonce);
-    if(!(block.number <= expires && safeAdd(orderFills[user][hash], amount) == amountGet)){
+    if(block.number > expires || safeAdd(orderFills[user][hash], amount) == amountGet){
         deleted.push(hash);
     }
     if (!(
