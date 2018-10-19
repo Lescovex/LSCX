@@ -5,6 +5,10 @@
     "main": "main.js",
     "author": "Lescovex",
     "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Lescovex/LSCX.git"
+    },
     "scripts": {
         "start": "webpack-dev-server --inline --progress --port 8080",
         "build": "rimraf build && webpack --config webpack.config.js --progress --profile --bail",
@@ -12,7 +16,12 @@
         "electron:w": "npm run watch && electron .",
         "electron": "npm run build && electron .",
         "postinstall": "electron-builder install-app-deps",
-        "dist": "electron-builder"
+        "dist": "electron-builder",
+        "release": "build",
+        "publish": "build -p always"
+    },
+    "publish": {
+        "provider": "github"
     },
     "dependencies": {
         "@angular/animations": "~4.2.0",
@@ -30,6 +39,7 @@
         "bs58check": "^2.1.1",
         "chalk": "^2.3.0",
         "core-js": "^2.4.1",
+        "electron-updater": "^3.1.2",
         "ethereumjs-abi": "^0.6.5",
         "ethereumjs-block": "^1.7.0",
         "ethereumjs-devp2p": "^2.2.0",
@@ -99,15 +109,36 @@
         "appId": "Lescovex",
         "mac": {
             "target": "dmg",
-            "icon": "./lescovex.png"
+            "icon": "./lescovex.png",
+            "publish": {
+                "provider": "github",
+                "owner": "mirpuicor",
+                "releaseType": "draft",
+                "publishAutoUpdate": "true",
+                "repo": "AutoUpdates"
+            }
         },
         "win": {
             "icon": "./lescovex.ico",
-            "target": "nsis"
+            "target": "nsis",
+            "publish": {
+                "provider": "github",
+                "owner": "mirpuicor",
+                "releaseType": "draft",
+                "publishAutoUpdate": "true",
+                "repo": "AutoUpdates"
+            }
         },
         "linux": {
             "target": "AppImage",
-            "icon": "./lescovex.png"
+            "icon": "./lescovex.png",
+            "publish": {
+                "provider": "github",
+                "owner": "mirpuicor",
+                "releaseType": "draft",
+                "publishAutoUpdate": "true",
+                "repo": "AutoUpdates"
+            }
         },
         "nsis": {
             "oneClick": false,

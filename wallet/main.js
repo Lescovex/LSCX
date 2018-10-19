@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
 const url = require('url');
 const { WINDOW_OPTS, ENV, MENU_TEMPLATE } = require('./config/config.js');
+const { autoUpdater } = require("electron-updater");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -99,3 +100,43 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+function sendStatusToWindow(text) {
+    let title = win.getTitle();
+    win.setTitle(title + ": " + text);
+}
+
+autoUpdater.allowDowngrade = true;
+
+autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Checking for update...');
+});
+
+autoUpdater.on('update-available', (ev, info) => {
+    sendStatusToWindow('Update available.');
+});
+
+autoUpdater.on('update-not-available', (ev, info) => {
+
+});
+
+autoUpdater.on('error', (ev, err) => {
+    sendStatusToWindow('Error in auto-updater.:' + err);
+    process.stdout.write(ev, err);
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    sendStatusToWindow(log_message);
+});
+
+autoUpdater.on('update-downloaded', (ev, info) => {
+    sendStatusToWindow('Update downloaded; will install in 5 seconds');
+    setTimeout(function() {
+        autoUpdater.quitAndInstall();
+    }, 5000)
+});
+
+autoUpdater.checkForUpdates();
