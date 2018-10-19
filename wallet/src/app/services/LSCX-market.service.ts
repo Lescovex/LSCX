@@ -10,13 +10,17 @@ import { Order } from '../models/order';
 import { Trade } from '../models/trade';
 
 declare var require: any;
-//const io = require('socket.io-client');
-import * as EthAbi from 'ethereumjs-abi';
+
+const fs = require('fs');
+const homedir = require('os').homedir();
+const lescovexPath = homedir+"/.lescovex";
 import * as EthUtil from 'ethereumjs-util';
 
 
 @Injectable()
 export class LSCXMarketService {
+	FILESNAMES = {1:"main", 3:"ropsten", 42:"kovan"};
+	fileName:string;
 	config: any;
 	token: any;
 	eth: any;
@@ -25,34 +29,23 @@ export class LSCXMarketService {
 	contractReserveToken: any = {};
 	marketBalances: any = {token:null, eth:null};
 	socket;
-	state: any = {
-		initialState: false,
-		orders: undefined,
-		trades: undefined,
-		myOrders: undefined,
-		myTrades: undefined,
-		myFunds: undefined,
+	fees: any = {
+		feeMake: undefined,
+		feeTake: undefined,
+		feeRebate: undefined,
+		feeMarket:undefined
 	};
+	marketState: any ;
+	state:any;
 	sha256;
 	lastPrice;
-	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, ) {
-		
+	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService) {
+		this.setMarket();
 	}
 
 	setCongif() {
 		let file = "";
-		switch(this._web3.network.chain) {
-			case 1: 
-				file = "main";
-				break;
-			case 3: 
-				file = "testnet";
-				break;
-			case 42:
-				file = "kovan";
-				break;
-		}
-		this.config= require('../../libs/market-lib/config/'+file+'.json');
+		this.config= require('../../libs/market-lib/config/'+this.fileName+'.json');
 	}
 
 	getAbi(file) {
@@ -66,7 +59,7 @@ export class LSCXMarketService {
 	setToken(token?) {	
 		if(typeof(token)=="undefined"){	
 			let localToken = this.getLocalStorageToken();
-			if(localToken !=null && this.config.tokens.find(token=>token.addr == localToken.addr) != null){
+			if(localToken !=null && (this.config.tokens.find(token=>token.addr == localToken.addr) != null || this.marketState.tikers.find(token=>token.addr == localToken.addr))) {
 				this.token = localToken;
 				
 			}else if ( localToken !=null && 'tokens' in this._account.account && this._account.account.tokens.find(token=> token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network.chain) != null){
@@ -91,6 +84,7 @@ export class LSCXMarketService {
 			return null;
 		}
 	}
+
 	saveLocalStorageToken(){
 		if(this.token != null && this.token.addr != null){
 			localStorage.removeItem('marketToken');
@@ -108,11 +102,30 @@ export class LSCXMarketService {
 		let contenido = JSON.parse(localStorage.getItem('marketToken'));
 		
 	}
+	setFileName(){
+		this.fileName = this.FILESNAMES[this._web3.network.chain];
+	}
 
 	setContracts() {
 		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractMarket[0].addr);
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
 		this.contractReserveToken = this._web3.web3.eth.contract(this.getAbi('reservetoken'));
+		this.setFees().then();
+	}
+
+	async  setFees(){
+		let fees = ['feeMake', 'feeTake', 'feeRebate', 'feeMarket'];
+		for(let i=0; i<fees.length; i++){
+			let fee = await this._contract.callFunction(this.contractMarket, fees[i], []);
+			this.fees[fees[i]] = parseInt(fee.toString());
+		}
+		/*let fee = await this._contract.callFunction(this.contractMarket, 'feeMake', [])
+		this.fees.feeMake = parseInt(fee.toString());
+		this.fees.feeTake = await this._contract.callFunction(this.contractMarket, 'feeTake', []);
+		this.fees.feeRebate = await this._contract.callFunction(this.contractMarket, 'feeRebate', []);
+		this.fees.feeMarket = await this._contract.callFunction(this.contractMarket, 'feeMarket', []);*/
+		console.log("FEES", this.fees)
+
 	}
 
 	setTokenContract() {
@@ -120,12 +133,12 @@ export class LSCXMarketService {
 	}
 
 	setMarket(token?){
+		this.setFileName();
 		this.setCongif();
 		this.setContracts();
+		this.getLocalState();
 		this.eth = this.config.tokens[0];
 		this.setToken(token);
-		this.getLocalState();
-		//this.setSocket();
 		this.setSha256();
 	}
 
@@ -134,52 +147,15 @@ export class LSCXMarketService {
 		let abi = [{"constant": true, "inputs": [{"name": "contrato","type": "address"},{"name": "tokenGet","type": "address"},{"name": "amountGet","type": "uint256"},{"name": "tokenGive","type": "address"},
 				{"name": "amountGive","type": "uint256"},{"name": "expires","type": "uint256"},{"name": "nonce","type": "uint256"}],
 				"name": "gethash", 	"outputs": [{"name": "","type": "bytes32"}],"payable": false,"stateMutability": "pure","type": "function"}]
-		let address = '';
-		if(this._web3.network.chain==1){
-			address = "0x7b74ad8391111b3d71d95fef3b32b333f1f5d6c0";
+		let ADDRESSES = {
+			1:"0x7b74ad8391111b3d71d95fef3b32b333f1f5d6c0",
+			3:"0x338692dfa7a3c6455b25daa831229a949f320844",
+			42: "0x648a2D48F05e6E102CccD4037a3448B1c5DF5c24"
 		}
-		if(this._web3.network.chain==3) {
-			address = "0x338692dfa7a3c6455b25daa831229a949f320844";
-		}
-		if(this._web3.network.chain == 42) {
-			address = "0x648a2D48F05e6E102CccD4037a3448B1c5DF5c24"
-		}
+		let address = ADDRESSES[this._web3.network.chain]
 		this.sha256 = this._contract.contractInstance(abi, address);
 	}
 
-	/*setSocket(){
-		
-		this.socket = io.connect(this.config.socketServer[0], { transports: ['websocket'] });
-		this.socket.on('connect', () => {
-		
-		});
-		this.waitForMarket();
-	}
-
-	async resetSocket(token?) {
-		
-		this.socket.close();
-		this.state = {
-			initialState: false,
-			trades: undefined,
-			myTrades: undefined,
-			orders : undefined,
-			myOrders: undefined,
-		};
-		if(typeof(token)== 'undefined'){	
-			this.setToken();
-		}else{
-			
-			if(token.addr != null){
-				this.setToken(token)
-			}else{
-				this.setToken();
-			}
-		}
-		await this.setSocket();
-	}*/
-
-	
 	getFunctionData(contract, functionName:string, params?) {
 		if(typeof(params)== 'undefined'){
 			params= []
@@ -225,23 +201,6 @@ export class LSCXMarketService {
 		return result;
 	}
 
-	placeOrder(params, sig){
-		let order = {
-			amountGive: params[4],
-			tokenGive: params[3],
-			amountGet: params[2],
-			tokenGet: params[1],
-			contractAddr: params[0],
-			expires: params[5],
-			nonce: params[6],
-			user: this._account.account.address,
-			v: sig.v,
-			r: sig.r,
-			s: sig.s
-		}
-	}
-	
-
 	async getMarketBalance() {
 		let balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.token.addr, this._account.account.address]);
 		let value : number = parseInt(balance.toString())/Math.pow(10,this.token.decimals);
@@ -276,70 +235,7 @@ export class LSCXMarketService {
 		},2000)
 	}
 
-	/*waitForMarket(){
-		let self = this;
-		new Promise((resolve, reject) => {
-			setTimeout(() => {
-			  reject('Could not get market');
-			}, 20000);
-			
-			self.socket.off('orders');
-			self.socket.off('trades');
-			self.getMarketAndWait();
-		});
-	}
-
-	getMarket(){
-		if (!this.token.addr) throw new Error('Please enter a valid token');
-		if (!this._account.account.address) throw new Error('Please enter a valid address');
-		this.socket.emit('getMarket', { token: this.token.addr , user: this._account.account.address });
-	}
-
-	getMarketAndWait(){
-		let interval;
-		this.getMarket();
-		this.socket.once('market', (market) => {
-			if('orders' in market && 'trades' in market){
-			
-				this.updateOrders(market.orders, this.token, this._account.account.address);
-				this.updateTrades(market.trades, this.token, this._account.account.address);
-				this.state.initialState = true;
-				
-				let len;
-				len = market.trades.length
-				if(len > 0){
-					this.lastPrice = market.trades[len-1].price;
-				}
-				this.socket.on('orders', (orders) => {
-			
-				  	this.updateOrders(orders, this.token, this._account.account.address);
-				});
-				this.socket.on('trades', (trades) => {
-			
-					this.updateTrades(trades, this.token, this._account.account.address);
-				});
-				if('myOrders' in market){
-
-				}
-				if('myTrades' in market){
-
-				}
-				if('myFunds' in market){
-					this.updateFunds(market.myFunds);
-					this.socket.on('myFunds', (myFunds) => {
-						this.updateFunds(market.myFunds);
-				  });
-				}
-				this.saveState();
-				clearInterval(interval);
-			} else {
-				interval = setTimeout(() => {
-					this.getMarketAndWait();
-				}, 2000);
-			}		
-		});
-	}*/
-
+	
 	updateFunds(funds){
 		let self = this;
 		let newFunds = funds.map(function(x) {
@@ -353,15 +249,15 @@ export class LSCXMarketService {
 				price: Number(x.price)
 			})
 		})
-		if (typeof(this.state.myFunds)=="undefined") this.state.myFunds = [];
+		if (typeof(this.marketState.myFunds)=="undefined") this.marketState.myFunds = [];
 		newFunds.forEach(x=>{
-			if(this.state.myFunds.findIndex(y => y.txHash === x.txHash)==-1){
-				this.state.myFunds.push(x);
+			if(this.marketState.myFunds.findIndex(y => y.txHash === x.txHash)==-1){
+				this.marketState.myFunds.push(x);
 			}
 		})
 	}
 	
-	updateOrders(newOrders, token, user){
+	/*updateOrders(newOrders, token, user){
 		
 		const newOrdersTransformed = {
 		  buys: newOrders.buys
@@ -371,42 +267,42 @@ export class LSCXMarketService {
 		  .map(x => x = new Order(x, 'sell', token)
 		  ),
 		};
-		if (typeof(this.state.orders)=="undefined") this.state.orders = { buys: [], sells: [] };
-		if (typeof(this.state.myOrders)=="undefined") this.state.myOrders = { buys: [], sells: [] };
+		if (typeof(this.marketState.orders)=="undefined") this.marketState.orders = { buys: [], sells: [] };
+		if (typeof(this.marketState.myOrders)=="undefined") this.marketState.myOrders = { buys: [], sells: [] };
 		this.compareOrders(newOrdersTransformed, 'buys');
 		
 		this.compareOrders(newOrdersTransformed, 'sells');
-		this.state.orders = {
-		  sells: this.state.orders.sells.sort((a, b) =>
+		this.marketState.orders = {
+		  sells: this.marketState.orders.sells.sort((a, b) =>
 			a.price - b.price || a.amountGet - b.amountGet),
-		  buys: this.state.orders.buys.sort((a, b) =>
+		  buys: this.marketState.orders.buys.sort((a, b) =>
 			b.price - a.price || b.amountGet - a.amountGet),
 		};
-		this.state.myOrders = {
-		  sells: this.state.myOrders.sells.sort((a, b) =>
+		this.marketState.myOrders = {
+		  sells: this.marketState.myOrders.sells.sort((a, b) =>
 			a.price - b.price || a.amountGet - b.amountGet),
-		  buys: this.state.myOrders.buys.sort((a, b) =>
+		  buys: this.marketState.myOrders.buys.sort((a, b) =>
 			b.price - a.price || b.amountGet - a.amountGet),
 		};
-	};
+	};*/
 
 	compareOrders(newOrdersTransformed, type){
 		newOrdersTransformed[type].forEach((x) => {
 			if (x.deleted == true || x.ethAvailableVolumeBase < this.config.minOrderSize) {
-				this.state.orders[type] = this.state.orders[type].filter(y => y.id !== x.id);
+				this.marketState.orders[type] = this.marketState.orders[type].filter(y => y.id !== x.id);
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-					this.state.myOrders[type] = this.state.myOrders[type].filter(y => y.id !== x.id);
+					this.marketState.myOrders[type] = this.marketState.myOrders[type].filter(y => y.id !== x.id);
 				}
-			} else if (this.state.orders[type].findIndex(y => y.id === x.id)!=-1) {
-				this.state.orders[type] = this.state.orders[type].map(y => (y.id === x.id ? x : y));
+			} else if (this.marketState.orders[type].findIndex(y => y.id === x.id)!=-1) {
+				this.marketState.orders[type] = this.marketState.orders[type].map(y => (y.id === x.id ? x : y));
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-					this.state.myOrders[type] = this.state.myOrders[type].map(y => (y.id === x.id ? x : y));
+					this.marketState.myOrders[type] = this.marketState.myOrders[type].map(y => (y.id === x.id ? x : y));
 				}
 			} else {
-				this.state.orders[type].push(x);
+				this.marketState.orders[type].push(x);
 				x.user.toLowerCase() === this._account.account.address.toLowerCase()
 				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-					this.state.myOrders[type].push(x);
+					this.marketState.myOrders[type].push(x);
 				}
 			}
 		});
@@ -415,41 +311,98 @@ export class LSCXMarketService {
 	updateTrades(newTrades, token, user) {
 		const newTradesTransformed = newTrades
 		.map(x => x = new Trade(x));
-		if (typeof(this.state.trades)=="undefined") this.state.trades = [];
-		if (typeof(this.state.myTrades)=="undefined") this.state.myTrades = [];
+		if (typeof(this.marketState.trades)=="undefined") this.marketState.trades = [];
+		if (typeof(this.marketState.myTrades)=="undefined") this.marketState.myTrades = [];
 		newTradesTransformed.forEach((x) => {
-			if (this.state.myTrades.findIndex(y => y.txHash === x.txHash)==-1) {
+			if (this.marketState.myTrades.findIndex(y => y.txHash === x.txHash)==-1) {
 				if (x.buyer.toLowerCase() === this._account.account.address.toLowerCase() ||
 				x.seller.toLowerCase() === this._account.account.address.toLowerCase()) {
-				this.state.myTrades.push(x);
+				this.marketState.myTrades.push(x);
 				}
 			};
 		});
-		this.state.myTrades = this.state.myTrades
+		this.marketState.myTrades = this.marketState.myTrades
 		  .sort((a, b) => b.date.getTime() -a.date.getTime() || b.amount - a.amount);	
 	}
 
-	getLocalState() {
-		
-		if(localStorage.getItem('market')){	
-			let market = JSON.parse(localStorage.getItem('market'));
-			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase()&& this._web3.network.chain.toString() in x);
-			if(index != -1){
-				
-				if('myFunds' in market[index][this._web3.network.chain.toString()]) {
-					this.state.myFunds = market[index][this._web3.network.chain.toString()].myFunds.filter(x=>x.tokenAddr==0x0000000000000000000000000000000000000000 ||x.token.Addr==this.token.addr)
-
-				}
-				if(this.token.addr in market[index][this._web3.network.chain.toString()]){
-					
-					this.state.myOrders = market[index][this._web3.network.chain.toString()][this.token.addr].myOrders;
-					this.state.myTrades = market[index][this._web3.network.chain.toString()][this.token.addr].myTrades;
-				}
-			}
+	async getLocalState(){
+		if(!fs.existsSync(lescovexPath)){
+		  fs.mkdirSync(lescovexPath);
 		}
+
+		let filePath =lescovexPath+"/."+this.fileName+".json";
+		if(!fs.existsSync(filePath)){
+			let objNet = {
+			tikers:[],
+			orders: [],
+			lasId:null,
+			myOrders: [],
+			myTrades: [],
+			myFunds: []
+			}
+			fs.writeFileSync(filePath , JSON.stringify(objNet));
+		}
+		let data = fs.readFileSync(filePath);
+		this.marketState =  JSON.parse(data);
+		console.log(this.fileName, this.marketState);
+		await this.getTikers();	
+		console.log(this.marketState)
+		
 	}
 
-	saveState() {
+	async getTikers(){
+		let filePath =lescovexPath+"/."+this.fileName+".json";
+		console.log("ids")
+		let idsResult = await this._contract.callFunction(this.contractMarket,'tikersId',[]);
+		let i = this.marketState.tikers.length;
+		let ids = parseInt(idsResult.toString());
+		let tikers = this.marketState.tikers;
+		console.log(i, ids)
+		for(i ; i<ids; i++) {
+
+			let tiker = await this._contract.callFunction(this.contractMarket, 'tikers', [i]);
+			let tikerObj = {addr : tiker['0'], "name":tiker['1'],"decimals":tiker['2'].toNumber()}
+			tikers.push(tikerObj);
+			if(i== (ids-1)){
+				this.marketState.tikers = tikers;
+				fs.writeFileSync(filePath, JSON.stringify(this.marketState));
+			}
+		}	
+	}
+	async getMarketOrders(){
+		let filePath =lescovexPath+"/."+this.fileName+".json";
+		console.log("ids")
+		let idsResult = await this._contract.callFunction(this.contractMarket,'id',[]);
+		let lastId = this.marketState.lastId;
+		let i = 0;
+		if(lastId!=null){
+			i = lastId+1;
+		}
+		let ids = parseInt(idsResult.toString());
+		console.log(i, ids)
+		for(i ; i<ids; i++) {
+
+			let orderResult = await this._contract.callFunction(this.contractMarket, 'ordersInfo', [i]);
+			let tokenAddr=(orderResult['1']!="0x0000000000000000000000000000000000000000") ? orderResult['1'] :orderResult['3'];
+			//get decimal tokens
+			let token = this.config.tokens.find(x=> x.addr == tokenAddr);
+			if(token == null){
+				token = this.marketState.tikers.find(x=> x.addr == tokenAddr);
+			}
+			if(token!= null) {
+
+			}
+			let order = new Order(orderResult, token.decimals);
+			this.marketState.orders.push(order);
+			if(i== (ids-1)){
+				this.marketState.lastId = i;
+				fs.writeFileSync(filePath, JSON.stringify(this.marketState));
+
+			}
+		}	
+	}
+
+	/*saveState() {
 		let tokenStatus ={
 			myOrders: this.state.myOrders,
 			myTrades: this.state.myTrades
@@ -481,7 +434,7 @@ export class LSCXMarketService {
 			marketObj[this._web3.network.chain.toString()][this.token.address] = tokenStatus;
 			localStorage.setItem('market', JSON.stringify([marketObj]))
 		}
-	}
+	}*/
 
 	removeAccState(address){
         if(localStorage.getItem('market')) {

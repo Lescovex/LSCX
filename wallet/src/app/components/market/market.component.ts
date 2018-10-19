@@ -13,7 +13,7 @@ export class MarketComponent{
   protected price;
   interval;
   constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService) {
-    this._LSCXmarket.setMarket();
+    //this._LSCXmarket.setMarket();
   }
 
   maxHeight() {

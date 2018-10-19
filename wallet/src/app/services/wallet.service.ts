@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import * as EthWallet from 'ethereumjs-wallet'
 import * as EthUtil from 'ethereumjs-util';
-import { write, readFile } from 'fs';
 
 declare var require: any;
 
@@ -135,9 +134,7 @@ export class WalletService {
     
     for(let i=0; i<files.length; i++){
       if(files[i].indexOf(v3.address)){
-      
         let data = fs.readFileSync(lescovexPath+"/"+files[i]);
-    
       }
     }
   }

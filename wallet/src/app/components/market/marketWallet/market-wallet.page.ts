@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 
 import { AccountService } from '../../../services/account.service'
-import { MarketService } from '../../../services/market.service';
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 
 @Component({

@@ -8,6 +8,7 @@ import { Web3 } from './services/web3.service';
 import { AccountService } from './services/account.service';
 import { EtherscanService } from './services/etherscan.service';
 import { ContractStorageService } from './services/contractStorage.service';
+import { LSCXMarketService } from './services/LSCX-market.service';
 
 @Component({
   selector: 'ion-app',
@@ -17,7 +18,7 @@ export class MyApp implements OnInit {
   loadingD;
   interval;
   
-  constructor(protected _account: AccountService, protected dialog: MdDialog, protected _web3: Web3, protected router : Router, protected _scan: EtherscanService, private _contracStorage: ContractStorageService) {
+  constructor(protected _account: AccountService, protected dialog: MdDialog, protected _web3: Web3, protected router : Router, protected _scan: EtherscanService, private _contracStorage: ContractStorageService, private _LSCXmarket: LSCXMarketService) {
     if(this._scan.apikey==""){
       this.router.navigate(['/general-settings']);
     }else{
@@ -44,4 +45,6 @@ export class MyApp implements OnInit {
       });
     }
   }
+
+  
 }

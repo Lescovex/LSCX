@@ -25,7 +25,7 @@ export class ContractService {
 				if (err) {
 					reject(err);
 				} else {
-					resolve(res.toString());
+					resolve(res);
 				}
 			});
 		});

@@ -61,11 +61,8 @@ import { AddAccountDialogComponent } from './components/navComponent/addAccount-
 import { NewAccountDialogComponent } from './components/navComponent/newAccount-dialog.component';
 import { ImportAccountDialogComponent } from './components/navComponent/importAccount-dialog.component';
 import { SendDialogComponent } from './components/dialogs/send-dialog.component';
-<<<<<<< HEAD
 import { SendOrderDialogComponent } from './components/dialogs/send-order-dialog.component';
-=======
 import { NetworkDialogComponent } from "./components/dialogs/network-dialog.component";
->>>>>>> e5e627358fb4a7a3fb22d1a9912c4c34866eb26a
 import { DeleteComponent } from './components/wallet/wsettings/confirm-delete.component';
 import { JSONDialogComponent } from './components/wallet/wsettings/json-dialog.component';
 import { PrivateKeyDialogComponent } from './components/wallet/wsettings/privatekey-dialog.component';
@@ -79,6 +76,7 @@ import { ResendTxDialogComponent } from './components/dialogs/resendTx-dialog.co
 import { ContractDialogComponent } from './components/contracts/add/contract-dialog.component';
 import { WithdrawTxDialog } from './components/holders/general/withdrawTx.component';
 import { WithdrawDialog } from './components/holders/general/withdraw-dialog.component';
+import { TikerDialogComponent } from './components/dialogs/tiker-dialog.component';
 
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
@@ -92,7 +90,6 @@ import { LSCXContractService } from './services/LSCX-contract.service';
 import { FormsService } from './services/forms.service'
 import { ContractStorageService } from './services/contractStorage.service'
 import { EtherscanService } from './services/etherscan.service';
-import { MarketService } from './services/market.service';
 import { LSCXMarketService } from './services/LSCX-market.service';
 import { CustomContractService } from './services/custom-contract.service';
 
@@ -168,7 +165,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     HoldersComponent,
     HoldersGeneralPage,
     WithdrawTxDialog,
-    WithdrawDialog
+    WithdrawDialog,
+    TikerDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -206,7 +204,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ResendTxDialogComponent,
     WithdrawTxDialog,
     WithdrawDialog,
-    NetworkDialogComponent
+    NetworkDialogComponent,
+    TikerDialogComponent
   ],
   providers: [
     WalletService,
@@ -220,7 +219,6 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     FormsService,
     ContractStorageService,
     EtherscanService,
-    MarketService,
     LSCXMarketService,
     CustomContractService
   ],

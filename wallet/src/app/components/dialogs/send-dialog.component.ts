@@ -11,7 +11,6 @@ import { AccountService } from '../../services/account.service'
 
 import { LSCX_Contract } from '../../models/LSCX_contract';
 import { ContractStorageService } from '../../services/contractStorage.service';
-import { MarketService } from '../../services/market.service';
 
 import { AlternativeSending } from '../../models/alternativeSending';
 
@@ -29,7 +28,7 @@ export class SendDialogComponent{
   message = "";
   txs: any[];
 
-  constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService, private _market: MarketService) {
+  constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService) {
     if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
       this.insufficient= true;
     }
@@ -67,9 +66,6 @@ export class SendDialogComponent{
         this.openDialogWhenError(sendResult.message);
         return false;
       }else{      
-        if(this.data.action == "order") {
-          await this.sendMarketOrder(privateKey);
-        }
 
         let pending: any = null;
         let j = 0;
@@ -155,12 +151,6 @@ export class SendDialogComponent{
     this.title = "Unable to check transaction confirmation";
     this.message = "Something went wrong"
     this.error = "We can not check network confirmation, You can see the progress in the history tab";
-  }
-
-  async sendMarketOrder(privateKey){
-    let hash = await this._market.orderHash(this.data.hashParams)
-    let sign = this._market.signOrder(hash, privateKey);
-    await this._market.placeOrder(this.data.hashParams, sign);
   }
 
   createPendingObject(hash, index){

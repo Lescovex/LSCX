@@ -29,11 +29,14 @@ export class BaseRawTx {
         console.log("web3 nonce", nonce) 
         //para ver ultimo nonce real
         let history = account.account.history.filter(x=> x.from.toLowerCase() == account.account.address);
-        let historyNonce =history[0].nonce;
-        console.log(history[0].nonce, historyNonce);
-        if(historyNonce>= nonce){
-            nonce = parseInt(historyNonce)+1;
+        if(history.length > 0) {
+            let historyNonce =history[0].nonce;
+            if(historyNonce>= nonce){
+                nonce = parseInt(historyNonce)+1;
+            }
         }
+
+        
         this.tx.nonce = nonce;
     }
     setTxData(data){

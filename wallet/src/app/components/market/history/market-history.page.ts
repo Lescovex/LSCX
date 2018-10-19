@@ -2,9 +2,9 @@ import { Component, DoCheck } from '@angular/core'
 
 import { AccountService } from '../../../services/account.service';
 import { ContractService } from '../../../services/contract.service';
-import { MarketService } from '../../../services/market.service';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
+import { LSCXMarketService } from '../../../services/LSCX-market.service';
 
 
 @Component({
@@ -20,7 +20,7 @@ export class MarketHistoryPage implements DoCheck {
   loadingDialog;
   intervalLoops:number;
 
-  constructor(protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: MarketService, private _dialog: DialogService, private _web3: Web3) {
+  constructor(protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
     this.action = "myTrades";
     this.intervalLoops = 0;
     this.lastAction = "myTrades";

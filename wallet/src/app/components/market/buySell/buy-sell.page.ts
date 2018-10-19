@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core'
 
 import { AccountService } from '../../../services/account.service';
 
-import { MarketService } from '../../../services/market.service';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
 import { RawTx } from '../../../models/rawtx';
@@ -29,7 +28,7 @@ export class BuySellPage implements OnInit {
     protected submited: boolean = false;
     private interval;
     private loadingDialog;
-    constructor(public _account:AccountService, private _market: MarketService, private _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
+    constructor(public _account:AccountService, private _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
     }
 
@@ -95,22 +94,22 @@ export class BuySellPage implements OnInit {
     }
 
     setInCross() {
-      if(this.f.total != 0 && this._LSCXmarket.state.orders && this._LSCXmarket.state.orders.sells && this._LSCXmarket.state.orders.sells.length > 0) {
-        var bestSell = this._LSCXmarket.state.orders.sells[0].price;
+      if(this.f.total != 0 && this._LSCXmarket.marketState.orders && this._LSCXmarket.marketState.orders.sells && this._LSCXmarket.marketState.orders.sells.length > 0) {
+        var bestSell = this._LSCXmarket.marketState.orders.sells[0].price;
         this.buyInCross = (this.f.price !== 0 && this.f.price > 1.5 * bestSell) ? "Your order is in cross with the best sell order in the order book (price = " + bestSell + ")." : "";
       }
     }
 
     getCross(amountGet, price){
       if(this.action == 'buy'){
-        if("sells" in this._LSCXmarket.state.orders){
-          return this._LSCXmarket.state.orders.sells.filter(x=>x.availableVolumeBase>=amountGet && parseFloat(x.price)==price);
+        if("sells" in this._LSCXmarket.marketState.orders){
+          return this._LSCXmarket.marketState.orders.sells.filter(x=>x.availableVolumeBase>=amountGet && parseFloat(x.price)==price);
         }else{
           return [];
         }
       }else{
-        if("buys" in this._LSCXmarket.state.orders){
-          return this._LSCXmarket.state.orders.buys.filter(x=>x.availableVolume>=amountGet && parseFloat(x.price)==price);
+        if("buys" in this._LSCXmarket.marketState.orders){
+          return this._LSCXmarket.marketState.orders.buys.filter(x=>x.availableVolume>=amountGet && parseFloat(x.price)==price);
         }else{
           return [];
         }

@@ -3,7 +3,7 @@
     "contractToken": "smart_contract/token.sol",
     "contractReserveToken": "smart_contract/reservetoken.sol",
     "contractMarket": [
-      { "addr": "0x0797bb0439F159ff203A3e6A177edbb41fa5B455", "info": "Deployed 10/17/2018" },
+      { "addr": "0x64b870d9D461fFf4Dd7e0C226534631E43eabF3b", "info": "Deployed 10/17/2018" },
       { "addr": "0x0000000000000000000000000000000000000000", "info": "Zero contract" }
     ],
     "ethTestnet": "ropsten",

@@ -303,24 +303,6 @@
 		"stateMutability": "nonpayable"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_token",
-				"type": "address"
-			},
-			{
-				"name": "_tokenName",
-				"type": "string"
-			}
-		],
-		"name": "tiker",
-		"outputs": [],
-		"payable": true,
-		"type": "function",
-		"stateMutability": "payable"
-	},
-	{
 		"constant": true,
 		"inputs": [],
 		"name": "feeAccount",
@@ -442,6 +424,10 @@
 			{
 				"name": "name",
 				"type": "string"
+			},
+			{
+				"name": "decimals",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -598,6 +584,28 @@
 		"payable": false,
 		"type": "function",
 		"stateMutability": "nonpayable"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"name": "_tokenName",
+				"type": "string"
+			},
+			{
+				"name": "_decimals",
+				"type": "uint256"
+			}
+		],
+		"name": "tiker",
+		"outputs": [],
+		"payable": true,
+		"type": "function",
+		"stateMutability": "payable"
 	},
 	{
 		"constant": true,

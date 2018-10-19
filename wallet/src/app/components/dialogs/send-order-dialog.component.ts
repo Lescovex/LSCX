@@ -9,8 +9,6 @@ import { Web3 } from '../../services/web3.service'
 import { AccountService } from '../../services/account.service'
 
 import { ContractStorageService } from '../../services/contractStorage.service';
-import { MarketService } from '../../services/market.service';
-
 import { PendingTx } from '../../models/pendingTx';
 import { RawTx } from '../../models/rawtx';
 import { LSCXMarketService } from '../../services/LSCX-market.service';
