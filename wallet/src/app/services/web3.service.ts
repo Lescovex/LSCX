@@ -199,6 +199,22 @@ export class Web3 {
     return AsyncFunction
   }
 
+  getReceipt(txhash){
+    let self= this;
+
+    let AsyncFunction = new Promise (function (resolve, reject) {
+      self.web3.eth.getTransaction(txhash,function(err,res){
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res); 
+        }
+      })
+    });
+    
+    return AsyncFunction
+  }
+
   getGasPrice():Promise<number>{
     let self= this;
 

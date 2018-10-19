@@ -5,6 +5,7 @@ import { Web3 } from '../../../services/web3.service';
 import { DialogService } from '../../../services/dialog.service';
 import BigNumber from 'bignumber.js';
 import { RawTx, RawTxIncrementedNonce } from '../../../models/rawtx';
+import { Fund } from '../../../models/fund';
 import { AccountService } from '../../../services/account.service';
 
 @Component({
@@ -67,7 +68,16 @@ export class MarketActionComponent implements OnChanges{
             this._dialog.openErrorDialog("Unable to "+this.action, "You don't have enough founds", " ");
         } else {
             if(tx != null){
-                this.sendDialogService.openConfirmSend(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send");
+                console.log(tx)
+                let nonce;
+                if(this.action == "deposit" && this.token.name != "ETH"){
+                    nonce = tx.nonce;
+                }else{
+                    await tx.setTxNonce(this._account);
+                    nonce = await tx.getNonce();
+                }
+                let functionObj = new Fund(this.action, this.token.addr, form.controls.amount.value, nonce);             
+                this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "fund",functionObj);
             }
         }
         
@@ -115,13 +125,14 @@ export class MarketActionComponent implements OnChanges{
             let dataDeposit = this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket, 'depositToken', [this._LSCXmarket.token.addr,params[0]]);
             //let optionsDeposit = {data:dataDeposit, nonceIncrement:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
             let txDeposit = new RawTxIncrementedNonce(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), this._LSCXmarket.config.gasDeposit, gasOpt.gasPrice,this._web3.network, dataDeposit, 1);
-              //await this._rawtx.createRaw(this._LSCXmarket.contractMarket.address, 0 , optionsDeposit );
+            await txDeposit.setIncrementedNonce(this._account,1);
+            //await this._rawtx.createRaw(this._LSCXmarket.contractMarket.address, 0 , optionsDeposit );
             let tx: any[] = [txApprove.tx, txDeposit.tx];
             let amount = 0;
             let cost = txApprove.cost+ txDeposit.cost;
             let gas = txApprove.gas+ txDeposit.gas;
             
-            return {tx:tx, cost:cost, gas:gas, amount:amount};
+            return {tx:tx, cost:cost, gas:gas, amount:amount, nonce: await txDeposit.getNonce()};
         }
         return null;
     }

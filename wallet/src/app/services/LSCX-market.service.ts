@@ -36,7 +36,12 @@ export class LSCXMarketService {
 		feeMarket:undefined
 	};
 	marketState: any ;
-	state:any;
+	state:any={
+		orders : undefined,
+		myOrders: undefined,
+		myTrades: undefined,
+		myFunds: undefined
+	};
 	sha256;
 	lastPrice;
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService) {
@@ -74,6 +79,7 @@ export class LSCXMarketService {
 		
 		this.saveLocalStorageToken();
 		this.setTokenContract();
+		this.getTokenState();
 		this.resetTokenBalances();
 	}
 
@@ -203,13 +209,15 @@ export class LSCXMarketService {
 
 	async getMarketBalance() {
 		let balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.token.addr, this._account.account.address]);
-		let value : number = parseInt(balance.toString())/Math.pow(10,this.token.decimals);
+		let balanceBN = new BigNumber(balance.toString());
+		let value : number = (balanceBN.div(Math.pow(10,this.token.decimals))).toNumber();
+
 		return value;
 	}
 
 	async getMarketEther() {
 		let balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.config.tokens[0].addr, this._account.account.address]);
-		let value:number = parseInt(balance.toString())/Math.pow(10,18);
+		let value:number = ((new BigNumber(balance.toString())).div(Math.pow(10,18))).toNumber();
 		return value
 	}
 
@@ -235,28 +243,80 @@ export class LSCXMarketService {
 		},2000)
 	}
 
-	
-	updateFunds(funds){
-		let self = this;
-		let newFunds = funds.map(function(x) {
-			let net =(self._web3.network==1)? '' : 'ropsten.'
-			let txLink = "https://"+net+"etherscan.io/tx/" + x.txHash;
-			return Object.assign(x, {
-				txLink: txLink,
-				txHash: x.txHash,
-				date: new Date(x.date),
-				amount: Number(x.amount),
-				price: Number(x.price)
-			})
-		})
-		if (typeof(this.marketState.myFunds)=="undefined") this.marketState.myFunds = [];
-		newFunds.forEach(x=>{
-			if(this.marketState.myFunds.findIndex(y => y.txHash === x.txHash)==-1){
-				this.marketState.myFunds.push(x);
-			}
-		})
+	getTokenState(){
+		
+		if(this._account.account.address in this.marketState.myFunds){
+			this.state.myFunds = this.marketState.myFunds[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr || x.tokenAddr == this.config.tokens[0].addr);
+		} else {
+			this.state.myFunds = [];
+		}
+		if(this._account.account.address in this.marketState.myOrders){
+			this.state.myOrders = this.marketState.orders[this._account.account.address].filter(x=>x.user == this._account.account.address && (x.tokenGet == this.token.addr || x.tokenGive== this.token.addr));
+		} else {
+			this.state.myOrders=[];
+		}
+		if(this._account.account.address in this.marketState.myTrades){
+			this.state.myTrades = this.marketState.myTrades[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
+		} else {
+			this.state.myTrades = [];
+		}
 	}
 	
+	addFund(fund){
+		if(this.marketState.myFunds.hasOwnProperty(this._account.account.address)){
+			this.marketState.myFunds[this._account.account.address].push(fund);
+		}else{
+			this.marketState.myFunds[this._account.account.address] = [fund];
+		}
+	}
+	updateFunds() {
+		
+		let interval = null;
+			interval = setInterval(()=>{
+				let funds = [];
+				if(this._account.account.address in this.marketState.myFunds){
+					funds = this.marketState.myFunds[this._account.account.address].filter(fund=> fund.show == false);
+				}
+				
+				if(funds.length==0){
+					clearInterval(interval);
+				}else{
+					funds.forEach(fundObj=> {
+						let histTx = this._account.account.history.find(x=> x.hash.toLowerCase() ==fundObj.hash.toLowerCase());
+						console.log(histTx, fundObj.hash)
+						if(histTx!= null ){
+							console.log("encuentra hash")
+							let stop = false;
+							for( let i=0; i<this.marketState.myFunds[this._account.account.address].length || !stop ; i++){
+								if(this.marketState.myFunds[this._account.account.address][i].hash.toLowerCase() ==fundObj.hash.toLowerCase()){
+									if(histTx.isError == 0) {
+										console.log("encuentra y show");
+										this.marketState.myFunds[this._account.account.address][i].show = true;
+									}else{
+										console.log("encuentra y borrar")
+										this.marketState.myFunds.splice(i,1);
+									}
+									stop = true;
+								}
+							}
+						}else{
+							if(parseInt(this._account.account.history[0].nonce) > fundObj.nonce){
+								console.log("borrar por nonce")
+								let stop = false;
+								for( let i=0; i<this.marketState.myFunds[this._account.account.address].length || !stop ; i++){
+									this.marketState.myFunds[this._account.account.address].splice(i,1);
+									stop = true;
+								}
+							}
+						}
+					});
+					let filePath =lescovexPath+"/."+this.fileName+".json";
+					fs.writeFileSync(filePath, JSON.stringify(this.marketState));
+				}
+				
+			}, 2000);		
+	}
+
 	/*updateOrders(newOrders, token, user){
 		
 		const newOrdersTransformed = {
@@ -336,22 +396,20 @@ export class LSCXMarketService {
 			tikers:[],
 			orders: [],
 			lasId:null,
-			myOrders: [],
-			myTrades: [],
-			myFunds: []
+			myOrders: {},
+			myTrades: {},
+			myFunds: {}
 			}
 			fs.writeFileSync(filePath , JSON.stringify(objNet));
 		}
 		let data = fs.readFileSync(filePath);
 		this.marketState =  JSON.parse(data);
-		console.log(this.fileName, this.marketState);
-		await this.getTikers();	
-		console.log(this.marketState)
-		
+		await this.getTikers();
+		console.log(this.fileName, this.marketState);	
 	}
 
 	async getTikers(){
-		let filePath =lescovexPath+"/."+this.fileName+".json";
+
 		console.log("ids")
 		let idsResult = await this._contract.callFunction(this.contractMarket,'tikersId',[]);
 		let i = this.marketState.tikers.length;
@@ -365,12 +423,13 @@ export class LSCXMarketService {
 			tikers.push(tikerObj);
 			if(i== (ids-1)){
 				this.marketState.tikers = tikers;
-				fs.writeFileSync(filePath, JSON.stringify(this.marketState));
+				this.saveState();
 			}
 		}	
 	}
+
 	async getMarketOrders(){
-		let filePath =lescovexPath+"/."+this.fileName+".json";
+		//let filePath =lescovexPath+"/."+this.fileName+".json";
 		console.log("ids")
 		let idsResult = await this._contract.callFunction(this.contractMarket,'id',[]);
 		let lastId = this.marketState.lastId;
@@ -396,45 +455,16 @@ export class LSCXMarketService {
 			this.marketState.orders.push(order);
 			if(i== (ids-1)){
 				this.marketState.lastId = i;
-				fs.writeFileSync(filePath, JSON.stringify(this.marketState));
+				this.saveState();
 
 			}
 		}	
 	}
-
-	/*saveState() {
-		let tokenStatus ={
-			myOrders: this.state.myOrders,
-			myTrades: this.state.myTrades
-		}
-		if(localStorage.getItem('market')){
-			let market = JSON.parse(localStorage.getItem('market'));
-			let index = market.findIndex(x=>x.account.toLowerCase() == this._account.account.address.toLowerCase());
-			if(index==-1){
-				let marketObj: any = {
-					account: this._account.account.address,
-					myFunds: this.state.myFunds
-				}
-				marketObj[this._web3.network.chain.toString()]={}
-				marketObj[this._web3.network.chain.toString()][this.token.addr] = tokenStatus;
-				market.push(marketObj);
-			}else if(this._web3.network.chain.toString() in market[index]){
-				market[index][this._web3.network.chain.toString()][this.token.addr] = tokenStatus;
-			}else{
-				market[index][this._web3.network.chain.toString()]={}
-				market[index][this._web3.network.chain.toString()][this.token.addr] = tokenStatus;
-			}
-			localStorage.setItem('market', JSON.stringify(market))
-		}else{
-			let marketObj: any = {
-				account: this._account.account.address,
-				myFunds: this.state.myFunds
-			}
-			marketObj[this._web3.network.chain.toString()]={}
-			marketObj[this._web3.network.chain.toString()][this.token.address] = tokenStatus;
-			localStorage.setItem('market', JSON.stringify([marketObj]))
-		}
-	}*/
+	
+	saveState(){
+		let filePath =lescovexPath+"/."+this.fileName+".json";
+		fs.writeFileSync(filePath, JSON.stringify(this.marketState));
+	}
 
 	removeAccState(address){
         if(localStorage.getItem('market')) {

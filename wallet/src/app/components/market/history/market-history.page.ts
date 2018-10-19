@@ -21,6 +21,7 @@ export class MarketHistoryPage implements DoCheck {
   intervalLoops:number;
 
   constructor(protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
+    this._LSCXmarket.getTokenState();
     this.action = "myTrades";
     this.intervalLoops = 0;
     this.lastAction = "myTrades";
@@ -47,21 +48,13 @@ export class MarketHistoryPage implements DoCheck {
     this.intervalLoops = 0;
     let interval = setInterval(()=>{
       this.intervalLoops++;
-      if(this._LSCXmarket.state.initialState == true){
-        this.intervalLoops = 0;
-        this.getHistory(action);
-        this.action = action;
-        if (this.loadingDialog != null) {
+      this.getHistory(action);
+      this.action = action;
+      if (this.loadingDialog != null) {
           this.loadingDialog.close();
-        }
-        clearInterval(interval);
+          this.loadingDialog= null;
       }
-      if(this.intervalLoops>40){
-        if (this.loadingDialog != null) {
-          this.loadingDialog.close();
-          this.loadingDialog = null;
-        }
-      }
+      clearInterval(interval);
     },500)
   }
 
@@ -85,11 +78,7 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyOrders(): any[] {
-    let marketOrders =  this._LSCXmarket.state.myOrders;
-    let buys = (typeof(marketOrders)=="undefined")? [] : marketOrders.buys;
-    let sells = (typeof(marketOrders)=="undefined")? [] : marketOrders.sells;
-    let orders = buys;
-    orders.concat(sells);
+    let orders =  this._LSCXmarket.state.myOrders;
     orders.sort((a,b)=>{
       return a.price - b.price || a.amountGet - b.amountGet
     })
@@ -97,7 +86,7 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyFunds(): any[] {
-    let funds = this._LSCXmarket.state.myFunds;
+    let funds = this._LSCXmarket.state.myFunds.filter(fund=>fund.show);
     return (typeof(funds) == 'undefined')? [] : funds;
   }
 

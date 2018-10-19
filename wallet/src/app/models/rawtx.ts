@@ -1,4 +1,5 @@
 import { Web3 } from '../services/web3.service';
+import * as EthUtils from 'ethereumjs-util';
 import * as EthTx from 'ethereumjs-tx';
 import BigNumber from 'bignumber.js';
 
@@ -41,6 +42,9 @@ export class BaseRawTx {
     }
     setTxData(data){
         this.tx.data = data;
+    }
+    async getNonce(): Promise<number>{
+        return EthUtils.bufferToInt(this.tx.nonce);
     }
 
 }

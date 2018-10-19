@@ -4,9 +4,9 @@
             <tr>
                 <th>Transaction</th>
                 <th>Type</th>
-                <th>{{_market.token.name}}</th>
+                <th>{{_LSCXmarket.token.name}}</th>
                 <th>ETH</th>
-                <th>{{_market.token.name}}/ETH</th>
+                <th>{{_LSCXmarket.token.name}}/ETH</th>
             </tr>
         </thead>
         <tr *ngIf="history.length == 0"><td colspan="5" class="collapse">There are no trades here</td></tr>
@@ -24,7 +24,7 @@
     <table *ngIf="action=='myOrders'" class="history-table" >
         <thead>
             <tr>
-                <th>{{_market.token.name}}/ETH</th>
+                <th>{{_LSCXmarket.token.name}}/ETH</th>
                 <th>Available volume</th>
                 <th>Expires in</th>
                 <!--<th>Cancel</th>-->
@@ -46,14 +46,14 @@
             <tr>
                 <th>Transaction</th>
                 <th>Type</th>
-                <th>{{_market.token.name}}</th>
+                <th>{{_LSCXmarket.token.name}}</th>
                 <th>ETH</th>
             </tr>   
         </thead>
         <tr *ngIf="history.length == 0"><td colspan="4" class="collapse">There are no funds</td></tr>
         <tbody *ngFor="let fund of history, index as i" >
             <tr>
-                <td class="pointer" (click)="openExternal(fund.txHash)">{{fund.txHash}}</td>
+                <td class="pointer" (click)="openExternal(fund.hash)">{{fund.hash}}</td>
                 <td><p>{{fund.kind| titlecase}}</p></td>
                 <td><p *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>
                 <td><p *ngIf="fund.tokenAddr == '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>

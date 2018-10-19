@@ -62,6 +62,7 @@ import { NewAccountDialogComponent } from './components/navComponent/newAccount-
 import { ImportAccountDialogComponent } from './components/navComponent/importAccount-dialog.component';
 import { SendDialogComponent } from './components/dialogs/send-dialog.component';
 import { SendOrderDialogComponent } from './components/dialogs/send-order-dialog.component';
+import { SendMarketDialogComponent } from './components/dialogs/send-market-dialog.component';
 import { NetworkDialogComponent } from "./components/dialogs/network-dialog.component";
 import { DeleteComponent } from './components/wallet/wsettings/confirm-delete.component';
 import { JSONDialogComponent } from './components/wallet/wsettings/json-dialog.component';
@@ -127,6 +128,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ImportAccountDialogComponent,
     SendDialogComponent,
     SendOrderDialogComponent,
+    SendMarketDialogComponent,
     DeleteComponent,
     ErrorDialogComponent,
     LoadingDialogComponent,
@@ -191,6 +193,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ImportAccountDialogComponent,
     SendDialogComponent,
     SendOrderDialogComponent,
+    SendMarketDialogComponent,
     DeleteComponent,
     ErrorDialogComponent,
     LoadingDialogComponent,

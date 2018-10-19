@@ -35,7 +35,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
             let blockNum = await this._web3.blockNumber();
             
             this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
-        });
+        },200);
     }
     
     ngOnChanges(): void {
@@ -47,12 +47,23 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        clearImmediate(this.interval);
+        clearInterval(this.interval);
     }
 
     openExternal(txHash){
         const shell = require('electron').shell;
-        let net = (this._web3.network==1) ? "":"ropsten.";
+        let net;
+        switch(this._web3.network.chain){
+            case 1: 
+                net = "";
+                break;
+            case 3:
+                net = "ropsten.";
+                break;
+            case 42:
+                net = "kovan.";
+                break;
+        }
         shell.openExternal('https://'+net+'etherscan.io/tx/'+txHash);
     }
 

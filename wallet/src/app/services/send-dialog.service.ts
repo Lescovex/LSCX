@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { MdDialog } from '@angular/material';
 import { SendDialogComponent } from '../components/dialogs/send-dialog.component';
 import { SendOrderDialogComponent } from '../components/dialogs/send-order-dialog.component';
+import { SendMarketDialogComponent } from '../components/dialogs/send-market-dialog.component';
 
 
 @Injectable()
@@ -53,6 +54,23 @@ export class SendDialogService{
                 action: action,
                 params: hashParams,
                 gasOpt: gasOptions
+            },
+        });
+    }
+
+    openConfirmMarket(tx, to, amount, fees, total, action, typeFunction, functionObj ){
+        return this.dialog.open(SendMarketDialogComponent, {
+            width: '660px',
+            height: '400px',
+            data:{
+                tx: tx,
+                to: to,
+                amount: amount,
+                fees: fees,
+                total: total,
+                action: action,
+                typeFunction: typeFunction,
+                functionObj : functionObj
             },
         });
     }
