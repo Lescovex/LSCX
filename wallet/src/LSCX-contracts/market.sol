@@ -136,6 +136,11 @@ contract AccountLevels {
   function accountLevel(address user) constant returns(uint) {}
 }
 
+contract Lescovex_MarketStorage{
+  function concatTiker(string _string, string _symbol)constant{}
+  function concatOrder(string _string, string _symbol)constant{}
+}
+
 contract AccountLevelsTest is AccountLevels {
   mapping (address => uint) public accountLevels;
 
@@ -152,6 +157,7 @@ contract LescovexMarket is SafeMath {
   address public admin; //the admin address
   address public feeAccount; //the account that will receive fees
   address public accountLevelsAddr; //the address of the AccountLevels contract
+  address public storageAddr; // the address of the Lescovex_MarketStorage contract
   uint public feeMake; //percentage times (1 ether)
   uint public feeTake; //percentage times (1 ether)
   uint public feeRebate; //percentage times (1 ether)
@@ -196,13 +202,14 @@ contract LescovexMarket is SafeMath {
   event Deposit(address token, address user, uint amount, uint balance);
   event Withdraw(address token, address user, uint amount, uint balance);
 
-  function LescovexMarket(address admin_, address feeAccount_, address accountLevelsAddr_, uint feeMake_, uint feeTake_, uint feeRebate_) {
+  function LescovexMarket(address admin_, address feeAccount_, address accountLevelsAddr_, uint feeMake_, uint feeTake_, uint feeRebate_, address storageAddr_) {
     admin = admin_;
     feeAccount = feeAccount_;
     accountLevelsAddr = accountLevelsAddr_;
     feeMake = feeMake_;
     feeTake = feeTake_;
     feeRebate = feeRebate_;
+    storageAddr = storageAddr_;
   }
 
   function() {
@@ -246,6 +253,11 @@ contract LescovexMarket is SafeMath {
     feeMarket = _feeMarket;
   }
 
+  function changeStorageAddr(address storageAddr_) {
+    if (msg.sender != admin) throw;
+    storageAddr = storageAddr;
+  }
+
   function deposit() payable {
     
     uint feeTakeXfer = safeMul(msg.value, feeTake) / (1 ether);
@@ -255,7 +267,7 @@ contract LescovexMarket is SafeMath {
     Deposit(0, msg.sender, msg.value - feeTakeXfer, tokens[0][msg.sender]);
     Deposit(0, feeAccount, feeTakeXfer, tokens[0][feeAccount]);
   }
-  function tiker(address _token, string _tokenName, uint _decimals) payable {
+  function tiker(address _token, string _tokenName, uint _decimals, string _string, string _symbol) payable {
     if (msg.value != feeMarket) throw;
     
     tikers[tikersId].token = _token;
@@ -263,6 +275,8 @@ contract LescovexMarket is SafeMath {
     tikers[tikersId].decimals = _decimals;
     
     tikersId++;
+
+    Lescovex_MarketStorage(storageAddr).concatTiker(_string, _symbol);
     
     tokens[0][feeAccount] = safeAdd(tokens[0][feeAccount], msg.value);
     Deposit(0, feeAccount, msg.value, tokens[0][feeAccount]);
@@ -300,28 +314,17 @@ contract LescovexMarket is SafeMath {
     return tokens[token][user];
   }
 
-  function order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, uint8 v, bytes32 r, bytes32 s) {
+  function order(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, string _string, string _symbol) {
     bytes32 hash = sha256(this, tokenGet, amountGet, tokenGive, amountGive, expires, nonce);
     orders[msg.sender][hash] = true;
-
-    ordersInfo[id].owner = msg.sender;
-    ordersInfo[id].tokenGet = tokenGet;
-    ordersInfo[id].amountGet = amountGet;
-    ordersInfo[id].tokenGive = tokenGive;
-    ordersInfo[id].amountGive = amountGive;
-    ordersInfo[id].expires = expires;
-    ordersInfo[id].nonce = nonce;
-    ordersInfo[id].hashed = hash;
-    ordersInfo[id].v = v;
-    ordersInfo[id].r = r;
-    ordersInfo[id].s = s;
+    Lescovex_MarketStorage(storageAddr).concatOrder(_string, _symbol);
 
     id++;
     Order(tokenGet, amountGet, tokenGive, amountGive, expires, nonce, msg.sender);
   }
   
   function getDeleteds() constant returns (bytes32[]){
-    return deleted;      
+    return deleted;       
   }
   
   function getDeletedsLength() constant returns(uint){
