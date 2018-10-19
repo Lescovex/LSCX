@@ -158,6 +158,8 @@ contract LescovexMarket is SafeMath {
   uint public feeMarket; //
   uint public id = 0;
   uint public tikersId = 0;
+  
+  bytes32[] public deleted;
 
   mapping (address => mapping (address => uint)) public tokens; //mapping of token addresses to mapping of account balances (token=0 means Ether)
   mapping (address => mapping (bytes32 => bool)) public orders; //mapping of user accounts to mapping of order hashes to booleans (true = submitted by user, equivalent to offchain signature)
@@ -317,10 +319,21 @@ contract LescovexMarket is SafeMath {
     id++;
     Order(tokenGet, amountGet, tokenGive, amountGive, expires, nonce, msg.sender);
   }
-
+  
+  function getDeleteds() constant returns (bytes32[]){
+    return deleted;      
+  }
+  
+  function getDeletedsLength() constant returns(uint){
+      return deleted.length;
+  }
+  
   function trade(address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint expires, uint nonce, address user, uint8 v, bytes32 r, bytes32 s, uint amount) {
     //amount is in amountGet terms
     bytes32 hash = sha256(this, tokenGet, amountGet, tokenGive, amountGive, expires, nonce);
+    if(block.number > expires || safeAdd(orderFills[user][hash], amount) == amountGet){
+        deleted.push(hash);
+    }
     if (!(
       (orders[user][hash] || ecrecover(sha3("\x19Ethereum Signed Message:\n32", hash),v,r,s) == user) &&
       block.number <= expires &&
