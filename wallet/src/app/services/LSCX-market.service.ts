@@ -125,24 +125,18 @@ export class LSCXMarketService {
 			let fee = await this._contract.callFunction(this.contractMarket, fees[i], []);
 			this.fees[fees[i]] = parseInt(fee.toString());
 		}
-		/*let fee = await this._contract.callFunction(this.contractMarket, 'feeMake', [])
-		this.fees.feeMake = parseInt(fee.toString());
-		this.fees.feeTake = await this._contract.callFunction(this.contractMarket, 'feeTake', []);
-		this.fees.feeRebate = await this._contract.callFunction(this.contractMarket, 'feeRebate', []);
-		this.fees.feeMarket = await this._contract.callFunction(this.contractMarket, 'feeMarket', []);*/
 		console.log("FEES", this.fees)
-
 	}
 
 	setTokenContract() {
 		this.token.contract = this.contractToken.at(this.token.addr)
 	}
 
-	setMarket(token?){
+	async setMarket(token?){
 		this.setFileName();
 		this.setCongif();
 		this.setContracts();
-		this.getLocalState();
+		await this.getLocalState();
 		this.eth = this.config.tokens[0];
 		this.setToken(token);
 		this.setSha256();
@@ -243,15 +237,14 @@ export class LSCXMarketService {
 		},2000)
 	}
 
-	getTokenState(){
-		
+	getTokenState(){	
 		if(this._account.account.address in this.marketState.myFunds){
 			this.state.myFunds = this.marketState.myFunds[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr || x.tokenAddr == this.config.tokens[0].addr);
 		} else {
 			this.state.myFunds = [];
 		}
 		if(this._account.account.address in this.marketState.myOrders){
-			this.state.myOrders = this.marketState.orders[this._account.account.address].filter(x=>x.user == this._account.account.address && (x.tokenGet == this.token.addr || x.tokenGive== this.token.addr));
+			this.state.myOrders = this.marketState.myOrders[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
 		} else {
 			this.state.myOrders=[];
 		}
@@ -269,8 +262,8 @@ export class LSCXMarketService {
 			this.marketState.myFunds[this._account.account.address] = [fund];
 		}
 	}
+
 	updateFunds() {
-		
 		let interval = null;
 			interval = setInterval(()=>{
 				let funds = [];
@@ -285,18 +278,15 @@ export class LSCXMarketService {
 						let histTx = this._account.account.history.find(x=> x.hash.toLowerCase() ==fundObj.hash.toLowerCase());
 						console.log(histTx, fundObj.hash)
 						if(histTx!= null ){
-							console.log("encuentra hash")
 							let stop = false;
 							for( let i=0; i<this.marketState.myFunds[this._account.account.address].length || !stop ; i++){
 								if(this.marketState.myFunds[this._account.account.address][i].hash.toLowerCase() ==fundObj.hash.toLowerCase()){
-									if(histTx.isError == 0) {
-										console.log("encuentra y show");
+									if(histTx.isError == "0") {
 										this.marketState.myFunds[this._account.account.address][i].show = true;
-									}else{
-										console.log("encuentra y borrar")
-										this.marketState.myFunds.splice(i,1);
+									}else if(typeof(histTx.isError)!= 'undefined'){
+										this.marketState.myFunds[this._account.account.address].splice(i,1);
 									}
-									stop = true;
+									stop=true;
 								}
 							}
 						}else{
@@ -346,28 +336,6 @@ export class LSCXMarketService {
 		};
 	};*/
 
-	compareOrders(newOrdersTransformed, type){
-		newOrdersTransformed[type].forEach((x) => {
-			if (x.deleted == true || x.ethAvailableVolumeBase < this.config.minOrderSize) {
-				this.marketState.orders[type] = this.marketState.orders[type].filter(y => y.id !== x.id);
-				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-					this.marketState.myOrders[type] = this.marketState.myOrders[type].filter(y => y.id !== x.id);
-				}
-			} else if (this.marketState.orders[type].findIndex(y => y.id === x.id)!=-1) {
-				this.marketState.orders[type] = this.marketState.orders[type].map(y => (y.id === x.id ? x : y));
-				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-					this.marketState.myOrders[type] = this.marketState.myOrders[type].map(y => (y.id === x.id ? x : y));
-				}
-			} else {
-				this.marketState.orders[type].push(x);
-				x.user.toLowerCase() === this._account.account.address.toLowerCase()
-				if (x.user.toLowerCase() === this._account.account.address.toLowerCase()) {
-					this.marketState.myOrders[type].push(x);
-				}
-			}
-		});
-	}
-
 	updateTrades(newTrades, token, user) {
 		const newTradesTransformed = newTrades
 		.map(x => x = new Trade(x));
@@ -405,6 +373,7 @@ export class LSCXMarketService {
 		let data = fs.readFileSync(filePath);
 		this.marketState =  JSON.parse(data);
 		await this.getTikers();
+		await this.getMarketOrders();
 		console.log(this.fileName, this.marketState);	
 	}
 
@@ -440,7 +409,6 @@ export class LSCXMarketService {
 		let ids = parseInt(idsResult.toString());
 		console.log(i, ids)
 		for(i ; i<ids; i++) {
-
 			let orderResult = await this._contract.callFunction(this.contractMarket, 'ordersInfo', [i]);
 			let tokenAddr=(orderResult['1']!="0x0000000000000000000000000000000000000000") ? orderResult['1'] :orderResult['3'];
 			//get decimal tokens
@@ -449,18 +417,24 @@ export class LSCXMarketService {
 				token = this.marketState.tikers.find(x=> x.addr == tokenAddr);
 			}
 			if(token!= null) {
-
-			}
-			let order = new Order(orderResult, token.decimals);
-			this.marketState.orders.push(order);
-			if(i== (ids-1)){
-				this.marketState.lastId = i;
-				this.saveState();
-
-			}
+				let order = new Order(orderResult, token.decimals);
+				this.marketState.orders.push(order);
+				if(order.user.toLowerCase() == this._account.account.address.toLowerCase()){
+					if(this._account.account.address in this.marketState.myOrders){
+						this.marketState.myOrders[this._account.account.address].push(order);
+					}else{
+						this.marketState.myOrders[this._account.account.address] = [order];
+					}
+				}
+				if(i== (ids-1)){
+					this.marketState.lastId = i;
+					this.saveState();
+				}
+			}	
 		}	
 	}
-	
+
+
 	saveState(){
 		let filePath =lescovexPath+"/."+this.fileName+".json";
 		fs.writeFileSync(filePath, JSON.stringify(this.marketState));
