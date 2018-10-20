@@ -137,8 +137,8 @@ contract AccountLevels {
 }
 
 contract Lescovex_MarketStorage{
-  function concatTiker(string _string, string _symbol)constant{}
-  function concatOrder(string _string, string _symbol)constant{}
+  function concatTiker(string _string, string _symbol)public{}
+  function concatOrder(string _string, string _symbol)public{}
 }
 
 contract AccountLevelsTest is AccountLevels {
@@ -255,7 +255,7 @@ contract LescovexMarket is SafeMath {
 
   function changeStorageAddr(address storageAddr_) {
     if (msg.sender != admin) throw;
-    storageAddr = storageAddr;
+    storageAddr = storageAddr_;
   }
 
   function deposit() payable {
@@ -275,7 +275,7 @@ contract LescovexMarket is SafeMath {
     tikers[tikersId].decimals = _decimals;
     
     tikersId++;
-
+    
     Lescovex_MarketStorage(storageAddr).concatTiker(_string, _symbol);
     
     tokens[0][feeAccount] = safeAdd(tokens[0][feeAccount], msg.value);

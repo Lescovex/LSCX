@@ -9,6 +9,36 @@ pragma solidity 0.4.24;
 
  */
 
+library SafeMath {
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        if (a == 0) {
+            return 0;
+        }
+        uint256 c = a * b;
+        assert(c / a == b);
+        return c;
+    }
+
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        // assert(b > 0); // Solidity automatically throws when dividing by 0
+        uint256 c = a / b;
+        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+        return c;
+    }
+
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        assert(b <= a);
+        return a - b;
+    }
+
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        assert(c >= a);
+        return c;
+    }
+}
+
+
 contract Ownable {
     address public owner;
 
@@ -40,15 +70,29 @@ contract Ownable {
 
 
 contract Lescovex_MarketStorage is Ownable {
+    using SafeMath for uint256;
     
     address LSCX_Market;
 
     //string[] public orders;
-    string orders = "";
-    string tikers = "";
+    //string orders = "";
+    //string tikers = "";
     
     string tmpO;
     string tmpT;
+    string tmpUint;
+    string tmpAddr;
+    
+    mapping(uint256 => string) public orders;
+    mapping(uint256 => string) public tikers;
+    
+    uint256 public ordersId = 1;
+    uint256 public tikersId = 1;
+    
+    uint256 public ordersCount = 0;
+    uint256 public tikersCount = 0;
+    
+    string public testing;
     /* Initializes contract with initial supply tokens to the creator of the contract */
     constructor () public {
         
@@ -57,38 +101,39 @@ contract Lescovex_MarketStorage is Ownable {
         LSCX_Market = _market;
     }
     
-    function orderConcat(string _symbol, string _owner, string _tokenGet, string _amountGet, string _tokenGive, string _amountGive, string _expires, string _nonce, string _hash, string _v, string _r, string _s) public {
+    function concatTiker(string _string, string _symbol) public {
         require(msg.sender == LSCX_Market);
-        tmpO = string(abi.encodePacked(_owner, _symbol, _tokenGet, _symbol, _amountGet));
-        tmpO = string(abi.encodePacked(tmpO, _symbol, _tokenGive, _symbol, _amountGive ));
-        tmpO = string(abi.encodePacked(tmpO, _symbol, _expires, _symbol, _nonce ));
-        tmpO = string(abi.encodePacked(tmpO, _symbol, _hash, _symbol, _v ));
-        tmpO = string(abi.encodePacked(tmpO, _symbol, _r, _symbol, _s ));
+        if(tikersCount == 0){
+            tikers[tikersId] = string(abi.encodePacked(_string, _symbol));
+            tikersCount++;
+        }else{
+            string  memory x = tikers[tikersId];
+            tikers[tikersId] = string(abi.encodePacked(x, _string, _symbol));
+            tikersCount ++;
+        }
+        if(tikersCount == 50){
+            tikersCount = 0;
+            tikersId++;
+        }
         
-        setOrder("*", tmpO);
-    }
+   }
+
+   function concatOrder(string _string, string _symbol) public {
+       require(msg.sender == LSCX_Market);
+        if(ordersCount == 0){
+            orders[ordersId] = string(abi.encodePacked(_string, _symbol));
+            ordersCount++;
+        }else{
+            string memory x = orders[ordersId];
+            orders[ordersId] = string(abi.encodePacked(x, _string, _symbol));
+            ordersCount++;
+        }
+        if(ordersCount == 50){
+            ordersCount = 0;
+            ordersId++;
+        }
+   }
+    
    
-   function setOrder(string _symbol, string _order) internal {
-       orders = string(abi.encodePacked(orders, _order, _symbol));
-       tmpO = "";
-   }
-   function getOrders()public view returns (string){
-       require(msg.sender == LSCX_Market);
-       return orders;
-   }
-   
-   function tikerConcat(string _symbol, string _token, string _tokenName, string _decimals) public {
-       require(msg.sender == LSCX_Market);
-       tmpT = string(abi.encodePacked(_token, _symbol, _tokenName, _symbol, _decimals));
-       setTiker("*", tmpT);
-   }
-   function setTiker(string _symbol, string _tiker) internal{
-       tikers = string(abi.encodePacked(tikers, _tiker, _symbol));
-       tmpT = "";
-   }
-   function getTikers() public view returns(string){
-       require(msg.sender == LSCX_Market);
-       return tikers;
-   }
    
 }
