@@ -17,7 +17,7 @@ export class TokensMarketListComponent {
   }
 
   search(input?){
-    let tokens = this._LSCXmarket.config.tokens.filter(x=> x);
+    let tokens = this._LSCXmarket.config.tokens.filter(x=> x.name!="ETH");
     tokens.sort((a, b)=> (a.name).localeCompare(b.name));
     let LSCX_tokens = this._LSCXmarket.marketState.tikers;
 
