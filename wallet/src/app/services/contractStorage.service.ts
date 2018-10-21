@@ -78,7 +78,7 @@ export class ContractStorageService {
                     this.contracts[pending[i]].address = contractAddr;
                     this.contracts[pending[i]].active = true;
                     if(this.addDialog == null) {
-                        this.openTikerDialog(this.contracts[pending[i]])
+                        this.openTikerDialog(this.contracts[pending[i]], true);
                     }
                     await this.verifyContract(contractAddr)
                 }    
@@ -169,13 +169,14 @@ export class ContractStorageService {
         });          
     }
 
-    openTikerDialog(contract) {
+    openTikerDialog(contract, deploy:boolean) {
         this.addDialog = this.dialog.open(TikerDialogComponent,{
             width: '660px',
             height: '250px',
             data: {
                 contract: contract,
-                fees: this._LSCXmarket.fees.feeMarket
+                fees: this._LSCXmarket.fees.feeMarket,
+                deploy: deploy
             }
           });
         this.addDialog.afterClosed().subscribe(()=>{

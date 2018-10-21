@@ -597,7 +597,8 @@ p.error {
 }
 
 .btn-solid,
-.btn-contract {
+.btn-contract,
+.btn-contract-black {
     background-color: #30D67F;
     color: #fff;
     border: 2px solid transparent;
@@ -620,18 +621,16 @@ p.error {
     background-color: #79f479;
 }
 
-.btn-black {
-    padding: 0 40px;
-    border-radius: 5px;
+.btn-black,
+.btn-contract-black {
     color: #272d33;
     border: 2px solid black;
     background-color: transparent;
     text-decoration: none;
-    font-family: "Lato-Bold";
-    font-size: 11pt;
 }
 
-.btn-black:hover {
+.btn-black:hover,
+.btn-contract-black:hover {
     color: #fff;
     background-color: black;
 }
@@ -646,9 +645,11 @@ p.error {
 }
 
 .btn-contract,
-.btn-contract-delete {
+.btn-contract-delete,
+.btn-contract-black {
     padding: 5px;
     border-radius: 5px;
+    font-family: "Lato-Bold";
 }
 
 .extra {
@@ -712,7 +713,15 @@ p.error {
 }
 
 .contract-list-title {
+    margin-top: 3px;
+    font-family: "Lato-Bold";
     font-size: 14pt;
+}
+.contract-list-add-market {
+    margin-left: 49px;
+    font-family: "Lato-Bold";
+    margin-top: 12px;
+    margin-bottom: 20px;
 }
 
 .select-contract-icon {

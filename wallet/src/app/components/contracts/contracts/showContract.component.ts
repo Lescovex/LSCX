@@ -11,6 +11,8 @@ import { Web3 } from '../../../services/web3.service';
 
 import BigNumber from 'bignumber.js/bignumber';
 import { RawTx } from '../../../models/rawtx';
+import { LSCXMarketService } from '../../../services/LSCX-market.service';
+import { ContractStorageService } from '../../../services/contractStorage.service';
 
 
 @Component({
@@ -33,8 +35,11 @@ export class ShowContract implements OnInit{
   protected owner: string;
   protected response: any = null;
   protected function;
+  protected goHover=false;
+  protected addMarket = false;
+  protected isInMarket = false;
 
-  constructor(public _LSCXcontract: LSCXContractService,protected _forms: FormsService, protected sendDialogService : SendDialogService, protected _account: AccountService, protected _dialog: DialogService, protected router : Router, protected _web3: Web3) {
+  constructor(public _LSCXcontract: LSCXContractService, public _contractStorage: ContractStorageService, protected _forms: FormsService, protected sendDialogService : SendDialogService, protected _account: AccountService, protected _dialog: DialogService, protected router : Router, protected _web3: Web3, private _LSCXmarket: LSCXMarketService) {
     this.functionForm = new FormGroup({
       functionCtrl: new FormControl(null,Validators.required),
     })
@@ -46,6 +51,13 @@ export class ShowContract implements OnInit{
         this.owner=info[1]
       }
     })
+    if(this._LSCXmarket.marketState.tikers.find(x=> x.addr.toLowerCase() == this.contractInfo.address.toLowerCase()) !=null){
+      this.isInMarket = true;
+    }
+    if(this.owner.toLowerCase() == this._account.account.address.toLowerCase() && !this.isInMarket){
+      this.addMarket = true;
+    }
+    
   }
 
   getControl(controlName: string): AbstractControl{
@@ -154,6 +166,10 @@ export class ShowContract implements OnInit{
 
   goBack(){
     this.back.emit(true);
+  }
+
+  addToMarket() {
+    this._contractStorage.openTikerDialog(this.contractInfo, false);
   }
 
 }

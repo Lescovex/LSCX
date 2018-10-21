@@ -11,12 +11,19 @@
                 <p class="contract-list-name">{{contractInfo.address}}</p>
             </div>
         </div>
+
         <div *ngIf="contractType=='custom'" class="left">
             <p class="contract-list-title">{{contractInfo.name}}</p>
             <p class="contract-list-name">{{contractInfo.address}}</p>
         </div>
-        <a class="right btn-contract" (click)="goBack()"><img src="~icons/left.svg"> Go back</a>
+        <a class="right btn-contract-black" (click)="goBack()" (mouseover)="goHover=true" (mouseout)="goHover=false"><img *ngIf="goHover" src="~icons/left.svg"><img *ngIf="!goHover" src="~icons/left_black.svg"> Go back</a>
     </div>
+    <div class="clear">
+        <p *ngIf="!isInMarket" class="left contract-list-add-market">This contract isn't listed in LSXC market</p>
+        <p *ngIf="isInMarket" class="left contract-list-add-market">This contract is listed in LSCX market</p>
+        <a *ngIf="addMarket" class="btn-contract right" (click)="addToMarket()">Add to LSCX market</a>
+    </div>
+   
     <ul class="info-list clear dist">
         <ng-container *ngIf="contractType=='LSCX'">
             <li *ngIf="contractInfo.type != 'LSCX_CYC'" class="half left clear">
