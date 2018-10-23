@@ -353,6 +353,8 @@ nav a span {
     display: block;
     width: 100%;
 }
+
+
 /*-------------------- CONTENT ----------------------------*/
 
 .content {
@@ -387,21 +389,26 @@ nav a span {
 .info-list li {
     padding: 3px 0;
 }
+
 .prefix-select {
     width: 200px;
 }
+
 .flag {
     width: 20px;
     max-height: 15px;
     margin-right: 5px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
+
 .flag+span {
-   max-width: 100px;
+    max-width: 100px;
 }
+
 .prefix {
     width: 50px;
 }
+
 #flag-list {
     margin-top: -21px;
 }
@@ -511,8 +518,7 @@ input[type="checkbox"] {
 input,
 div.input-container,
 .input,
-.whiteBox
-{
+.whiteBox {
     height: 44px;
 }
 
@@ -694,7 +700,8 @@ p.error {
     position: relative;
 }
 
-.contract-list *, .text-overflow-ellipsis{
+.contract-list *,
+.text-overflow-ellipsis {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1103,4 +1110,12 @@ topDist {
     width: 40%;
     margin-right: 9%;
     height: 100px;
+}
+
+.green-progress .mat-progress-bar-fill::after {
+    background-color: #30D67F !important;
+}
+
+.green-progress .mat-progress-bar-buffer {
+    background-color: #c0f2d8 !important;
 }
