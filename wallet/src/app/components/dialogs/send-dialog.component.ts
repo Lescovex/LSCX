@@ -107,7 +107,7 @@ export class SendDialogComponent{
           }
           if(i==this.txs.length-1){
             this.title = "Your transaction has been sent";
-            this.message = "You can see the progress in the history tab"
+            this.message = "You can see the progress in the global tab"
             //self.dialogRef.close();
             let dialogRef = this.dialogService.openErrorDialog(this.title, this.message, this.error, this.data.action);
             dialogRef.afterClosed().subscribe(result=>{
@@ -154,7 +154,7 @@ export class SendDialogComponent{
   setErroParamsWhenNotConfiramtion(){
     this.title = "Unable to check transaction confirmation";
     this.message = "Something went wrong"
-    this.error = "We can not check network confirmation, You can see the progress in the history tab";
+    this.error = "We can not check network confirmation, You can see the progress in the global tab";
   }
 
   async sendMarketOrder(privateKey){
