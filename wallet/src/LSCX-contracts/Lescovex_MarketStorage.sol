@@ -49,7 +49,7 @@ contract Lescovex_MarketStorage is Ownable {
     mapping(uint256 => string) public tikers;
     
     mapping(address => tikerInfo) tikersInfo;
-       
+    
     struct tikerInfo{
         
         bytes32[] sellOrders; //show highest price
@@ -140,7 +140,7 @@ contract Lescovex_MarketStorage is Ownable {
     }
   
     function setOrders(address tokenGet,  address tokenGive, string _string, uint256 _price, uint _expires, bytes32 _hash) public {
-        //require(msg.sender == LSCX_Market);
+        require(msg.sender == LSCX_Market);
         require(_expires > block.number);
         
         if(tokenGet == 0x0000000000000000000000000000000000000000){
@@ -296,10 +296,60 @@ contract Lescovex_MarketStorage is Ownable {
               }
           }
     }
+
+    function deleteOrders(address _tokenGet, address _tokenGive, bytes32 _hash) public {
+        require(msg.sender == LSCX_Market);
+        if(_tokenGet == 0x0000000000000000000000000000000000000000){
+            deleteSellOrders(_tokenGive, _hash);
+        }
+        
+        if(_tokenGive == 0x0000000000000000000000000000000000000000){
+            deleteBuyOrders(_tokenGet, _hash);
+        }
+    }
+    
+    function deleteSellOrders(address _token, bytes32 _hash) internal{
+        uint len = tikersInfo[_token].sellOrders.length;
+        bytes32 referenceId;
+        
+        if(len > 0){
+            for(uint index = 0; index < len; index++){
+                referenceId = tikersInfo[_token].sellOrders[index];
+                
+                if(referenceId != _hash){
+                    arr.push(referenceId);
+                }
+            }
+            delete tikersInfo[_token].sellOrders;
+            tikersInfo[_token].sellOrders = arr;
+            
+            delete arr;
+        }
+    }
+    
+    
+    function deleteBuyOrders(address _token, bytes32 _hash) internal{
+        uint len = tikersInfo[_token].buyOrders.length;
+        bytes32 referenceId;
+        
+        if(len > 0){
+            for(uint index = 0; index < len; index++){
+                referenceId = tikersInfo[_token].buyOrders[index];
+                if(referenceId != _hash){
+                    arr.push(referenceId);
+                }
+            }
+            delete tikersInfo[_token].buyOrders;
+            tikersInfo[_token].buyOrders = arr;
+            
+            delete arr;
+        }
+    }
     
     function getBuyLength(address token) public view returns(uint){
         return tikersInfo[token].buyOrders.length;
     }
+
     function getSellLength(address token) public view returns(uint){
         return tikersInfo[token].sellOrders.length;
     }
@@ -341,46 +391,5 @@ contract Lescovex_MarketStorage is Ownable {
             delete arr;
           }
     }
-    function deleteOrders(address _tokenGet, address _tokenGive, bytes32 _hash) public {
-        if(_tokenGet == 0x0000000000000000000000000000000000000000){
-            deleteSellOrders(_tokenGive, _hash);
-        }
-        
-        if(_tokenGive == 0x0000000000000000000000000000000000000000){
-            deleteBuyOrders(_tokenGet, _hash);
-        }
-    }
     
-    function deleteSellOrders(address _token, bytes32 _hash) public{
-        uint len = tikersInfo[_token].sellOrders.length;
-        bytes32 referenceId;
-        if(len > 0){
-            for(uint index = 0; index < len; index++){
-                referenceId = tikersInfo[_token].sellOrders[index];
-                if(referenceId != _hash){
-                    arr.push(referenceId);
-                }
-            }
-            delete tikersInfo[_token].sellOrders;
-            tikersInfo[_token].sellOrders = arr;
-
-            delete arr;
-        }
-    }
-    function deleteBuyOrders(address _token, bytes32 _hash) public{
-        uint len = tikersInfo[_token].buyOrders.length;
-        bytes32 referenceId;
-        if(len > 0){
-            for(uint index = 0; index > len; index++){
-                referenceId = tikersInfo[_token].buyOrders[index];
-                if(referenceId != _hash){
-                    arr.push(referenceId);
-                }
-            }
-            delete tikersInfo[_token].buyOrders;
-            tikersInfo[_token].buyOrders = arr;
-            
-            delete arr;
-        }
-    }
 }
