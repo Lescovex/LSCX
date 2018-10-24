@@ -13,7 +13,8 @@ export class MarketComponent{
   protected price;
   interval;
   constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService) {
-    this._LSCXmarket.updateFunds();
+    this._LSCXmarket.updateMyStateShow("myFunds");
+    this._LSCXmarket.updateMyStateShow("myOrders");
   }
 
   maxHeight() {

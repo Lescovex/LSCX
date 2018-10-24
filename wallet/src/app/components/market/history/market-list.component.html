@@ -32,9 +32,10 @@
         </thead>
         <tr *ngIf="history.length == 0"><td colspan="3" class="collapse">There are no orders here</td></tr>
         <tbody *ngFor="let order of history, index as i" >
-            <tr>
-                <td>{{order.price.toString() | number:"1.8-8":"en"}}</td>
-                <td>{{order.ethAvailableVolume| number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
+            <tr *ngIf="blockNumber>= order.expires">
+                <td><p [ngClass]="(order.tokenGive=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p></td>
+                <td *ngIf ="order.tokenGet=='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amountBase | number:"1.8-8":"en"}}</td>
+                <td *ngIf ="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
                 <td *ngIf ="blockNumber != null">{{order.expires-blockNumber}}</td>
                 <td *ngIf ="blockNumber == null" class="red">Not available</td>
                 <!--<td><a (click)="cancelOrder(order)">Cancel</a></td>-->
@@ -53,7 +54,7 @@
         <tr *ngIf="history.length == 0"><td colspan="4" class="collapse">There are no funds</td></tr>
         <tbody *ngFor="let fund of history, index as i" >
             <tr>
-                <td class="pointer" (click)="openExternal(fund.hash)">{{fund.hash}}</td>
+                <td class="pointer" (click)="openExternal(fund.txHash)">{{fund.txHash}}</td>
                 <td><p>{{fund.kind| titlecase}}</p></td>
                 <td><p *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>
                 <td><p *ngIf="fund.tokenAddr == '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>

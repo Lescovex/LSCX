@@ -55,20 +55,6 @@
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "getDeletedsLength",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"type": "function",
-		"stateMutability": "view"
-	},
-	{
-		"constant": true,
 		"inputs": [
 			{
 				"name": "",
@@ -103,20 +89,6 @@
 		"payable": false,
 		"type": "function",
 		"stateMutability": "nonpayable"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getDeleteds",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bytes32[]"
-			}
-		],
-		"payable": false,
-		"type": "function",
-		"stateMutability": "view"
 	},
 	{
 		"constant": false,
@@ -168,36 +140,6 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_token",
-				"type": "address"
-			},
-			{
-				"name": "_tokenName",
-				"type": "string"
-			},
-			{
-				"name": "_decimals",
-				"type": "uint256"
-			},
-			{
-				"name": "_string",
-				"type": "string"
-			},
-			{
-				"name": "_symbol",
-				"type": "string"
-			}
-		],
-		"name": "tiker",
-		"outputs": [],
-		"payable": true,
-		"type": "function",
-		"stateMutability": "payable"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
 				"name": "amount",
 				"type": "uint256"
 			}
@@ -225,67 +167,6 @@
 		"payable": false,
 		"type": "function",
 		"stateMutability": "nonpayable"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "tokenGet",
-				"type": "address"
-			},
-			{
-				"name": "amountGet",
-				"type": "uint256"
-			},
-			{
-				"name": "tokenGive",
-				"type": "address"
-			},
-			{
-				"name": "amountGive",
-				"type": "uint256"
-			},
-			{
-				"name": "expires",
-				"type": "uint256"
-			},
-			{
-				"name": "nonce",
-				"type": "uint256"
-			},
-			{
-				"name": "_string",
-				"type": "string"
-			},
-			{
-				"name": "_symbol",
-				"type": "string"
-			}
-		],
-		"name": "order",
-		"outputs": [],
-		"payable": false,
-		"type": "function",
-		"stateMutability": "nonpayable"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "deleted",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"payable": false,
-		"type": "function",
-		"stateMutability": "view"
 	},
 	{
 		"constant": true,
@@ -568,65 +449,6 @@
 		"stateMutability": "view"
 	},
 	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "ordersInfo",
-		"outputs": [
-			{
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"name": "tokenGet",
-				"type": "address"
-			},
-			{
-				"name": "amountGet",
-				"type": "uint256"
-			},
-			{
-				"name": "tokenGive",
-				"type": "address"
-			},
-			{
-				"name": "amountGive",
-				"type": "uint256"
-			},
-			{
-				"name": "expires",
-				"type": "uint256"
-			},
-			{
-				"name": "nonce",
-				"type": "uint256"
-			},
-			{
-				"name": "hashed",
-				"type": "bytes32"
-			},
-			{
-				"name": "v",
-				"type": "uint8"
-			},
-			{
-				"name": "r",
-				"type": "bytes32"
-			},
-			{
-				"name": "s",
-				"type": "bytes32"
-			}
-		],
-		"payable": false,
-		"type": "function",
-		"stateMutability": "view"
-	},
-	{
 		"constant": false,
 		"inputs": [
 			{
@@ -687,6 +509,32 @@
 		"stateMutability": "nonpayable"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"name": "_tokenName",
+				"type": "string"
+			},
+			{
+				"name": "_decimals",
+				"type": "uint256"
+			},
+			{
+				"name": "_string",
+				"type": "string"
+			}
+		],
+		"name": "tiker",
+		"outputs": [],
+		"payable": true,
+		"type": "function",
+		"stateMutability": "payable"
+	},
+	{
 		"constant": true,
 		"inputs": [],
 		"name": "id",
@@ -745,6 +593,48 @@
 		"payable": true,
 		"type": "function",
 		"stateMutability": "payable"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "tokenGet",
+				"type": "address"
+			},
+			{
+				"name": "amountGet",
+				"type": "uint256"
+			},
+			{
+				"name": "tokenGive",
+				"type": "address"
+			},
+			{
+				"name": "amountGive",
+				"type": "uint256"
+			},
+			{
+				"name": "expires",
+				"type": "uint256"
+			},
+			{
+				"name": "nonce",
+				"type": "uint256"
+			},
+			{
+				"name": "_string",
+				"type": "string"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "order",
+		"outputs": [],
+		"payable": false,
+		"type": "function",
+		"stateMutability": "nonpayable"
 	},
 	{
 		"constant": false,

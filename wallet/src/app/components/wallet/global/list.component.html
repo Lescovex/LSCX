@@ -5,7 +5,7 @@
             <ng-container *ngFor="let transaction of items, index as j">
                 <li *ngIf="(i==0  || (i>0 && tx.date != items[i-1].date )) && transaction.date == tx.date" [ngClass]="((j+1)%2 == 0) ? 'even' : 'odd'" class="pointer" (click)="openExternal(transaction)">
                     <a class="pointer" *ngIf="transaction.blockNumber!= null">
-                        <span class="pointer" *ngIf="transaction.isError != 0"><img src="~icons/failed_icon.svg"></span>
+                        <span class="pointer" *ngIf="transaction.isError > 0"><img src="~icons/failed_icon.svg"></span>
                         <span class="pointer" *ngIf="transaction.from == address.toLowerCase() && transaction.to == address.toLowerCase(); else normalTx"><img src="~icons/self_icon.svg"> ETH self</span>
                         <ng-template #normalTx>
                             <span class="pointer" *ngIf="transaction.from == address.toLowerCase()"><img src="~icons/send_icon.svg"> ETH sent</span>

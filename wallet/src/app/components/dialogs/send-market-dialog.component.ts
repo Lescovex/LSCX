@@ -24,6 +24,7 @@ export class SendMarketDialogComponent{
   title = "";
   message = "";
   txs: any[];
+  submited = false;
 
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, private _LSCXmarket: LSCXMarketService,  public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendMarketDialogComponent>) {
     if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
@@ -38,9 +39,10 @@ export class SendMarketDialogComponent{
    
 
   async sendTx(pass){
-    if (typeof(pass)=='undefined' || pass==""){
+    if (typeof(pass)=='undefined' || pass==""|| this.submited){
       return false
     }
+    this.submited = true;
 
     let privateKey =  this.getPrivate(pass);
     if(privateKey == null) return false;
@@ -56,12 +58,12 @@ export class SendMarketDialogComponent{
         this.openDialogWhenError(sendResult.message);
         return false;
       }else{      
-        this.data.functionObj.hash = sendResult;
+        this.data.functionObj.txHash = sendResult;
         let pending: any = null;
         let j = 0;
         let loadingDialog = null;
         while(pending == null && j<60){
-         this.dialogRef.close();
+          this.dialogRef.close();
           pending = await this._web3.getTx(sendResult);
           if(pending == null && loadingDialog==null){
             loadingDialog = this.dialogService.openLoadingDialog();
@@ -73,6 +75,7 @@ export class SendMarketDialogComponent{
           pending = new PendingTx(sendResult.toString(),this.txs[i], this.data.to, this.data.amount, this._account.account.address);
           this._account.addPendingTx(pending);
           if(i==this.txs.length-1){
+            this._LSCXmarket.addMyState(this.data.functionObj, this.data.typeFunction);
             this.setErroParamsWhenNotConfiramtion();
             loadingDialog.close();
             let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);
@@ -90,9 +93,9 @@ export class SendMarketDialogComponent{
           this._account.addPendingTx(pending);
 
           if(i==this.txs.length-1){
-            this.addFunction();
+            this._LSCXmarket.addMyState(this.data.functionObj, this.data.typeFunction);
             this.title = "Your transaction has been sent";
-            this.message = "You can see the progress in the history tab"
+            this.message = "You can see the progress in the global tab"
             //self.dialogRef.close();
             let dialogRef = this.dialogService.openErrorDialog(this.title, this.message, this.error, this.data.action);
             dialogRef.afterClosed().subscribe(result=>{
@@ -132,15 +135,6 @@ export class SendMarketDialogComponent{
   setErroParamsWhenNotConfiramtion(){
     this.title = "Unable to check transaction confirmation";
     this.message = "Something went wrong"
-    this.error = "We can not check network confirmation, You can see the progress in the history tab";
+    this.error = "We can not check network confirmation, You can see the progress in the global tab";
   }
-
-  addFunction(){
-    if(this.data.typeFunction == "fund") {
-      this._LSCXmarket.addFund(this.data.functionObj);
-      this._LSCXmarket.updateFunds();
-      this._LSCXmarket.saveState();
-    }
-  }
-
 }

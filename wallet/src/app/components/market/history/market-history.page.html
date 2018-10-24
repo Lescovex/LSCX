@@ -1,6 +1,6 @@
 <div class="dist clear">
-    <button [ngClass]="(action == 'myTrades') ? 'btn-solid':'btn-inverse'" (click)="activeButton('myTrades')">Trades</button>
-    <button class="extra" [ngClass]="(action == 'myOrders') ? 'btn-solid':'btn-inverse'"(click)="activeButton('myOrders')">Orders</button>
+    <button [ngClass]="(action == 'myTrades') ? 'btn-solid':'btn-inverse'" (click)="activeButton('myTrades')">Done Orders</button>
+    <button class="extra" [ngClass]="(action == 'myOrders') ? 'btn-solid':'btn-inverse'"(click)="activeButton('myOrders')">Active Orders</button>
     <button class="extra" [ngClass]="(action == 'myFunds') ? 'btn-solid':'btn-inverse'"(click)="activeButton('myFunds')">Funds</button>
 </div>
 <p *ngIf="intervalLoops>40;else marketHistory" class="whiteBox dist">It is not possible to show the market history at this time</p>

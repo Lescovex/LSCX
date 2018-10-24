@@ -15,6 +15,7 @@ const fs = require('fs');
 const homedir = require('os').homedir();
 const lescovexPath = homedir+"/.lescovex";
 import * as EthUtil from 'ethereumjs-util';
+import { LSCXMarketStorageService } from './LSCX-marketStorage.service';
 
 
 @Injectable()
@@ -28,7 +29,6 @@ export class LSCXMarketService {
 	contractToken: any = {};
 	contractReserveToken: any = {};
 	marketBalances: any = {token:null, eth:null};
-	socket;
 	fees: any = {
 		feeMake: undefined,
 		feeTake: undefined,
@@ -44,7 +44,7 @@ export class LSCXMarketService {
 	};
 	sha256;
 	lastPrice;
-	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService) {
+	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, private _marketStorage: LSCXMarketStorageService) {
 		this.setMarket();
 	}
 
@@ -237,7 +237,7 @@ export class LSCXMarketService {
 		},2000)
 	}
 
-	getTokenState(){	
+	async getTokenState(){	
 		if(this._account.account.address in this.marketState.myFunds){
 			this.state.myFunds = this.marketState.myFunds[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr || x.tokenAddr == this.config.tokens[0].addr);
 		} else {
@@ -253,105 +253,109 @@ export class LSCXMarketService {
 		} else {
 			this.state.myTrades = [];
 		}
+		this.state.orders = {};
+		await this.setBuys();
+		await this.setSells();
+		console.log("token state", this.state);
+	}
+
+	async setBuys() {
+		this.state.orders.buys = await this._marketStorage.getBuyOrders(this.token);
+	}
+	async setSells() {
+		this.state.orders.sells = await this._marketStorage.getSellOrders(this.token);
 	}
 	
-	addFund(fund){
-		if(this.marketState.myFunds.hasOwnProperty(this._account.account.address)){
-			this.marketState.myFunds[this._account.account.address].push(fund);
+	addMyState(obj: any, stateName: string){
+		if(this.marketState[stateName].hasOwnProperty(this._account.account.address)){
+			this.marketState[stateName][this._account.account.address].push(obj);
 		}else{
-			this.marketState.myFunds[this._account.account.address] = [fund];
+			this.marketState[stateName][this._account.account.address] = [obj];
+		}
+		console.log(this.marketState);
+		this.saveState();
+		this.updateMyStateShow(stateName);
+	}
+
+	updateMyStateShow(stateName: string) {
+		//Update myFunds, myOrders, or myTrades
+		console.log(stateName);
+		let interval = null;
+		interval = setInterval(()=>{
+			let myObj = [];
+			if(this._account.account.address in this.marketState[stateName]){
+				myObj = this.marketState[stateName][this._account.account.address].filter(fund=> fund.show == false);
+			}
+				
+			if(myObj.length==0){
+				clearInterval(interval);
+			}else{
+				myObj.forEach(obj=> {
+					let histTx = this._account.account.history.find(x=> x.hash.toLowerCase() == obj.txHash.toLowerCase());
+					console.log(histTx, obj.hash)
+					if(histTx!= null ){
+						let stop = false;
+						for( let i=0; i<this.marketState[stateName][this._account.account.address].length || !stop ; i++){
+							if(this.marketState[stateName][this._account.account.address][i].txHash.toLowerCase() ==obj.txHash.toLowerCase()){
+								if(histTx.isError == "0") {
+									this.marketState[stateName][this._account.account.address][i].show = true;
+								}else if(typeof(histTx.isError)!= 'undefined'){
+									this.marketState[stateName][this._account.account.address].splice(i,1);
+								}
+								stop=true;
+							}
+						}
+					}else{
+						if(parseInt(this._account.account.history[0].nonce) > obj.nonce){
+							console.log("borrar por nonce");
+							let stop = false;
+							for( let i=0; i<this.marketState[stateName][this._account.account.address].length || !stop ; i++){
+								this.marketState[stateName][this._account.account.address].splice(i,1);
+								stop = true;
+							}
+						}
+					}
+				});
+				this.saveState();
+			}	
+		}, 2000);		
+	}
+
+	async checkMyOrdersDeleted(blockNumber:number){
+		let myOrders = [];
+		if(this._account.account.address in this.marketState.myOrders){
+			let myOrdersAddress = this.marketState.myOrders[this._account.account.address]
+			myOrders = this.state.myOrders.filter(order=> order.show && !order.deleted);
+			console.log()
+			myOrders.forEach(async order=>{
+				order = new Order(order, order.tokenDecimals);
+				console.log("block",blockNumber,"-", order.expires, blockNumber > order.expires)
+				if(blockNumber > order.expires){
+					console.log("deleted");
+					order.deleted = true;
+					order.date = Date.now();
+				}
+				let byte32Zero ="0x0000000000000000000000000000000000000000";
+				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, 0, byte32Zero, byte32Zero]
+				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
+				order.setFilled(amountFilled);
+
+				for(let i=0; i<myOrdersAddress.length; i++){
+					if(order.txHash == myOrdersAddress[i].txHash){
+						if(order.deleted && order.amountFilled ==0 ){
+							myOrdersAddress.splice(i,1);
+						} else {		
+							myOrdersAddress[i] = order;
+						}
+					}
+				}
+				this.marketState.myOrders[this._account.account.address] = myOrdersAddress;
+			})
+			this.state.myOrders = this.marketState.myOrders[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
+			this.saveState();
 		}
 	}
 
-	updateFunds() {
-		let interval = null;
-			interval = setInterval(()=>{
-				let funds = [];
-				if(this._account.account.address in this.marketState.myFunds){
-					funds = this.marketState.myFunds[this._account.account.address].filter(fund=> fund.show == false);
-				}
-				
-				if(funds.length==0){
-					clearInterval(interval);
-				}else{
-					funds.forEach(fundObj=> {
-						let histTx = this._account.account.history.find(x=> x.hash.toLowerCase() ==fundObj.hash.toLowerCase());
-						console.log(histTx, fundObj.hash)
-						if(histTx!= null ){
-							let stop = false;
-							for( let i=0; i<this.marketState.myFunds[this._account.account.address].length || !stop ; i++){
-								if(this.marketState.myFunds[this._account.account.address][i].hash.toLowerCase() ==fundObj.hash.toLowerCase()){
-									if(histTx.isError == "0") {
-										this.marketState.myFunds[this._account.account.address][i].show = true;
-									}else if(typeof(histTx.isError)!= 'undefined'){
-										this.marketState.myFunds[this._account.account.address].splice(i,1);
-									}
-									stop=true;
-								}
-							}
-						}else{
-							if(parseInt(this._account.account.history[0].nonce) > fundObj.nonce){
-								console.log("borrar por nonce")
-								let stop = false;
-								for( let i=0; i<this.marketState.myFunds[this._account.account.address].length || !stop ; i++){
-									this.marketState.myFunds[this._account.account.address].splice(i,1);
-									stop = true;
-								}
-							}
-						}
-					});
-					let filePath =lescovexPath+"/."+this.fileName+".json";
-					fs.writeFileSync(filePath, JSON.stringify(this.marketState));
-				}
-				
-			}, 2000);		
-	}
-
-	/*updateOrders(newOrders, token, user){
-		
-		const newOrdersTransformed = {
-		  buys: newOrders.buys
-			.map(x => x = new Order(x, 'buy', token)
-			),
-		  sells: newOrders.sells
-		  .map(x => x = new Order(x, 'sell', token)
-		  ),
-		};
-		if (typeof(this.marketState.orders)=="undefined") this.marketState.orders = { buys: [], sells: [] };
-		if (typeof(this.marketState.myOrders)=="undefined") this.marketState.myOrders = { buys: [], sells: [] };
-		this.compareOrders(newOrdersTransformed, 'buys');
-		
-		this.compareOrders(newOrdersTransformed, 'sells');
-		this.marketState.orders = {
-		  sells: this.marketState.orders.sells.sort((a, b) =>
-			a.price - b.price || a.amountGet - b.amountGet),
-		  buys: this.marketState.orders.buys.sort((a, b) =>
-			b.price - a.price || b.amountGet - a.amountGet),
-		};
-		this.marketState.myOrders = {
-		  sells: this.marketState.myOrders.sells.sort((a, b) =>
-			a.price - b.price || a.amountGet - b.amountGet),
-		  buys: this.marketState.myOrders.buys.sort((a, b) =>
-			b.price - a.price || b.amountGet - a.amountGet),
-		};
-	};*/
-
-	updateTrades(newTrades, token, user) {
-		const newTradesTransformed = newTrades
-		.map(x => x = new Trade(x));
-		if (typeof(this.marketState.trades)=="undefined") this.marketState.trades = [];
-		if (typeof(this.marketState.myTrades)=="undefined") this.marketState.myTrades = [];
-		newTradesTransformed.forEach((x) => {
-			if (this.marketState.myTrades.findIndex(y => y.txHash === x.txHash)==-1) {
-				if (x.buyer.toLowerCase() === this._account.account.address.toLowerCase() ||
-				x.seller.toLowerCase() === this._account.account.address.toLowerCase()) {
-				this.marketState.myTrades.push(x);
-				}
-			};
-		});
-		this.marketState.myTrades = this.marketState.myTrades
-		  .sort((a, b) => b.date.getTime() -a.date.getTime() || b.amount - a.amount);	
-	}
 
 	async getLocalState(){
 		if(!fs.existsSync(lescovexPath)){
@@ -362,8 +366,8 @@ export class LSCXMarketService {
 		if(!fs.existsSync(filePath)){
 			let objNet = {
 			tikers:[],
+			tikersId: null,
 			orders: [],
-			lasId:null,
 			myOrders: {},
 			myTrades: {},
 			myFunds: {}
@@ -371,68 +375,62 @@ export class LSCXMarketService {
 			fs.writeFileSync(filePath , JSON.stringify(objNet));
 		}
 		let data = fs.readFileSync(filePath);
+		
 		this.marketState =  JSON.parse(data);
+		console.log("DATA", data, "MARKET", this.marketState)
 		await this.getTikers();
-		await this.getMarketOrders();
-		console.log(this.fileName, this.marketState);	
+		this.updateMyStateShow("myFunds");
+		this.updateMyStateShow("myOrders");
+		this.updateMyStateShow("myTrades");
 	}
 
 	async getTikers(){
-
-		console.log("ids")
-		let idsResult = await this._contract.callFunction(this.contractMarket,'tikersId',[]);
-		let i = this.marketState.tikers.length;
-		let ids = parseInt(idsResult.toString());
-		let tikers = this.marketState.tikers;
-		console.log(i, ids)
-		for(i ; i<ids; i++) {
-
-			let tiker = await this._contract.callFunction(this.contractMarket, 'tikers', [i]);
-			let tikerObj = {addr : tiker['0'], "name":tiker['1'],"decimals":tiker['2'].toNumber()}
-			tikers.push(tikerObj);
-			if(i== (ids-1)){
-				this.marketState.tikers = tikers;
-				this.saveState();
-			}
-		}	
+		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
+		if(tikersResult!=null){
+			tikersResult.tikers.forEach(x=>{
+				if(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1){
+					this.marketState.tikers.push(x);
+				}
+			})
+			this.marketState.tikersId = tikersResult.tikersId;
+			this.saveState();
+		}
 	}
 
+	/*ESPERANDO AL NUEVO STORAGE MARKET
 	async getMarketOrders(){
-		//let filePath =lescovexPath+"/."+this.fileName+".json";
-		console.log("ids")
-		let idsResult = await this._contract.callFunction(this.contractMarket,'id',[]);
-		let lastId = this.marketState.lastId;
-		let i = 0;
-		if(lastId!=null){
-			i = lastId+1;
-		}
-		let ids = parseInt(idsResult.toString());
-		console.log(i, ids)
-		for(i ; i<ids; i++) {
-			let orderResult = await this._contract.callFunction(this.contractMarket, 'ordersInfo', [i]);
-			let tokenAddr=(orderResult['1']!="0x0000000000000000000000000000000000000000") ? orderResult['1'] :orderResult['3'];
-			//get decimal tokens
-			let token = this.config.tokens.find(x=> x.addr == tokenAddr);
-			if(token == null){
-				token = this.marketState.tikers.find(x=> x.addr == tokenAddr);
-			}
-			if(token!= null) {
-				let order = new Order(orderResult, token.decimals);
-				this.marketState.orders.push(order);
-				if(order.user.toLowerCase() == this._account.account.address.toLowerCase()){
-					if(this._account.account.address in this.marketState.myOrders){
-						this.marketState.myOrders[this._account.account.address].push(order);
-					}else{
-						this.marketState.myOrders[this._account.account.address] = [order];
+		console.log("getOrders")
+		let ordersResult = await this._marketStorage.getOrders(this.marketState.ordersId);
+		if(ordersResult!=null){
+			ordersResult.orders.forEach(x=>{
+				if(x!= null && this.marketState.orders.findIndex(y => y.addr === x.addr)==-1){
+					let tokenAddr=(x.tokenGet!="0x0000000000000000000000000000000000000000") ? x.tokenGet :x.tokenGive;
+					//get decimal tokens
+					let token = this.config.tokens.find(x=> x.addr == tokenAddr);
+					if(token == null){
+					token = this.marketState.tikers.find(x=> x.addr == tokenAddr);
+					}
+					console.log(token)
+					if(token!= null) {
+						let order = new Order(x, token);
+						if(typeof(order.user)!= 'undefined'){
+							this.marketState.orders.push(order);
+							if(order.user.toLowerCase() == this._account.account.address.toLowerCase()){
+								if(this._account.account.address in this.marketState.myOrders){
+									this.marketState.myOrders[this._account.account.address].push(order);
+								}else{
+									this.marketState.myOrders[this._account.account.address] = [order];
+								}
+							}
+						} 
+							
 					}
 				}
-				if(i== (ids-1)){
-					this.marketState.lastId = i;
-					this.saveState();
-				}
-			}	
+			});
+			this.marketState.ordersId = ordersResult.ordersId;
+			this.saveState();
 		}	
-	}
+	}*/
 
 
 	saveState(){

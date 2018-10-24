@@ -13,15 +13,15 @@ import { AccountService } from '../../../services/account.service';
 })
 export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     @Input() history: any[];
-    @Input() address: "string";
-    @Input() action: "string";
+    @Input() address: string;
+    @Input() action: string;
 
     blockNumber;
     loading:boolean = false;
     totalPages:number = 0;
     page:number = 1;
     limit:number = 15;
-    interval;
+    interval= null;
 
     items: any[];
 
@@ -31,14 +31,22 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     ngOnInit(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        this.interval = setInterval(async()=>{
-            let blockNum = await this._web3.blockNumber();
-            
-            this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
-        },200);
+        console.log(history);
     }
     
     ngOnChanges(): void {
+        console.log("change");
+        if(this.action == "myOrders"){
+            this.interval = setInterval(async()=>{
+                let blockNum = await this._web3.blockNumber();
+                this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
+                this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber);                
+            },250); 
+        }
+        if(this.action != "myOrders" && this.interval != null){
+            clearInterval(this.interval);
+            this.interval= null;
+        }
         this.totalPages = Math.ceil(this.history.length/this.limit);
         if(this.page==1){
             this.getItmes();
@@ -47,7 +55,11 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        clearInterval(this.interval);
+        if(this.interval != null){
+            clearInterval(this.interval);
+            this.interval= null;
+        }
+        
     }
 
     openExternal(txHash){

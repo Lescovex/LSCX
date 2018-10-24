@@ -4,7 +4,7 @@
 <div class="text-center dist">
     <p *ngIf="data.deploy" class="dist black">Your contract {{this.data.contract.name}} ({{this.data.contract.symbol}}) has been deployed</p>
     <p class="black">You can add your token to the market</p>  
-    <p>Fees: {{(data.fees | converter:'fromWei':'Gwei') | number:'1.2-8':'en'}}Gwei</p>
+    <p>Fees: {{(data.fees | converter:'fromWei':'ether') | number:'1.2-8':'en'}}Eth</p>
 </div>
 <form class="dist" (ngSubmit)="confirm(form)" #form="ngForm">
         <div class="buttons clear">

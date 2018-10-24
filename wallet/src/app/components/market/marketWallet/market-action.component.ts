@@ -77,7 +77,7 @@ export class MarketActionComponent implements OnChanges{
                     nonce = await tx.getNonce();
                 }
                 let functionObj = new Fund(this.action, this.token.addr, form.controls.amount.value, nonce);             
-                this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "fund",functionObj);
+                this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myFunds",functionObj);
             }
         }
         

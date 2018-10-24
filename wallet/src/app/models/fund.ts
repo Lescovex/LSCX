@@ -1,5 +1,5 @@
 export class Fund {
-    hash: string;
+    txHash: string;
     kind: string;
     tokenAddr: string;
     amount: number;

@@ -5,6 +5,7 @@ import { ContractService } from '../../../services/contract.service';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
+import { Order } from '../../../models/order';
 
 
 @Component({
@@ -31,6 +32,9 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   async ngDoCheck() {
+    if(this.lastAction != this.action){
+      this.lastAction = this.action;
+    }
     if(this.currentToken != this._LSCXmarket.token.name){
       this.currentToken = this._LSCXmarket.token.name;
       Promise.resolve().then(() => { this.activeButton(this.action)});
@@ -78,11 +82,16 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyOrders(): any[] {
+    console.log("entra en getOrders");
     let orders =  this._LSCXmarket.state.myOrders;
-    orders.sort((a,b)=>{
-      return a.price - b.price || a.amountGet - b.amountGet
+    let myOrders: Order[] =[];
+    orders.map(order => {
+      myOrders.push(new Order(order, order.tokenDecimals));  
+    });
+    myOrders.sort((a,b)=>{
+      return a.price - b.price || parseInt(a.amountGet.toString()) -  parseInt(b.amountGet.toString());
     })
-    return orders;
+    return myOrders;
   }
 
   getMyFunds(): any[] {
