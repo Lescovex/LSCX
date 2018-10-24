@@ -1,5 +1,5 @@
 <div *ngIf="pendingTx else serviceStatus">
-    <div *ngIf="pendingTx == true" class="cardValues backWhite">
+    <div *ngIf="pendingTx" class="cardValues backWhite">
         <p class="title">General status: <span>{{checkResponseStatus}}</span></p>
         <p class="title">Pay IN status: <span>{{checkResponseIn}}</span></p>
         <p class="title">Pay OUT status: <span>{{checkResponseOut}}</span></p>
@@ -11,7 +11,7 @@
         </span>
         <button type="button" name="button" class="btn-black" (click)="backPendingTx()">Back</button>
     </div>
-    <div *ngIf="successTx == true" class="cardValues">
+    <div *ngIf="successTx" class="cardValues dist backWhite">
         <span class="block">
             <img src="~icons/correct_icon.svg">
             <h1 class="title inline">{{txtResponseIn}}</h1>
@@ -48,13 +48,6 @@
             <button type="button" name="button" class="btn-inverse" (click)="chipchapSwift()">Change!</button>
 
         </div>
-        <!--
-        <p *ngIf="orderCard==null" class="issues text-left left terms2">
-            Order your <span class="bold pointer lscx_color" (click)="orderCards()">Spark Mastercard</span>
-        </p>
-        -->
-
-
 
         <p *ngIf="orderCard==null" class="title issues text-right terms">
             <span class="terms2">
@@ -74,7 +67,7 @@
 </ng-template>
 
 <ng-template #detailTx>
-    <div *ngIf="detailTx == true">
+    <div *ngIf="detailTx">
         <div class="backWhite cardValues displayInput">
             <h1 class="">Transaction detail:</h1>
             <div>
