@@ -14,10 +14,10 @@ export class MarketWalletPage implements OnInit, OnDestroy {
     this.action = 'deposit';
   }
   async ngOnInit() {
-    this.interval = await this._LSCXmarket.balancesInterval();
+    await this._LSCXmarket.setBalancesInterval();
   }
   ngOnDestroy(){
-    clearInterval(this.interval)
+    this._LSCXmarket.clearBalancesInterval();
   }
   activeButton(action){
     this.action = action;

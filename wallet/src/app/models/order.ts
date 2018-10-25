@@ -8,11 +8,7 @@ export class Order {
     tokenGive: string;
     amountGive: BigNumber;
     expires: number;
-    nonce: number;
-    hash: string;
-    r;
-    s;
-    v;
+    nonce: number;s
     deleted: boolean;  
     amount: number;//token
     amountBase: number;//Eth
@@ -31,11 +27,8 @@ export class Order {
         this.amountGive = object.amountGive;
         this.expires = object.expires; 
 		this.nonce = object.nonce;
-        this.hash = object.hash;
         this.txHash = object.txHash;
-        this.v = object.v;
-		this.r = object.r;
-        this.s = object.s;
+
         if('show' in object) {
             this.show = object.show;
         } else{

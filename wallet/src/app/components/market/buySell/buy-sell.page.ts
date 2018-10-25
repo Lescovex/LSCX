@@ -11,6 +11,7 @@ import { ContractService } from '../../../services/contract.service';
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 
 import { Trade } from '../../../models/trade';
+import { Order } from '../../../models/order';
 
 @Component({
     selector: 'app-buy-sell',
@@ -26,24 +27,20 @@ export class BuySellPage implements OnInit {
     }
     private tokenAmount:number;
     private ethAmount: number;
-    protected buyInCross: string;
     protected submited: boolean = false;
-    private intervalBalances;
-    private intervalOrders;
     private loadingDialog;
     constructor(public _account:AccountService, private _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
     }
 
     async ngOnInit() {
-      this.intervalBalances = await this._LSCXmarket.balancesInterval();
-      this.getOrdersInterval();
-      //this._LSCXmarket.waitForMarket();
+      await this._LSCXmarket.setBalancesInterval();
+      await this._LSCXmarket.setStateOrdersInterval();
     }
 
     ngOnDestroy() {
-      clearInterval(this.intervalBalances);
-      clearInterval(this.intervalOrders);
+      this._LSCXmarket.clearBalancesInterval();
+      this._LSCXmarket.clearStateOrdersInterval();
     }
 
     async onSubmit(form) {
@@ -52,6 +49,7 @@ export class BuySellPage implements OnInit {
       if(form.invalid) return false;
       this.loadingDialog = this._dialog.openLoadingDialog();
       let price =new BigNumber(this.f.price);
+      console.log(price, price.toNumber())
       this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
       this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
       console.log(price, this.tokenAmount, this.ethAmount);
@@ -74,9 +72,9 @@ export class BuySellPage implements OnInit {
         for(let i=0; (i<matchs.length || testTrade); i++){
             order = matchs[i];
             console.log(matchs[i])
-            let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, order.v, order.r, order.s, amount, this._account.account.address];
+            let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  amount, this._account.account.address];
             let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
-            if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, order.v, order.r, order.s, amount];
+            if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount];
         }
 
         if(params.length>0){
@@ -101,6 +99,7 @@ export class BuySellPage implements OnInit {
       let digits = 3
       let fact= Math.pow(10,digits);
       this.f.total = (isNaN(total))? 0 : Math.floor(total*fact)/fact;
+      console.log(this.f.total)
     }
 
     async getCross(amount, price){
@@ -127,13 +126,29 @@ export class BuySellPage implements OnInit {
       } else if (this.action == "sell" && this.f.amount <= this._LSCXmarket.marketBalances.token){
           params = [ethAddr, this.ethAmount, this._LSCXmarket.token.addr, this.tokenAmount, block +this.f.expires, nonce]
       }
+      let order =  {
+        user: this._account.account.address,
+        tokenGet: params[0],
+        amountGet: params[1],
+        tokenGive: params[2],
+        amountGive: params[3],
+        expires: params[4],
+        nonce: params[5],
+      }
+      let orderObj = new Order(order, this._LSCXmarket.token.decimals);
+      let orderString = JSON.stringify(order);
+      orderString = orderString.replace(/"/g,"'");
+      //add _string
+      params.push(orderString);
+      //add _price
+      params.push(this._web3.web3.toWei(orderObj.price, 'ether'));
+      let data =  await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'order',params);
      
-      let hashParams : any[]= [this._LSCXmarket.contractMarket.address].concat(params);
       this.loadingDialog.close();
       let gasOpt = await this.openGasDialog(this._LSCXmarket.config.gasOrder);
         if(gasOpt != null){
-          let gas = gasOpt.gasLimit * gasOpt.gasPrice;
-          this.sendDialogService.openConfirmOrder(this._LSCXmarket.contractMarket.address, gas, "order", hashParams, gasOpt);
+          let tx = new RawTx(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
+          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myOrders",orderObj);
         }
     }
 
@@ -142,11 +157,11 @@ export class BuySellPage implements OnInit {
         this.loadingDialog.close();
         let gasOpt = await this.openGasDialog(this._LSCXmarket.config.gasTrade);
         if(gasOpt != null){
+          let nonce = await this.getNonce();
           let tx = new RawTx(this._account,this._LSCXmarket.contractMarket.address,new BigNumber(0),gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
-          let functionObj = new Trade(this.action, order.tokenGet, order.tokenGive, this.f.amount, this.f.total, this.f.price, this._account.account.address, order.user);             
-          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myTrades",functionObj);
-        }
-        
+          let tradeObj = new Trade(this.action, order.tokenGet, order.tokenGive, this.f.amount, this.f.total, this.f.price, this._account.account.address, order.user, nonce);             
+          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myTrades",tradeObj);
+        }  
     }
 
     async openGasDialog(gasLimit){
@@ -170,10 +185,6 @@ export class BuySellPage implements OnInit {
         nonce = parseInt(historyNonce)+1;
     }
     return nonce;
-  }
-
-  async getOrdersInterval(){
-    this.intervalOrders = this._LSCXmarket.stateOrdersInterval();
   }
 
 }

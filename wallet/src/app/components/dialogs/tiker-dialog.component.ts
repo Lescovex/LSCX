@@ -2,7 +2,7 @@ import { Component,  Inject, } from '@angular/core';
 import { MdDialogRef, MdDialog, MD_DIALOG_DATA} from '@angular/material';
 import { Web3 } from '../../services/web3.service';
 
-import { SendDialogComponent } from './send-dialog.component';
+import { SendMarketDialogComponent } from './send-market-dialog.component';
 import { GasDialogComponent } from './gas-dialog.component';
 import { RawTx } from '../../models/rawtx';
 import { LSCXMarketService } from '../../services/LSCX-market.service';
@@ -37,8 +37,14 @@ export class TikerDialogComponent {
         console.log("gas");
         let gasOption = await this.openGasDialog(300000);
         if(gasOption != null){
+            let nonce = await this.getNonce();
+            let tikerObj = {
+                addr: this.data.contract.address,
+                account: this._account.account.address,
+                nonce: nonce
+            }
             let tx = new RawTx(this._account,this._LSCXmarket.contractMarket.address,new BigNumber(this._LSCXmarket.fees.feeMarket.toString()),gasOption.gasLimit, gasOption.gasPrice, this._web3.network, data);
-            this.openSendDialog(tx);
+            this.openSendDialog(tx, tikerObj);
         }else{
             return false;
         } 
@@ -62,8 +68,8 @@ export class TikerDialogComponent {
         return null;
     }
 
-    openSendDialog(tx){
-        this.dialog.open(SendDialogComponent, {
+    openSendDialog(tx, tikerObj){
+        this.dialog.open(SendMarketDialogComponent, {
             width: '660px',
             height: '400px',
             data:{
@@ -73,9 +79,22 @@ export class TikerDialogComponent {
                 fees: tx.gas,
                 total: tx.cost,
                 action: 'send',
+                typeFunction: 'listTiker',
+                functionObj : tikerObj
             },
         });
-
     }
+
+    async getNonce(){
+        let nonce = await this._web3.getNonce(this._account.account.address);
+        //para ver ultimo nonce real
+        let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
+        let historyNonce =history[0].nonce;
+        console.log(history[0].nonce, historyNonce);
+        if(historyNonce>= nonce){
+            nonce = parseInt(historyNonce)+1;
+        }
+        return nonce;
+      }
 
 }

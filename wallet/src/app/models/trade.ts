@@ -11,8 +11,9 @@ export class Trade {
 	buyer: string;
 	seller: string;
 	show: boolean;
+	nonce: number;
 	
-    constructor(side, tokenGet, tokenGive, amount, total, price, myAccount, user ){
+    constructor(side, tokenGet, tokenGive, amount, total, price, myAccount, user, nonce ){
         this.txHash = null;
 		this.tokenAddr = (tokenGet != '0x0000000000000000000000000000000000000000')? tokenGet : tokenGive;
 		this.side = side;
@@ -22,6 +23,7 @@ export class Trade {
 		this.price = price;
 		this.buyer = (this.side == 'buy') ? myAccount : user;
 		this.seller = (this.side == 'sell') ? myAccount : user;
+		this.nonce = nonce;
 		this.show = false;
     }
 }

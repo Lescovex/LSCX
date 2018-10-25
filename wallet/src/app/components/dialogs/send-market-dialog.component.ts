@@ -75,7 +75,9 @@ export class SendMarketDialogComponent{
           pending = new PendingTx(sendResult.toString(),this.txs[i], this.data.to, this.data.amount, this._account.account.address);
           this._account.addPendingTx(pending);
           if(i==this.txs.length-1){
-            this._LSCXmarket.addMyState(this.data.functionObj, this.data.typeFunction);
+            console.log("antes de añadir State");
+            this.addToMarket();
+            console.log("despues de añadir State");
             this.setErroParamsWhenNotConfiramtion();
             loadingDialog.close();
             let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);
@@ -93,7 +95,9 @@ export class SendMarketDialogComponent{
           this._account.addPendingTx(pending);
 
           if(i==this.txs.length-1){
-            this._LSCXmarket.addMyState(this.data.functionObj, this.data.typeFunction);
+            console.log("antes de añadir State");
+            this.addToMarket();
+            console.log("despues de añadir State");
             this.title = "Your transaction has been sent";
             this.message = "You can see the progress in the global tab"
             //self.dialogRef.close();
@@ -136,5 +140,13 @@ export class SendMarketDialogComponent{
     this.title = "Unable to check transaction confirmation";
     this.message = "Something went wrong"
     this.error = "We can not check network confirmation, You can see the progress in the global tab";
+  }
+
+  addToMarket(){
+    if(this.data.typeFunciton=="listTiker"){
+      this._LSCXmarket.addTikerToList(this.data.functionObj);
+    }else{
+      this._LSCXmarket.addMyState(this.data.functionObj, this.data.typeFunction);
+    }
   }
 }

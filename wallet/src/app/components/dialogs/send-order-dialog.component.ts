@@ -40,8 +40,8 @@ export class SendOrderDialogComponent{
     let privateKey =  this.getPrivate(pass);
     if(privateKey == null) return false;
     console.log(this.data.params)
-    let order  = await this.getSignOrderParams(privateKey);
-    console.log(order)
+    //let order  = await this.getSignOrderParams(privateKey);
+    //console.log(order)
 
     let data =  await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'order',this.data.params);
     let tx = new RawTx(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), this.data.gasOpt.gasLimit, this.data.gasOpt.gasPrice, this._web3.network, data);
@@ -56,7 +56,7 @@ export class SendOrderDialogComponent{
       this.openDialogWhenError(sendResult.message);
       return false;
     }else{
-      order.txHash = sendResult;    
+      //order.txHash = sendResult;    
       let pending: any = null;
       let j = 0;
       let loadingDialog = null;
@@ -73,8 +73,8 @@ export class SendOrderDialogComponent{
         //Create pending object
         pending = new PendingTx(sendResult.toString(),tx.tx, this._LSCXmarket.contractMarket.address, 0, this._account.account.address);
         this._account.addPendingTx(pending);
-        console.log("FAILLLLL",order, 'myOrders');
-        this._LSCXmarket.addMyState(order, 'myOrders');
+        //console.log("FAILLLLL",order, 'myOrders');
+        //this._LSCXmarket.addMyState(order, 'myOrders');
         this.setErroParamsWhenNotConfiramtion();
         loadingDialog.close();
         let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);
@@ -89,8 +89,8 @@ export class SendOrderDialogComponent{
         }
         pending.timeStamp = Date.now()/1000;
         this._account.addPendingTx(pending);
-        console.log("BIENNN", order, 'myOrders');
-        this._LSCXmarket.addMyState(order, 'myOrders');
+        //console.log("BIENNN", order, 'myOrders');
+        //this._LSCXmarket.addMyState(order, 'myOrders');
         this.title = "Your transaction has been sent";
         this.message = "You can see the progress in the global tab"
         //self.dialogRef.close();
@@ -133,9 +133,7 @@ export class SendOrderDialogComponent{
     this.error = "We can not check network confirmation, You can see the progress in the global tab";
   }
 
-  async getSignOrderParams(privateKey): Promise<any>{
-    let hash = await this._LSCXmarket.orderHash(this.data.params)
-    let sign = this._LSCXmarket.signOrder(hash, privateKey);
+  async getOrderObject(privateKey): Promise<any>{
     this.data.params.splice(0,1);
     let order =  {
       user: this._account.account.address,
@@ -145,10 +143,6 @@ export class SendOrderDialogComponent{
       amountGive: this.data.params[3],
       expires: this.data.params[4],
       nonce: this.data.params[5],
-      hash: hash,
-      v: sign.v,
-      r: sign.r,
-      s: sign.s
     }
     let orderObj = new Order(order, this._LSCXmarket.token.decimals)
     let orderString = JSON.stringify(order);

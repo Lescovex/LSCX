@@ -19,7 +19,7 @@ export class TokensMarketListComponent {
   search(input?){
     let tokens = this._LSCXmarket.config.tokens.filter(x=> x.name!="ETH");
     tokens.sort((a, b)=> (a.name).localeCompare(b.name));
-    let LSCX_tokens = this._LSCXmarket.marketState.tikers;
+    let LSCX_tokens = this._LSCXmarket.marketState.tikers.filter(x=>x);
 
     LSCX_tokens.sort((a, b)=> (a.name).localeCompare(b.name));
     if(typeof(input)!="undefined"){
@@ -38,8 +38,23 @@ export class TokensMarketListComponent {
     this.LSCX_tokens = LSCX_tokens;
   }
   
-  selectToken(token){    
-    this._LSCXmarket.setToken(token);
+  async selectToken(token){
+    /*let balancesIntervalActive = (this._LSCXmarket.balancesInterval == null)? false : true;
+    let ordersIntervalActive = (this._LSCXmarket.stateOrdersInteval == null)? false : true;
+    let tikersIntervalActive = (this._LSCXmarket.tikersInterval == null)? false : true
+    this._LSCXmarket.clearBalancesInterval();
+    this._LSCXmarket.clearStateOrdersInterval();
+    this._LSCXmarket.clearTikersInterval();*/
+    await this._LSCXmarket.setToken(token);
+    /*if(balancesIntervalActive) {
+      this._LSCXmarket.setBalancesInterval();
+    }
+    if(ordersIntervalActive) {
+      this._LSCXmarket.setStateOrdersInterval();
+    }
+    if(tikersIntervalActive) {
+      this._LSCXmarket.setTikersInterval();
+    }*/
     this.show.emit(false);
     
   }
