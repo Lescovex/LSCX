@@ -185,13 +185,14 @@ contract LescovexMarket is SafeMath {
   event Deposit(address token, address user, uint amount, uint balance);
   event Withdraw(address token, address user, uint amount, uint balance);
 
-  function LescovexMarket(address admin_, address feeAccount_, address accountLevelsAddr_, uint feeMake_, uint feeTake_, uint feeRebate_, address storageAddr_) {
+  function LescovexMarket(address admin_, address feeAccount_, address accountLevelsAddr_, uint feeMake_, uint feeTake_, uint feeRebate_, uint feeMarket_, address storageAddr_) {
     admin = admin_;
     feeAccount = feeAccount_;
     accountLevelsAddr = accountLevelsAddr_;
     feeMake = feeMake_;
     feeTake = feeTake_;
     feeRebate = feeRebate_;
+    feeMarket = feeMarket_;
     storageAddr = storageAddr_;
   }
 

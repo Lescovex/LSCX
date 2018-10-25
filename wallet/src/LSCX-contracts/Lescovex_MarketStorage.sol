@@ -46,14 +46,15 @@ contract Lescovex_MarketStorage is Ownable {
     uint256 public tikersId = 0;
     uint256 public tikersCount = 0;
     
-    mapping(uint256 => string) public tikers;  
+    mapping(uint256 => string) public tikers;
+    
     mapping(address => tikerInfo) tikersInfo;
     
     struct tikerInfo{
         
         bytes32[] sellOrders; //show highest price
         bytes32[] buyOrders; //show lowest price
-        mapping(bytes32 => tikerOrders) orders; //id => churro order
+        mapping(bytes32 => tikerOrders) orders;
     }
     
     struct tikerOrders{
@@ -64,7 +65,6 @@ contract Lescovex_MarketStorage is Ownable {
         uint256 price;
     }
     
-    /* Initializes contract with initial supply tokens to the creator of the contract */
     constructor (string _symbol) public {
         symbol = _symbol;
     }
@@ -184,8 +184,7 @@ contract Lescovex_MarketStorage is Ownable {
             }else{
                 
                 for(uint i = 0; i < len; i++){
-                    referenceId = tikersInfo[tokenGive].sellOrders[i]; //id saved in this index
-
+                    referenceId = tikersInfo[tokenGive].sellOrders[i];
                     if(tikersInfo[tokenGive].orders[referenceId].price < _price){
                         //checks that id saved amount be lower than amountGive
                         if(mem > 0){
@@ -204,17 +203,14 @@ contract Lescovex_MarketStorage is Ownable {
         }
           
         if(len == 25){
-            //len = tikersInfo[tokenGive].sellOrders.length;
             referenceId = tikersInfo[tokenGive].sellOrders[len-1];
             if(tikersInfo[tokenGive].orders[referenceId].price >= _price){
                 revert();
             }else{
-                
                 for(uint j = 0; j < len; j++){
-                    referenceId = tikersInfo[tokenGive].sellOrders[j]; //id saved in this index
+                    referenceId = tikersInfo[tokenGive].sellOrders[j];
  
                     if(tikersInfo[tokenGive].orders[referenceId].price < _price){
-                        //checks that id saved amount be lower than amountGive
                         if(mem > 0){
                             tikersInfo[tokenGive].sellOrders[j] = mem;
                         }else{
@@ -228,72 +224,111 @@ contract Lescovex_MarketStorage is Ownable {
         }
     }
     
-    function buy(address tokenGet, address tokenGive,  string _string, uint256 _price, uint _expires, bytes32 _id) internal {
+        function buy(address tokenGet, address tokenGive,  string _string, uint256 _price, uint _expires, bytes32 _id) internal {
 
-        uint256 len;
-        bytes32 referenceId;
-        bytes32 mem = 0;
+          uint256 len;
+          bytes32 referenceId;
+          bytes32 mem = 0;
           
-        tikersInfo[tokenGet].orders[_id].tokenGet = tokenGet;
-        tikersInfo[tokenGet].orders[_id].tokenGive = tokenGive;
-        tikersInfo[tokenGet].orders[_id].order = _string;
-        tikersInfo[tokenGet].orders[_id].price = _price;
-        tikersInfo[tokenGet].orders[_id].expires = _expires;
+          tikersInfo[tokenGet].orders[_id].tokenGet = tokenGet;
+          tikersInfo[tokenGet].orders[_id].tokenGive = tokenGive;
+          tikersInfo[tokenGet].orders[_id].order = _string;
+          tikersInfo[tokenGet].orders[_id].price = _price;
+          tikersInfo[tokenGet].orders[_id].expires = _expires;
           
-        len = tikersInfo[tokenGet].buyOrders.length;
-        if(len == 0){
-            tikersInfo[tokenGet].buyOrders.push(_id);
-        }
+          len = tikersInfo[tokenGet].buyOrders.length;
+          if(len == 0){
+              tikersInfo[tokenGet].buyOrders.push(_id);
+          }
           
-        if(len > 0 && len < 25){
-            //len = tikersInfo[tokenGet].buyOrders.length;
-            referenceId = tikersInfo[tokenGet].buyOrders[len-1];
-            if(tikersInfo[tokenGet].orders[referenceId].price <= _price){
-                tikersInfo[tokenGet].buyOrders.push(_id);
-            }else{
-
-                for(uint k=0; k < len; k++){
-                    referenceId = tikersInfo[tokenGet].buyOrders[k]; //id saved in this index
-                      
-                    if(tikersInfo[tokenGet].orders[referenceId].price > _price){
-                        //checks that id saved amount be higher than amountGive
-                        if(mem > 0){
+          if(len > 0 && len < 25){
+              referenceId = tikersInfo[tokenGet].buyOrders[len-1];
+              if(tikersInfo[tokenGet].orders[referenceId].price <= _price){
+                  tikersInfo[tokenGet].buyOrders.push(_id);
+              }else{
+                  for(uint k=0; k < len; k++){
+                      referenceId = tikersInfo[tokenGet].buyOrders[k];
+                      if(tikersInfo[tokenGet].orders[referenceId].price > _price){
+                          //checks that id saved amount be higher than amountGive
+                          if(mem > 0){
                             tikersInfo[tokenGet].buyOrders[k] = mem;
-                        }else{
+                          }else{
                             tikersInfo[tokenGet].buyOrders[k] = _id;
-                        }
-                        mem = referenceId;                          
-                        _price = tikersInfo[tokenGet].orders[mem].price;
-                    }
-                }
-                if(mem > 0){
-                    tikersInfo[tokenGet].buyOrders.push(mem);
-                }
-            }
-        }
+                          }
+                          mem = referenceId;                          
+                          _price = tikersInfo[tokenGet].orders[mem].price;
+                      }
+                  }
+                  if(mem > 0){
+                      tikersInfo[tokenGet].buyOrders.push(mem);
+                  }
+              }
+          }
           
-        if(len == 25){
-            referenceId = tikersInfo[tokenGet].buyOrders[len-1];
-            if(tikersInfo[tokenGet].orders[referenceId].price <= _price){
-                revert();
-            }else{
+          if(len == 25){
+              referenceId = tikersInfo[tokenGet].buyOrders[len-1];
+              if(tikersInfo[tokenGet].orders[referenceId].price <= _price){
+                  revert();
+              }else{
                   
-                for(uint l=0; l < len; l++){
-                    referenceId = tikersInfo[tokenGet].buyOrders[l]; //id saved in this index
-                      
-                    if(tikersInfo[tokenGet].orders[referenceId].price > _price){
-                        //checks that id saved amount be higher than amountGive
-                        if(mem > 0){
+                  for(uint l=0; l < len; l++){
+                      referenceId = tikersInfo[tokenGet].buyOrders[l];
+                      if(tikersInfo[tokenGet].orders[referenceId].price > _price){
+                          if(mem > 0){
                             tikersInfo[tokenGet].buyOrders[l] = mem;
-                        }else{
+                          }else{
                             tikersInfo[tokenGet].buyOrders[l] = _id;
-                        }
-                        mem = referenceId;
-                        _price = tikersInfo[tokenGet].orders[mem].price;
-                    }
+                          }
+                          mem = referenceId;
+                          _price = tikersInfo[tokenGet].orders[mem].price;
+                      }
+                  }
+              }
+          }
+    }
+    
+    function getBuyLength(address token) public view returns(uint){
+        return tikersInfo[token].buyOrders.length;
+    }
+    
+    function getSellLength(address token) public view returns(uint){
+        return tikersInfo[token].sellOrders.length;
+    }
+    
+    function checkStoredBuys(address _token) internal{
+        uint len = tikersInfo[_token].buyOrders.length;
+        bytes32 referenceId;
+        if(len > 0){
+            for(uint index = 0; index < len; index++) {
+                referenceId = tikersInfo[_token].buyOrders[index];
+                if(tikersInfo[_token].orders[referenceId].expires > block.number) {
+                    arr.push(referenceId);
                 }
             }
-        }
+                
+            delete tikersInfo[_token].buyOrders;
+            tikersInfo[_token].buyOrders = arr;
+            
+            delete arr;
+          }
+    }
+    
+    function checkStoredSells(address _token) internal{
+        uint len = tikersInfo[_token].sellOrders.length;
+        bytes32 referenceId;
+        if(len > 0){           
+            for(uint index = 0; index < len; index++) {
+                referenceId = tikersInfo[_token].sellOrders[index];
+                if(tikersInfo[_token].orders[referenceId].expires > block.number) {
+                    arr.push(referenceId);
+                }
+            }
+                
+            delete tikersInfo[_token].sellOrders;
+            tikersInfo[_token].sellOrders = arr;
+            
+            delete arr;
+          }
     }
 
     function deleteOrders(address _tokenGet, address _tokenGive, bytes32 _hash) public {
@@ -326,7 +361,6 @@ contract Lescovex_MarketStorage is Ownable {
         }
     }
     
-    
     function deleteBuyOrders(address _token, bytes32 _hash) internal{
         uint len = tikersInfo[_token].buyOrders.length;
         bytes32 referenceId;
@@ -344,51 +378,4 @@ contract Lescovex_MarketStorage is Ownable {
             delete arr;
         }
     }
-    
-    function getBuyLength(address token) public view returns(uint){
-        return tikersInfo[token].buyOrders.length;
-    }
-
-    function getSellLength(address token) public view returns(uint){
-        return tikersInfo[token].sellOrders.length;
-    }
-    
-    function checkStoredBuys(address _token) internal{
-        uint len = tikersInfo[_token].buyOrders.length;
-        bytes32 referenceId;
-        if(len > 0){
-            
-            for(uint index = 0; index < len; index++) {
-                referenceId = tikersInfo[_token].buyOrders[index];
-                if(tikersInfo[_token].orders[referenceId].expires > block.number) {
-                    arr.push(referenceId);
-                }
-            }
-                
-            delete tikersInfo[_token].buyOrders;
-            tikersInfo[_token].buyOrders = arr;
-            
-            delete arr;
-          }
-    }
-    
-    function checkStoredSells(address _token) internal{
-        uint len = tikersInfo[_token].sellOrders.length;
-        bytes32 referenceId;
-        if(len > 0){
-            
-            for(uint index = 0; index < len; index++) {
-                referenceId = tikersInfo[_token].sellOrders[index];
-                if(tikersInfo[_token].orders[referenceId].expires > block.number) {
-                    arr.push(referenceId);
-                }
-            }
-                
-            delete tikersInfo[_token].sellOrders;
-            tikersInfo[_token].sellOrders = arr;
-            
-            delete arr;
-          }
-    }
-    
 }
