@@ -1,9 +1,25 @@
-<div class="dist clear">
-    <button [ngClass]="(action == 'buy') ? 'btn-solid':'btn-inverse'" (click)="activeButton('buy')">Buy order</button>
-    <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
+<div class="dist">
+    <div class="half left">
+        <button [ngClass]="(action == 'buy') ? 'btn-solid':'btn-inverse'" (click)="activeButton('buy')">Buy order</button>
+        <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
+    </div>
+    <div class="half right best-prices">
+        <p class="half left">
+            <span class="title">Best Sell: </span>
+            <span *ngIf="_LSCXmarket.state.orders.sells.length>0" class="red">{{_LSCXmarket.state.orders.sells[0].price}}</span>
+            <span *ngIf="_LSCXmarket.state.orders.sells.length==0">----</span>
+        </p>
+        <p class="half right">
+            <span class="black">Best Buy: </span>
+            <span *ngIf="_LSCXmarket.state.orders.buys.length>0" class="green">{{_LSCXmarket.state.orders.buys[0].price}}</span>
+            <span *ngIf="_LSCXmarket.state.orders.buys.length==0">----</span>
+        </p>
+    </div>
 </div>
-<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="dist">
-    <div>
+<div class="clear"></div>
+
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist">
+    <div class="dist">
         <div class="half left">
             <label class="title" for="amount">Amount to {{action}}</label>
             <div class="input-container" [ngClass]="{'error': submited  && (amount.invalid || eth.invalid)}">

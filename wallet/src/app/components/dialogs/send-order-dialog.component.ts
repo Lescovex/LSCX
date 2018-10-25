@@ -73,6 +73,7 @@ export class SendOrderDialogComponent{
         //Create pending object
         pending = new PendingTx(sendResult.toString(),tx.tx, this._LSCXmarket.contractMarket.address, 0, this._account.account.address);
         this._account.addPendingTx(pending);
+        console.log("FAILLLLL",order, 'myOrders');
         this._LSCXmarket.addMyState(order, 'myOrders');
         this.setErroParamsWhenNotConfiramtion();
         loadingDialog.close();
@@ -88,6 +89,7 @@ export class SendOrderDialogComponent{
         }
         pending.timeStamp = Date.now()/1000;
         this._account.addPendingTx(pending);
+        console.log("BIENNN", order, 'myOrders');
         this._LSCXmarket.addMyState(order, 'myOrders');
         this.title = "Your transaction has been sent";
         this.message = "You can see the progress in the global tab"

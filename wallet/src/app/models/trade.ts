@@ -12,16 +12,16 @@ export class Trade {
 	seller: string;
 	show: boolean;
 	
-    constructor(object){
-        this.txHash = object.txHash;
-		this.tokenAddr = object.tokenAddr;
-		this.side = object.side;
+    constructor(side, tokenGet, tokenGive, amount, total, price, myAccount, user ){
+        this.txHash = null;
+		this.tokenAddr = (tokenGet != '0x0000000000000000000000000000000000000000')? tokenGet : tokenGive;
+		this.side = side;
 		this.date = Date.now();
-		this.amount = Number(object.amount);
-		this.amountBase = Number(object.amountBase);
-		this.price = Number(object.price);
-		this.buyer = object.buyer;
-		this.seller = object.seller
+		this.amount = amount;
+		this.amountBase =total;
+		this.price = price;
+		this.buyer = (this.side == 'buy') ? myAccount : user;
+		this.seller = (this.side == 'sell') ? myAccount : user;
 		this.show = false;
     }
 }

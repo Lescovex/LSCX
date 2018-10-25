@@ -13,8 +13,8 @@
         <tbody *ngFor="let trade of history, index as i" >
             <tr>
                 <td class="pointer" (click)="openExternal(trade.txHash)">{{trade.txHash}}</td>
-                <td *ngIf="trade.buyer.toLowerCase() == address.toLowerCase()"><p class="green">Buy Order</p></td>
-                <td *ngIf="trade.seller.toLowerCase() == address.toLowerCase()"><p class="red">Sell Order</p></td>
+                <td *ngIf="trade.side == 'buy'"><p class="green">Buy Order</p></td>
+                <td *ngIf="trade.side == 'sell'"><p class="red">Sell Order</p></td>
                 <td>{{trade.amount}}</td>
                 <td>{{trade.amountBase}}</td>
                 <td>{{trade.price}}</td>
@@ -32,8 +32,8 @@
         </thead>
         <tr *ngIf="history.length == 0"><td colspan="3" class="collapse">There are no orders here</td></tr>
         <tbody *ngFor="let order of history, index as i" >
-            <tr *ngIf="blockNumber>= order.expires">
-                <td><p [ngClass]="(order.tokenGive=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p></td>
+            <tr *ngIf="blockNumber<= order.expires">
+                <td><p [ngClass]="(order.tokenGet=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p></td>
                 <td *ngIf ="order.tokenGet=='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amountBase | number:"1.8-8":"en"}}</td>
                 <td *ngIf ="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
                 <td *ngIf ="blockNumber != null">{{order.expires-blockNumber}}</td>

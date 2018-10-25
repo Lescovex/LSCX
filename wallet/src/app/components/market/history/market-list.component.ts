@@ -31,7 +31,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     ngOnInit(): void {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        console.log(history);
+        console.log("history", this.history);
     }
     
     ngOnChanges(): void {

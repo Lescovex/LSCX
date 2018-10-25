@@ -237,6 +237,13 @@ export class LSCXMarketService {
 		},2000)
 	}
 
+	stateOrdersInterval(){
+		return setInterval(()=>{
+			  this.setSells();
+			  this.setBuys();
+		},1000);
+	}
+
 	async getTokenState(){	
 		if(this._account.account.address in this.marketState.myFunds){
 			this.state.myFunds = this.marketState.myFunds[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr || x.tokenAddr == this.config.tokens[0].addr);
@@ -249,21 +256,24 @@ export class LSCXMarketService {
 			this.state.myOrders=[];
 		}
 		if(this._account.account.address in this.marketState.myTrades){
-			this.state.myTrades = this.marketState.myTrades[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
+			this.state.myTrades = this.marketState.myTrades[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr);
 		} else {
 			this.state.myTrades = [];
 		}
 		this.state.orders = {};
 		await this.setBuys();
 		await this.setSells();
-		console.log("token state", this.state);
+		console.log(this.state.myTrades, this.marketState.myTrades);
+		console.log(this.state.myOrders, this.marketState.myOrders);
 	}
 
 	async setBuys() {
 		this.state.orders.buys = await this._marketStorage.getBuyOrders(this.token);
+		console.log("BUYS",this.state.orders.buys)
 	}
 	async setSells() {
 		this.state.orders.sells = await this._marketStorage.getSellOrders(this.token);
+		console.log("SELLS",this.state.orders.sells)
 	}
 	
 	addMyState(obj: any, stateName: string){
@@ -326,10 +336,8 @@ export class LSCXMarketService {
 		if(this._account.account.address in this.marketState.myOrders){
 			let myOrdersAddress = this.marketState.myOrders[this._account.account.address]
 			myOrders = this.state.myOrders.filter(order=> order.show && !order.deleted);
-			console.log()
 			myOrders.forEach(async order=>{
 				order = new Order(order, order.tokenDecimals);
-				console.log("block",blockNumber,"-", order.expires, blockNumber > order.expires)
 				if(blockNumber > order.expires){
 					console.log("deleted");
 					order.deleted = true;

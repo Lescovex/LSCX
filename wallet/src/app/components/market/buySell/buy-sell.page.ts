@@ -10,6 +10,8 @@ import { BigNumber } from 'bignumber.js';
 import { ContractService } from '../../../services/contract.service';
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 
+import { Trade } from '../../../models/trade';
+
 @Component({
     selector: 'app-buy-sell',
     templateUrl: './buy-sell.page.html',
@@ -26,19 +28,22 @@ export class BuySellPage implements OnInit {
     private ethAmount: number;
     protected buyInCross: string;
     protected submited: boolean = false;
-    private interval;
+    private intervalBalances;
+    private intervalOrders;
     private loadingDialog;
     constructor(public _account:AccountService, private _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
     }
 
     async ngOnInit() {
-      this.interval = await this._LSCXmarket.balancesInterval();
+      this.intervalBalances = await this._LSCXmarket.balancesInterval();
+      this.getOrdersInterval();
       //this._LSCXmarket.waitForMarket();
     }
 
     ngOnDestroy() {
-      clearInterval(this.interval)
+      clearInterval(this.intervalBalances);
+      clearInterval(this.intervalOrders);
     }
 
     async onSubmit(form) {
@@ -57,29 +62,34 @@ export class BuySellPage implements OnInit {
         let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
         return false
       }
-      /*
-      let amount = (this.action == 'buy')? ethAmount : tokenAmount;
-      let matchs = this.getCross(amount, price);
       
+      let amountCross = (this.action == 'buy')? this.f.total : this.f.amount;
+      let matchs = await this.getCross(amountCross, this.f.price);
+      console.log(matchs);
 
       if(matchs.length>0){
         let testTrade = false;
         let params = [];
-          for(let i=0; (i<matchs.length || testTrade); i++){
-            let order = matchs[0]
-            let testParams = [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.user, order.v, order.r, order.s, amount, this._account.account.address];
+        let order: any;
+        for(let i=0; (i<matchs.length || testTrade); i++){
+            order = matchs[i];
+            console.log(matchs[i])
+            let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, order.v, order.r, order.s, amount, this._account.account.address];
             let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
-            if(testTrade) params = [order.tokenGet,order.amountGet.toNumber(), order.tokenGive, order.amountGive.toNumber(), order.expires, order.nonce, order.user, order.v, order.r, order.s, amount];
-          }
-          if(params.length>0){
-            this.trade(params)
-          }else{
+            if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, order.v, order.r, order.s, amount];
+        }
+
+        if(params.length>0){
+          console.log("trade", order)
+            this.trade(params, order);
+        }else{
+          console.log("order despues de match")
             this.order();
           }
       }else{
+          console.log("order")
           this.order();
-      }*/
-      this.order();
+      }
     }
 
     activeButton(action) {
@@ -93,28 +103,17 @@ export class BuySellPage implements OnInit {
       this.f.total = (isNaN(total))? 0 : Math.floor(total*fact)/fact;
     }
 
-    setInCross() {
-      if(this.f.total != 0 && this._LSCXmarket.marketState.orders && this._LSCXmarket.marketState.orders.sells && this._LSCXmarket.marketState.orders.sells.length > 0) {
-        var bestSell = this._LSCXmarket.marketState.orders.sells[0].price;
-        this.buyInCross = (this.f.price !== 0 && this.f.price > 1.5 * bestSell) ? "Your order is in cross with the best sell order in the order book (price = " + bestSell + ")." : "";
-      }
-    }
-
-    getCross(amountGet, price){
+    async getCross(amount, price){
+      let blockNumber = await this._web3.blockNumber();
+      let ordersToCross =[];
       if(this.action == 'buy'){
-        if("sells" in this._LSCXmarket.marketState.orders){
-          return this._LSCXmarket.marketState.orders.sells.filter(x=>x.availableVolumeBase>=amountGet && parseFloat(x.price)==price);
-        }else{
-          return [];
-        }
+        ordersToCross = this._LSCXmarket.state.orders.sells;
       }else{
-        if("buys" in this._LSCXmarket.marketState.orders){
-          return this._LSCXmarket.marketState.orders.buys.filter(x=>x.availableVolume>=amountGet && parseFloat(x.price)==price);
-        }else{
-          return [];
-        }
-        
+        ordersToCross = this._LSCXmarket.state.orders.buys;
       }
+
+      return ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber);
+
     }
 
     async order(){
@@ -123,7 +122,6 @@ export class BuySellPage implements OnInit {
       let ethAddr =  this._LSCXmarket.config.tokens[0].addr;
       let nonce = await this.getNonce();
       let params: any[];
-      console.log(this._LSCXmarket.marketBalances.eth, this._LSCXmarket.marketBalances.token);
       if(this.action == "buy" && this.f.total <= this._LSCXmarket.marketBalances.eth){
           params = [this._LSCXmarket.token.addr, this.tokenAmount, ethAddr, this.ethAmount, block + this.f.expires, nonce]
       } else if (this.action == "sell" && this.f.amount <= this._LSCXmarket.marketBalances.token){
@@ -131,7 +129,6 @@ export class BuySellPage implements OnInit {
       }
      
       let hashParams : any[]= [this._LSCXmarket.contractMarket.address].concat(params);
-      console.log("Buy/sell", params, hashParams);
       this.loadingDialog.close();
       let gasOpt = await this.openGasDialog(this._LSCXmarket.config.gasOrder);
         if(gasOpt != null){
@@ -140,13 +137,14 @@ export class BuySellPage implements OnInit {
         }
     }
 
-    async trade(params){
+    async trade(params, order){
         let data = await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'trade',params);
         this.loadingDialog.close();
         let gasOpt = await this.openGasDialog(this._LSCXmarket.config.gasTrade);
         if(gasOpt != null){
           let tx = new RawTx(this._account,this._LSCXmarket.contractMarket.address,new BigNumber(0),gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
-          this.sendDialogService.openConfirmSend(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount,tx.gas, tx.cost, "send");
+          let functionObj = new Trade(this.action, order.tokenGet, order.tokenGive, this.f.amount, this.f.total, this.f.price, this._account.account.address, order.user);             
+          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myTrades",functionObj);
         }
         
     }
@@ -172,6 +170,10 @@ export class BuySellPage implements OnInit {
         nonce = parseInt(historyNonce)+1;
     }
     return nonce;
+  }
+
+  async getOrdersInterval(){
+    this.intervalOrders = this._LSCXmarket.stateOrdersInterval();
   }
 
 }
