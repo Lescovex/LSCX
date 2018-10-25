@@ -30,7 +30,7 @@
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256[]"
+				"type": "bytes32[]"
 			}
 		],
 		"payable": false,
@@ -109,67 +109,6 @@
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "tokenGet",
-				"type": "address"
-			},
-			{
-				"name": "tokenGive",
-				"type": "address"
-			},
-			{
-				"name": "_string",
-				"type": "string"
-			},
-			{
-				"name": "_price",
-				"type": "uint256"
-			},
-			{
-				"name": "_expires",
-				"type": "uint256"
-			}
-		],
-		"name": "setOrders",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "token",
-				"type": "address"
-			},
-			{
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "getOrderInfo",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			},
-			{
-				"name": "",
-				"type": "address"
-			},
-			{
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"constant": true,
 		"inputs": [
 			{
@@ -206,11 +145,67 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_tokenGet",
+				"type": "address"
+			},
+			{
+				"name": "_tokenGive",
+				"type": "address"
+			},
+			{
+				"name": "_hash",
+				"type": "bytes32"
+			}
+		],
+		"name": "deleteOrders",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "_symbol",
 				"type": "string"
 			}
 		],
 		"name": "changeSymbol",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "tokenGet",
+				"type": "address"
+			},
+			{
+				"name": "tokenGive",
+				"type": "address"
+			},
+			{
+				"name": "_string",
+				"type": "string"
+			},
+			{
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"name": "_expires",
+				"type": "uint256"
+			},
+			{
+				"name": "_hash",
+				"type": "bytes32"
+			}
+		],
+		"name": "setOrders",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -224,6 +219,37 @@
 			{
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "token",
+				"type": "address"
+			},
+			{
+				"name": "id",
+				"type": "bytes32"
+			}
+		],
+		"name": "getOrderInfo",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "string"
 			}
 		],
 		"payable": false,
@@ -256,7 +282,7 @@
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256[]"
+				"type": "bytes32[]"
 			}
 		],
 		"payable": false,
@@ -285,33 +311,6 @@
 			{
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "tikersInfo",
-		"outputs": [
-			{
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"name": "ordersToSell",
-				"type": "string"
-			},
-			{
-				"name": "ordersToBuy",
-				"type": "string"
 			}
 		],
 		"payable": false,

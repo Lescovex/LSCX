@@ -177,6 +177,8 @@ export class CreditCardPage implements OnInit {
     }
 
     setTxInfo(tx, addr, q, t, to, s, scl){
+        console.log("entras aqui????");
+        
         this.tx_id = tx;
         this.ethAddr = addr;
         this.amountWei = q;
@@ -186,6 +188,7 @@ export class CreditCardPage implements OnInit {
         
         this.fiatAmount = s;
 
+        this.serviceStatus = true;
         this.inputData = null;
         this.detailTx = true;
         this.confirmTx = true;
@@ -232,7 +235,7 @@ export class CreditCardPage implements OnInit {
                 let amountX = this.inputAmount*100;
                 
                 let userData = {"amount":amountX,"card_id":this.inputCardId};
-
+                
                 return new Promise((resolve, reject) => {
                     let headers = new Headers();
                     headers.append('Content-Type', 'application/json');
@@ -248,6 +251,7 @@ export class CreditCardPage implements OnInit {
                         this.setTxInfo(txId,payIn.address, payIn.amount, payIn.expires_in, payOut.card_id, payOut.amount, payIn.scale);
                                         
                     }, err =>{
+                        console.log("response error", err);
                         
                         reject(err);
                         this.loadingD.close();
@@ -278,6 +282,7 @@ export class CreditCardPage implements OnInit {
             
             this.http.get(this.url +  path,  {headers: headers}).subscribe(res =>{
                 resolve(res.json());
+                console.log("response del status",res);
                 
                 let response = res.json();
 
