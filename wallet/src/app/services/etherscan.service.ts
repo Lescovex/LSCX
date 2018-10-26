@@ -55,7 +55,6 @@ export class EtherscanService {
 		
 		let history = historyResp.result;
 		let intHistory  = internalResp.result;
-		//console.log("internal History",  intHistory);
 		
 		for(let i =0; i<intHistory.length; i++){
 			history.push(intHistory[i]);

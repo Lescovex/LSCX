@@ -291,6 +291,13 @@ header>img {
     right: 30px;
 }
 
+.bottomL {
+    position: fixed;
+    bottom: 30px;
+    float: left;
+    /*left: 330px;*/
+}
+
 .main-content {
     flex-grow: 1;
     background-color: #f8f8f8;
@@ -643,6 +650,23 @@ p.error {
     text-decoration: none;
 }
 
+.btn-solid-black {
+    height: 44px;
+    padding: 0 40px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: "Lato-Bold";
+    font-size: 11pt;
+    color: #ffffff;
+    border: 2px solid transparent;
+    background-color: #000000;
+    text-decoration: none;
+}
+
+.btn-solid-black:hover {
+    background-color: #272d33;
+}
+
 .btn-black:hover,
 .btn-contract-black:hover {
     color: #fff;
@@ -772,6 +796,14 @@ p.error {
 .auto-h {
     position: fixed;
     bottom: 50px;
+    top: 220px;
+    left: 270px;
+    right: 15px;
+}
+
+.auto-h-sett {
+    position: fixed;
+    bottom: 100px;
     top: 220px;
     left: 270px;
     right: 15px;

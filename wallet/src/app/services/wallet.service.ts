@@ -84,8 +84,6 @@ export class WalletService {
       address :  wallet.getAddressString(),
       name : name
     }
-    console.log("add object",acc);
-    
     let fileName = wallet.getV3Filename();
   
     try{
@@ -102,7 +100,6 @@ export class WalletService {
     }else{
       let  acca= JSON.parse(localStorage.getItem('ethAcc'));
       let err = "";
-      console.log("accounts stored",acca);
       
       for (let i = 0; i < acca.length; i++) {
         if(acca[i].address == acc.address){

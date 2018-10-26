@@ -3,6 +3,7 @@ import { Web3 } from '../../services/web3.service';
 import { EtherscanService } from '../../services/etherscan.service';
 import { AccountService } from '../../services/account.service';
 import { DialogService } from '../../services/dialog.service';
+import { Router } from '@angular/router';
 
 const shell = require('electron').shell;
 
@@ -15,7 +16,7 @@ export class SettingsComponent implements OnInit, DoCheck{
   lang = 'en';
   showErrorDialog = false;
   etherscanApiKey: string;
-  constructor(private _scan: EtherscanService, private _account: AccountService, private _dialog: DialogService) {
+  constructor(private _scan: EtherscanService, private _account: AccountService, private _dialog: DialogService, private router: Router) {
     this.etherscanApiKey = (_scan.apikey=="")? null: _scan.apikey;
   }
 
@@ -52,5 +53,13 @@ export class SettingsComponent implements OnInit, DoCheck{
 
   openUrl(url){
     shell.openExternal(url);
+  }
+
+  accept(){
+    if(this.etherscanApiKey != null && this.etherscanApiKey != ""){
+      this.router.navigate(['/wallet/global']);
+    }else{
+      return false;
+    }
   }
 }
