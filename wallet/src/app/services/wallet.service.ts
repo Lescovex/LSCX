@@ -78,13 +78,16 @@ export class WalletService {
   }
   
   addAccount(wallet, pass, name){
+    
     let acc = {
       v3 : wallet.toV3(pass),
       address :  wallet.getAddressString(),
       name : name
     }
-
+    console.log("add object",acc);
+    
     let fileName = wallet.getV3Filename();
+  
     try{
       this.writeAccountLocally(acc.v3, fileName)
     }catch(e){
@@ -98,10 +101,23 @@ export class WalletService {
   
     }else{
       let  acca= JSON.parse(localStorage.getItem('ethAcc'));
-      acca.push(acc);
-      localStorage.setItem('ethAcc',JSON.stringify(acca));
+      let err = "";
+      console.log("accounts stored",acca);
+      
+      for (let i = 0; i < acca.length; i++) {
+        if(acca[i].address == acc.address){
+          err = "This account already exists in your wallet";
+        }
+      }
+      if(err != ""){
+        throw new Error(err);  
+      }else{
+        acca.push(acc);
+        localStorage.setItem('ethAcc',JSON.stringify(acca));
+      }
+      
     }  
-    this.getWallet();//To refresh wallet
+    this.getWallet();
   }
 
   delete(addr):void{

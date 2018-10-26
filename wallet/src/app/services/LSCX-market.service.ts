@@ -52,7 +52,7 @@ export class LSCXMarketService {
 
 	setCongif() {
 		let file = "";
-		this.config= require('../../libs/market-lib/config/'+this.fileName+'.json');
+		this.config= require('../../libs/market-lib/config/'+this.fileName+'.json');		
 	}
 
 	getAbi(file) {

@@ -17,9 +17,9 @@ export class LSCXMarketStorageService {
 
     setContract() {
         let ADDRESSES = {
-			1:"0x7b74ad8391111b3d71d95fef3b32b333f1f5d6c0",
-			3:"0x338692dfa7a3c6455b25daa831229a949f320844",
-			42: "0x82bab2fb76401fe491b33c417e20114733f2b420"
+			1:"0x1759eb1272c5fbb6dfb2272665c375d04c82e347",
+			3:"0x6b441859b6f92f5aed832f2ece858b156c286e4d",
+			42: "0x4d4d6b7f76318c5c5ecb654111dec8fb2d18834f"
 		}
 		let address = ADDRESSES[this._web3.network.chain]
 		this.contract = this._contract.contractInstance(this.getAbi(), address);

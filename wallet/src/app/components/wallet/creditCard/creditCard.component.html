@@ -1,10 +1,10 @@
 <div *ngIf="pendingTx else serviceStatus">
     <div *ngIf="pendingTx" class="cardValues backWhite">
-        <p class="title">General status: <span>{{checkResponseStatus}}</span></p>
-        <p class="title">Pay IN status: <span>{{checkResponseIn}}</span></p>
-        <p class="title">Pay OUT status: <span>{{checkResponseOut}}</span></p>
+        <p class="title">General status: <span class="grey">{{checkResponseStatus}}</span></p>
+        <p class="title">Pay IN status: <span class="grey">{{checkResponseIn}}</span></p>
+        <p class="title">Pay OUT status: <span class="grey">{{checkResponseOut}}</span></p>
     </div>
-    <div *ngIf="checkResponseIn == 'expired'" class="cardValues">
+    <div *ngIf="checkResponseIn == 'expired'" class="cardValues backWhite">
         <span class="block">
             <img src="~icons/error_icon.svg">
             <h1 class="title red inline">{{txtResponseIn}}</h1>
@@ -36,8 +36,8 @@
                 <span *ngIf="inputAmountErr" id="amountInputErr" class="errorTxt">{{inputAmountErr}}</span>
             </div>
             <div [ngClass]="{'hidden':!(inputAmount != null)}">
-                <label for="expected" class="title expected">Aprox. value in ETH:</label>
-                <input class="displayInput expected" type="text" name="expected" id="expected" value="{{inputExpectedAmount}}" disabled>
+                <label for="expected" class="title expected small lightGrey italic">Aprox. value in ETH:</label>
+                <input class="displayInput expected small lightGrey italic" type="text" name="expected" id="expected" value="{{inputExpectedAmount}}" disabled>
             </div>
             <div>
                 <label for="CardId" class="title">Spark card ID number:</label>
@@ -67,32 +67,33 @@
 </ng-template>
 
 <ng-template #detailTx>
-    <div *ngIf="detailTx">
-        <div class="backWhite cardValues displayInput">
-            <h1 class="">Transaction detail:</h1>
-            <div>
+    <div *ngIf="detailTx else down">
+        <div class="backWhite cardValues">
+            <h1 class="lscx_color">Transaction detail:</h1>
+            <div class="title-button-navbar">
                 <span class="title ">Spark Card Receiver Number:</span>
-                <p class="">{{fiatReceiver}}</p>
+                <p class="grey">{{splitFiatReceiver1}} - {{splitFiatReceiver2}} - {{splitFiatReceiver3}} - {{splitFiatReceiver4}}</p>
             </div>
-            <div>
+            <div class="title-button-navbar">
                 <span class="title ">From:</span>
-                <p class="">{{selfAccount}}</p>
+                <p class="grey">{{selfAccount}}</p>
             </div>
-            <div>
+            <div class="title-button-navbar">
                 <span class="title ">To:</span>
-                <p class="">{{ethAddr}}</p>
+                <p class="grey">{{ethAddr}}</p>
             </div>
-            <div>
+            <div class="title-button-navbar">
                 <span class="title ">Amount:</span>
-                <p class="">{{amountEth}} ETH</p>
+                <p class="grey">{{amountEth}} ETH</p>
             </div>
-            <div>
+            <div class="title-button-navbar">
                 <span class="title ">Send before of:</span>
-                <p class="">{{timeLeft/60}} min</p>
+                <p class="grey">{{timeLeft/60}} min</p>
             </div>
+            <button type="button" name="button" class="extra btn-inverse" (click)="sendEth(ethAddr, amountEth)">Confirm</button>
+            <button type="button" name="button" class="extra btn-black" (click)="back()">Back</button>
         </div>
-        <button type="button" name="button" class="btn-black" (click)="back()">Back</button>
-        <button type="button" name="button" class="btn-inverse" (click)="sendEth(ethAddr, amountEth)">Confirm</button>
+
         <p class="title issues text-right terms">
             <span class="terms2">
                     Powered by: 

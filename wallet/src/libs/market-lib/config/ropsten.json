@@ -1,10 +1,11 @@
 {
     "contractMarket": [
-        { "addr": "0x78CE17334ca6F515aaD86173f4282BE7047B43aA", "info": "Deployed 10/25/2018" },
+        { "addr": "0x62d300bedb3fed128cc5d5554c5a04af78ba5ee9", "info": "Deployed 10/25/2018" },
         { "addr": "0x0000000000000000000000000000000000000000", "info": "Zero contract" }
     ],
-    "ethTestnet": "kovan",
-    "ethChainId": 42,
+    "ethTestnet": "ropsten",
+    "ethChainId": 3,
+    "ethProvider": "http://localhost:8545",
     "ethGasPrice": 20000000000,
     "ethAddr": "0x0000000000000000000000000000000000000000",
     "ethAddrPrivateKey": "",
@@ -12,9 +13,13 @@
     "gasDeposit": 250000,
     "gasWithdraw": 250000,
     "gasTrade": 250000,
-    "gasOrder": 4000000,
+    "gasOrder": 250000,
     "minOrderSize": 0.001,
-
+    "socketServer": ["https://socket.etherdelta.com"],
+    "userCookie": "EtherDelta",
+    "eventsCacheCookie": "EtherDelta_eventsCache",
+    "ordersCacheCookie": "EtherDelta_ordersCache",
+    "etherscanAPIKey": "GCGR1C9I17TYIRNYUDDEIJH1K5BRPH4UDE",
     "tokens": [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
         { "addr": "0x40aade55175aaeed9c88612c3ed2ff91d8943964", "name": "1ST", "decimals": 18 }

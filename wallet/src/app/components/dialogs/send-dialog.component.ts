@@ -50,17 +50,16 @@ export class SendDialogComponent{
     if('seedOptions' in this.data) {
       let seedOptions = this.data.seedOptions
       let alternativeSending =new AlternativeSending(seedOptions.seed, seedOptions.to, this._account.account.address, "hash", this.data.amount.toString(), this._web3.network);
-      console.log(alternativeSending);
       return false
     }
-
+    
     let privateKey =  this.getPrivate(pass);
     if(privateKey == null) return false;
     
     for(let i=0; i<this.txs.length; i++){
       this.txs[i].sign(privateKey);
       
-      let serialized = "0x"+(this.txs[i].serialize()).toString('hex');
+      let serialized = "0x"+(this.txs[i].serialize()).toString('hex');      
       let sendResult = await this._web3.sendRawTx(serialized);
       this.dialogRef.close();
       
@@ -120,7 +119,8 @@ export class SendDialogComponent{
   }
 
   closeDialog(){
-    this.dialogRef.close();
+    this.dialogRef.close(JSON.stringify({message: "Back"}));
+    
   }
 
   getPrivate(pass):string{

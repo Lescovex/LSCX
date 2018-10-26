@@ -152,6 +152,10 @@ button {
     color: #3C4247;
 }
 
+.lightGrey {
+    color: #62676b;
+}
+
 .yellow {
     color: #ffc107;
 }
@@ -491,10 +495,9 @@ nav a span {
     width: 95%;
 }
 
-.best-prices p{
-    margin-top:30px;
+.best-prices p {
+    margin-top: 30px;
 }
-
 
 
 /**************************** FORMS ****************************/
@@ -729,6 +732,7 @@ p.error {
     font-family: "Lato-Bold";
     font-size: 14pt;
 }
+
 .contract-list-add-market {
     margin-left: 49px;
     font-family: "Lato-Bold";
@@ -1056,7 +1060,7 @@ td {
 
 .cardValues {
     width: 100%;
-    padding-bottom: 10px;
+    padding: 2rem;
     margin: 0 auto;
     margin-bottom: 1rem;
 }
@@ -1074,7 +1078,8 @@ td {
 
 .cardValues button {
     margin-top: 15px !important;
-    margin-left: 15px !important;
+    margin-right: 15px !important;
+    float: right;
 }
 
 .cardValues small {
@@ -1098,6 +1103,7 @@ td {
 .expected {
     margin: 0;
     margin-top: -2rem;
+    background-color: transparent;
 }
 
 .terms {
@@ -1133,4 +1139,8 @@ topDist {
 
 .green-progress .mat-progress-bar-buffer {
     background-color: #c0f2d8 !important;
+}
+
+.small {
+    font-size: 8pt;
 }
