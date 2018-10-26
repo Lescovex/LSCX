@@ -72,23 +72,15 @@ export class HoldersGeneralPage implements OnInit {
       this.LSCX_Addr = "0x5bf5f85480848eB92AF31E610Cd65902bcF22648";
       
     }
-    if(this._web3.network.chain !=42){
-      if(this._web3.infuraKey != ''){
-        this.LSCX_Contract = this._web3.web3.eth.contract(this.LSCX_Abi).at(this.LSCX_Addr);
-        
-      }
-      await this.load();
-    } else{
-      ///Don't have contract in Kovan
-      this.balance = 0;
-      let interval = setInterval(()=>{
-        if(this.loadingD!= null){
-          this.loadingD.close();
-          clearInterval(interval);
-        }
-      }, 500);
-      
+    if(this._web3.network.chain == 42){
+      this.LSCX_Addr = "0x4007625b68b57748b99d1418b1e17bfb3697c949";
     }
+
+    if(this._web3.infuraKey != ''){
+        this.LSCX_Contract = this._web3.web3.eth.contract(this.LSCX_Abi).at(this.LSCX_Addr);
+    }
+    await this.load();
+   
   }
   getAbi(){
     this.LSCX_Abi = require('../../../../assets/abi/LSCX_Holders.json');

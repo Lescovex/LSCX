@@ -30,23 +30,25 @@
 <ng-template #serviceStatus>
     <div *ngIf="serviceStatus else down">
         <div *ngIf="inputData else detailTx" class="cardValues backWhite">
+            <h1 class="lscx_color">Withdraw Ether to a Spark Card</h1>
             <div>
-                <label for="Amount" class="title">Amount to withdraw in €:</label>
+                <label for="Amount" class="title">Amount to withdraw in €</label>
                 <input type="number" name="Amount" id="Amount" placeholder="€" [(ngModel)]="inputAmount" (input)="checkChange(inputAmount)">
                 <span *ngIf="inputAmountErr" id="amountInputErr" class="errorTxt">{{inputAmountErr}}</span>
             </div>
             <div [ngClass]="{'hidden':!(inputAmount != null)}">
-                <label for="expected" class="title expected small lightGrey italic">Aprox. value in ETH:</label>
+                <label for="expected" class="title expected small lightGrey italic">Aprox. value in ETH</label>
                 <input class="displayInput expected small lightGrey italic" type="text" name="expected" id="expected" value="{{inputExpectedAmount}}" disabled>
             </div>
             <div>
-                <label for="CardId" class="title">Spark card ID number:</label>
+                <label for="CardId" class="title">Spark card ID number</label>
                 <input pattern=".{16,16}" type="number" name="CardId" id="CardId" placeholder="CardId" [(ngModel)]="inputCardId">
                 <span *ngIf="inputCardIdErr" id="cardInputErr" class="errorTxt">{{inputCardIdErr}}</span>
             </div>
-            <small class="red block bold">* This action may take up 72 hours.</small>
-            <button type="button" name="button" class="btn-inverse" (click)="chipchapSwift()">Change!</button>
-
+            <div>
+                <p class="red bold left" id="messageAlert">* This action may take up 72 hours.</p>
+                <button type="button" name="button" class="btn-inverse" (click)="chipchapSwift()">Change!</button>
+            </div>
         </div>
 
         <p *ngIf="orderCard==null" class="title issues text-right terms">
@@ -68,7 +70,7 @@
 
 <ng-template #detailTx>
     <div *ngIf="detailTx else down">
-        <div class="backWhite cardValues">
+        <div *ngIf="testingView == 'show'" class="backWhite cardValues">
             <h1 class="lscx_color">Transaction detail:</h1>
             <div class="title-button-navbar">
                 <span class="title ">Spark Card Receiver Number:</span>

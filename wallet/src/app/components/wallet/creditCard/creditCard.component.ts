@@ -73,7 +73,7 @@ export class CreditCardPage implements OnInit {
     public amountEth;
     public timeLeft;
     public scale;
-   
+    public testingView;
 
     public loadingD;
 
@@ -122,10 +122,7 @@ export class CreditCardPage implements OnInit {
     }
   
     async ngOnInit() {
-        
         if(this._web3.network.chain != 1){
-            this.serviceStatus = true;
-            this.inputData = true;
             Promise.resolve().then(() => { 
                 this.dialogRef = this.dialog.open(NetworkDialogComponent, {
                     width: '660px',
@@ -209,7 +206,7 @@ export class CreditCardPage implements OnInit {
         this.detailTx = true;
         this.confirmTx = true;
         this.scale = scl;
-        
+        this.testingView = 'show';
         
         this.amountEth = this.amountWei/Math.pow(10,this.scale);
         

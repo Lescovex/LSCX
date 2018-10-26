@@ -1176,3 +1176,7 @@ topDist {
 .small {
     font-size: 8pt;
 }
+
+#messageAlert {
+    margin-top: 30px;
+}
