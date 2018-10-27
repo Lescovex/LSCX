@@ -41,12 +41,14 @@ export class LSCXMarketService {
 		myTrades: undefined,
 		myFunds: undefined
 	};
+	updated: boolean;
 
 	balancesInterval = null;
 	stateOrdersInteval = null;
 	tikersInterval = null;
 	
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, private _marketStorage: LSCXMarketStorageService) {
+		this.updated = false;
 		this.setMarket();
 	}
 
@@ -144,14 +146,14 @@ export class LSCXMarketService {
 		await this.getLocalState();
 		this.eth = this.config.tokens[0];
 		this.setToken(token);
+		this.updated = true;
 	}
 
 	getFunctionData(contract, functionName:string, params?) {
 		if(typeof(params)== 'undefined'){
 			params= []
 		}
-		console.log("this.functionData", this._contract.getFunctionData(contract, functionName, params));
-		
+		//console.log("this.functionData", this._contract.getFunctionData(contract, functionName, params));
 		return this._contract.getFunctionData(contract,functionName, params)
 	}
 
@@ -336,15 +338,33 @@ export class LSCXMarketService {
 					order.deleted = true;
 					order.date = Date.now();
 				}
-				let byte32Zero ="0x0000000000000000000000000000000000000000";
 				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
 				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
 				order.setFilled(amountFilled);
 
 				for(let i=0; i<myOrdersAddress.length; i++){
 					if(order.txHash == myOrdersAddress[i].txHash){
-						if(order.deleted && order.amountFilled ==0 ){
+						console.log(order.deleted, order.amountFilled, )
+						if(order.deleted && order.amountFilled == 0 ){
 							myOrdersAddress.splice(i,1);
+						} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
+							let side: string;
+							let amount: number;
+							let amountBase: number;
+							if(order.tokenGet == this.config.tokens[0].addr) {
+								side = "sell";
+								amount = order.amountFilled/order.price;
+								amountBase =  order.amountFilled;
+							} else {
+								side = "buy";
+								amount = order.amountFilled;
+								amountBase = order.amountFilled * order.price;
+							}
+							let trade = new Trade(side, order.tokenGet, order.tokenGive, amount, amountBase, order.price, this._account.account.address, order.user, order.nonce);
+							trade.txHash = order.txHash;
+							this.addMyState(trade, "myTrades");
+							//myOrdersAddress.splice(i,1);
+
 						} else {		
 							myOrdersAddress[i] = order;
 						}

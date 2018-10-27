@@ -34,13 +34,15 @@ export class MyApp implements OnInit {
     if(this._scan.apikey!=""){
       this.interval = setInterval(async() => {
         if('address'in this._account.account){
-          if('balance' in this._account.account){
+          if('balance' in this._account.account && this._LSCXmarket.updated){
             this.loadingD.close();
             clearInterval(this.interval);
           }
         }else{
-          clearInterval(this.interval);
+          if(this._LSCXmarket.updated){
+            clearInterval(this.interval);
           this.loadingD.close();
+          } 
         } 
       });
     }

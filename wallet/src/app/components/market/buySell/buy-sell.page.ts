@@ -84,21 +84,13 @@ export class BuySellPage implements OnInit {
         let order: any;
         console.log("entras aqui?");
         
-        for(let i=0; (i<matchs.length || testTrade); i++){
+        for(let i=0; (i<matchs.length || !testTrade); i++){
             order = matchs[i];
             console.log(matchs[i])
-            if(this.action == "buy"){
-              let testParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount, this._account.account.address];
-              let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
-            }
-            if(this.action == "sell"){
-              //maybe we've to change params order
-              let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount, this._account.account.address];
-              let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
-            }
-            console.log("Que es order?", order); //es el order del match
-            console.log("Que es testTrade?",testTrade);
-            
+            let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  amount, this._account.account.address];
+            let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
+            //console.log("Que es order?", order); //es el order del match
+            //console.log("Que es testTrade?",testTrade);
             if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount];
         }
 
@@ -138,25 +130,8 @@ export class BuySellPage implements OnInit {
         ordersToCross = this._LSCXmarket.state.orders.buys;
       }
       console.log("ORDERS TO CROSS???",ordersToCross);      
-      console.log("FILTER DE ORDERS TO CROSS?",ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber));
-      
-      let x;
-      if(this.action == "buy"){
-        x = ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber);
-        console.log("x.length en buy",x.length);
-        
-        if(x.length == 0){
-          x =  ordersToCross.filter(x=> parseFloat(x.price)==price && x.expires>blockNumber);
-        }
-        return x;
-      }else{
-        x = ordersToCross.filter(x=>x.available<=amount && parseFloat(x.price)==price && x.expires>blockNumber);
-        console.log("x.length en sell",x.length);
-        if(x.length == 0){
-          x = ordersToCross.filter(x=> parseFloat(x.price)==price && x.expires>blockNumber);
-        }
-        return x;
-      }
+      //console.log("FILTER DE ORDERS TO CROSS?",ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber));     
+      return ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber);
     }
 
     async order(){
