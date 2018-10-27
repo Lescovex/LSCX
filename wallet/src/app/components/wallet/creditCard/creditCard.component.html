@@ -41,8 +41,8 @@
                 <input class="displayInput expected small lightGrey italic" type="text" name="expected" id="expected" value="{{inputExpectedAmount}}" disabled>
             </div>
             <div>
-                <label for="CardId" class="title">Spark card ID number</label>
-                <input pattern=".{16,16}" type="number" name="CardId" id="CardId" placeholder="CardId" [(ngModel)]="inputCardId">
+                <label for="CardId" class="title">Spark card ID number <img src="~icons/info_iconContracts.svg" (click)="openInfo()"></label>
+                <input pattern=".{12,12}" type="number" name="CardId" id="CardId" placeholder="CardId" [(ngModel)]="inputCardId">
                 <span *ngIf="inputCardIdErr" id="cardInputErr" class="errorTxt">{{inputCardIdErr}}</span>
             </div>
             <div>

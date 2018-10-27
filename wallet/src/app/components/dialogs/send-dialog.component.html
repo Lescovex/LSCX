@@ -24,7 +24,11 @@
             <p>ETH {{(data.total | converter:'fromWei':'ether') | number:'1.2-8':'en'}}</p>
         </div>
     </div>
+    <p *ngIf="data.typeFunction == 'myTrades'" class="dist red bold small">{{messageTrade}}{{(amountToShow| converter:'fromWei':'ether')| number:'1.2-8':'en'}} Ether</p>
 </div>
+
+
+
 <div *ngIf="insufficient" class="dist">
     <p class="error-founds input text-center dist">You don't have enough funds</p>
     <div class="buttons text-center">

@@ -79,8 +79,7 @@ export class MarketActionComponent implements OnChanges{
                 let functionObj = new Fund(this.action, this.token.addr, form.controls.amount.value, nonce);             
                 this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myFunds",functionObj);
             }
-        }
-        
+        }        
     }
 
     async depositEth(params){
@@ -108,6 +107,8 @@ export class MarketActionComponent implements OnChanges{
     }
 
     async depositToken(params){
+        console.log("que son params??????",params);
+        
         let dataApprove = this._LSCXmarket.getFunctionData(this._LSCXmarket.token.contract, 'approve', [this._LSCXmarket.contractMarket.address, params[0]]); 
         console.log(dataApprove, this._LSCXmarket.contractMarket.address);
         let gasApprove;
@@ -126,7 +127,7 @@ export class MarketActionComponent implements OnChanges{
             //let optionsDeposit = {data:dataDeposit, nonceIncrement:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
             let txDeposit = new RawTxIncrementedNonce(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), this._LSCXmarket.config.gasDeposit, gasOpt.gasPrice,this._web3.network, dataDeposit, 1);
             await txDeposit.setIncrementedNonce(this._account,1);
-            //await this._rawtx.createRaw(this._LSCXmarket.contractMarket.address, 0 , optionsDeposit );
+            //await this._rawtx.createRaw(this._LSCXmarket.contractMarket.address, 0 , optionsDeposit);
             let tx: any[] = [txApprove.tx, txDeposit.tx];
             let amount = 0;
             let cost = txApprove.cost+ txDeposit.cost;

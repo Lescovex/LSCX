@@ -38,7 +38,8 @@ export class SendDialogService{
                 fees: fees,
                 total: total,
                 action: action,
-                contract : contract},
+                contract : contract
+            },
         });
     }
 
@@ -61,7 +62,7 @@ export class SendDialogService{
     openConfirmMarket(tx, to, amount, fees, total, action, typeFunction, functionObj ){
         return this.dialog.open(SendMarketDialogComponent, {
             width: '660px',
-            height: '400px',
+            height: '450px',
             data:{
                 tx: tx,
                 to: to,

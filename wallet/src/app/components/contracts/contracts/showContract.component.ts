@@ -169,6 +169,7 @@ export class ShowContract implements OnInit{
   }
 
   addToMarket() {
+    
     this._contractStorage.openTikerDialog(this.contractInfo, false);
   }
 

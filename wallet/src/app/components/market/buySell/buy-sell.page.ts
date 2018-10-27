@@ -54,26 +54,51 @@ export class BuySellPage implements OnInit {
       this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
       console.log(price, this.tokenAmount, this.ethAmount);
       let amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
-
-      if(this.action == "buy" && this.f.total >= this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount >= this._LSCXmarket.marketBalances.token){
+        
+        //change to > to get total
+      if(this.action == "buy" && this.f.total > this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount > this._LSCXmarket.marketBalances.token){
         this.loadingDialog.close();
-        let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
+        //calculate market fee, if buy you'll need f.total + feeMarket
+        if(this.action=="buy"){
+          let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
+        }
+        if(this.action =="sell"){
+          let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
+        }
+
         return false
       }
       
       let amountCross = (this.action == 'buy')? this.f.total : this.f.amount;
+      
       let matchs = await this.getCross(amountCross, this.f.price);
-      console.log(matchs);
-
+      console.log("AmountCross?!?!?!",amountCross);
+      console.log("this.f.price", this.f.price);
+      
+      
+      console.log("matchs!!!!!?!!??!?!?!?!!?!?!",matchs);
+      
       if(matchs.length>0){
         let testTrade = false;
         let params = [];
         let order: any;
+        console.log("entras aqui?");
+        
         for(let i=0; (i<matchs.length || testTrade); i++){
             order = matchs[i];
             console.log(matchs[i])
-            let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  amount, this._account.account.address];
-            let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
+            if(this.action == "buy"){
+              let testParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount, this._account.account.address];
+              let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
+            }
+            if(this.action == "sell"){
+              //maybe we've to change params order
+              let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount, this._account.account.address];
+              let testTrade = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
+            }
+            console.log("Que es order?", order); //es el order del match
+            console.log("Que es testTrade?",testTrade);
+            
             if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount];
         }
 
@@ -90,7 +115,9 @@ export class BuySellPage implements OnInit {
       }
     }
 
-    activeButton(action) {
+    activeButton(action){
+      console.log("action???",action);
+      
       this.action = action;
     }
 
@@ -110,9 +137,26 @@ export class BuySellPage implements OnInit {
       }else{
         ordersToCross = this._LSCXmarket.state.orders.buys;
       }
-
-      return ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber);
-
+      console.log("ORDERS TO CROSS???",ordersToCross);      
+      console.log("FILTER DE ORDERS TO CROSS?",ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber));
+      
+      let x;
+      if(this.action == "buy"){
+        x = ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber);
+        console.log("x.length en buy",x.length);
+        
+        if(x.length == 0){
+          x =  ordersToCross.filter(x=> parseFloat(x.price)==price && x.expires>blockNumber);
+        }
+        return x;
+      }else{
+        x = ordersToCross.filter(x=>x.available<=amount && parseFloat(x.price)==price && x.expires>blockNumber);
+        console.log("x.length en sell",x.length);
+        if(x.length == 0){
+          x = ordersToCross.filter(x=> parseFloat(x.price)==price && x.expires>blockNumber);
+        }
+        return x;
+      }
     }
 
     async order(){
@@ -143,9 +187,16 @@ export class BuySellPage implements OnInit {
       //add _price
       params.push(this._web3.web3.toWei(orderObj.price, 'ether'));
       let data =  await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'order',params);
-     
+      
+      let gasLimit;
+        try{
+          gasLimit = await this._web3.estimateGas(this._account.account.address, this._LSCXmarket.contractMarket.address, data, 0);
+        }catch(e){
+          gasLimit = this._LSCXmarket.config.gasOrder;
+        }
+
       this.loadingDialog.close();
-      let gasOpt = await this.openGasDialog(this._LSCXmarket.config.gasOrder);
+      let gasOpt = await this.openGasDialog(gasLimit);
         if(gasOpt != null){
           let tx = new RawTx(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
           this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myOrders",orderObj);
@@ -153,14 +204,23 @@ export class BuySellPage implements OnInit {
     }
 
     async trade(params, order){
-        let data = await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'trade',params);
+        let data = await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'trade',params);  
         this.loadingDialog.close();
-        let gasOpt = await this.openGasDialog(this._LSCXmarket.config.gasTrade);
+        let gasLimit;
+        try{
+          gasLimit = await this._web3.estimateGas(this._account.account.address, this._LSCXmarket.contractMarket.address, data, 0);
+        }catch(e){
+          gasLimit = this._LSCXmarket.config.gasTrade;
+        }
+
+        let gasOpt = await this.openGasDialog(gasLimit);
+
         if(gasOpt != null){
-          let nonce = await this.getNonce();
+          let nonce = await this.getNonce(); 
           let tx = new RawTx(this._account,this._LSCXmarket.contractMarket.address,new BigNumber(0),gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
-          let tradeObj = new Trade(this.action, order.tokenGet, order.tokenGive, this.f.amount, this.f.total, this.f.price, this._account.account.address, order.user, nonce);             
-          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myTrades",tradeObj);
+          let tradeObj = new Trade(this.action, order.tokenGet, order.tokenGive, this.f.amount, this.f.total, this.f.price, this._account.account.address, order.user, nonce, params[7]);             
+          
+          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myTrades", tradeObj);
         }  
     }
 
@@ -179,12 +239,11 @@ export class BuySellPage implements OnInit {
     let nonce = await this._web3.getNonce(this._account.account.address);
     //para ver ultimo nonce real
     let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
-    let historyNonce =history[0].nonce;
+    let historyNonce = history[0].nonce;
     console.log(history[0].nonce, historyNonce);
     if(historyNonce>= nonce){
         nonce = parseInt(historyNonce)+1;
     }
     return nonce;
   }
-
 }

@@ -27,15 +27,24 @@ export class TikerDialogComponent {
         if(form.invalid){
             return false;
         }
+        
         this.dialogRef.close();
         let params = [this.data.contract.address, this.data.contract.symbol, this.data.contract.decimals];
         let tikerString = JSON.stringify({addr:this.data.contract.address, name:this.data.contract.symbol, decimals:this.data.contract.decimals});
         tikerString = tikerString.replace(/"/g,"'");
         params.push(tikerString);;
-        console.log("PARAMS",params)
+        
         let data = this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'tiker', params);
-        console.log("gas");
-        let gasOption = await this.openGasDialog(300000);
+        let gasLimit;
+        
+        try{
+          gasLimit = await this._web3.estimateGas(this._account.account.address, this._LSCXmarket.contractMarket.address, data, this._LSCXmarket.fees.feeMarket);
+        }catch(e){    
+          gasLimit = 300000;
+        }
+        
+        
+        let gasOption = await this.openGasDialog(gasLimit);
         if(gasOption != null){
             let nonce = await this.getNonce();
             let tikerObj = {
@@ -68,7 +77,7 @@ export class TikerDialogComponent {
         return null;
     }
 
-    openSendDialog(tx, tikerObj){
+    openSendDialog(tx, tikerObj){        
         this.dialog.open(SendMarketDialogComponent, {
             width: '660px',
             height: '400px',
@@ -89,8 +98,7 @@ export class TikerDialogComponent {
         let nonce = await this._web3.getNonce(this._account.account.address);
         //para ver ultimo nonce real
         let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
-        let historyNonce =history[0].nonce;
-        console.log(history[0].nonce, historyNonce);
+        let historyNonce = history[0].nonce;
         if(historyNonce>= nonce){
             nonce = parseInt(historyNonce)+1;
         }

@@ -117,6 +117,8 @@ export class LSCXMarketService {
 
 	setContracts() {
 		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractMarket[0].addr);
+		console.log("THIS CONTRACT MARKET?",this.contractMarket);
+		
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
 		this.contractReserveToken = this._web3.web3.eth.contract(this.getAbi('reservetoken'));
 		this.setFees().then();
@@ -148,6 +150,8 @@ export class LSCXMarketService {
 		if(typeof(params)== 'undefined'){
 			params= []
 		}
+		console.log("this.functionData", this._contract.getFunctionData(contract, functionName, params));
+		
 		return this._contract.getFunctionData(contract,functionName, params)
 	}
 
@@ -212,7 +216,7 @@ export class LSCXMarketService {
 		this.stateOrdersInteval = setInterval(()=>{
 			  this.setSells();
 			  this.setBuys();
-		},1000);
+		},5000);
 	}
 
 	clearStateOrdersInterval(){
@@ -266,21 +270,20 @@ export class LSCXMarketService {
 	}
 	
 	addMyState(obj: any, stateName: string){
-		console.log("dentro de add");
 		if(this.marketState[stateName].hasOwnProperty(this._account.account.address)){
 			this.marketState[stateName][this._account.account.address].push(obj);
 		}else{
 			this.marketState[stateName][this._account.account.address] = [obj];
 		}
-		console.log("antes de save");
+		//console.log("antes de save");
 		this.saveState();
-		console.log("despues de save");
+		//console.log("despues de save");
 		this.updateMyStateShow(stateName);
 	}
 
 	updateMyStateShow(stateName: string) {
 		//Update myFunds, myOrders, or myTrades
-		console.log("entra en update", stateName);
+		//console.log("entra en update", stateName);
 		let interval = null;
 		interval = setInterval(()=>{
 			let myObjs = [];
@@ -375,7 +378,7 @@ export class LSCXMarketService {
 		let data = fs.readFileSync(filePath);
 		
 		this.marketState =  JSON.parse(data);
-		console.log("MARKET", this.marketState);
+		//console.log("MARKET", this.marketState);
 		await this.getTikers();
 		this.updateMyStateShow("myFunds");
 		this.updateMyStateShow("myOrders");
@@ -385,11 +388,11 @@ export class LSCXMarketService {
 	async getTikers(){
 		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
 		if(tikersResult!=null){
-			console.log("tikersResult",tikersResult.tikers)
+			//console.log("tikersResult",tikersResult.tikers)
 			tikersResult.tikers.forEach(x=>{
-				console.log(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1)
+				//console.log(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1)
 				if(x!= null && this.marketState.tikers.findIndex(y =>{
-					console.log(y, x)
+					console.log(y, x);
 					return (y.addr === x.addr)
 				} )==-1){
 					console.log("nuevo tiker", x)
@@ -402,6 +405,9 @@ export class LSCXMarketService {
 	}
 
 	addTikerToList(tiker){
+		console.log("ADD TIKER TO LIST");
+		console.log("tiker to add!!!!!", tiker);
+						
 		if(this.marketState.hasOwnProperty('tikersToList')){
 			this.marketState.tikersToList.push(tiker);
 		}else{
@@ -457,13 +463,12 @@ export class LSCXMarketService {
 				}
 			}
 		}, 2000);
-
 	}
 	saveState(){
-		console.log("SAVE STATEEEEEEEEE")
+		//console.log("SAVE STATEEEEEEEEE")
 		let filePath =lescovexPath+"/."+this.fileName+".json";
 		try {
-			console.log("MARKET", this.marketState);
+			//console.log("MARKET", this.marketState);
 			JSON.stringify(this.marketState);
 		}catch (e)  {
 			console.log("JSON ERROR", e)
@@ -471,7 +476,7 @@ export class LSCXMarketService {
 		try{
 			fs.writeFileSync(filePath, JSON.stringify(this.marketState));
 		}catch(e) {
-			console.log("PUTO ERROR",e);
+			console.log("FILESYNC ERROR",e);
 		}
 		
 	}

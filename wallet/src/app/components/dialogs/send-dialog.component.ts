@@ -30,6 +30,8 @@ export class SendDialogComponent{
   submited = false;
 
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>, private _contractStorage: ContractStorageService) {
+    console.log("Que es this.data?",this.data);
+    
     if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
       this.insufficient= true;
     }
@@ -49,9 +51,11 @@ export class SendDialogComponent{
 
     if('seedOptions' in this.data) {
       let seedOptions = this.data.seedOptions
-      let alternativeSending =new AlternativeSending(seedOptions.seed, seedOptions.to, this._account.account.address, "hash", this.data.amount.toString(), this._web3.network);
+      let alternativeSending = new AlternativeSending(seedOptions.seed, seedOptions.to, this._account.account.address, "hash", this.data.amount.toString(), this._web3.network);
+      console.log("alternativeSending",alternativeSending);
       return false
     }
+    
     
     let privateKey =  this.getPrivate(pass);
     if(privateKey == null) return false;

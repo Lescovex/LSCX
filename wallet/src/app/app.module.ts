@@ -78,6 +78,7 @@ import { ContractDialogComponent } from './components/contracts/add/contract-dia
 import { WithdrawTxDialog } from './components/holders/general/withdrawTx.component';
 import { WithdrawDialog } from './components/holders/general/withdraw-dialog.component';
 import { TikerDialogComponent } from './components/dialogs/tiker-dialog.component';
+import { CardMessageDialogComponent } from "./components/wallet/creditCard/card-message-dialog.component";
 
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
@@ -136,6 +137,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     JSONDialogComponent,
     PrivateKeyDialogComponent,
     NetworkDialogComponent,
+    CardMessageDialogComponent,
     ListComponent,
     PaginatorComponent,
     TokensComponent,
@@ -209,7 +211,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     WithdrawTxDialog,
     WithdrawDialog,
     NetworkDialogComponent,
-    TikerDialogComponent
+    TikerDialogComponent,
+    CardMessageDialogComponent
   ],
   providers: [
     WalletService,

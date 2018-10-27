@@ -19,7 +19,7 @@ export class LSCXMarketStorageService {
         let ADDRESSES = {
 			1:"0x1759eb1272c5fbb6dfb2272665c375d04c82e347",
 			3:"0x6b441859b6f92f5aed832f2ece858b156c286e4d",
-			42: "0x4d4d6b7f76318c5c5ecb654111dec8fb2d18834f"
+			42: "0x51323783e5fbb38f73205ef73a08d4dfe495d690"
 		}
 		let address = ADDRESSES[this._web3.network.chain]
 		this.contract = this._contract.contractInstance(this.getAbi(), address);
@@ -27,7 +27,7 @@ export class LSCXMarketStorageService {
 
     async getTikers(tikersId) {
         let i = 1;
-        console.log("getIkers storage");
+        //console.log("getIkers storage");
         if(tikersId != null) {
             i = tikersId;
         }

@@ -1,5 +1,5 @@
 <div id="hist-market" class="scroll scrollbar auto-h">
-    <table *ngIf="action=='myTrades'"class="history-table" >
+    <table *ngIf="action=='myTrades'" class="history-table">
         <thead>
             <tr>
                 <th>Transaction</th>
@@ -9,19 +9,25 @@
                 <th>{{_LSCXmarket.token.name}}/ETH</th>
             </tr>
         </thead>
-        <tr *ngIf="history.length == 0"><td colspan="5" class="collapse">There are no trades here</td></tr>
-        <tbody *ngFor="let trade of history, index as i" >
+        <tr *ngIf="history.length == 0">
+            <td colspan="5" class="collapse">There are no trades here</td>
+        </tr>
+        <tbody *ngFor="let trade of history, index as i">
             <tr>
                 <td class="pointer" (click)="openExternal(trade.txHash)">{{trade.txHash}}</td>
-                <td *ngIf="trade.side == 'buy'"><p class="green">Buy Order</p></td>
-                <td *ngIf="trade.side == 'sell'"><p class="red">Sell Order</p></td>
+                <td *ngIf="trade.side == 'buy'">
+                    <p class="green">Buy Order</p>
+                </td>
+                <td *ngIf="trade.side == 'sell'">
+                    <p class="red">Sell Order</p>
+                </td>
                 <td>{{trade.amount}}</td>
                 <td>{{trade.amountBase}}</td>
                 <td>{{trade.price}}</td>
             </tr>
-        </tbody>   
+        </tbody>
     </table>
-    <table *ngIf="action=='myOrders'" class="history-table" >
+    <table *ngIf="action=='myOrders'" class="history-table">
         <thead>
             <tr>
                 <th>{{_LSCXmarket.token.name}}/ETH</th>
@@ -30,37 +36,49 @@
                 <!--<th>Cancel</th>-->
             </tr>
         </thead>
-        <tr *ngIf="history.length == 0"><td colspan="3" class="collapse">There are no orders here</td></tr>
-        <tbody *ngFor="let order of history, index as i" >
-            <tr *ngIf="blockNumber<= order.expires">
-                <td><p [ngClass]="(order.tokenGet=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p></td>
-                <td *ngIf ="order.tokenGet=='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amountBase | number:"1.8-8":"en"}}</td>
-                <td *ngIf ="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
-                <td *ngIf ="blockNumber != null">{{order.expires-blockNumber}}</td>
-                <td *ngIf ="blockNumber == null" class="red">Not available</td>
+        <tr *ngIf="history.length == 0">
+            <td colspan="3" class="collapse">There are no orders here</td>
+        </tr>
+        <tbody *ngFor="let order of history, index as i">
+            <tr *ngIf="blockNumber <= order.expires">
+                <td>
+                    <p [ngClass]="(order.tokenGet=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p>
+                </td>
+                <td *ngIf="order.tokenGet=='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amountBase | number:"1.8-8":"en"}}</td>
+                <td *ngIf="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="blockNumber != null">{{order.expires-blockNumber}}</td>
+                <td *ngIf="blockNumber == null" class="red">Not available</td>
                 <!--<td><a (click)="cancelOrder(order)">Cancel</a></td>-->
             </tr>
-        </tbody>       
+        </tbody>
     </table>
-    <table *ngIf="action=='myFunds'" class="history-table" >
+    <table *ngIf="action=='myFunds'" class="history-table">
         <thead>
             <tr>
                 <th>Transaction</th>
                 <th>Type</th>
                 <th>{{_LSCXmarket.token.name}}</th>
                 <th>ETH</th>
-            </tr>   
+            </tr>
         </thead>
-        <tr *ngIf="history.length == 0"><td colspan="4" class="collapse">There are no funds</td></tr>
-        <tbody *ngFor="let fund of history, index as i" >
+        <tr *ngIf="history.length == 0">
+            <td colspan="4" class="collapse">There are no funds</td>
+        </tr>
+        <tbody *ngFor="let fund of history, index as i">
             <tr>
                 <td class="pointer" (click)="openExternal(fund.txHash)">{{fund.txHash}}</td>
-                <td><p>{{fund.kind| titlecase}}</p></td>
-                <td><p *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>
-                <td><p *ngIf="fund.tokenAddr == '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p></td>
+                <td>
+                    <p>{{fund.kind| titlecase}}</p>
+                </td>
+                <td>
+                    <p *ngIf="fund.tokenAddr != '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p>
+                </td>
+                <td>
+                    <p *ngIf="fund.tokenAddr == '0x0000000000000000000000000000000000000000'">{{fund.amount}}</p>
+                </td>
             </tr>
-        </tbody>   
+        </tbody>
     </table>
 </div>
 
-<app-paginator *ngIf="page>1"(goPage)="goToPage($event)" [currentPage]="page" [perPage]="limit" [count]="totalPages"></app-paginator>
+<app-paginator *ngIf="page>1" (goPage)="goToPage($event)" [currentPage]="page" [perPage]="limit" [count]="totalPages"></app-paginator>

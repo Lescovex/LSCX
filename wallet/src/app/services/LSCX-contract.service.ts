@@ -65,6 +65,7 @@ export class LSCXContractService {
 		this.contractHist = history;
 		this.moreInfo= await this.getContractData(); 
 	}
+	
 	async callFunction(contractInst, functionName:string, params){
 		return await this._contract.callFunction(contractInst, functionName, params);
 	}

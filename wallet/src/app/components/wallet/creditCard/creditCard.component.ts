@@ -11,9 +11,10 @@ import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
 import { NetworkDialogComponent } from "../../dialogs/network-dialog.component";
 import { DialogService } from '../../../services/dialog.service';
+import { CardMessageDialogComponent } from './card-message-dialog.component';
 
 import { Router, NavigationEnd } from '@angular/router';
-import { ERROR_LOGGER } from '../../../../../node_modules/@angular/core/src/errors';
+import { ERROR_LOGGER } from '@angular/core/src/errors';
 import BigNumber from 'bignumber.js';
 const shell = require('electron').shell;
 
@@ -128,7 +129,7 @@ export class CreditCardPage implements OnInit {
                     width: '660px',
                     height: '200px',
                     disableClose: false
-                  });
+                });
                   this.dialogRef.afterClosed().subscribe(async result=>{
                     this.router.navigate(["/wallet/global"]);
                 })
@@ -229,8 +230,8 @@ export class CreditCardPage implements OnInit {
                 this.inputAmountErr = null;
                 document.getElementById("Amount").classList.remove("error");
             }
-            if(where == null || where.length != 16){
-                this.inputCardIdErr = "Spark ID length must be equal to 16";
+            if(where == null || where.length != 12){
+                this.inputCardIdErr = "Spark ID length must be equal to 12";
             } else{
                 this.inputCardIdErr = null;
                 document.getElementById("CardId").classList.remove("error");
@@ -477,5 +478,14 @@ export class CreditCardPage implements OnInit {
           this.orderCard = null;
           this.inputData = true;
           
+      }
+
+      openInfo(){
+        
+        this.dialogRef = this.dialog.open(CardMessageDialogComponent, {
+            width: '660px',
+            height: '200px',
+            disableClose: false
+        });
       }
 }

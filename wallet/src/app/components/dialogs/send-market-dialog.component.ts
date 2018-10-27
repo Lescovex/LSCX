@@ -25,8 +25,12 @@ export class SendMarketDialogComponent{
   message = "";
   txs: any[];
   submited = false;
+  messageTrade="";
+  amountToShow;
 
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, private _LSCXmarket: LSCXMarketService,  public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendMarketDialogComponent>) {
+    console.log("This data???????!!!!!!!!!!!!!!!!!!!!!!!??????????",this.data);
+    
     if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
       this.insufficient= true;
     }
@@ -34,6 +38,18 @@ export class SendMarketDialogComponent{
       this.txs = [this.data.tx];
     }else{
       this.txs = this.data.tx;
+    }
+    
+    
+    if(this.data.typeFunction == "myTrades"){
+      this.messageTrade = "This action have a market fee of ";
+      let oneEther = 1000000000000000000;
+      let result =this.data.functionObj.amountBaseDecoded * this._LSCXmarket.fees.feeTake; 
+      this.amountToShow = result /oneEther;      
+      
+    }else{
+      this.amountToShow = null;
+      this.messageTrade = "";
     }
   }
    
@@ -142,11 +158,15 @@ export class SendMarketDialogComponent{
     this.error = "We can not check network confirmation, You can see the progress in the global tab";
   }
 
-  addToMarket(){
-    if(this.data.typeFunciton=="listTiker"){
-      this._LSCXmarket.addTikerToList(this.data.functionObj);
-    }else{
-      this._LSCXmarket.addMyState(this.data.functionObj, this.data.typeFunction);
+    addToMarket(){
+      console.log("log this data in addToMarket funcion", this.data );
+      console.log("logg typeFunction", this.data.typeFunction);
+      
+      
+      if(this.data.typeFunction=="listTiker"){
+        this._LSCXmarket.addTikerToList(this.data.functionObj);
+      }else{
+        this._LSCXmarket.addMyState(this.data.functionObj, this.data.typeFunction);
+      }
     }
-  }
 }

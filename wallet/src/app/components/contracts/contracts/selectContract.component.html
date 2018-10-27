@@ -1,4 +1,4 @@
-<div *ngIf="!selected; else showContract">
+<div *ngIf="!selected; else showContract" class="scroll scrollbar auto-h">
     <p *ngIf="_contractStorage.LSCX_Contracts.length == 0" class="whiteBox text-center">You don't have contracts.</p>
     <p *ngIf="_contractStorage.LSCX_Contracts.length > 0" class="title">Lescovex contracts</p>
     <div *ngFor="let contract of _contractStorage.LSCX_Contracts, index as i" class="backWhite half contract-list" [ngClass]="[{true :'right', false: 'left clear'}[(i+1)%2==0],{true:'contract-list-active', false: 'contract-list-disabled'}[contract.active]]">
@@ -27,7 +27,7 @@
     </div>
 
 </div>
-<ng-template #showContract>
+<ng-template #showContract class="scroll scrollbar auto-h">
     <app-show-contract *ngIf="selectedContract=='LSCX'" (back)="onBack($event)" [contractType]="selectedContract" [functions]="_LSCXcontract.functions" [contractInfo]="_LSCXcontract.contractInfo" [moreInfo]="_LSCXcontract.moreInfo"></app-show-contract>
     <app-show-contract *ngIf="selectedContract=='custom'" (back)="onBack($event)" [contractType]="selectedContract" [functions]="_customContract.functions" [contractInfo]="_customContract.contractInfo" [moreInfo]="_customContract.moreInfo"></app-show-contract>
 </ng-template>

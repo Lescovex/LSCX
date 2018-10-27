@@ -84,7 +84,6 @@ export class SendPage implements OnInit {
       if(data != "" ){
         gasLimit = await this._web3.estimateGas(this._account.account.address, receiver, this._web3.web3.toHex(data), amount);
       } else {
-        
         gasLimit = await this._web3.estimateGas(this._account.account.address, receiver, "", amount)
       }
     }catch(e){
