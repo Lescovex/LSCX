@@ -1,6 +1,6 @@
 {
     "name": "lescovex",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "description": "Lescovex media explorer and wallet",
     "main": "main.js",
     "author": "Lescovex",

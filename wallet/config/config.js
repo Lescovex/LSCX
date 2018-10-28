@@ -4,8 +4,8 @@
 const path = require('path')
 
 // ENVIROMENT
-const ENV = 'dev';
-//const ENV = 'prod';
+//const ENV = 'dev';
+const ENV = 'prod';
 
 // WINDOW OPTIONS
 const WINDOW_OPTS = {
