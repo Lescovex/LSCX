@@ -101,9 +101,8 @@ export class Order {
         }
     }
 
-    private toEth(wei, decimals) {
+    toEth(wei, decimals) {
 		return 	new BigNumber(String(wei))
 		.div(new BigNumber(10 ** decimals));
-	}
-
+    }
 }

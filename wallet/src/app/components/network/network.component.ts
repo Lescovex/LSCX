@@ -59,10 +59,11 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this.dialog = this._dialog.openLoadingDialog();
         this.net = network;
         this._web3.setNetwork(network);
+        this._LSCXmarket.setMarket();
         
         if('address' in this._account.account){
                 this._contractStorage.setAccContracts();
-                this._LSCXmarket.setMarket();
+                
                 //this._LSCXmarket.resetSocket();
                 this._LSCXcontract.reset();
                 this._customContract.reset();

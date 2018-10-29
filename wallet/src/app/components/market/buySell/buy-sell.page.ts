@@ -84,7 +84,7 @@ export class BuySellPage implements OnInit {
         let order: any;
         console.log("entras aqui?");
         
-        for(let i=0; (i<matchs.length || !testTrade); i++){
+        for(let i=0; (i<matchs.length && !testTrade); i++){
             order = matchs[i];
             console.log(matchs[i])
             let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  amount, this._account.account.address];

@@ -232,7 +232,7 @@ export class LSCXMarketService {
 		this.tikersInterval = setInterval(()=>{
 			console.log("tikersInterval");
 			this.getTikers();
-	  	},60000);
+	  	},1000);
 	}
 
 	clearTikersInterval(){
@@ -407,15 +407,10 @@ export class LSCXMarketService {
 
 	async getTikers(){
 		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
-		if(tikersResult!=null){
-			//console.log("tikersResult",tikersResult.tikers)
+
+		if(tikersResult!=null && tikersResult.network == this._web3.network.chain){
 			tikersResult.tikers.forEach(x=>{
-				//console.log(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1)
-				if(x!= null && this.marketState.tikers.findIndex(y =>{
-					console.log(y, x);
-					return (y.addr === x.addr)
-				} )==-1){
-					console.log("nuevo tiker", x)
+				if(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1){
 					this.marketState.tikers.push(x);
 				}
 			})
@@ -426,8 +421,7 @@ export class LSCXMarketService {
 
 	addTikerToList(tiker){
 		console.log("ADD TIKER TO LIST");
-		console.log("tiker to add!!!!!", tiker);
-						
+		console.log("tiker to add!!!!!", tiker);				
 		if(this.marketState.hasOwnProperty('tikersToList')){
 			this.marketState.tikersToList.push(tiker);
 		}else{
