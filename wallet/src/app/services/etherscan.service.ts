@@ -62,10 +62,14 @@ export class EtherscanService {
 		for(let i =0; i<intHistory.length; i++){
 			history.push(intHistory[i]);
 		}
+		try {
+			history.sort((a,b)=>{
+				return a.timeStamp - b.timeStamp
+			});
+		}catch(e){
+			console.log(e);
+		}
 		
-		history.sort((a,b)=>{
-			return a.timeStamp - b.timeStamp
-		});
 		history = history.reverse();
 		
 		return history;
