@@ -53,7 +53,7 @@ export class CustomContractService {
 		let hasTotalsupply = false;
 		let hasBalanceOf = false;
 		let abi =  this.contract.abi;
-		for(let i = 0; i<abi.length; i++) {
+		/*for(let i = 0; i<abi.length; i++) {
 			if('constant' in abi[i] && abi[i].constant){
 				if(abi[i].name ="name" && abi[i].outputs[0].type=="string"){
 					hasName = true;
@@ -71,8 +71,39 @@ export class CustomContractService {
 					hasBalanceOf = true;
 				}
 			}
+		}*/
+		console.log(this.contract.address)
+		let isErc20 = true;
+		if(abi.find(x=> x.name ="name") == null){
+			isErc20 = false;
 		}
-		 return hasName && hasSymbol && hasSymbol && hasDecimals && hasTotalsupply && hasBalanceOf;
+		if(abi.find(x=> x.name ="symbol") == null){
+			isErc20 = false;
+		}
+		if(abi.find(x=> x.name ="decimals") == null){
+			isErc20 = false;
+		}
+		if(abi.find(x=> x.name ="totalSupply") == null){
+			isErc20 = false;
+		}
+		if(abi.find(x=> x.name ="balanceOf") == null){
+			isErc20 = false;
+		}
+		if(abi.find(x=> x.name =="approve")== null){
+			isErc20 = false;
+		}
+		if(abi.find(x=> x.name =="allowance")== null){
+			isErc20 = false;
+		}
+		if(abi.find(x=> x.name =="transfer")== null){
+			isErc20 = false;
+		}
+		if(abi.find(x=> x.name =="transferFrom")== null){
+			isErc20 = false;
+		}
+		//falta Mirar allowance, transfer, transferFrom, approve
+		 //return hasName && hasSymbol && hasSymbol && hasDecimals && hasTotalsupply && hasBalanceOf;
+		 return isErc20;
 	}
 
     async getContractData(): Promise<any[]>{

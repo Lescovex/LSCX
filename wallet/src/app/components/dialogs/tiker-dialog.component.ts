@@ -27,14 +27,17 @@ export class TikerDialogComponent {
         if(form.invalid){
             return false;
         }
+        console.log(this.data)
         
         this.dialogRef.close();
         let params = [this.data.contract.address, this.data.contract.symbol, this.data.contract.decimals];
         let tikerString = JSON.stringify({addr:this.data.contract.address, name:this.data.contract.symbol, decimals:this.data.contract.decimals});
         tikerString = tikerString.replace(/"/g,"'");
-        params.push(tikerString);;
-        
+        params.push(tikerString);
+        console.log(params)
+        console.log("antes de data")
         let data = this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'tiker', params);
+        console.log("despues de data")
         let gasLimit;
         
         try{
@@ -52,6 +55,7 @@ export class TikerDialogComponent {
                 account: this._account.account.address,
                 nonce: nonce
             }
+            console.log("fees", this._LSCXmarket.fees.feeMarket.toString());
             let tx = new RawTx(this._account,this._LSCXmarket.contractMarket.address,new BigNumber(this._LSCXmarket.fees.feeMarket.toString()),gasOption.gasLimit, gasOption.gasPrice, this._web3.network, data);
             this.openSendDialog(tx, tikerObj);
         }else{

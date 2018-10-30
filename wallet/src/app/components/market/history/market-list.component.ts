@@ -35,12 +35,11 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     }
     
     ngOnChanges(): void {
-        console.log("change");
         if(this.action == "myOrders"){
             this.interval = setInterval(async()=>{
                 let blockNum = await this._web3.blockNumber();
                 this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
-                this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber);                
+                this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain);                
             },250); 
         }
         if(this.action != "myOrders" && this.interval != null){
@@ -59,7 +58,6 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
             clearInterval(this.interval);
             this.interval= null;
         }
-        
     }
 
     openExternal(txHash){

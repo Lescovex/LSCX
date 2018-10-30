@@ -21,9 +21,9 @@
                 <td *ngIf="trade.side == 'sell'">
                     <p class="red">Sell Order</p>
                 </td>
-                <td>{{trade.amount}}</td>
-                <td>{{trade.amountBase}}</td>
-                <td>{{trade.price}}</td>
+                <td>{{trade.amount | number:"1.0-8":"en"}}</td>
+                <td>{{trade.amountBase | number:"1.0-8":"en"}}</td>
+                <td>{{trade.price | number:"1.0-8":"en"}}</td>
             </tr>
         </tbody>
     </table>

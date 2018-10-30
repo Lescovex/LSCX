@@ -232,7 +232,7 @@ export class LSCXMarketService {
 		this.tikersInterval = setInterval(()=>{
 			console.log("tikersInterval");
 			this.getTikers();
-	  	},1000);
+	  	},60000);
 	}
 
 	clearTikersInterval(){
@@ -327,9 +327,10 @@ export class LSCXMarketService {
 		}, 2000);		
 	}
 
-	async checkMyOrdersDeleted(blockNumber:number){
+	async checkMyOrdersDeleted(blockNumber:number, network: number){
+
 		let myOrders = [];
-		if(this._account.account.address in this.marketState.myOrders){
+		if(this._account.account.address in this.marketState.myOrders && network == this._web3.network.chain){
 			let myOrdersAddress = this.marketState.myOrders[this._account.account.address]
 			myOrders = this.state.myOrders.filter(order=> order.show && !order.deleted);
 			myOrders.forEach(async order=>{
@@ -362,15 +363,17 @@ export class LSCXMarketService {
 							}
 							let trade = new Trade(side, order.tokenGet, order.tokenGive, amount, amountBase, order.price, this._account.account.address, order.user, order.nonce);
 							trade.txHash = order.txHash;
-							this.addMyState(trade, "myTrades");
-							//myOrdersAddress.splice(i,1);
+							//add to myTrades and remove from myOrders
+							this.marketState.myTrades[this._account.account.address].push(trade);
+							this.state.myTrades[this._account.account.address].push(trade);
+							myOrdersAddress.splice(i,1);
 
 						} else {		
 							myOrdersAddress[i] = order;
 						}
 					}
 				}
-				this.marketState.myOrders[this._account.account.address] = myOrdersAddress;
+				this.marketState.myOrders[this._account.account.address] = myOrdersAddress;	
 			})
 			this.state.myOrders = this.marketState.myOrders[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
 			this.saveState();
