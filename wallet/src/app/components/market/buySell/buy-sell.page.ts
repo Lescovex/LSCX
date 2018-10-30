@@ -133,9 +133,7 @@ export class BuySellPage implements OnInit {
       }
       console.log("ORDERS TO CROSS???",ordersToCross);      
       //console.log("FILTER DE ORDERS TO CROSS?",ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber));     
-      return ordersToCross.filter(x=>{ 
-        console.log(x.available>=amount, parseFloat(x.price)==price, x.expires,blockNumber);
-        return x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber});
+      return ordersToCross.filter(x=>{ return x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber && x.user.toLowerCase() !=this._account.account.address.toLowerCase()});
     }
 
     async order(){

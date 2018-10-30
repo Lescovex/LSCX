@@ -139,6 +139,7 @@ export class LSCXMarketService {
 		this.setFileName();
 		this.setCongif();
 		this.setContracts();
+		this._marketStorage.setContract();
 		this.clearTikersInterval();
 		await this.getLocalState();
 		this.eth = this.config.tokens[0];
@@ -230,7 +231,7 @@ export class LSCXMarketService {
 			this.tikersInterval = setInterval(()=>{
 				console.log("tikersInterval");
 				this.getTikers();
-			  },1000);
+			  },60000);
 		}
 	}
 
@@ -362,20 +363,25 @@ export class LSCXMarketService {
 							}
 							let trade = new Trade(side, order.tokenGet, order.tokenGive, amount, amountBase, order.price, this._account.account.address, order.user, order.nonce);
 							trade.txHash = order.txHash;
-							//add to myTrades and remove from myOrders
-							this.marketState.myTrades[this._account.account.address].push(trade);
-							this.state.myTrades[this._account.account.address].push(trade);
 							myOrdersAddress.splice(i,1);
-
+							//add to myTrades and remove from myOrders
+							if(this._web3.network.chain == network) {
+								this.marketState.myTrades[this._account.account.address].push(trade);
+								this.state.myTrades.push(trade);
+							}
 						} else {		
 							myOrdersAddress[i] = order;
 						}
 					}
 				}
-				this.marketState.myOrders[this._account.account.address] = myOrdersAddress;	
+				if(this._web3.network.chain == network) {
+					this.marketState.myOrders[this._account.account.address] = myOrdersAddress;
+				}	
 			})
-			this.state.myOrders = this.marketState.myOrders[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
-			this.saveState();
+			if(this._web3.network.chain == network) {
+				this.state.myOrders = this.marketState.myOrders[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
+				this.saveState();
+			}
 		}
 	}
 
