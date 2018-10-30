@@ -41,12 +41,14 @@ export class LSCXMarketService {
 		myTrades: undefined,
 		myFunds: undefined
 	};
+	updated: boolean;
 
 	balancesInterval = null;
 	stateOrdersInteval = null;
 	tikersInterval = null;
 	
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, private _marketStorage: LSCXMarketStorageService) {
+		this.updated = false;
 		this.setMarket();
 	}
 
@@ -68,11 +70,7 @@ export class LSCXMarketService {
 			let localToken = this.getLocalStorageToken();
 			if(localToken !=null && (this.config.tokens.find(token=>token.addr == localToken.addr) != null || this.marketState.tikers.find(token=>token.addr == localToken.addr))) {
 				this.token = localToken;
-				
-			}else if ( localToken !=null && 'tokens' in this._account.account && this._account.account.tokens.find(token=> token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network.chain) != null){
-				this.token = localToken;
-				
-			}else{
+			} else {
 				this.token = this.config.tokens[1]; 
 			}
 		}else{
@@ -141,17 +139,18 @@ export class LSCXMarketService {
 		this.setFileName();
 		this.setCongif();
 		this.setContracts();
+		this.clearTikersInterval();
 		await this.getLocalState();
 		this.eth = this.config.tokens[0];
 		this.setToken(token);
+		this.updated = true;
 	}
 
 	getFunctionData(contract, functionName:string, params?) {
 		if(typeof(params)== 'undefined'){
 			params= []
 		}
-		console.log("this.functionData", this._contract.getFunctionData(contract, functionName, params));
-		
+		//console.log("this.functionData", this._contract.getFunctionData(contract, functionName, params));
 		return this._contract.getFunctionData(contract,functionName, params)
 	}
 
@@ -225,12 +224,14 @@ export class LSCXMarketService {
 	}
 
 	async setTikersInterval(){
-		this.getTikers();
-		console.log("tikersInterval");
-		this.tikersInterval = setInterval(()=>{
-			console.log("tikersInterval");
+		if(this.tikersInterval== null){
 			this.getTikers();
-	  	},60000);
+			console.log("tikersInterval");
+			this.tikersInterval = setInterval(()=>{
+				console.log("tikersInterval");
+				this.getTikers();
+			  },1000);
+		}
 	}
 
 	clearTikersInterval(){
@@ -325,9 +326,10 @@ export class LSCXMarketService {
 		}, 2000);		
 	}
 
-	async checkMyOrdersDeleted(blockNumber:number){
+	async checkMyOrdersDeleted(blockNumber:number, network: number){
+
 		let myOrders = [];
-		if(this._account.account.address in this.marketState.myOrders){
+		if(this._account.account.address in this.marketState.myOrders && network == this._web3.network.chain){
 			let myOrdersAddress = this.marketState.myOrders[this._account.account.address]
 			myOrders = this.state.myOrders.filter(order=> order.show && !order.deleted);
 			myOrders.forEach(async order=>{
@@ -336,21 +338,41 @@ export class LSCXMarketService {
 					order.deleted = true;
 					order.date = Date.now();
 				}
-				let byte32Zero ="0x0000000000000000000000000000000000000000";
 				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
 				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
 				order.setFilled(amountFilled);
 
 				for(let i=0; i<myOrdersAddress.length; i++){
 					if(order.txHash == myOrdersAddress[i].txHash){
-						if(order.deleted && order.amountFilled ==0 ){
+						console.log(order.deleted, order.amountFilled, )
+						if(order.deleted && order.amountFilled == 0 ){
 							myOrdersAddress.splice(i,1);
+						} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
+							let side: string;
+							let amount: number;
+							let amountBase: number;
+							if(order.tokenGet == this.config.tokens[0].addr) {
+								side = "sell";
+								amount = order.amountFilled/order.price;
+								amountBase =  order.amountFilled;
+							} else {
+								side = "buy";
+								amount = order.amountFilled;
+								amountBase = order.amountFilled * order.price;
+							}
+							let trade = new Trade(side, order.tokenGet, order.tokenGive, amount, amountBase, order.price, this._account.account.address, order.user, order.nonce);
+							trade.txHash = order.txHash;
+							//add to myTrades and remove from myOrders
+							this.marketState.myTrades[this._account.account.address].push(trade);
+							this.state.myTrades[this._account.account.address].push(trade);
+							myOrdersAddress.splice(i,1);
+
 						} else {		
 							myOrdersAddress[i] = order;
 						}
 					}
 				}
-				this.marketState.myOrders[this._account.account.address] = myOrdersAddress;
+				this.marketState.myOrders[this._account.account.address] = myOrdersAddress;	
 			})
 			this.state.myOrders = this.marketState.myOrders[this._account.account.address].filter(x=>x.tokenGet == this.token.addr || x.tokenGive== this.token.addr);
 			this.saveState();
@@ -387,27 +409,26 @@ export class LSCXMarketService {
 
 	async getTikers(){
 		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
-		if(tikersResult!=null){
-			//console.log("tikersResult",tikersResult.tikers)
+
+		if(tikersResult!=null && tikersResult.network == this._web3.network.chain){
+			console.log("entra en tikers");
 			tikersResult.tikers.forEach(x=>{
-				//console.log(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1)
-				if(x!= null && this.marketState.tikers.findIndex(y =>{
-					console.log(y, x);
-					return (y.addr === x.addr)
-				} )==-1){
-					console.log("nuevo tiker", x)
-					this.marketState.tikers.push(x);
+				if(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1){
+					if(tikersResult.network == this._web3.network.chain){
+						this.marketState.tikers.push(x);
+					}
 				}
 			})
-			this.marketState.tikersId = tikersResult.tikersId;
-			this.saveState();
+			if(tikersResult.network == this._web3.network.chain){
+				this.marketState.tikersId = tikersResult.tikersId;
+				this.saveState();
+			}
 		}
 	}
 
 	addTikerToList(tiker){
 		console.log("ADD TIKER TO LIST");
-		console.log("tiker to add!!!!!", tiker);
-						
+		console.log("tiker to add!!!!!", tiker);				
 		if(this.marketState.hasOwnProperty('tikersToList')){
 			this.marketState.tikersToList.push(tiker);
 		}else{

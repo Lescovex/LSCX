@@ -17,7 +17,7 @@
 
     "tokens": [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
-        { "addr": "0x40aade55175aaeed9c88612c3ed2ff91d8943964", "name": "1ST", "decimals": 18 }
+        { "addr": "0x4007625b68b57748b99d1418b1e17bfb3697c949", "name": "LSCX", "decimals": 8 }
     ],
     "defaultPair": { "token": "1ST", "base": "ETH" },
     "pairs": [

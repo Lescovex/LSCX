@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, DoCheck } from '@angular/core';
 
 import { AccountService } from '../../services/account.service';
 import { LSCXMarketService } from '../../services/LSCX-market.service';
@@ -9,7 +9,7 @@ import { Web3 } from '../../services/web3.service';
   selector: 'app-market',
   templateUrl: './market.component.html',
 })
-export class MarketComponent implements OnDestroy{
+export class MarketComponent implements DoCheck, OnDestroy{
   protected showList: boolean = false;
   protected price;
   interval;
@@ -20,6 +20,12 @@ export class MarketComponent implements OnDestroy{
     this._LSCXmarket.setTikersInterval();
   }
 
+  ngDoCheck(){
+     if(this._LSCXmarket.updated = true && this._LSCXmarket.tikersInterval == null){
+       this._LSCXmarket.setTikersInterval();
+     }
+  }
+  
   ngOnDestroy(){
     this._LSCXmarket.clearTikersInterval();
   }

@@ -21,9 +21,9 @@
                 <td *ngIf="trade.side == 'sell'">
                     <p class="red">Sell Order</p>
                 </td>
-                <td>{{trade.amount}}</td>
-                <td>{{trade.amountBase}}</td>
-                <td>{{trade.price}}</td>
+                <td>{{trade.amount | number:"1.0-8":"en"}}</td>
+                <td>{{trade.amountBase | number:"1.0-8":"en"}}</td>
+                <td>{{trade.price | number:"1.0-8":"en"}}</td>
             </tr>
         </tbody>
     </table>
@@ -42,7 +42,7 @@
         <tbody *ngFor="let order of history, index as i">
             <tr *ngIf="blockNumber <= order.expires">
                 <td>
-                    <p [ngClass]="(order.tokenGet=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p>
+                    <p [ngClass]="(order.tokenGive=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
                 <td *ngIf="order.tokenGet=='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amountBase | number:"1.8-8":"en"}}</td>
                 <td *ngIf="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>

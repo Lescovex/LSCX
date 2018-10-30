@@ -53,10 +53,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
   }
 
   openExternal(txHash){
-    this._scan.openTokenUrl(txHash, this._account.account.address)
-    /*const shell = require('electron').shell;
-    let net = (this._web3.network == 1) ? "" : "ropsten.";
-    shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+this._account.account.address);*/
+    this._scan.openTokenHolderUrl(txHash, this._account.account.address)
   }
 
   async setTokens() {

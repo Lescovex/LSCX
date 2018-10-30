@@ -27,6 +27,8 @@ export class LSCXMarketStorageService {
 
     async getTikers(tikersId) {
         let i = 1;
+        let network = this._web3.network.chain;
+        //console.log(network)
         //console.log("getIkers storage");
         if(tikersId != null) {
             i = tikersId;
@@ -48,9 +50,9 @@ export class LSCXMarketStorageService {
             });           
         }
 
-        console.log(newTikers)
+        //console.log(newTikers)
         let lastId = await this.callFunction("tikersId",[]);
-        return {tikers:newTikers, tikersId :parseInt(lastId.toString())};
+        return {tikers:newTikers, tikersId :parseInt(lastId.toString()), network: network};
     }
 
     async getBuyOrders(token) {

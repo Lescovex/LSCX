@@ -41,7 +41,7 @@ export class TokenService{
                 if (err) {
                     reject(err);
                 } else {
-                    
+                    console.log("puede ser")
                     resolve(res.toNumber());
                 }
             });

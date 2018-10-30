@@ -204,6 +204,9 @@ export class AccountService{
           deleted: false
         }
         token = await self.updateTokenBalance(token);
+        /*console.log("despues de tener el Balance");
+        console.log(isNaN(token.tokenDecimal));
+        console.log("despues del isNaN");*/
         if(!isNaN(token.tokenDecimal)){
             tokens.push(token);
         }
@@ -223,8 +226,9 @@ export class AccountService{
       }      
       let exp = 10 ** token.tokenDecimal;
       let balance : any = await this._token.getBalanceOf(this.account.address);
-      
+      //console.log("antes de poner el balance");
       token.balance = balance.div(exp).toNumber();
+      //console.log("despues de poner el balance");
     }
     
     return token

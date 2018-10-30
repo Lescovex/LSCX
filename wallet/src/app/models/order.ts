@@ -37,7 +37,7 @@ export class Order {
         this.deleted = ('deleted' in object)? object.deleted : false;
         this.setTokenDecimals(tokenDecimals);
         this.setAmountBaseAndAmount(object);
-        this.setPrice();
+        this.setPrice(object);
         if('amountFilled' in object) {
             this.amountFilled = object.amountFilled;
             this.available = object.available;
@@ -79,8 +79,12 @@ export class Order {
         this.tokenDecimals = tokenDecimals;
     }
 
-    private setPrice() {
-        this.price = this.amountBase/this.amount;
+    private setPrice(object) {
+        if('price' in object){
+            this.price = object.price;
+        } else {
+            this.price = this.amountBase/this.amount;
+        }
     }
 
     setFilled(amountfilled) {
@@ -101,9 +105,8 @@ export class Order {
         }
     }
 
-    private toEth(wei, decimals) {
+    toEth(wei, decimals) {
 		return 	new BigNumber(String(wei))
 		.div(new BigNumber(10 ** decimals));
-	}
-
+    }
 }

@@ -18,7 +18,7 @@
         </div>
         <a class="right btn-contract-black" (click)="goBack()" (mouseover)="goHover=true" (mouseout)="goHover=false"><img *ngIf="goHover" src="~icons/left.svg"><img *ngIf="!goHover" src="~icons/left_black.svg"> Go back</a>
     </div>
-    <div class="clear">
+    <div *ngIf="isERC20" class="clear">
         <p *ngIf="!isInMarket" class="left contract-list-add-market">This contract isn't listed in LSXC market</p>
         <p *ngIf="isInMarket" class="left contract-list-add-market">This contract is listed in LSCX market</p>
         <a *ngIf="addMarket" class="btn-contract right" (click)="addToMarket()">Add to LSCX market</a>
