@@ -38,7 +38,7 @@ export class WalletService {
     let wallet;
     let self = this;
     try{
-        wallet = EthWallet.fromV3(json,pass);
+        wallet = EthWallet.fromV3(json,pass,true);
     }catch(e){
         error = true
         throw e;
