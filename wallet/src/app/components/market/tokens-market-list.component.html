@@ -2,14 +2,8 @@
 <div>
     <input type="text" placeholder="Search..." (input)="search(token.value)" #token>
 </div>
-<p *ngIf="LSCX_tokens.length>0" class="bold"> LSCX tokens</p>
-<ul *ngIf="LSCX_tokens.length>0">
-    <li *ngFor="let token of LSCX_tokens" (click)="selectToken(token)">{{token.name}}</li>
-</ul>
-<hr *ngIf="LSCX_tokens.length>0 && tokens.length>0">
-<p *ngIf="tokens.length>0"class="bold"> General tokens</p>
 <ul *ngIf="tokens.length>0">
     <li *ngFor="let token of tokens" (click)="selectToken(token)">{{token.name}}</li>
 </ul>
-<p *ngIf="tokens.length==0 && LSCX_tokens.length==0">No tokens found</p>
+<p *ngIf="tokens.length==0">No tokens found</p>
 

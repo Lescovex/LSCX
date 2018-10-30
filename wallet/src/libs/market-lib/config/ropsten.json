@@ -22,7 +22,7 @@
     "etherscanAPIKey": "GCGR1C9I17TYIRNYUDDEIJH1K5BRPH4UDE",
     "tokens": [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
-        { "addr": "0x40aade55175aaeed9c88612c3ed2ff91d8943964", "name": "1ST", "decimals": 18 }
+        { "addr": "0xb2f524a6825f8986ea6ee1e6908738cff13c5b31", "name": "LSCX", "decimals": 8 }
     ],
     "defaultPair": { "token": "1ST", "base": "ETH" },
     "pairs": [

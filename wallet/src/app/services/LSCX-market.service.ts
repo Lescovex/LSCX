@@ -70,11 +70,7 @@ export class LSCXMarketService {
 			let localToken = this.getLocalStorageToken();
 			if(localToken !=null && (this.config.tokens.find(token=>token.addr == localToken.addr) != null || this.marketState.tikers.find(token=>token.addr == localToken.addr))) {
 				this.token = localToken;
-				
-			}else if ( localToken !=null && 'tokens' in this._account.account && this._account.account.tokens.find(token=> token.contractAddress == localToken.addr && !token.deleted && token.network == this._web3.network.chain) != null){
-				this.token = localToken;
-				
-			}else{
+			} else {
 				this.token = this.config.tokens[1]; 
 			}
 		}else{
@@ -143,6 +139,7 @@ export class LSCXMarketService {
 		this.setFileName();
 		this.setCongif();
 		this.setContracts();
+		this.clearTikersInterval();
 		await this.getLocalState();
 		this.eth = this.config.tokens[0];
 		this.setToken(token);
@@ -227,12 +224,14 @@ export class LSCXMarketService {
 	}
 
 	async setTikersInterval(){
-		this.getTikers();
-		console.log("tikersInterval");
-		this.tikersInterval = setInterval(()=>{
-			console.log("tikersInterval");
+		if(this.tikersInterval== null){
 			this.getTikers();
-	  	},60000);
+			console.log("tikersInterval");
+			this.tikersInterval = setInterval(()=>{
+				console.log("tikersInterval");
+				this.getTikers();
+			  },1000);
+		}
 	}
 
 	clearTikersInterval(){
@@ -412,13 +411,18 @@ export class LSCXMarketService {
 		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
 
 		if(tikersResult!=null && tikersResult.network == this._web3.network.chain){
+			console.log("entra en tikers");
 			tikersResult.tikers.forEach(x=>{
 				if(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1){
-					this.marketState.tikers.push(x);
+					if(tikersResult.network == this._web3.network.chain){
+						this.marketState.tikers.push(x);
+					}
 				}
 			})
-			this.marketState.tikersId = tikersResult.tikersId;
-			this.saveState();
+			if(tikersResult.network == this._web3.network.chain){
+				this.marketState.tikersId = tikersResult.tikersId;
+				this.saveState();
+			}
 		}
 	}
 
