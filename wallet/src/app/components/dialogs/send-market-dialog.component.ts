@@ -26,7 +26,6 @@ export class SendMarketDialogComponent{
   txs: any[];
   submited = false;
   messageTrade="";
-  amountToShow;
 
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, private _LSCXmarket: LSCXMarketService,  public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendMarketDialogComponent>) {
     console.log("This data???????!!!!!!!!!!!!!!!!!!!!!!!??????????",this.data);
@@ -39,16 +38,15 @@ export class SendMarketDialogComponent{
     }else{
       this.txs = this.data.tx;
     }
-    
-    
-    if(this.data.typeFunction == "myTrades"){
-      this.messageTrade = "This action have a market fee of ";
+
+    if(this.data.typeFunction == "myTrades" || this.data.typeFunction == "myOrders"){
+      
       let oneEther = 1000000000000000000;
-      let result =this.data.functionObj.amountBaseDecoded * this._LSCXmarket.fees.feeTake; 
-      this.amountToShow = result /oneEther;      
+      let result =this.data.amountForFee * this._LSCXmarket.fees.feeTake; 
+      let amountToShow = result /oneEther;
+      this.messageTrade = "This action have a market fee of "+this.data.fees+" "+this.data.tokenName;    
       
     }else{
-      this.amountToShow = null;
       this.messageTrade = "";
     }
   }

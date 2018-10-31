@@ -28,9 +28,11 @@ export class BuySellPage implements OnInit {
     private tokenAmount:number;
     private ethAmount: number;
     protected submited: boolean = false;
+    private amount: number;
     private loadingDialog;
     constructor(public _account:AccountService, private _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
+        console.log("FEES", this._LSCXmarket.fees)
     }
 
     async ngOnInit() {
@@ -53,7 +55,7 @@ export class BuySellPage implements OnInit {
       this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
       this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
       console.log(price, this.tokenAmount, this.ethAmount);
-      let amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
+      this.amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
         
         //change to > to get total
       if(this.action == "buy" && this.f.total > this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount > this._LSCXmarket.marketBalances.token){
@@ -74,8 +76,6 @@ export class BuySellPage implements OnInit {
       let matchs = await this.getCross(amountCross, this.f.price);
       console.log("AmountCross?!?!?!",amountCross);
       console.log("this.f.price", this.f.price);
-      
-      
       console.log("matchs!!!!!?!!??!?!?!?!!?!?!",matchs);
       
       if(matchs.length>0){
@@ -87,13 +87,13 @@ export class BuySellPage implements OnInit {
         for(let i=0; (i<matchs.length && !testTrade); i++){
             order = matchs[i];
             console.log("dentro", matchs[i], (!testTrade));
-            let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  amount, this._account.account.address];
+            let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  this.amount, this._account.account.address];
             let testTradeResp = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
             testTrade = (testTradeResp.toString() == "true")? true: false;
             //console.log("Que es order?", order); //es el order del match
             //console.log("Que es testTrade?",testTrade);
             console.log(i, order,testTrade)
-            if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, amount];
+            if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, this.amount];
         }
 
         if(params.length>0){
@@ -117,9 +117,10 @@ export class BuySellPage implements OnInit {
 
     total() {
       let total = this.f.amount * this.f.price;
-      let digits = 3
+      this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price; 
+      /*let digits = 3
       let fact= Math.pow(10,digits);
-      this.f.total = (isNaN(total))? 0 : Math.floor(total*fact)/fact;
+      this.f.total = (isNaN(total))? 0 : Math.floor(total*fact)/fact;*/
       console.log(this.f.total)
     }
 
@@ -130,14 +131,11 @@ export class BuySellPage implements OnInit {
         ordersToCross = this._LSCXmarket.state.orders.sells;
       }else{
         ordersToCross = this._LSCXmarket.state.orders.buys;
-      }
-      console.log("ORDERS TO CROSS???",ordersToCross);      
-      //console.log("FILTER DE ORDERS TO CROSS?",ordersToCross.filter(x=>x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber));     
+      }    
       return ordersToCross.filter(x=>{ return x.available>=amount && parseFloat(x.price)==price && x.expires>blockNumber && x.user.toLowerCase() !=this._account.account.address.toLowerCase()});
     }
 
     async order(){
-
       let block  = await this._web3.blockNumber();
       let ethAddr =  this._LSCXmarket.config.tokens[0].addr;
       let nonce = await this.getNonce();
@@ -177,7 +175,9 @@ export class BuySellPage implements OnInit {
       let gasOpt = await this.openGasDialog(gasLimit);
         if(gasOpt != null){
           let tx = new RawTx(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
-          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myOrders",orderObj);
+          let fees = this.getFees("order");
+          let tokenName = (this.action == "buy")? this._LSCXmarket.token.name : "ETH";
+          this.sendDialogService.openConfirmMarketOrders(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myOrders",orderObj, fees, tokenName);
         }
     }
 
@@ -197,8 +197,9 @@ export class BuySellPage implements OnInit {
           let nonce = await this.getNonce(); 
           let tx = new RawTx(this._account,this._LSCXmarket.contractMarket.address,new BigNumber(0),gasOpt.gasLimit, gasOpt.gasPrice, this._web3.network, data);
           let tradeObj = new Trade(this.action, order.tokenGet, order.tokenGive, this.f.amount, this.f.total, this.f.price, this._account.account.address, order.user, nonce, params[7]);             
-          
-          this.sendDialogService.openConfirmMarket(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myTrades", tradeObj);
+          let fees = this.getFees("trade");
+          let tokenName = (this.action == "buy")? "ETH": this._LSCXmarket.token.name;
+          this.sendDialogService.openConfirmMarketOrders(tx.tx, this._LSCXmarket.contractMarket.address, tx.amount, tx.gas, tx.cost, "send", "myTrades", tradeObj, fees, tokenName);
         }  
     }
 
@@ -223,5 +224,24 @@ export class BuySellPage implements OnInit {
         nonce = parseInt(historyNonce)+1;
     }
     return nonce;
+  }
+
+  getFees(typeOrder): number{
+    let eth = parseInt(this._web3.web3.toWei(1, "ether"));
+    let fees = 0;
+    if(typeOrder=="order") {
+      let amount = (this.action == "buy")? this.tokenAmount : this.ethAmount;
+      fees = (amount*this._LSCXmarket.fees.feeMake)/eth;
+      console.log(this.amount, this._LSCXmarket.fees.feeMake, eth, (this.amount*this._LSCXmarket.fees.feeMake)/eth);
+    } else {
+      fees = (this.amount*this._LSCXmarket.fees.feeTake)/eth;
+            console.log(this.amount, this._LSCXmarket.fees.feeTake, eth, (this.amount*this._LSCXmarket.fees.feeMake)/eth);
+    }
+    if(this.action == "buy" && typeOrder == "trade" || this.action == "sell" && typeOrder == "order" ) {
+      fees = fees/Math.pow(10,18);
+    } else {
+      fees = fees/Math.pow(10,this._LSCXmarket.token.decimals);
+    }
+    return fees;
   }
 }
