@@ -1,6 +1,6 @@
 {
     "contractMarket": [
-        { "addr": "0xc2a17f5dd15b72cffdcd849869f589dad30e04a3", "info": "Deployed 10/25/2018" },
+        { "addr": "0x5c7589ab17396c8c15a5fc2b89aa62cbad35b64a", "info": "Deployed 10/31/2018" },
         { "addr": "0x0000000000000000000000000000000000000000", "info": "Zero contract" }
     ],
     "ethTestnet": "kovan",

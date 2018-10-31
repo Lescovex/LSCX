@@ -1,6 +1,6 @@
 {
     "contractMarket": [
-        { "addr": "0x45486dddee4a75569a56cb1886e0370d82f4c2d3", "info": "(Latest 10/25/2018)" },
+        { "addr": "0x3DA70c70B9574FF185b31d70878a8E3094603c4c", "info": "(Latest 10/31/2018)" },
         { "addr": "0x0000000000000000000000000000000000000000", "info": "Zero contract" }
     ],
     "ethTestnet": false,

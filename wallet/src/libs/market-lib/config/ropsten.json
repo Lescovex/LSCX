@@ -1,6 +1,6 @@
 {
     "contractMarket": [
-        { "addr": "0x62d300bedb3fed128cc5d5554c5a04af78ba5ee9", "info": "Deployed 10/25/2018" },
+        { "addr": "0xe4fdd21e6b220334b993d67b650ee49185373cda", "info": "Deployed 10/31/2018" },
         { "addr": "0x0000000000000000000000000000000000000000", "info": "Zero contract" }
     ],
     "ethTestnet": "ropsten",
