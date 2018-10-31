@@ -17,7 +17,7 @@ export class SettingsComponent implements OnInit, DoCheck{
   showErrorDialog = false;
   etherscanApiKey: string;
   constructor(private _scan: EtherscanService, private _account: AccountService, private _dialog: DialogService, private router: Router) {
-    this.etherscanApiKey = (_scan.apikey=="")? null: _scan.apikey;
+    this.etherscanApiKey = (_scan.apikey=="" || _scan.apikey==_scan.defaultApikey)? null: _scan.apikey;
   }
 
 

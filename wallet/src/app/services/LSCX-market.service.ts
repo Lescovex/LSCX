@@ -366,7 +366,11 @@ export class LSCXMarketService {
 							myOrdersAddress.splice(i,1);
 							//add to myTrades and remove from myOrders
 							if(this._web3.network.chain == network) {
-								this.marketState.myTrades[this._account.account.address].push(trade);
+								if(this._account.account.address in this.marketState.myTrades){
+									this.marketState.myTrades[this._account.account.address].push(trade);
+								} else {
+									this.marketState.myTrades[this._account.account.address] = [trade]
+								}
 								this.state.myTrades.push(trade);
 							}
 						} else {		

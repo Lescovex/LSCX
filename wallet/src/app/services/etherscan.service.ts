@@ -9,6 +9,7 @@ const shell = require('electron').shell;
 
 @Injectable()
 export class EtherscanService {
+	defaultApikey = "JDVE27WHYITCKM7Q2DMBC3N65VDIZ74HHJ"
 	apikey = "";
 	urlStarts = "";
 	checkInterval;
@@ -17,14 +18,17 @@ export class EtherscanService {
 	}
 
 	setApiKey(apikey){
-		this.apikey = apikey;
-		let apikeys: any= {};
-		if(localStorage.getItem("apikeys")){
-		  apikeys = JSON.parse(localStorage.getItem("apikeys"));
-		}
-		  apikeys.eth = apikey;
-		  localStorage.setItem("apikeys",JSON.stringify(apikeys));
-	
+		if(apikey=="" || typeof(apikey)=="undefined") {
+			this.apikey = this.defaultApikey ;
+		}else {
+			this.apikey = apikey;
+			let apikeys: any= {};
+			if(localStorage.getItem("apikeys")){
+			apikeys = JSON.parse(localStorage.getItem("apikeys"));
+			}
+			apikeys.eth = apikey;
+			localStorage.setItem("apikeys",JSON.stringify(apikeys));
+		}	
 	}
 
 	getApiKey(){
@@ -33,6 +37,8 @@ export class EtherscanService {
 		  if("eth" in apikeys){
 			this.apikey  = apikeys.eth;
 		  }
+		}else{
+			this.apikey = this.defaultApikey
 		}
 	}
 
