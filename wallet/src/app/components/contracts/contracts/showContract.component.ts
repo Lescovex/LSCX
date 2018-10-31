@@ -53,7 +53,8 @@ export class ShowContract implements OnInit{
         this.owner=info[1]
       }
     })
-    if(this._LSCXmarket.marketState.tikers.find(x=> x.addr.toLowerCase() == this.contractInfo.address.toLowerCase()) !=null){
+    if(this._LSCXmarket.marketState.tikers.find(x=> x.addr.toLowerCase() == this.contractInfo.address.toLowerCase()) !=null 
+          || this._LSCXmarket.config.tokens.find(x=> x.addr.toLowerCase() == this.contractInfo.address.toLowerCase()) !=null){
       this.isInMarket = true;
     }else{
       this.addMarket = true;
