@@ -77,13 +77,13 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyTrades(): any[] {
-    let trades = this._LSCXmarket.state.myTrades;
+    let trades = this._LSCXmarket.state.myTrades.filter(x=> x.show);;
     return (typeof(trades) == 'undefined')? [] : trades;
   }
 
   getMyOrders(): any[] {
     console.log("entra en getOrders");
-    let orders =  this._LSCXmarket.state.myOrders.filter(x=> !x.deleted);
+    let orders =  this._LSCXmarket.state.myOrders.filter(x=> !x.deleted && x.show);
     let myOrders: Order[] =[];
     orders.map(order => {
       myOrders.push(new Order(order, order.tokenDecimals));  
