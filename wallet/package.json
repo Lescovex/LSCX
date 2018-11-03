@@ -115,7 +115,7 @@
                 "owner": "mirpuicor",
                 "releaseType": "draft",
                 "publishAutoUpdate": "true",
-                "repo": "AutoUpdates"
+                "repo": "LSCX"
             }
         },
         "win": {
@@ -126,7 +126,7 @@
                 "owner": "mirpuicor",
                 "releaseType": "draft",
                 "publishAutoUpdate": "true",
-                "repo": "AutoUpdates"
+                "repo": "LSCX"
             }
         },
         "linux": {
@@ -137,7 +137,7 @@
                 "owner": "mirpuicor",
                 "releaseType": "draft",
                 "publishAutoUpdate": "true",
-                "repo": "AutoUpdates"
+                "repo": "LSCX"
             }
         },
         "nsis": {
