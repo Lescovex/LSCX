@@ -112,7 +112,7 @@
             "icon": "./lescovex.png",
             "publish": {
                 "provider": "github",
-                "owner": "mirpuicor",
+                "owner": "Lescovex",
                 "releaseType": "draft",
                 "publishAutoUpdate": "true",
                 "repo": "LSCX"
@@ -123,7 +123,7 @@
             "target": "nsis",
             "publish": {
                 "provider": "github",
-                "owner": "mirpuicor",
+                "owner": "Lescovex",
                 "releaseType": "draft",
                 "publishAutoUpdate": "true",
                 "repo": "LSCX"
@@ -134,7 +134,7 @@
             "icon": "./lescovex.png",
             "publish": {
                 "provider": "github",
-                "owner": "mirpuicor",
+                "owner": "Lescovex",
                 "releaseType": "draft",
                 "publishAutoUpdate": "true",
                 "repo": "LSCX"
