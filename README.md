@@ -1,4 +1,4 @@
-# Lescovex DEX Beta
+https://github.com/Lescovex/LSCX/releases/tag/Lescovex_DEX_1.0.6# Lescovex DEX Beta
 Authors: Vicent Nos Ripollés, Lidia Martín Velasco, Mireia Puig Cortés, Enrique Santos
 
 Lescovex DEX is a tool for managing your ethers and ethereum tokens with the possibility of issuing financial contracts and trading them directly on a decentralized OTC market. 
@@ -17,11 +17,11 @@ npm run electron
 
 # Lescovex DEX BETA Binaries Download
 
-[Windows](https://github.com/Lescovex/LSCX/releases/download/Lescovex_DEX/lescovex.Setup.1.0.3.exe)
+[Windows](https://github.com/Lescovex/LSCX/releases/tag/Lescovex_DEX_1.0.6)
 
-[Linux](https://github.com/Lescovex/LSCX/releases/download/Lescovex_DEX/lescovex-1.0.3-x86_64.AppImage)
+[Linux](https://github.com/Lescovex/LSCX/releases/tag/Lescovex_DEX_1.0.6)
 
-[Mac](https://github.com/Lescovex/LSCX/releases/download/Lescovex_DEX/lescovex-1.0.3.dmg)
+[Mac](https://github.com/Lescovex/LSCX/releases/tag/Lescovex_DEX_1.0.6)
 
 
 # Features
