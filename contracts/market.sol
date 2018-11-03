@@ -217,19 +217,16 @@ contract LescovexMarket is SafeMath {
 
   function changeFeeMake(uint feeMake_) {
     if (msg.sender != admin) throw;
-    if (feeMake_ > feeMake) throw;
     feeMake = feeMake_;
   }
 
   function changeFeeTake(uint feeTake_) {
     if (msg.sender != admin) throw;
-    if (feeTake_ > feeTake || feeTake_ < feeRebate) throw;
     feeTake = feeTake_;
   }
 
   function changeFeeRebate(uint feeRebate_) {
     if (msg.sender != admin) throw;
-    if (feeRebate_ < feeRebate || feeRebate_ > feeTake) throw;
     feeRebate = feeRebate_;
   }
   function changeFeeMarket(uint _feeMarket){
