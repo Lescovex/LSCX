@@ -9,7 +9,7 @@ import { Web3 } from '../../services/web3.service';
 export class WalletComponent implements OnInit {
 
   constructor(public _account:AccountService, protected _web3: Web3) {
-    console.log("NETWORK?????",this._web3.network.chain);
+    
   }
 
   ngOnInit() {
@@ -20,9 +20,4 @@ export class WalletComponent implements OnInit {
     return mainContent.getBoundingClientRect().height-110;
   }
   
-
-  checkNetwork(){
-    console.log("NETWORK?????",this._web3.network.chain);
-    
-  }
 }

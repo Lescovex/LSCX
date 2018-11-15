@@ -71,7 +71,6 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
     let amount = parseFloat(form.controls.amount.value) * Math.pow(10,parseInt(form.controls.token.value.tokenDecimal));
     
     let txData = await this._token.getDataTransfer(receiver, Math.floor(amount));
-
     let gasLimit;
  
     try{
@@ -86,7 +85,7 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
       
       if(typeof(result) != 'undefined'){
         let obj = JSON.parse(result);
-        
+  
         obj.data = txData;
         console.log(amount, form.controls.token.value.tokenSymbol, form.controls.amount.value);
         let tx =  new RawTx( this._account,form.controls.token.value.contractAddress,new BigNumber(0),obj.gasLimit, obj.gasPrice, this._web3.network, txData);
