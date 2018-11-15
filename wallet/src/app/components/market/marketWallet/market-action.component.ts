@@ -68,7 +68,6 @@ export class MarketActionComponent implements OnChanges{
             this._dialog.openErrorDialog("Unable to "+this.action, "You don't have enough founds", " ");
         } else {
             if(tx != null){
-                console.log(tx)
                 let nonce;
                 if(this.action == "deposit" && this.token.name != "ETH"){
                     nonce = tx.nonce;
@@ -107,10 +106,9 @@ export class MarketActionComponent implements OnChanges{
     }
 
     async depositToken(params){
-        console.log("que son params??????",params);
         
         let dataApprove = this._LSCXmarket.getFunctionData(this._LSCXmarket.token.contract, 'approve', [this._LSCXmarket.contractMarket.address, params[0]]); 
-        console.log(dataApprove, this._LSCXmarket.contractMarket.address);
+        //console.log(dataApprove, this._LSCXmarket.contractMarket.address);
         let gasApprove;
         try{
             gasApprove = await this._web3.estimateGas(this._account.account.address, this._LSCXmarket.contractMarket.address, dataApprove);
@@ -122,10 +120,11 @@ export class MarketActionComponent implements OnChanges{
         let gasOpt = await this.openGasDialog();
         if(gasOpt!=null){    
             //let optionsApprove = {data:dataApprove, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
-            let txApprove =  new RawTx(this._account, this._LSCXmarket.token.addr, new BigNumber(0), gasOpt.gasLimit-this._LSCXmarket.config.gasDeposit, gasOpt.gasPrice,this._web3.network, dataApprove)
+            //let txApprove =  new RawTx(this._account, this._LSCXmarket.token.addr, new BigNumber(0), gasOpt.gasLimit-this._LSCXmarket.config.gasDeposit, gasOpt.gasPrice,this._web3.network, dataApprove)
+            let txApprove =  new RawTx(this._account, this._LSCXmarket.token.addr, new BigNumber(0), gasOpt.gasLimit, gasOpt.gasPrice,this._web3.network, dataApprove)
             let dataDeposit = this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket, 'depositToken', [this._LSCXmarket.token.addr,params[0]]);
             //let optionsDeposit = {data:dataDeposit, nonceIncrement:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
-            let txDeposit = new RawTxIncrementedNonce(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), this._LSCXmarket.config.gasDeposit, gasOpt.gasPrice,this._web3.network, dataDeposit, 1);
+            let txDeposit = new RawTxIncrementedNonce(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), gasOpt.gasLimit, gasOpt.gasPrice,this._web3.network, dataDeposit, 1);
             await txDeposit.setIncrementedNonce(this._account,1);
             //await this._rawtx.createRaw(this._LSCXmarket.contractMarket.address, 0 , optionsDeposit);
             let tx: any[] = [txApprove.tx, txDeposit.tx];
@@ -143,7 +142,7 @@ export class MarketActionComponent implements OnChanges{
         let data = this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket, 'withdrawToken', [this._LSCXmarket.token.addr,params[0]]);
         let gasOpt = await this.openGasDialog();
         if(gasOpt!=null){
-            return  new RawTx(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), this._LSCXmarket.config.gasDeposit, gasOpt.gasPrice,this._web3.network, data);
+            return  new RawTx(this._account, this._LSCXmarket.contractMarket.address, new BigNumber(0), gasOpt.gasLimit, gasOpt.gasPrice,this._web3.network, data);
         }
         return null;
     }

@@ -15,7 +15,7 @@ export class MarketAmountsComponent {
   }
 
   truncateNumber(number){
-    let digits = 3
+    let digits = 3;
     let fact= Math.pow(10,digits);   
     return Math.floor(number*fact)/fact;
   }
