@@ -120,7 +120,6 @@ export class MarketActionComponent implements OnChanges{
         let gasOpt = await this.openGasDialog();
         if(gasOpt!=null){    
             //let optionsApprove = {data:dataApprove, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};
-            //let txApprove =  new RawTx(this._account, this._LSCXmarket.token.addr, new BigNumber(0), gasOpt.gasLimit-this._LSCXmarket.config.gasDeposit, gasOpt.gasPrice,this._web3.network, dataApprove)
             let txApprove =  new RawTx(this._account, this._LSCXmarket.token.addr, new BigNumber(0), gasOpt.gasLimit, gasOpt.gasPrice,this._web3.network, dataApprove)
             let dataDeposit = this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket, 'depositToken', [this._LSCXmarket.token.addr,params[0]]);
             //let optionsDeposit = {data:dataDeposit, nonceIncrement:1, gasLimit: gasOpt.gasLimit, gasPrice: gasOpt.gasPrice};

@@ -71,7 +71,7 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
     let amount = parseFloat(form.controls.amount.value) * Math.pow(10,parseInt(form.controls.token.value.tokenDecimal));
     
     let txData = await this._token.getDataTransfer(receiver, Math.floor(amount));
-    //let gasLimit = 250000;
+
     let gasLimit;
  
     try{
