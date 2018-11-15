@@ -71,7 +71,15 @@ export class SendTokensPage implements OnInit, OnDestroy, DoCheck{
     let amount = parseFloat(form.controls.amount.value) * Math.pow(10,parseInt(form.controls.token.value.tokenDecimal));
     
     let txData = await this._token.getDataTransfer(receiver, Math.floor(amount));
-    let gasLimit = 250000;
+    //let gasLimit = 250000;
+    let gasLimit;
+ 
+    try{
+      gasLimit = await this._web3.estimateGas(this._account.account.address, form.controls.token.value.contractAddress, txData, 0);
+    }catch(e){
+      gasLimit = await this._web3.blockGas();
+      
+    }
 
     let dialogRef = this._dialog.openGasDialog(await gasLimit, 1);
     dialogRef.afterClosed().subscribe(async result=>{

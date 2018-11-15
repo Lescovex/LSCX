@@ -56,8 +56,8 @@ function createWindow() {
         var osxMenu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(osxMenu);
     } else {
-        var menu = Menu.buildFromTemplate(MENU_TEMPLATE);
-        Menu.setApplicationMenu(menu)
+        //var menu = Menu.buildFromTemplate(MENU_TEMPLATE);
+        //Menu.setApplicationMenu(menu)
     }
     // and load the index.html of the app.
     win.loadURL(`file://${__dirname}/build/index.html`);
