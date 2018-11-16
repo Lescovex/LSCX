@@ -4,6 +4,8 @@ import { Router } from '@angular/router'
 import { WalletService } from './wallet.service'
 import { TokenService } from './token.service'
 import { Web3 } from "./web3.service";
+import { MdDialog } from '@angular/material';
+import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
 
 import * as EthWallet from 'ethereumjs-wallet'
 import { EtherscanService } from './etherscan.service';
@@ -21,8 +23,16 @@ export class AccountService{
   interval;
   tokenInterval;
   apikey: string = "";
+  loadingD;
+  constructor(private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
+    Promise.resolve().then(() => {
+      this.loadingD = this.dialog.open(LoadingDialogComponent, {
+        width: '660px',
+        height: '150px',
+        disableClose: true,
+      });
+    });
 
-  constructor(private _wallet : WalletService, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
     this._scan.getApiKey();
     if(this._scan.apikey != "" && this._web3.infuraKey != ""){     
       this.getAccountData();
@@ -30,11 +40,19 @@ export class AccountService{
         this.startIntervalData();
         this.newUpdateTokens = true;
         this.tokens = [];
+        
       }
     }
   }
 
   async setAccount(account){
+    Promise.resolve().then(() => {
+      this.loadingD = this.dialog.open(LoadingDialogComponent, {
+        width: '660px',
+        height: '150px',
+        disableClose: true,
+      });
+    });
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
       clearInterval(this.interval)
       this.clearIntervalTokens();
@@ -214,6 +232,9 @@ export class AccountService{
     }
       self.tokens = await tokens;
       self.saveAccountTokens();
+      if(this.loadingD != null){
+        this.loadingD.close();
+      }
   }
 
   async updateTokenBalance(token){
