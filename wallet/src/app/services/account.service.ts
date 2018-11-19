@@ -205,6 +205,7 @@ export class AccountService{
     let resultTokens =  await this._scan.getTokensTransfers(this.account.address).toPromise();
     let tkns : Array<any> = [];
     tkns = resultTokens.result;
+    
     for(let i = 0; i<tkns.length; i++){
       if(i==0) {
         this.newUpdateTokens=false;
@@ -212,20 +213,20 @@ export class AccountService{
       if(this.newUpdateTokens==true){
         return false;
       }
-      if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){  
+      if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
+        
         let token: any = {
           contractAddress :  tkns[i].contractAddress,
           tokenName:  tkns[i].tokenName,
           tokenSymbol:  tkns[i].tokenSymbol,
-          tokenDecimal: parseInt( tkns[i].tokenDecimal),
+          tokenDecimal: parseInt(tkns[i].tokenDecimal),
           network : self._web3.network,
           deleted: false
         }
+    
         token = await self.updateTokenBalance(token);
-        /*console.log("despues de tener el Balance");
-        console.log(isNaN(token.tokenDecimal));
-        console.log("despues del isNaN");*/
-        if(!isNaN(token.tokenDecimal)){
+        
+        if(!isNaN(token.tokenDecimal) && token.tokenName != "" && token.tokenSymbol != ""){ 
             tokens.push(token);
         }
       }
@@ -238,21 +239,21 @@ export class AccountService{
   }
 
   async updateTokenBalance(token){
+    
     if(!('balance' in token) || !token.deleted){
       this._token.setToken(token.contractAddress);
-      if(isNaN(token.tokenDecimal) ||token.tokenDecimal==0|| token.tokenName=="" || token.tokenSymbol==""){
+      if(isNaN(token.tokenDecimal) || token.tokenDecimal == 0|| token.tokenName=="" || token.tokenSymbol==""){
         token.tokenName = await this._token.getName();
         token.tokenSymbol = await this._token.getSymbol();
         token.tokenDecimal = await this._token.getDecimal();
       }      
       let exp = 10 ** token.tokenDecimal;
       let balance : any = await this._token.getBalanceOf(this.account.address);
-      //console.log("antes de poner el balance");
       token.balance = balance.div(exp).toNumber();
-      //console.log("despues de poner el balance");
+      
     }
     
-    return token
+    return token;
   }
   
   
@@ -317,6 +318,8 @@ export class AccountService{
   clearIntervalTokens(){
     clearInterval(this.tokenInterval);
     this.tokenInterval = null;
+    console.log("Inside clear interval tokens?");
+    
   }
 
   tm(unix_tm) {

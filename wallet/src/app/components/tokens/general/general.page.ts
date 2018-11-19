@@ -37,7 +37,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     this._account.clearIntervalTokens();
   }
 
-  ngDoCheck() {
+  async ngDoCheck() {
     if(this._account.updatedTokens && this.dialog!=null){
       this.dialog.close();
     }
@@ -47,7 +47,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
       this.allTokens = this._account.tokens.filter(x=>x);
     }
     if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.tokens)){
-      this.setTokens();
+      await this.setTokens();
       this.allTokens = this._account.tokens.filter(x=>x);
     }
   }
@@ -66,6 +66,7 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
 
     await this.sortAlphabetically();
     await this.sortByBalance();
+    
   }
   
   toggleHideZero(){

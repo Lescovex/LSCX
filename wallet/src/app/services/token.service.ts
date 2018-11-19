@@ -1,7 +1,6 @@
 import { Injectable} from '@angular/core';
-
-
 import { Web3 } from "./web3.service";
+
 @Injectable()
 export class TokenService{
     tokenAbi = require('human-standard-token-abi');
@@ -41,7 +40,6 @@ export class TokenService{
                 if (err) {
                     reject(err);
                 } else {
-                    console.log("puede ser")
                     resolve(res.toNumber());
                 }
             });

@@ -29,12 +29,12 @@ import { Http, Headers, RequestOptions } from "@angular/http";
 })
 
 export class AddContractPage {
-  web3: Web3L;
+  public web3: Web3L;
 
   public contract = null;
   public abi;
   public constructorForm: FormGroup;
-  customContractForm: FormGroup;
+  public customContractForm: FormGroup;
   public inputs = [];
   public submited: boolean = false;
   public submitedOther: boolean = false;
@@ -98,7 +98,6 @@ export class AddContractPage {
     let gasLimit;
 
     let getinfo = this.constructorForm;
-    //console.log("getInfo?????",getinfo);
     
     let argsTo;
     argsTo ={
@@ -107,8 +106,10 @@ export class AddContractPage {
       
     localStorage.setItem("deployInfo",JSON.stringify(argsTo))
     
+    
     try {
-      gasLimit = await this._web3.estimateGas(this._account.account.address, "", data, 0);
+      //gasLimit = await this._web3.estimateGas(this._account.account.address, form.controls.token.value.contractAddress, txData, 0);
+      gasLimit = await this._web3.estimateGas(this._account.account.address, "", "0x"+data, 0);
       
     }catch(e){
       gasLimit = 3500000;

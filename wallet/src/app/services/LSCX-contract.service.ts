@@ -253,7 +253,7 @@ export class LSCXContractService {
 		return constructor.inputs
 	}
 
-	async getDeployContractData(type, bytecode:string, args:any[]){
+	async getDeployContractData(type, bytecode:string, args:any[]){		
 		let abi = await this.getAbi(type);
 		let myContract = this._web3.web3.eth.contract(abi)
 		let result = myContract.new.getData(...args, {data: bytecode});
