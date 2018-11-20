@@ -4,14 +4,14 @@ import * as QRcode from 'qrcode';
 
 import { AccountService } from '../../../services/account.service';
 import { WalletService } from '../../../services/wallet.service';
-
+import { MdSnackBar } from '@angular/material';
 
 @Component({
   selector: 'receive-page',
   templateUrl: './receive.html',
 })
 export class ReceivePage implements OnInit {
-  constructor(private _account: AccountService, private _wallet: WalletService) {
+  constructor(public snackBar: MdSnackBar, private _account: AccountService, private _wallet: WalletService) {
 
   }
 
@@ -33,6 +33,22 @@ export class ReceivePage implements OnInit {
     const privateKey= hdwallet.privateKey;
 
     let wallet = this._wallet.accountFromPrivatekey(privateKey);
+  }
+
+  copyClipBoard(){
+    var inp =document.createElement('input');
+    document.body.appendChild(inp)
+    inp.value = this._account.account.address;
+    inp.select();
+    document.execCommand('copy',false);
+    inp.remove()
+    this.openSnackBar();
+  }
+ 
+  openSnackBar() {
+    this.snackBar.open("Your address " +this._account.account.address + " has been copied to the clipboard.", "Close", {
+      duration: 2000,
+    });
   }
 
 }

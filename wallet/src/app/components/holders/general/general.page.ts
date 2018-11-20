@@ -25,7 +25,7 @@ import { RawTx } from '../../../models/rawtx';
   templateUrl: './general.html'
 })
 
-export class HoldersGeneralPage implements OnInit {
+export class HoldersGeneralPage implements OnInit, OnDestroy {
   
   protected LSCX_Addr;
   protected LSCX_Abi;
@@ -38,6 +38,7 @@ export class HoldersGeneralPage implements OnInit {
   protected timeLeft;
   protected expected;
   private nowNetwork: any;
+  protected interval;
 
   constructor(private _scan: EtherscanService, protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private sendDialogService: SendDialogService) {
     Promise.resolve().then(() => { 
@@ -55,6 +56,10 @@ export class HoldersGeneralPage implements OnInit {
     this.setContract();
   }
 
+  ngOnDestroy(){
+    clearInterval(this.interval);
+  }
+
   ngDoCheck() {
     if(JSON.stringify(this.nowNetwork)!= JSON.stringify(this._web3.network)){
       Promise.resolve().then(()=>{
@@ -66,12 +71,12 @@ export class HoldersGeneralPage implements OnInit {
 
   async setContract(){
     this.nowNetwork = this._web3.network;
-    if(this._web3.network.chain == 3){
-      this.LSCX_Addr = "0xB2F524a6825F8986Ea6eE1e6908738CFF13c5B31";
-      
-    }
     if(this._web3.network.chain == 1  ){
       this.LSCX_Addr = "0x5bf5f85480848eB92AF31E610Cd65902bcF22648";
+      
+    }
+    if(this._web3.network.chain == 3){
+      this.LSCX_Addr = "0xB2F524a6825F8986Ea6eE1e6908738CFF13c5B31";
       
     }
     if(this._web3.network.chain == 42){
@@ -101,60 +106,73 @@ export class HoldersGeneralPage implements OnInit {
 
     let totalSupply = await this.getTotalSupply();
 
-    let tokenTx = await this.getTokenTx(this._account.account.address);
+    //this function start hold interval
+    await this.getTime();
     
-    let history = await this.getTx(this._account.account.address);
-
-    let lastTimestamp;
-    let now;
-    let nowTime;
-    
-    let holdTime = await this.getHoldTime();
-
-    for (let i = 0; i < tokenTx.length; i++) {
-      if(tokenTx[i].contractAddress == this.LSCX_Addr.toLowerCase()){
-        lastTimestamp = tokenTx[i].timeStamp;
-      }  
-    }
-    
-    for (let j = 0; j < history.length; j++) {
-      if(history[j].to == this.LSCX_Addr.toLowerCase() && history[j].input == "0xc885bc58" && history[j].timeStamp > lastTimestamp){
-        lastTimestamp = history[j].timeStamp;        
-      }
-    }
-   
-    now = new Date();
-    nowTime = now.getTime();
-    nowTime = nowTime/1000;
-
-    if(nowTime - lastTimestamp > 0){
-      let lett = nowTime - lastTimestamp;
-      let left = holdTime - lett;
-      let minutes = left/60;
-      let hours = minutes/60;
-      let days = hours/24;
-      //console.log("x",x);
-      let string = days.toString();
-
-      if(days > 1){
-        this.timeLeft = parseInt(string);
-      }else{
-        this.timeLeft = days;
-      }
-      
-    }
-
-    this.expected =  (holded * contractBalance)/totalSupply;;
+    this.expected =  (holded * contractBalance)/totalSupply;
 
     this.loadingD.close();
     this.loadingD = null;
   }
 
+  async getTime(){
+    
+    this.interval = setInterval(async ()=>{
+      let tokenTx = await this.getTokenTx(this._account.account.address);
+      let history = await this.getTx(this._account.account.address);
+      let lastTimestamp;
+      let now;
+      let nowTime;
+      let holdTime = await this.getHoldTime();
+
+      for (let i = 0; i < tokenTx.length; i++) {
+        if(tokenTx[i].contractAddress == this.LSCX_Addr.toLowerCase()){
+          lastTimestamp = tokenTx[i].timeStamp;
+        }  
+      }
+      
+      for (let j = 0; j < history.length; j++) {
+        if(history[j].to == this.LSCX_Addr.toLowerCase() && history[j].input == "0xc885bc58" && history[j].timeStamp > lastTimestamp){
+          lastTimestamp = history[j].timeStamp;        
+        }
+      }
+    
+      now = new Date();
+      nowTime = now.getTime();
+      nowTime = nowTime/1000;
+
+      if(nowTime - lastTimestamp > 0){
+        let lett = nowTime - lastTimestamp;
+        let left = holdTime - lett;
+        let minutes = left/60;
+        let hours = minutes/60;
+        let days = hours/24;
+        let string = days.toString();
+
+        if(this.timeLeft < 0){
+          let amount = await this.getUserBalance();
+          let decimals = 8;
+          this.balance = amount / Math.pow(10,decimals);
+          let holded = await this.getHoldedOf();
+          this.holdedOf = holded / Math.pow(10, decimals);
+          let contractBalance = await this.getContractBalance();
+          let totalSupply = await this.getTotalSupply();
+          this.expected =  (holded * contractBalance)/totalSupply;
+          
+          await clearInterval(this.interval);
+        }else{
+          if(days > 1){
+            this.timeLeft = parseInt(string);
+          }else{
+            this.timeLeft = days;
+          }
+        }
+      }
+    },1000);
+  }
+
   async getTokenTx(addr){
-    
     let tx = await this._scan.getTokensTransfers(addr).toPromise();
-    //console.log("Que son tokensTransfers?", tx.result);
-    
     return tx.result;
   }
   async getTx(addr){
@@ -239,8 +257,10 @@ export class HoldersGeneralPage implements OnInit {
     let gasLimit;
 
     try{
-      gasLimit = await this._web3.estimateGas(this._account.account.address, this.LSCX_Addr, "", parseInt(this.expected));
+      gasLimit = await this._web3.estimateGas(this._account.account.address, this.LSCX_Addr, withdrawData);
     }catch(e){
+      console.log("ERROR?",e);
+      
       gasLimit = 1000000;
     }
 
