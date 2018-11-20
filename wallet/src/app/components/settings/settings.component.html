@@ -6,7 +6,11 @@
         </select>
     </div>
     <div>
-        <p><label class="title" for="lang">Etherscan API token</label> Get a Etherscan Api key and paste here. <a class="pointer" (click)="openUrl('https://ropsten.etherscan.io/apis')">Etherscan Web Page</a></p>
+        <!--
+            
+        -->
+        <p *ngIf="defaultApiMessage != true"><label class="title" for="lang">Etherscan API token</label></p>
+        <p *ngIf="defaultApiMessage == true"><label class="title red" for="lang">You're using a default Api key.</label> Please get a Etherscan Api key and paste it here. <a class="pointer" (click)="openUrl('https://ropsten.etherscan.io/apis')">Etherscan Web Page</a></p>
         <input type="text" class="block" [(ngModel)]="etherscanApiKey" (keydown.enter)="setEtherscanKey()" (blur)="setEtherscanKey()" (ngPaste)="setEtherscanKey()">
     </div>
 

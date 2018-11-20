@@ -2,13 +2,19 @@
 <div class="backWhite" *ngIf="balance > 0">
 
     <p class="title ">LSCX Balance: <span class="inlineBlock"> {{balance}}</span></p>
-    <div *ngIf="holdedOf>0">
+    <div *ngIf="holdedOf > 0">
         <p class="title">Holded amount: <span class="inlineBlock">{{holdedOf}}</span></p>
         <p class="title">Withdraw expected amount: <span>ETH {{(expected| converter:'fromWei':'ether')}}</span></p>
 
         <button class="btn-solid dist extra" (click)="withdraw()">Withdraw Reward</button>
     </div>
     <div *ngIf="holdedOf == 0">
-        <p class="title lscx_color text-center">You've to hold 30 days before withdraw your reward</p>
+        <p *ngIf="timeLeft >= 1" class="title lscx_color text-center">You've to hold {{timeLeft}} days more before withdraw your reward</p>
+        <p *ngIf="timeLeft < 1 && timeLeft*24 > 1" class="title lscx_color text-center">
+            You've to hold {{timeLeft*24 | number:'1.0-0'}} hours more before withdraw your reward
+        </p>
+        <p *ngIf="timeLeft < 1 && timeLeft*24 < 1" class="title lscx_color text-center">
+            You've to hold {{timeLeft*24*60 | number:'1.0-0'}} minutes more before withdraw your reward
+        </p>
     </div>
 </div>

@@ -16,16 +16,21 @@ export class SettingsComponent implements OnInit, DoCheck{
   lang = 'en';
   showErrorDialog = false;
   etherscanApiKey: string;
+  defaultApiMessage;
   constructor(private _scan: EtherscanService, private _account: AccountService, private _dialog: DialogService, private router: Router) {
-    this.etherscanApiKey = (_scan.apikey=="" || _scan.apikey==_scan.defaultApikey)? null: _scan.apikey;
+    this.etherscanApiKey = (_scan.apikey=="" || _scan.apikey == _scan.defaultApikey)? null: _scan.apikey;
+    
   }
 
 
   ngOnInit() {
-    if(this.etherscanApiKey==null){
+    if(this.etherscanApiKey == null){
       Promise.resolve().then(()=>{
         this._dialog.openApiKeysMessage('init');
       })
+    }
+    if(this.etherscanApiKey == "JDVE27WHYITCKM7Q2DMBC3N65VDIZ74HHJ" || this.etherscanApiKey == null){
+      this.defaultApiMessage = true;
     }
   }
 
@@ -42,7 +47,12 @@ export class SettingsComponent implements OnInit, DoCheck{
     if(this.etherscanApiKey == ""){
       this.setShowTrue();  
     }  
-    this._scan.setApiKey(this.etherscanApiKey)
+    this._scan.setApiKey(this.etherscanApiKey);
+    if(this.etherscanApiKey == "JDVE27WHYITCKM7Q2DMBC3N65VDIZ74HHJ"){
+      this.defaultApiMessage = true;
+    }else{
+      this.defaultApiMessage = null;
+    }
   }
 
   setShowTrue() {

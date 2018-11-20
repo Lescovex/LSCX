@@ -5,6 +5,7 @@ import { AccountService } from '../../../services/account.service'
 import { TokenService } from '../../../services/token.service';
 import { Web3 } from '../../../services/web3.service';
 import { DialogService } from '../../../services/dialog.service';
+import { EtherscanService } from "../../../services/etherscan.service"
 import { MdDialog } from '@angular/material';
 import { WalletService } from "../../../services/wallet.service";
 
@@ -34,10 +35,11 @@ export class HoldersGeneralPage implements OnInit {
 
   protected balance;
   protected holdedOf;
+  protected timeLeft;
   protected expected;
   private nowNetwork: any;
 
-  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private sendDialogService: SendDialogService) {
+  constructor(private _scan: EtherscanService, protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private sendDialogService: SendDialogService) {
     Promise.resolve().then(() => { 
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
@@ -92,22 +94,91 @@ export class HoldersGeneralPage implements OnInit {
     this.balance = amount / Math.pow(10,decimals);
     
     let holded = await this.getHoldedOf();
+    
     this.holdedOf = holded / Math.pow(10, decimals);
 
     let contractBalance = await this.getContractBalance();
 
     let totalSupply = await this.getTotalSupply();
+
+    let tokenTx = await this.getTokenTx(this._account.account.address);
     
+    let history = await this.getTx(this._account.account.address);
+
+    let lastTimestamp;
+    let now;
+    let nowTime;
+    
+    let holdTime = await this.getHoldTime();
+
+    for (let i = 0; i < tokenTx.length; i++) {
+      if(tokenTx[i].contractAddress == this.LSCX_Addr.toLowerCase()){
+        lastTimestamp = tokenTx[i].timeStamp;
+      }  
+    }
+    
+    for (let j = 0; j < history.length; j++) {
+      if(history[j].to == this.LSCX_Addr.toLowerCase() && history[j].input == "0xc885bc58" && history[j].timeStamp > lastTimestamp){
+        lastTimestamp = history[j].timeStamp;        
+      }
+    }
+   
+    now = new Date();
+    nowTime = now.getTime();
+    nowTime = nowTime/1000;
+
+    if(nowTime - lastTimestamp > 0){
+      let lett = nowTime - lastTimestamp;
+      let left = holdTime - lett;
+      let minutes = left/60;
+      let hours = minutes/60;
+      let days = hours/24;
+      //console.log("x",x);
+      let string = days.toString();
+
+      if(days > 1){
+        this.timeLeft = parseInt(string);
+      }else{
+        this.timeLeft = days;
+      }
+      
+    }
+
     this.expected =  (holded * contractBalance)/totalSupply;;
 
     this.loadingD.close();
     this.loadingD = null;
   }
 
+  async getTokenTx(addr){
+    
+    let tx = await this._scan.getTokensTransfers(addr).toPromise();
+    //console.log("Que son tokensTransfers?", tx.result);
+    
+    return tx.result;
+  }
+  async getTx(addr){
+    let tx = await this._scan.getTx(addr).toPromise();
+    return tx.result;
+  }
+
   getUserBalance(): Promise<number>{
     let self=this;  
     return new Promise (function (resolve, reject) {
       self.LSCX_Contract.balanceOf.call(self._account.account.address, function(err, res){  
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res.toNumber());
+        }
+      });
+    });
+  }
+
+  getHoldTime(): Promise<number>{
+    let self=this;
+    return new Promise (function (resolve, reject) {
+      self.LSCX_Contract.holdTime.call(function(err, res){  
         if (err) {
           reject(err);
         } else {
@@ -248,4 +319,6 @@ export class HoldersGeneralPage implements OnInit {
     let serialized = EthUtil.bufferToHex(tx2.serialize());
     return serialized;
   }
+
+
 }

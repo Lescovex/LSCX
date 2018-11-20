@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, DoCheck } from '@angular/core'
 
 import { AccountService } from '../../../services/account.service';
 
@@ -17,7 +17,7 @@ import { Order } from '../../../models/order';
     selector: 'app-buy-sell',
     templateUrl: './buy-sell.page.html',
 })
-export class BuySellPage implements OnInit {
+export class BuySellPage implements OnInit, DoCheck {
     protected action: string;
     f: any = {
       amount : undefined,
@@ -30,7 +30,7 @@ export class BuySellPage implements OnInit {
     protected submited: boolean = false;
     private amount: number;
     private loadingDialog;
-    constructor(public _account:AccountService, private _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
+    constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
         console.log("FEES", this._LSCXmarket.fees)
     }
@@ -38,6 +38,12 @@ export class BuySellPage implements OnInit {
     async ngOnInit() {
       await this._LSCXmarket.setBalancesInterval();
       await this._LSCXmarket.setStateOrdersInterval();
+      
+      
+    }
+
+    ngDoCheck() {
+      //console.log("Que es token???????????????", this._LSCXmarket.token);
     }
 
     ngOnDestroy() {

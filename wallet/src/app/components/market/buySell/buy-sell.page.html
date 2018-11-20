@@ -1,4 +1,10 @@
 <div class="dist">
+    <div *ngIf="_LSCXmarket.token.balance != 0" class="half">
+        <span class="title">Token Balance </span>
+        <span>{{_LSCXmarket.token.balance}}</span>
+    </div>
+</div>
+<div class="dist">
     <div class="half left">
         <button [ngClass]="(action == 'buy') ? 'btn-solid':'btn-inverse'" (click)="activeButton('buy')">Buy order</button>
         <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
