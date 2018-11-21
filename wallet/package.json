@@ -101,7 +101,7 @@
         "typescript": "~2.3.1",
         "url-parse": "^1.4.3",
         "webpack": "2.2.1",
-        "webpack-dev-server": "2.4.1",
+        "webpack-dev-server": "^3.1.10",
         "webpack-merge": "^3.0.0"
     },
     "build": {
