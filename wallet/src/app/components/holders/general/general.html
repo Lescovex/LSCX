@@ -13,7 +13,7 @@
         <p *ngIf="timeLeft < 1 && timeLeft*24*60*60 > 3600" class="title lscx_color text-center">
             You've to hold {{timeLeft*24 | number:'1.0-0'}} hours more before withdraw your reward
         </p>
-        <p *ngIf="timeLeft < 1 && timeLeft*24*60*60 > 60" class="title lscx_color text-center">
+        <p *ngIf="timeLeft < 1 && timeLeft*24*60*60 > 60 && timeLeft*24*60*60 <= 3600" class="title lscx_color text-center">
             You've to hold {{timeLeft*24*60 | number:'1.0-0'}} minutes more before withdraw your reward
         </p>
         <p *ngIf="timeLeft < 1 && timeLeft*24*60*60 <= 60" class="title lscx_color text-center">

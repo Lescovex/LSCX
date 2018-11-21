@@ -89,7 +89,6 @@ export class EtherscanService {
 
 	getTokensTransfers(addr){
 		this.setUrlStarts();
-		console.log(this.urlStarts);
     	let url = "https://api"+this.urlStarts+".etherscan.io/api?module=account&action=tokentx&address="+addr+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
    
     	return this.http.get(url).map(res => res.json());
@@ -121,14 +120,8 @@ export class EtherscanService {
 		this.setUrlStarts();
 		
 		let x = encodeURIComponent(_sourceCode).replace(/%20/g, '+').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\!/g,"%21").replace(/\'/g,"%27");
-		//console.log(x);
 		
 		let url = "https://api"+this.urlStarts+".etherscan.io/api";
-	
-		//console.log("addr",_contractAddr);
-		//console.log("name",_contractName);
-		//console.log("version",_compilerversion);
-		//console.log("arguments",_constructorArguments);
 		
 		const formData = new FormData();
 		
@@ -146,11 +139,9 @@ export class EtherscanService {
 		
 		let self = this;
 		this.http.post(url,formData).subscribe(async res =>{
-			//console.log("res post form?",res);
 			let body = res.json();
-			//console.log("body del response?",body);
+			
 			if(body.status == "1" && body.message =="OK"){
-				//console.log("STATUS 1");
 				let url2 = "https://api"+self.urlStarts+".etherscan.io/api";
 				const data = new FormData();
 				data.append('module', "contract");
@@ -165,7 +156,6 @@ export class EtherscanService {
 				}
 				this.checkInterval = setInterval(()=>{
 					self.http.get(url2+"?module=contract&action=checkverifystatus&guid="+body.result).map(ans => ans.json()).subscribe(async (res:any) =>{
-						//console.log("res de checkVerify",res);
 						clearInterval(self.checkInterval);
 					})
 				  },10000);

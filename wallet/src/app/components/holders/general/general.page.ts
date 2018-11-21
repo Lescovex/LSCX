@@ -150,6 +150,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
         let string = days.toString();
 
         if(this.timeLeft < 0){
+          
           let amount = await this.getUserBalance();
           let decimals = 8;
           this.balance = amount / Math.pow(10,decimals);
@@ -160,6 +161,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
           this.expected =  (holded * contractBalance)/totalSupply;
           
           await clearInterval(this.interval);
+          
         }else{
           if(days > 1){
             this.timeLeft = parseInt(string);
@@ -259,8 +261,6 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     try{
       gasLimit = await this._web3.estimateGas(this._account.account.address, this.LSCX_Addr, withdrawData);
     }catch(e){
-      console.log("ERROR?",e);
-      
       gasLimit = 1000000;
     }
 
@@ -275,7 +275,6 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     }
     if(options!=null){
       let tx =   new RawTx  (this._account,this.LSCX_Addr,new BigNumber(0),options.gasLimit, options.gasPrice, this._web3.network, withdrawData);
-    
       this.sendDialogService.openConfirmSend(tx.tx, this.LSCX_Addr, 0, tx.gas, tx.cost,'withdraw');
     }
     

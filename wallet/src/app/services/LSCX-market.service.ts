@@ -115,7 +115,7 @@ export class LSCXMarketService {
 
 	setContracts() {
 		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractMarket[0].addr);
-		console.log("THIS CONTRACT MARKET?",this.contractMarket);
+		
 		
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
 		this.contractReserveToken = this._web3.web3.eth.contract(this.getAbi('reservetoken'));
@@ -128,7 +128,7 @@ export class LSCXMarketService {
 			let fee = await this._contract.callFunction(this.contractMarket, fees[i], []);
 			this.fees[fees[i]] = parseInt(fee.toString());
 		}
-		//console.log("FEES", this.fees)
+		
 	}
 
 	setTokenContract() {
@@ -151,7 +151,7 @@ export class LSCXMarketService {
 		if(typeof(params)== 'undefined'){
 			params= []
 		}
-		//console.log("this.functionData", this._contract.getFunctionData(contract, functionName, params));
+	
 		return this._contract.getFunctionData(contract,functionName, params)
 	}
 
@@ -227,9 +227,7 @@ export class LSCXMarketService {
 	async setTikersInterval(){
 		if(this.tikersInterval== null){
 			this.getTikers();
-			console.log("tikersInterval");
 			this.tikersInterval = setInterval(()=>{
-				console.log("tikersInterval");
 				this.getTikers();
 			  },60000);
 		}
@@ -266,6 +264,7 @@ export class LSCXMarketService {
 		this.state.orders.buys = await this._marketStorage.getBuyOrders(this.token);
 		console.log("BUYS",this.state.orders.buys)
 	}
+
 	async setSells() {
 		this.state.orders.sells = await this._marketStorage.getSellOrders(this.token);
 		console.log("SELLS",this.state.orders.sells)
@@ -277,15 +276,13 @@ export class LSCXMarketService {
 		}else{
 			this.marketState[stateName][this._account.account.address] = [obj];
 		}
-		//console.log("antes de save");
+		
 		this.saveState();
-		//console.log("despues de save");
+		
 		this.updateMyStateShow(stateName);
 	}
 
 	updateMyStateShow(stateName: string) {
-		//Update myFunds, myOrders, or myTrades
-		//console.log("entra en update", stateName);
 		let interval = null;
 		interval = setInterval(()=>{
 			let myObjs = [];
@@ -298,7 +295,7 @@ export class LSCXMarketService {
 			}else{
 				myObjs.forEach(obj=> {
 					let histTx = this._account.account.history.find(x=> x.hash.toLowerCase() == obj.txHash.toLowerCase());
-					console.log("busca confirmacion de tx")
+					
 					if(histTx!= null ){
 						let stop = false;
 						for( let i=0; i<this.marketState[stateName][this._account.account.address].length || !stop ; i++){
@@ -313,7 +310,7 @@ export class LSCXMarketService {
 						}
 					}else{
 						if(parseInt(this._account.account.history[0].nonce) > obj.nonce){
-							console.log("borrar por nonce");
+							
 							let stop = false;
 							for( let i=0; i<this.marketState[stateName][this._account.account.address].length || !stop ; i++){
 								this.marketState[stateName][this._account.account.address].splice(i,1);
@@ -410,7 +407,7 @@ export class LSCXMarketService {
 		let data = fs.readFileSync(filePath);
 		
 		this.marketState =  JSON.parse(data);
-		//console.log("MARKET", this.marketState);
+		
 		await this.getTikers();
 		this.updateMyStateShow("myFunds");
 		this.updateMyStateShow("myOrders");
@@ -421,7 +418,7 @@ export class LSCXMarketService {
 		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
 
 		if(tikersResult!=null && tikersResult.network == this._web3.network.chain){
-			console.log("entra en tikers");
+			
 			tikersResult.tikers.forEach(x=>{
 				if(x!= null && this.marketState.tikers.findIndex(y => y.addr === x.addr)==-1){
 					if(tikersResult.network == this._web3.network.chain){
@@ -436,9 +433,7 @@ export class LSCXMarketService {
 		}
 	}
 
-	addTikerToList(tiker){
-		console.log("ADD TIKER TO LIST");
-		console.log("tiker to add!!!!!", tiker);				
+	addTikerToList(tiker){		
 		if(this.marketState.hasOwnProperty('tikersToList')){
 			this.marketState.tikersToList.push(tiker);
 		}else{
@@ -496,10 +491,9 @@ export class LSCXMarketService {
 		}, 2000);
 	}
 	saveState(){
-		//console.log("SAVE STATEEEEEEEEE")
 		let filePath =lescovexPath+"/."+this.fileName+".json";
 		try {
-			//console.log("MARKET", this.marketState);
+		
 			JSON.stringify(this.marketState);
 		}catch (e)  {
 			console.log("JSON ERROR", e)

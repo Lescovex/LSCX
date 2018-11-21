@@ -3,7 +3,7 @@
     <div>
         <label class="title" for="token">Tokens</label>
         <select id="tokens" class="block" [(ngModel)]="token" name="token">
-            <option *ngFor="let token of tokens, index as i" [ngValue]="token">{{token.tokenName}}-{{token.tokenSymbol}}-{{token.contractAddress}}</option>
+            <option *ngFor="let token of tokens, index as i" [ngValue]="token">{{token.tokenName}} - {{token.tokenSymbol}} - {{token.contractAddress}}</option>
         </select>
     </div>
     <div>

@@ -25,7 +25,6 @@ export class SelectContractPage implements OnInit{
 
   constructor(public _LSCXcontract: LSCXContractService, protected _customContract: CustomContractService, protected _contract: ContractService, protected _account: AccountService, protected _contractStorage: ContractStorageService, protected _dialog: DialogService, private router : Router, private _web3: Web3) {
     this._contractStorage.checkForAddress();
-    console.log("constructor");
     
     if(this._contractStorage.LSCX_Contracts.length == 0 && this._contractStorage.customContracts.length == 0 ){
       this.router.navigate(['/contracts/add']);
@@ -46,6 +45,7 @@ export class SelectContractPage implements OnInit{
   }
 
   ngOnInit(){
+    
   }
   
   async setContract(contract){

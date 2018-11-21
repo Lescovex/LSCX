@@ -11,7 +11,7 @@ import { MdSnackBar } from '@angular/material';
   templateUrl: './receive.html',
 })
 export class ReceivePage implements OnInit {
-  constructor(public snackBar: MdSnackBar, private _account: AccountService, private _wallet: WalletService) {
+  constructor(public snackBar: MdSnackBar, protected _account: AccountService, private _wallet: WalletService) {
 
   }
 

@@ -103,6 +103,7 @@ export class ShowContract implements OnInit{
       return false
     }
     let params = this._forms.getValues(this.funct.inputs, this.functionForm, this.contractInfo.type);
+    
     if(this.funct.constant){
       
       let response = await this._LSCXcontract.callFunction(this._LSCXcontract.contract, this.funct.name, params);
@@ -132,11 +133,33 @@ export class ShowContract implements OnInit{
     }else{
       let dialogRef = this._dialog.openLoadingDialog();
       let data = await this._LSCXcontract.getFunctionData(this.funct.name, params);
+   
+      if(this.funct.name == "transferFrom"){
+        data = this._LSCXcontract.contract.transferFrom.getData(...params);
+      }
+
+      if(this.funct.name == "approveAndCall"){
+        data = this._LSCXcontract.contract.approveAndCall.getData(...params);
+      }
+      if(this.funct.name == "deposit"){        
+        data = this._LSCXcontract.contract.deposit.getData(...params);
+      }
+      if(this.funct.name == "setHoldTime"){ 
+        data = this._LSCXcontract.contract.setHoldTime.getData(...params);
+      }
       
       let gasLimit;
+
       try {
-        gasLimit = await this._web3.estimateGas(this._account.account.address,this.contractInfo.address, data, 0);
+        if(this.funct.name == "deposit" || this.funct.name == "buy" ){
+          let value  = parseInt(this._web3.web3.toWei(this.functionForm.controls.ethAmount.value, 'ether'));
+          gasLimit = await this._web3.estimateGas(this._account.account.address, this.contractInfo.address, data, value);
+        }else{
+          gasLimit = await this._web3.estimateGas(this._account.account.address, this.contractInfo.address, data, 0);
+        }
+        
       }catch(e){
+        console.log("EstimateGas Error",e);
         gasLimit = 1000000;
       }
 

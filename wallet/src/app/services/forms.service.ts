@@ -53,10 +53,12 @@ export class FormsService {
     }
 
     getValues(inputs, form, file?): Array<any>{
+        
         let values = [];
         let type = file;
         inputs.forEach(input=>{
             let value = form.get(input.name).value;
+            
             if(input.type2 == 'number'){
                 value = parseFloat(value);
                 if(input.decimals == "decimals"){
