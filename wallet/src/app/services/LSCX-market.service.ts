@@ -342,7 +342,7 @@ export class LSCXMarketService {
 
 				for(let i=0; i<myOrdersAddress.length; i++){
 					if(order.txHash == myOrdersAddress[i].txHash){
-						console.log(order.deleted, order.amountFilled, )
+						//console.log(order.deleted, order.amountFilled, )
 						if(order.deleted && order.amountFilled == 0 ){
 							myOrdersAddress.splice(i,1);
 						} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {

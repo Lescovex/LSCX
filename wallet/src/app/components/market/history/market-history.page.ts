@@ -91,6 +91,8 @@ export class MarketHistoryPage implements DoCheck {
     myOrders.sort((a,b)=>{
       return a.price - b.price || parseInt(a.amountGet.toString()) -  parseInt(b.amountGet.toString());
     })
+    console.log("myorders???????",myOrders);
+    
     return myOrders;
   }
 

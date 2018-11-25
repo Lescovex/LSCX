@@ -30,6 +30,8 @@ export class BuySellPage implements OnInit, DoCheck {
     protected submited: boolean = false;
     private amount: number;
     private loadingDialog;
+    protected bestSell;
+    protected bestBuy
     constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
         console.log("FEES", this._LSCXmarket.fees)
@@ -38,12 +40,36 @@ export class BuySellPage implements OnInit, DoCheck {
     async ngOnInit() {
       await this._LSCXmarket.setBalancesInterval();
       await this._LSCXmarket.setStateOrdersInterval();
+      if(this._LSCXmarket.state.orders.sells.length != 0){
+        let sellLength = this._LSCXmarket.state.orders.sells.length;
+        console.log("sellLength?",sellLength);
+        //_LSCXmarket.state.orders.sells[0].price
+        this.bestSell = this._LSCXmarket.state.orders.sells[sellLength -1].price;
+        console.log("bestSell????",this.bestSell);
+      }else{
+        
+        console.log("NO SELLS");
+        
+        
+      }
+      
+      if(this._LSCXmarket.state.orders.buys.length != 0){
+        let buyLength = this._LSCXmarket.state.orders.buys.length;
+        this.bestBuy = this._LSCXmarket.state.orders.buys[buyLength -1].price
+      }else{
+        console.log("NO BUYS");
+        
+      }
+      
+      console.log("sells",this._LSCXmarket.state.orders.sells);
+      console.log("buys",this._LSCXmarket.state.orders.buys);
+      
       
       
     }
 
     ngDoCheck() {
-      //console.log("Que es token???????????????", this._LSCXmarket.token);
+      
     }
 
     ngOnDestroy() {

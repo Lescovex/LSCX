@@ -42,10 +42,10 @@
         <tbody *ngFor="let order of history, index as i">
             <tr *ngIf="blockNumber <= order.expires">
                 <td>
-                    <p [ngClass]="(order.tokenGive=='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p>
+                    <p [ngClass]="(order.tokenGive =='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
-                <td *ngIf="order.tokenGet=='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amountBase | number:"1.8-8":"en"}}</td>
-                <td *ngIf="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.available | number:"1.8-8":"en"}}/{{order.amount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="order.tokenGet =='0x0000000000000000000000000000000000000000'">{{order.amount*order.price -order.available | number:"1.8-8":"en"}} ETH / {{order.amountBase | number:"1.8-8":"en"}} ETH</td>
+                <td *ngIf="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.amount -order.available | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}} / {{order.amount | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}}</td>
                 <td *ngIf="blockNumber != null">{{order.expires-blockNumber}}</td>
                 <td *ngIf="blockNumber == null" class="red">Not available</td>
                 <!--<td><a (click)="cancelOrder(order)">Cancel</a></td>-->
