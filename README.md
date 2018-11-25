@@ -30,17 +30,17 @@ Import & export accounts
 
 Ether, send, receive, history
 
-Tokens, send receive, history, add
+Tokens, send, receive, history, add
 
 Create smart contracts, crypto currencies, commodoties, securities
 
 Buy & Sell assets
 
-# Cooming Soon
-
 Publish tokens in the global market
 
-Token Holders Sweeper
+
+
+# Cooming Soon
 
 Blockchain Certification Authority
 
