@@ -25,6 +25,7 @@ export class AccountService{
   apikey: string = "";
   loadingD;
   constructor(private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
+    
     Promise.resolve().then(() => {
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
@@ -34,14 +35,21 @@ export class AccountService{
     });
 
     this._scan.getApiKey();
-    if(this._scan.apikey != "" && this._web3.infuraKey != ""){     
-      this.getAccountData();
-      if('address' in this.account){
-        this.startIntervalData();
-        this.newUpdateTokens = true;
-        this.tokens = [];
-        
+    if(this._scan.apikey != "" && this._web3.infuraKey != ""){
+      if(localStorage.getItem('acc')){
+        this.getAccountData();
+        if('address' in this.account){
+          this.startIntervalData();
+          this.newUpdateTokens = true;
+          this.tokens = [];
+          
+        }
+      }else{
+        Promise.resolve().then(() => {
+          this.loadingD.close();
+        });
       }
+      
     }
   }
 
@@ -318,8 +326,6 @@ export class AccountService{
   clearIntervalTokens(){
     clearInterval(this.tokenInterval);
     this.tokenInterval = null;
-    console.log("Inside clear interval tokens?");
-    
   }
 
   tm(unix_tm) {
