@@ -22,7 +22,9 @@ export class LSCXMarketStorageService {
 			42: "0xdfd71c0b6d75b8cee94e8ca017104424c0efdd47"
 		}
 		let address = ADDRESSES[this._web3.network.chain]
-		this.contract = this._contract.contractInstance(this.getAbi(), address);
+        this.contract = this._contract.contractInstance(this.getAbi(), address);
+        console.log("Que es this contract?",this.contract);
+        
     }
 
     async getTikers(tikersId) {

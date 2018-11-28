@@ -59,7 +59,7 @@ export class WalletService {
       throw e;
     }
 
-    if(!error){      
+    if(!error){  
       this.addAccount(wallet, pass, name);
     } 
   }

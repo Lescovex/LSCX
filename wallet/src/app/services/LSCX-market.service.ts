@@ -39,14 +39,14 @@ export class LSCXMarketService {
 		orders : undefined,
 		myOrders: undefined,
 		myTrades: undefined,
-		myFunds: undefined
+		myFunds: undefined	
 	};
 	updated: boolean;
 
 	balancesInterval = null;
 	stateOrdersInteval = null;
 	tikersInterval = null;
-	
+	reverseBuys;
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, private _marketStorage: LSCXMarketStorageService) {
 		this.updated = false;
 		this.setMarket();
@@ -116,6 +116,7 @@ export class LSCXMarketService {
 	setContracts() {
 		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractMarket[0].addr);
 		
+		console.log("this config",this.config);
 		
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
 		this.contractReserveToken = this._web3.web3.eth.contract(this.getAbi('reservetoken'));
@@ -263,12 +264,27 @@ export class LSCXMarketService {
 	async setBuys() {
 		this.state.orders.buys = await this._marketStorage.getBuyOrders(this.token);
 		console.log("BUYS",this.state.orders.buys)
+		this.reverseBuys = await this.orderByPrice(this.state.orders.buys);
+		console.log("this marketstorage address",this._marketStorage.contract.address);
+		
 	}
 
 	async setSells() {
 		this.state.orders.sells = await this._marketStorage.getSellOrders(this.token);
 		console.log("SELLS",this.state.orders.sells)
 	}
+	orderByPrice(object){
+        
+		object.sort(function (a, b) {
+		  if ( a.price > b.price )
+			return -1;
+		  if ( a.price < b.price )
+			return 1;
+			return 0;
+		})
+	  
+	  return object;
+	}	
 	
 	addMyState(obj: any, stateName: string){
 		if(this.marketState[stateName].hasOwnProperty(this._account.account.address)){
@@ -391,8 +407,11 @@ export class LSCXMarketService {
 		if(!fs.existsSync(lescovexPath)){
 		  fs.mkdirSync(lescovexPath);
 		}
-
+		console.log("que es lescovexPath?",lescovexPath);
+		
 		let filePath =lescovexPath+"/."+this.fileName+".json";
+		console.log("que es filePath????", filePath);
+		
 		if(!fs.existsSync(filePath)){
 			let objNet = {
 			tikers:[],
@@ -405,6 +424,8 @@ export class LSCXMarketService {
 			fs.writeFileSync(filePath , JSON.stringify(objNet));
 		}
 		let data = fs.readFileSync(filePath);
+		
+		console.log("que es data?",data);
 		
 		this.marketState =  JSON.parse(data);
 		

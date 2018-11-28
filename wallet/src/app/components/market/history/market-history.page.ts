@@ -23,13 +23,11 @@ export class MarketHistoryPage implements DoCheck {
 
   constructor(protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
     this._LSCXmarket.getTokenState();
-    this.action = "myTrades";
+    this.action = "myOrders";
     this.intervalLoops = 0;
-    this.lastAction = "myTrades";
+    this.lastAction = "myOrders";
     this.getHistory(this.action);
-    console.log("this.history despues de getHistory",this._LSCXmarket.state.orders);
-    
-    this.currentState = this._LSCXmarket.state.myTrades;
+    this.currentState = this._LSCXmarket.state.myOrders;
     this.currentToken = this._LSCXmarket.token.name; 
   }
 

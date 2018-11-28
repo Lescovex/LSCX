@@ -25,13 +25,12 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     intervalOrders;
     items: any[];
 
-    activeBuys: any[];
-    activeSells: any[];
-
     constructor(private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService ) {
     }
 
     ngOnInit(): void {
+        console.log("ACTION?",this.action);
+        
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
         
@@ -39,43 +38,14 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     
     ngOnChanges(): void {
         if(this.action == "myOrders"){
-           
             this.interval = setInterval(async()=>{
                 let blockNum = await this._web3.blockNumber();
-                console.log("que es este blocknum?",blockNum);
-                
                 this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
                 this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain);
             },250);
-
             
-            this.intervalOrders = setInterval(async()=>{
-                clearInterval(this.intervalOrders);
-                
-                console.log("Este history?",this.history);
-                let sells = new Array();
-                let buys = new Array();
-                for (let i = 0; i < this.history.length; i++) {
-                    console.log("iteracion del for?",i);
-                    console.log("dentro del for???", this.history[i]);
-                    if(this.history[i].tokenGet == "0x0000000000000000000000000000000000000000"){
-                        sells.push(this.history[i]);
-                    }else{
-                        buys.push(this.history[i])
-                    }
-                    
-                    
-                    
-                }
-                let sortBuys = this.orderByPrice(buys)
-                this.activeSells = await sells;
-                this.activeBuys = await sortBuys;
-                console.log("buys???",this.activeBuys);
-                console.log("sells???",this.activeSells);
-                
-            },1000);
+            
         }
-        console.log("ngOnChanges THIS.HISTORY???!?!?!",this.history);
         if(this.action != "myOrders" && this.interval != null){
             clearInterval(this.interval);
             this.interval= null;
@@ -98,7 +68,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         
         return object;
       }
-      
+
     ngOnDestroy(): void {
         if(this.interval != null){
             clearInterval(this.interval);
