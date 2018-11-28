@@ -27,6 +27,8 @@ export class MarketHistoryPage implements DoCheck {
     this.intervalLoops = 0;
     this.lastAction = "myTrades";
     this.getHistory(this.action);
+    console.log("this.history despues de getHistory",this._LSCXmarket.state.orders);
+    
     this.currentState = this._LSCXmarket.state.myTrades;
     this.currentToken = this._LSCXmarket.token.name; 
   }

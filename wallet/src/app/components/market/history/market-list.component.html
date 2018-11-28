@@ -27,8 +27,14 @@
             </tr>
         </tbody>
     </table>
-    <table *ngIf="action=='myOrders'" class="history-table">
+    <!--
+        ACTIVE ORDERS
+    -->
+    <table *ngIf="action=='myOrders' && activeSells.length != 0" class="history-table inline">
         <thead>
+            <tr>
+                <td class="red bold">SELL ORDERS</td>
+            </tr>
             <tr>
                 <th>{{_LSCXmarket.token.name}}/ETH</th>
                 <th>Available volume</th>
@@ -36,22 +42,49 @@
                 <!--<th>Cancel</th>-->
             </tr>
         </thead>
-        <tr *ngIf="history.length == 0">
+        <tr *ngIf="activeSells.length == 0">
             <td colspan="3" class="collapse">There are no orders here</td>
         </tr>
-        <tbody *ngFor="let order of history, index as i">
+        <tbody *ngFor="let order of activeSells, index as i">
             <tr *ngIf="blockNumber <= order.expires">
                 <td>
-                    <p [ngClass]="(order.tokenGive =='0x0000000000000000000000000000000000000000')? 'green' : 'red'">{{order.price | number:"1.4-8":"en"}}</p>
+                    <p class="red">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
-                <td *ngIf="order.tokenGet =='0x0000000000000000000000000000000000000000'">{{order.amount*order.price -order.available | number:"1.8-8":"en"}} ETH / {{order.amountBase | number:"1.8-8":"en"}} ETH</td>
-                <td *ngIf="order.tokenGet!='0x0000000000000000000000000000000000000000'">{{order.amount -order.available | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}} / {{order.amount | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}}</td>
+                <td>{{order.amount*order.price -order.available | number:"1.8-8":"en"}} ETH / {{order.amountBase | number:"1.8-8":"en"}} ETH</td>
                 <td *ngIf="blockNumber != null">{{order.expires-blockNumber}}</td>
                 <td *ngIf="blockNumber == null" class="red">Not available</td>
-                <!--<td><a (click)="cancelOrder(order)">Cancel</a></td>-->
             </tr>
         </tbody>
     </table>
+    <div class="extra inline">
+
+    </div>
+    <table *ngIf="action=='myOrders' && activeBuys.length != 0" class="history-table inline">
+        <thead>
+            <tr>
+                <td class="green bold">BUY ORDERS</td>
+            </tr>
+            <tr>
+                <th>{{_LSCXmarket.token.name}}/ETH</th>
+                <th>Available volume</th>
+                <th>Expires in</th>
+            </tr>
+        </thead>
+        <tr *ngIf="activeBuys.length == 0">
+            <td colspan="3" class="collapse">There are no orders here</td>
+        </tr>
+        <tbody *ngFor="let order of activeBuys, index as i">
+            <tr *ngIf="blockNumber <= order.expires">
+                <td>
+                    <p class="green">{{order.price | number:"1.4-8":"en"}}</p>
+                </td>
+                <td>{{order.amount -order.available | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}} / {{order.amount | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}}</td>
+                <td *ngIf="blockNumber != null">{{order.expires-blockNumber}}</td>
+                <td *ngIf="blockNumber == null" class="red">Not available</td>
+            </tr>
+        </tbody>
+    </table>
+
     <table *ngIf="action=='myFunds'" class="history-table">
         <thead>
             <tr>
