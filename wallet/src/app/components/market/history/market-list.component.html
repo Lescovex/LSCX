@@ -82,8 +82,8 @@
             </tr>
         </tbody>
 
-        <tbody *ngIf="_LSCXmarket.state.orders.sells != 0">
-            <tr *ngFor="let order of _LSCXmarket.state.orders.reverseBuys, index as i">
+        <tbody *ngIf="_LSCXmarket.state.orders.buys != 0">
+            <tr *ngFor="let order of _LSCXmarket.reverseBuys, index as i">
                 <td>
                     <p *ngIf="blockNumber <= order.expires" class="green">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
