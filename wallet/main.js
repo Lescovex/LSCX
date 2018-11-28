@@ -56,14 +56,14 @@ function createWindow() {
         var osxMenu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(osxMenu);
     } else {
-        //var menu = Menu.buildFromTemplate(MENU_TEMPLATE);
-        //Menu.setApplicationMenu(menu)
+        var menu = Menu.buildFromTemplate(MENU_TEMPLATE);
+        Menu.setApplicationMenu(menu)
     }
     // and load the index.html of the app.
     win.loadURL(`file://${__dirname}/build/index.html`);
 
     // Open the DevTools.
-    if (ENV == 'dev') win.webContents.openDevTools()
+    //if (ENV == 'dev') win.webContents.openDevTools()
 
     // Emitted when the window is closed.
     win.on('closed', () => {

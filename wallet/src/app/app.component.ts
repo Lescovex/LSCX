@@ -41,7 +41,7 @@ export class MyApp implements OnInit {
         }else{
           if(this._LSCXmarket.updated){
             clearInterval(this.interval);
-          this.loadingD.close();
+            this.loadingD.close();
           } 
         } 
       });
