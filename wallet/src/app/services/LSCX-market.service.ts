@@ -508,7 +508,7 @@ export class LSCXMarketService {
 		  fs.mkdirSync(lescovexPath);
 		}
 		
-		let filePath =lescovexPath+"/."+this.fileName+".json";
+		let filePath = lescovexPath+"/."+this.fileName+".json";
 		
 		if(!fs.existsSync(filePath)){
 			let objNet = {
@@ -519,15 +519,26 @@ export class LSCXMarketService {
 			myTrades: {},
 			myFunds: {}
 			}
+
 			fs.writeFileSync(filePath , JSON.stringify(objNet));
 		}
-		let data = fs.readFileSync(filePath);	
-		this.marketState =  JSON.parse(data);
-		
-		await this.getTikers();
-		this.updateMyStateShow("myFunds");
-		this.updateMyStateShow("myOrders");
-		this.updateMyStateShow("myTrades");
+		let data = fs.readFileSync(filePath);
+		try {
+			this.marketState =  JSON.parse(data);
+		} catch (error) {
+			console.log(error);
+			fs.unlink(filePath, (err) => {
+				if (err) throw err;
+				console.log('successfully deleted', filePath);
+			  });
+
+			this.getLocalState();
+		}
+			await this.getTikers();
+			this.updateMyStateShow("myFunds");
+			this.updateMyStateShow("myOrders");
+			this.updateMyStateShow("myTrades");
+
 	}
 
 	async getTikers(){
