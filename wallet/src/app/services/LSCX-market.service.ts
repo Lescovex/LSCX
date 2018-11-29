@@ -46,7 +46,10 @@ export class LSCXMarketService {
 	balancesInterval = null;
 	stateOrdersInteval = null;
 	tikersInterval = null;
-	reverseBuys;
+	//reverseBuys;
+	showBuys;
+	showSells;
+
 	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, private _marketStorage: LSCXMarketStorageService) {
 		this.updated = false;
 		this.setMarket();
@@ -115,9 +118,6 @@ export class LSCXMarketService {
 
 	setContracts() {
 		this.contractMarket = this._contract.contractInstance(this.getAbi('market'),this.config.contractMarket[0].addr);
-		
-		console.log("this config",this.config);
-		
 		this.contractToken = this._web3.web3.eth.contract(this.getAbi('token'));
 		this.contractReserveToken = this._web3.web3.eth.contract(this.getAbi('reservetoken'));
 		this.setFees().then();
@@ -240,7 +240,7 @@ export class LSCXMarketService {
 	}
 
 
-	async getTokenState(){	
+	async getTokenState(){ // coje info de myorders, myfounds y mytrades de marketState
 		if(this._account.account.address in this.marketState.myFunds){
 			this.state.myFunds = this.marketState.myFunds[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr || x.tokenAddr == this.config.tokens[0].addr);
 		} else {
@@ -259,19 +259,23 @@ export class LSCXMarketService {
 		this.state.orders = {buys:[], sells:[]};
 		await this.setBuys();
 		await this.setSells();
+		await this.setShowOrders();
 	}
 
 	async setBuys() {
 		this.state.orders.buys = await this._marketStorage.getBuyOrders(this.token);
 		console.log("BUYS",this.state.orders.buys)
-		this.reverseBuys = await this.orderByPrice(this.state.orders.buys);
-		console.log("this marketstorage address",this._marketStorage.contract.address);
-		
+
 	}
 
 	async setSells() {
 		this.state.orders.sells = await this._marketStorage.getSellOrders(this.token);
 		console.log("SELLS",this.state.orders.sells)
+	}
+
+	async setShowOrders(){
+		this.showBuys = await this.orderByPrice(this.state.orders.buys);
+		this.showSells = this.state.orders.sells;
 	}
 	orderByPrice(object){
         
@@ -286,7 +290,7 @@ export class LSCXMarketService {
 	  return object;
 	}	
 	
-	addMyState(obj: any, stateName: string){
+	addMyState(obj: any, stateName: string){ //revisarFuncion
 		if(this.marketState[stateName].hasOwnProperty(this._account.account.address)){
 			this.marketState[stateName][this._account.account.address].push(obj);
 		}else{
@@ -298,7 +302,7 @@ export class LSCXMarketService {
 		this.updateMyStateShow(stateName);
 	}
 
-	updateMyStateShow(stateName: string) {
+	updateMyStateShow(stateName: string) { // revisar funcion
 		let interval = null;
 		interval = setInterval(()=>{
 			let myObjs = [];
@@ -341,10 +345,10 @@ export class LSCXMarketService {
 	}
 
 	async checkMyOrdersDeleted(blockNumber:number, network: number){
-
 		let myOrders = [];
 		if(this._account.account.address in this.marketState.myOrders && network == this._web3.network.chain){
-			let myOrdersAddress = this.marketState.myOrders[this._account.account.address]
+			let myOrdersAddress = this.marketState.myOrders[this._account.account.address];
+
 			myOrders = this.state.myOrders.filter(order=> order.show && !order.deleted);
 			myOrders.forEach(async order=>{
 				order = new Order(order, order.tokenDecimals);
@@ -358,7 +362,6 @@ export class LSCXMarketService {
 
 				for(let i=0; i<myOrdersAddress.length; i++){
 					if(order.txHash == myOrdersAddress[i].txHash){
-						//console.log(order.deleted, order.amountFilled, )
 						if(order.deleted && order.amountFilled == 0 ){
 							myOrdersAddress.splice(i,1);
 						} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
@@ -402,15 +405,110 @@ export class LSCXMarketService {
 		}
 	}
 
+	async checkShowSellsDeleted(blockNumber:number, network: number){
+		let myOrders = [];
+		if(network == this._web3.network.chain){
+			myOrders = this.showSells;
+			myOrders.forEach(async order=>{
+				order = new Order(order, order.tokenDecimals);
+				if(blockNumber > order.expires){
+					order.deleted = true;
+					order.date = Date.now();
+				}
+				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
+				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
+				order.setFilled(amountFilled);
+				for(let i=0; i < myOrders.length; i++){
+					if(order.txHash == myOrders[i].txHash){
+						if(order.deleted && order.amountFilled == 0 ){
+							myOrders.splice(i,1);
+						} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
+							let side: string;
+							let amount: number;
+							let amountBase: number;
+							
+							if(order.tokenGet == this.config.tokens[0].addr) {
+								side = "sell";
+								amount = order.amountFilled/order.price;
+								amountBase =  order.amountFilled;
+							} else {
+								side = "buy";
+								amount = order.amountFilled;
+								amountBase = order.amountFilled * order.price;
+							}
+							
+							myOrders.splice(i,1);
+							
+						} else {		
+							myOrders[i] = order;
+						}
+					}
+				}
+				
+				if(this._web3.network.chain == network) {
+					this.showSells = myOrders;
+					this.marketState.showSells = this.showSells;
+					this.saveState();
+				}	
+			})	
+		}
+	}
+
+	async checkShowBuysDeleted(blockNumber:number, network: number){
+		let myOrders = [];
+		if(network == this._web3.network.chain){
+			myOrders = this.showBuys;
+			myOrders.forEach(async order=>{
+				order = new Order(order, order.tokenDecimals);
+				if(blockNumber > order.expires){
+					order.deleted = true;
+					order.date = Date.now();
+				}
+				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
+				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
+				order.setFilled(amountFilled); //Order Model
+				for(let i=0; i < myOrders.length; i++){
+					if(order.txHash == myOrders[i].txHash){
+						if(order.deleted && order.amountFilled == 0 ){
+							myOrders.splice(i,1);
+						} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
+							let side: string;
+							let amount: number;
+							let amountBase: number;
+							
+							if(order.tokenGet == this.config.tokens[0].addr) {
+								side = "sell";
+								amount = order.amountFilled/order.price;
+								amountBase =  order.amountFilled;
+							} else {
+								side = "buy";
+								amount = order.amountFilled;
+								amountBase = order.amountFilled * order.price;
+							}
+							
+							myOrders.splice(i,1);
+							
+						} else {		
+							myOrders[i] = order;
+						}
+					}
+				}
+				
+				if(this._web3.network.chain == network) {
+					this.showBuys = myOrders;
+					this.marketState.showBuys = this.showBuys;
+					this.saveState();
+				}	
+			})	
+		}
+	}
 
 	async getLocalState(){
 		if(!fs.existsSync(lescovexPath)){
 		  fs.mkdirSync(lescovexPath);
 		}
-		console.log("que es lescovexPath?",lescovexPath);
 		
 		let filePath =lescovexPath+"/."+this.fileName+".json";
-		console.log("que es filePath????", filePath);
 		
 		if(!fs.existsSync(filePath)){
 			let objNet = {
@@ -423,10 +521,7 @@ export class LSCXMarketService {
 			}
 			fs.writeFileSync(filePath , JSON.stringify(objNet));
 		}
-		let data = fs.readFileSync(filePath);
-		
-		console.log("que es data?",data);
-		
+		let data = fs.readFileSync(filePath);	
 		this.marketState =  JSON.parse(data);
 		
 		await this.getTikers();
@@ -436,8 +531,10 @@ export class LSCXMarketService {
 	}
 
 	async getTikers(){
+		//REVISAR TIKERS!!!!!
+		
 		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
-
+		
 		if(tikersResult!=null && tikersResult.network == this._web3.network.chain){
 			
 			tikersResult.tikers.forEach(x=>{
@@ -448,7 +545,7 @@ export class LSCXMarketService {
 				}
 			})
 			if(tikersResult.network == this._web3.network.chain){
-				this.marketState.tikersId = tikersResult.tikersId;
+				this.marketState.tikersId = tikersResult.tikersId;		
 				this.saveState();
 			}
 		}
@@ -514,8 +611,8 @@ export class LSCXMarketService {
 	saveState(){
 		let filePath =lescovexPath+"/."+this.fileName+".json";
 		try {
-		
 			JSON.stringify(this.marketState);
+			
 		}catch (e)  {
 			console.log("JSON ERROR", e)
 		}

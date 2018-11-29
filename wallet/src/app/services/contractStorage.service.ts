@@ -138,27 +138,16 @@ export class ContractStorageService {
                 let url = "https://"+net+"etherscan.io/address/"+contractAddr;
                 let headers = new Headers();
                 headers.append('Content-Type', 'text/html');
-                //console.log("start pause");
                 setTimeout(function(){
                     //do what you need here
-                    //console.log("paused 30 seconds");
                 
                     self.http.get(url,  {headers: headers}).subscribe((res:any) =>{
-                        //console.log("response", res)
                         let x = res._body;
-                        //console.log("responsebody", x);
-                        
                         let len = x.length                        
                         let y = x.split("pre")[4];
-                        //console.log("primersplit",y);
-                    
                         let z = y.split(">")[1];
-                        //console.log("segundosplit",z)
                         let a =z.split("<")[0];
-                        //console.log("tercersplit",a);
-
                         let _constructorArguments = a;
-                        //console.log(_constructorArguments);
         
                         self._scan.setVerified(contractAddr, _sourceCode, _contractName, _compilerversion, _constructorArguments)
                     }, err =>{

@@ -40,12 +40,12 @@
                 <th>Expires in</th>
             </tr>
         </thead>
-        <tr *ngIf="_LSCXmarket.state.orders.sells == 0">
+        <tr *ngIf="_LSCXmarket.showSells == 0">
             <td colspan="3" class="collapse">There are no orders here</td>
         </tr>
-        <tbody *ngIf="_LSCXmarket.state.orders.sells != 0">
+        <tbody *ngIf="_LSCXmarket.showSells != 0">
 
-            <tr *ngFor="let order of _LSCXmarket.state.orders.sells, index as i">
+            <tr *ngFor="let order of _LSCXmarket.showSells, index as i">
                 <td>
                     <p *ngIf="blockNumber <= order.expires" class="red">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
@@ -76,14 +76,14 @@
                 <th>Expires in</th>
             </tr>
         </thead>
-        <tbody *ngIf="_LSCXmarket.state.orders.buys == 0">
+        <tbody *ngIf="_LSCXmarket.showBuys == 0">
             <tr>
                 <td colspan="3" class="collapse">There are no orders here</td>
             </tr>
         </tbody>
 
-        <tbody *ngIf="_LSCXmarket.state.orders.buys != 0">
-            <tr *ngFor="let order of _LSCXmarket.reverseBuys, index as i">
+        <tbody *ngIf="_LSCXmarket.showBuys != 0">
+            <tr *ngFor="let order of _LSCXmarket.showBuys, index as i">
                 <td>
                     <p *ngIf="blockNumber <= order.expires" class="green">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>

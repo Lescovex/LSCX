@@ -34,7 +34,6 @@ export class BuySellPage implements OnInit, DoCheck {
     protected bestBuy
     constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
-        console.log("FEES", this._LSCXmarket.fees)
     }
 
     async ngOnInit() {
@@ -42,30 +41,13 @@ export class BuySellPage implements OnInit, DoCheck {
       await this._LSCXmarket.setStateOrdersInterval();
       if(this._LSCXmarket.state.orders.sells.length != 0){
         let sellLength = this._LSCXmarket.state.orders.sells.length;
-        console.log("sellLength?",sellLength);
-        //_LSCXmarket.state.orders.sells[0].price
         this.bestSell = this._LSCXmarket.state.orders.sells[sellLength -1].price;
-        console.log("bestSell????",this.bestSell);
-      }else{
-        
-        console.log("NO SELLS");
-        
-        
       }
       
       if(this._LSCXmarket.state.orders.buys.length != 0){
         let buyLength = this._LSCXmarket.state.orders.buys.length;
         this.bestBuy = this._LSCXmarket.state.orders.buys[buyLength -1].price
-      }else{
-        console.log("NO BUYS");
-        
-      }
-      
-      console.log("sells",this._LSCXmarket.state.orders.sells);
-      console.log("buys",this._LSCXmarket.state.orders.buys);
-      
-      
-      
+      }   
     }
 
     ngDoCheck() {
@@ -83,10 +65,10 @@ export class BuySellPage implements OnInit, DoCheck {
       if(form.invalid) return false;
       this.loadingDialog = this._dialog.openLoadingDialog();
       let price =new BigNumber(this.f.price);
-      console.log(price, price.toNumber())
+      
       this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
       this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
-      console.log(price, this.tokenAmount, this.ethAmount);
+      
       this.amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
         
         //change to > to get total
@@ -106,44 +88,33 @@ export class BuySellPage implements OnInit, DoCheck {
       let amountCross = (this.action == 'buy')? this.f.total : this.f.amount;
       
       let matchs = await this.getCross(amountCross, this.f.price);
-      console.log("AmountCross?!?!?!",amountCross);
-      console.log("this.f.price", this.f.price);
-      console.log("matchs!!!!!?!!??!?!?!?!!?!?!",matchs);
-      
+    
       if(matchs.length>0){
         let testTrade = false;
         let params = [];
         let order: any;
-        console.log("entras aqui?");
-        console.log(0<matchs.length && !testTrade)
+    
         for(let i=0; (i<matchs.length && !testTrade); i++){
             order = matchs[i];
-            console.log("dentro", matchs[i], (!testTrade));
+            
             let testParams = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  this.amount, this._account.account.address];
             let testTradeResp = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
             testTrade = (testTradeResp.toString() == "true")? true: false;
-            //console.log("Que es order?", order); //es el order del match
-            //console.log("Que es testTrade?",testTrade);
-            console.log(i, order,testTrade)
+            
             if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, this.amount];
         }
 
         if(params.length>0){
-          console.log("trade", order)
             this.trade(params, order);
         }else{
-          console.log("order despues de match")
             this.order();
           }
       }else{
-          console.log("order")
           this.order();
       }
     }
 
     activeButton(action){
-      console.log("action???",action);
-      
       this.action = action;
     }
 
@@ -153,7 +124,6 @@ export class BuySellPage implements OnInit, DoCheck {
       /*let digits = 3
       let fact= Math.pow(10,digits);
       this.f.total = (isNaN(total))? 0 : Math.floor(total*fact)/fact;*/
-      console.log(this.f.total)
     }
 
     async getCross(amount, price){
@@ -251,7 +221,7 @@ export class BuySellPage implements OnInit, DoCheck {
     //para ver ultimo nonce real
     let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
     let historyNonce = history[0].nonce;
-    console.log(history[0].nonce, historyNonce);
+    
     if(historyNonce>= nonce){
         nonce = parseInt(historyNonce)+1;
     }
@@ -264,10 +234,9 @@ export class BuySellPage implements OnInit, DoCheck {
     if(typeOrder=="order") {
       let amount = (this.action == "buy")? this.tokenAmount : this.ethAmount;
       fees = (amount*this._LSCXmarket.fees.feeMake)/eth;
-      console.log(this.amount, this._LSCXmarket.fees.feeMake, eth, (this.amount*this._LSCXmarket.fees.feeMake)/eth);
+      
     } else {
       fees = (this.amount*this._LSCXmarket.fees.feeTake)/eth;
-            console.log(this.amount, this._LSCXmarket.fees.feeTake, eth, (this.amount*this._LSCXmarket.fees.feeMake)/eth);
     }
     if(this.action == "buy" && typeOrder == "trade" || this.action == "sell" && typeOrder == "order" ) {
       fees = fees/Math.pow(10,18);

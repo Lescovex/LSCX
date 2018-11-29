@@ -82,8 +82,11 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   getMyOrders(): any[] {
-    console.log("entra en getOrders");
+    let buyOrders = this._LSCXmarket.state.orders.buys.filter(x=> !x.deleted && x.show);
+    let sellOrders = this._LSCXmarket.state.orders.sells.filter(x=> !x.deleted && x.show);
+    
     let orders =  this._LSCXmarket.state.myOrders.filter(x=> !x.deleted && x.show);
+    
     let myOrders: Order[] =[];
     orders.map(order => {
       myOrders.push(new Order(order, order.tokenDecimals));  
@@ -91,7 +94,6 @@ export class MarketHistoryPage implements DoCheck {
     myOrders.sort((a,b)=>{
       return a.price - b.price || parseInt(a.amountGet.toString()) -  parseInt(b.amountGet.toString());
     })
-    console.log("myorders???????",myOrders);
     
     return myOrders;
   }

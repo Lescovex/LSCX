@@ -7,7 +7,8 @@ const fs = require('fs')
 @Injectable()
 export class ContractService {
 
-	constructor(private _web3 : Web3){	
+	constructor(private _web3 : Web3){
+
 	}
 	
 	async getAbi(path){

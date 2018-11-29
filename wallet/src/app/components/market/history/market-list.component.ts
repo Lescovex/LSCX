@@ -29,11 +29,8 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log("ACTION?",this.action);
-        
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        
     }
     
     ngOnChanges(): void {
@@ -41,7 +38,9 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
             this.interval = setInterval(async()=>{
                 let blockNum = await this._web3.blockNumber();
                 this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
-                this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain);
+                this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain); //updateMyOrders
+                this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
+                this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
             },250);
             
             
