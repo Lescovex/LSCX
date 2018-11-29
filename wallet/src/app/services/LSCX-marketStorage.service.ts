@@ -32,25 +32,46 @@ export class LSCXMarketStorageService {
             i = tikersId;
         }
         let respIds = await this.callFunction("tikersId",[]);
+        //console.log("respIds?", respIds);
         
         let ids = parseInt(respIds.toString());
+        //console.log("ids?",ids);
+        
         let newTikers = [];
-        for(i; i<=ids; i++){
+        for(i; i <= ids; i++){
             let rowTikers = await this.callFunction("tikers",[i]);
+            //console.log("rowTikers?",rowTikers);
+            
             let tikersStr = rowTikers.toString();
-            let tikers = tikersStr.split("*****");           
-            tikers.map(x=>{
+            //console.log("tikersStr?",tikersStr);
+            
+            let tikers = tikersStr.split("*****");
+            //console.log("tikers??? antes del map???",tikers);
+            
+            tikers.map(x => {
                 try {
+                    //console.log("que es x?", x);
+                    
                     let y = x.replace(/'/g,'"');
+                    //console.log("Que es y?",y);
+                    
                     newTikers.push(JSON.parse(y));
+                    //console.log("try newTikers?", newTikers);
+                    
                 }catch(e){
+                    //console.log("error del catch???",e);
+                    
                     newTikers.push(null);
+                    //console.log("catch newtikers??",newTikers);
+                    
                 }
             });           
         }
 
         
         let lastId = await this.callFunction("tikersId",[]);
+        console.log("lastId?",lastId);
+        
         return {tikers:newTikers, tikersId :parseInt(lastId.toString()), network: network};
     }
 
