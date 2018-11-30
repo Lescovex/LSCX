@@ -199,7 +199,7 @@ export class AccountService{
 
   async updateTokens(){
     let self = this;
-    let tokens = this.tokens
+    let tokens : Array<any> = [];
     for(let i = 0; i<tokens.length; i++){
       if(i==0) {
         this.newUpdateTokens=false;

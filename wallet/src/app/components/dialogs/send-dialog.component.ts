@@ -96,7 +96,7 @@ export class SendDialogComponent{
                 }
             })
           }
-        }else{
+        } else {
           if(loadingDialog!=null){
             loadingDialog.close();
           }

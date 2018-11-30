@@ -445,8 +445,8 @@ export class LSCXMarketService {
 			}
 
 			if(this._web3.network.chain == network) {
-				myOrders = myNewOrders;
-				this.showSells = await myNewOrders;
+				myOrders = await myNewOrders;
+				this.showSells = myOrders;
 				this.marketState.showSells = this.showSells;
 				this.saveState();
 			}
@@ -493,8 +493,7 @@ export class LSCXMarketService {
 			}
 				
 			if(this._web3.network.chain == network) {
-				myOrders = myNewOrders;
-				console.log("Before save state BUYS", myOrders);
+				myOrders = await myNewOrders;
 				
 				this.showBuys = myOrders;
 				this.marketState.showBuys = this.showBuys;
@@ -544,7 +543,6 @@ export class LSCXMarketService {
 		//REVISAR TIKERS!!!!!
 		
 		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
-		console.log("tikersResult??????",tikersResult);
 		
 		if(tikersResult!=null && tikersResult.network == this._web3.network.chain){
 			
@@ -619,6 +617,7 @@ export class LSCXMarketService {
 			}
 		}, 2000);
 	}
+	
 	saveState(){
 		let filePath =lescovexPath+"/."+this.fileName+".json";
 		try {

@@ -6,6 +6,7 @@ import { FormsService } from '../../../services/forms.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { AccountService } from '../../../services/account.service';
 import { DialogService } from '../../../services/dialog.service';
+import { EtherscanService } from '../../../services/etherscan.service';
 import { Router } from '@angular/router';
 import { Web3 } from '../../../services/web3.service';
 
@@ -41,7 +42,7 @@ export class ShowContract implements OnInit{
   protected isInMarket = false;
   protected isERC20 = true;
 
-  constructor(public _LSCXcontract: LSCXContractService, public _contractStorage: ContractStorageService, protected _forms: FormsService, protected sendDialogService : SendDialogService, protected _account: AccountService, protected _dialog: DialogService, protected router : Router, protected _web3: Web3, private _LSCXmarket: LSCXMarketService, private _customContract: CustomContractService ) {
+  constructor(public _LSCXcontract: LSCXContractService, public _contractStorage: ContractStorageService, protected _forms: FormsService, protected sendDialogService : SendDialogService, protected _account: AccountService, protected _dialog: DialogService, protected router : Router, protected _web3: Web3, private _LSCXmarket: LSCXMarketService, private _customContract: CustomContractService, private _scan: EtherscanService ) {
     this.functionForm = new FormGroup({
       functionCtrl: new FormControl(null,Validators.required),
     });
@@ -199,7 +200,6 @@ export class ShowContract implements OnInit{
 
   addToMarket() {
     if(this.contractType=="custom") {
-      console.log("more info",this.moreInfo, this.contractInfo)
       let address = this.contractInfo.address;
       let symbol = this.moreInfo.find(x=>x[0]=="symbol");
       let decimals = this.moreInfo.find(x=>x[0]=="decimals");
@@ -208,13 +208,15 @@ export class ShowContract implements OnInit{
         symbol : symbol[1],
         decimals: parseInt(decimals[1].toString())
       }
-      console.log(contractInfo)
       this._contractStorage.openTikerDialog(contractInfo, false);
     } else {
-      console.log(this.contractInfo)
       this._contractStorage.openTikerDialog(this.contractInfo, false);
     }
     
+  }
+
+  openExternal(addr){
+    this._scan.openTokenUrl(addr)
   }
 
 }

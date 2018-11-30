@@ -94,7 +94,7 @@
                 </td>
                 <td *ngIf="blockNumber != null">
                     <p *ngIf="blockNumber <= order.expires">
-                        {{order.expires-blockNumber}}
+                        {{order.expires - blockNumber}}
                     </p>
                 </td>
                 <td *ngIf="blockNumber == null" class="red">Not available</td>

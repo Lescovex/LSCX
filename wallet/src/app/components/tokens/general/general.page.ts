@@ -41,11 +41,12 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     if(this._account.updatedTokens && this.dialog!=null){
       this.dialog.close();
     }
-    if(this._account.updatedTokens && this._account.tokenInterval==null){
-      this.setTokens();
+    if(this._account.updatedTokens && this._account.tokenInterval == null){
+      await this.setTokens();
       this._account.startIntervalTokens();
       this.allTokens = this._account.tokens.filter(x=>x);
     }
+
     if(JSON.stringify(this.allTokens) != JSON.stringify(this._account.tokens)){
       await this.setTokens();
       this.allTokens = this._account.tokens.filter(x=>x);
@@ -56,14 +57,13 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
     this._scan.openTokenHolderUrl(txHash, this._account.account.address)
   }
 
-  async setTokens() {
+  async setTokens() {    
     this.tokens =  this._account.tokens.filter(token => !token.deleted);
     if(!this.hideZero){
-      this.tokens =  this._account.tokens.filter(token => !token.deleted);
-    }else{
+      this.tokens =  this._account.tokens.filter(token => !token.deleted);      
+    } else {
       this.tokens = this._account.tokens.filter(token => token.balance > 0 && !token.deleted);
     }
-
     await this.sortAlphabetically();
     await this.sortByBalance();
     

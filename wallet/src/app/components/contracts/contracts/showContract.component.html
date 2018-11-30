@@ -6,13 +6,13 @@
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_CIF'" src='~icons/LSCX_CIF.svg'>
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_CYC'" src='~icons/LSCX_CYC.svg'>
             <img class="left contract-show-icon" *ngIf="contractInfo.type=='LSCX_ISC'" src='~icons/LSCX_ISC.svg'>
-            <div class="left">
-                <p class="contract-list-title">{{contractInfo.symbol}}-{{contractInfo.name}}</p>
-                <p class="contract-list-name">{{contractInfo.address}}</p>
+            <div class="left" (click)="openExternal(contractInfo.address)">
+                <p class="contract-list-title pointer">{{contractInfo.symbol}} - {{contractInfo.name}}</p>
+                <p class="contract-list-name pointer">{{contractInfo.address}}</p>
             </div>
         </div>
 
-        <div *ngIf="contractType=='custom'" class="left">
+        <div *ngIf="contractType=='custom'" class="left" (click)="openExternal(contractInfo.address)">
             <p class="contract-list-title">{{contractInfo.name}}</p>
             <p class="contract-list-name">{{contractInfo.address}}</p>
         </div>
@@ -23,7 +23,7 @@
         <p *ngIf="isInMarket" class="left contract-list-add-market">This contract is listed in LSCX market</p>
         <a *ngIf="addMarket" class="btn-contract right" (click)="addToMarket()">Add to LSCX market</a>
     </div>
-   
+
     <ul class="info-list clear dist">
         <ng-container *ngIf="contractType=='LSCX'">
             <li *ngIf="contractInfo.type != 'LSCX_CYC'" class="half left clear">
