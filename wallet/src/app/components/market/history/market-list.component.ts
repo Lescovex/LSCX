@@ -1,4 +1,5 @@
 import { Component, OnInit, OnChanges, Input , OnDestroy} from '@angular/core';
+import { MdDialog } from '@angular/material';
 import { Web3 } from '../../../services/web3.service';
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { DialogService } from '../../../services/dialog.service';
@@ -6,6 +7,7 @@ import { SendDialogService } from '../../../services/send-dialog.service';
 import { RawTx } from '../../../models/rawtx';
 import BigNumber from 'bignumber.js';
 import { AccountService } from '../../../services/account.service';
+import { OrderDialogComponent } from "./order-dialog.component";
 
 @Component({
   selector: 'app-market-list',
@@ -24,8 +26,9 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     interval= null;
     intervalOrders;
     items: any[];
+    orderDialog;
 
-    constructor(private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService ) {
+    constructor(private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
     }
 
     ngOnInit(): void {
@@ -41,7 +44,10 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
                 this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain); //updateMyOrders
                 this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
                 this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
-            },250);
+                //console.log("showsells",this._LSCXmarket.showSells);
+                //console.log("showbuys",this._LSCXmarket.showBuys);
+                
+            },500);
             
             
         }
@@ -55,8 +61,8 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         }
         
     }
+    
     orderByPrice(object){
-        
           object.sort(function (a, b) {
             if ( a.price > b.price )
               return -1;
@@ -68,6 +74,24 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         return object;
       }
 
+    openOrderDialog(action, order){
+        //console.log("action",action);
+        //console.log("order",order);
+        order.tokenName = this._LSCXmarket.token.name;
+        order.action = action;
+        if(order.action == "sell"){
+            order.totalAmount = order.amountBase;
+        }else{
+            order.totalAmount = order.amount;
+        }
+        let orderDialog = this.dialog.open( OrderDialogComponent, {
+            width: '660px',
+            height: '450px',
+            panelClass: 'dialog',
+            data: order
+        });
+
+    }
     ngOnDestroy(): void {
         if(this.interval != null){
             clearInterval(this.interval);

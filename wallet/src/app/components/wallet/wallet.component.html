@@ -29,15 +29,6 @@
             <p class="title-button-navbar">Receive</p>
         </div>
     </a>
-    <a routerLink="card" routerLinkActive="active" #card="routerLinkActive">
-        <div>
-            <span>
-                <img class="top-nav-img" *ngIf="card.isActive" src='~icons/token_generaltab_icon.svg'>
-                <img class="top-nav-img" *ngIf="!card.isActive" src='~icons/token_generaltab_inactive_icon.svg'>
-            </span>
-            <p class="title-button-navbar">Withdraw</p>
-        </div>
-    </a>
     <a routerLink="wsettings" routerLinkActive="active" #sett="routerLinkActive">
         <div>
             <span>

@@ -1,5 +1,4 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
-
 import { AccountService } from '../../services/account.service';
 import { LSCXMarketService } from '../../services/LSCX-market.service';
 import { Web3 } from '../../services/web3.service';

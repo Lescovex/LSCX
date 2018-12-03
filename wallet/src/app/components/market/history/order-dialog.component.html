@@ -1,0 +1,66 @@
+<div>
+    <h1 class="text-center">Trade order<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class=" dist block" *ngIf="data.action == 'sell'">
+    <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenGive}}</span></p>
+    <p class="title">Available amount: <span>{{data.available | number:"1.8-8":"en"}} ETH</span></p>
+</div>
+<div class=" dist block" *ngIf="data.action == 'buy'">
+    <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenGet}}</span></p>
+    <p class="title">Available amount: <span>{{data.available | number:"1.8-8":"en"}} {{data.tokenName}}</span></p>
+</div>
+
+<form (ngSubmit)="confirm(form)" #form="ngForm" class="clear dist">
+    <div class="dist">
+        <div class="half left">
+            <label class="title" *ngIf="data.action == 'sell'" for="amount">Amount to buy</label>
+            <label class="title" *ngIf="data.action == 'buy'" for="amount">Amount to sell</label>
+            <div class="input-container" [ngClass]="{'error': submited  && (amount.invalid || eth.invalid)}">
+                <input type="number" [placeholder]="0.+('0').repeat(data.decimals)" step="any" name="amount" (input)="total()" [(ngModel)]="f.amount" ngModel required #amount="ngModel" />
+                <span class="right">{{data.tokenName}}</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
+                <span *ngIf="amount.errors?.required">This field is required</span>
+                <span *ngIf="!amount.errors?.required && eth.errors?.customMin">The minimum order is 0.001</span>
+            </p>
+        </div>
+        <div class="half right">
+            <label class="title" for="price">Price</label>
+            <div class="input-container" [ngClass]="{'error': submited && (price.invalid || eth.invalid) }">
+                <input class="lightGrey" type="number" [placeholder]="data.price" [value]="data.price" step="any" name="price" (input)="total()" [(ngModel)]="f.price" ngModel disabled required #price="ngModel" />
+                <span class="right">ETH</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && (price.invalid || eth.invalid))}">
+                <span *ngIf="price.errors?.required">This field is required</span>
+                <span *ngIf="!price.errors?.required">The minimum order is 0.001</span>
+            </p>
+        </div>
+        <div class="clear half left">
+            <label class="title" for="total">Total</label>
+            <p class="input lightGrey">{{f.total | number:'1.3-3':'en'}}</p>
+            <input type="hidden" name="total" [customMin]="0.001" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
+            <p class="error" [ngClass]="{'hidden':!(submited &&(eth.invalid || eth.invalid))}">
+                <span *ngIf="!eth.errors?.required && data.action == 'buy'">Amount can't be higher than avaiable amount</span>
+                <span *ngIf="!eth.errors?.required && data.action == 'sell'">Total amount can't be higher than avaiable amount</span>
+            </p>
+        </div>
+        <div class="half right">
+            <label class="title" for="expires">Expires</label>
+            <div class="input-container" [ngClass]="{'error': expires.invalid && submited}">
+                <input type="number" [customMin]="1" placeholder="0.000" step="any" name="expires" [(ngModel)]="f.expires" required ngModel #expires="ngModel" />
+                <span class="right">Blocks</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && expires.invalid)}">
+                <span *ngIf="expires.errors?.required">This field is required</span>
+            </p>
+        </div>
+        <p *ngIf="buyInCross != ''" class="clear dist">{{buyInCross}}</p>
+        <div *ngIf="!insufficient">
+            <div class="buttons">
+                <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+                <button *ngIf="data.action == 'buy'" type="submit" class="btn-inverse half right">Sell</button>
+                <button *ngIf="data.action == 'sell'" type="submit" class="btn-inverse half right">Buy</button>
+            </div>
+        </div>
+    </div>
+</form>

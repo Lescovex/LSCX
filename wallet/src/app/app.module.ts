@@ -50,9 +50,6 @@ import { BuySellPage } from './components/market/buySell/buy-sell.page';
 import { MarketHistoryPage } from './components/market/history/market-history.page';
 import { MarketListComponent } from './components/market/history/market-list.component';
 
-import { CreditCardPage } from './components/wallet/creditCard/creditCard.component';
-import { OrderCardComponent } from './components/wallet/creditCard/orderCard.component';
-
 import { SettingsComponent } from './components/settings/settings.component';
 
 /*Dialogs*/
@@ -78,7 +75,7 @@ import { ContractDialogComponent } from './components/contracts/add/contract-dia
 import { WithdrawTxDialog } from './components/holders/general/withdrawTx.component';
 import { WithdrawDialog } from './components/holders/general/withdraw-dialog.component';
 import { TikerDialogComponent } from './components/dialogs/tiker-dialog.component';
-import { CardMessageDialogComponent } from "./components/wallet/creditCard/card-message-dialog.component";
+import { OrderDialogComponent } from "./components/market/history/order-dialog.component";
 
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
@@ -105,8 +102,6 @@ import { SeparateWordsPipe } from './pipes/words.pipe';
 import { CustomMinDirective } from './validators/min-validator.directive';
 import { ValidateAddressDirective } from './validators/address-validator.directive';
 import { InsuficientFundsDirective } from './validators/funds-validator.directive';
-
-
 
 
 @NgModule({
@@ -137,7 +132,6 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     JSONDialogComponent,
     PrivateKeyDialogComponent,
     NetworkDialogComponent,
-    CardMessageDialogComponent,
     ListComponent,
     PaginatorComponent,
     TokensComponent,
@@ -162,8 +156,6 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     CustomMinDirective,
     ValidateAddressDirective,
     InsuficientFundsDirective,
-    CreditCardPage,
-    OrderCardComponent,
     DeleteDialog,
     ShowTxDialogComponent,
     ResendTxDialogComponent,
@@ -171,7 +163,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     HoldersGeneralPage,
     WithdrawTxDialog,
     WithdrawDialog,
-    TikerDialogComponent
+    TikerDialogComponent,
+    OrderDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -212,7 +205,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     WithdrawDialog,
     NetworkDialogComponent,
     TikerDialogComponent,
-    CardMessageDialogComponent
+    OrderDialogComponent
   ],
   providers: [
     WalletService,

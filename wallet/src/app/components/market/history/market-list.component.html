@@ -45,12 +45,12 @@
         </tr>
         <tbody *ngIf="_LSCXmarket.showSells != 0">
 
-            <tr *ngFor="let order of _LSCXmarket.showSells, index as i">
+            <tr class="pointer" *ngFor="let order of _LSCXmarket.showSells, index as i">
                 <td>
                     <p *ngIf="blockNumber <= order.expires" class="red">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
                 <td>
-                    <p *ngIf="blockNumber <= order.expires">
+                    <p *ngIf="blockNumber <= order.expires" (click)="openOrderDialog('sell', order)">
                         {{order.amount*order.price -order.available | number:"1.8-8":"en"}} ETH / {{order.amountBase | number:"1.8-8":"en"}} ETH
                     </p>
                 </td>
@@ -83,13 +83,13 @@
         </tbody>
 
         <tbody *ngIf="_LSCXmarket.showBuys != 0">
-            <tr *ngFor="let order of _LSCXmarket.showBuys, index as i">
+            <tr class="pointer" *ngFor="let order of _LSCXmarket.showBuys, index as i">
                 <td>
                     <p *ngIf="blockNumber <= order.expires" class="green">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
                 <td>
-                    <p *ngIf="blockNumber <= order.expires">
-                        {{order.amount -order.available | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}} / {{order.amount | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}}
+                    <p *ngIf="blockNumber <= order.expires" (click)="openOrderDialog('buy', order)">
+                        {{order.amount - order.available | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}} / {{order.amount | number:"1.8-8":"en"}} {{_LSCXmarket.token.name}}
                     </p>
                 </td>
                 <td *ngIf="blockNumber != null">

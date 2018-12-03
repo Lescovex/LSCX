@@ -29,6 +29,7 @@ export class MarketHistoryPage implements DoCheck {
     this.getHistory(this.action);
     this.currentState = this._LSCXmarket.state.myOrders;
     this.currentToken = this._LSCXmarket.token.name; 
+    this._LSCXmarket.setBalances()
   }
 
   async ngDoCheck() {

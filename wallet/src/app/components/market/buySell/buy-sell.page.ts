@@ -89,7 +89,7 @@ export class BuySellPage implements OnInit, DoCheck {
       
       let matchs = await this.getCross(amountCross, this.f.price);
     
-      if(matchs.length>0){
+      if(matchs.length > 0){
         let testTrade = false;
         let params = [];
         let order: any;
@@ -104,7 +104,7 @@ export class BuySellPage implements OnInit, DoCheck {
             if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, this.amount];
         }
 
-        if(params.length>0){
+        if(params.length > 0){
             this.trade(params, order);
         }else{
             this.order();
