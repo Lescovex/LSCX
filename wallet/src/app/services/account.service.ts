@@ -42,7 +42,6 @@ export class AccountService{
           this.startIntervalData();
           this.newUpdateTokens = true;
           this.tokens = [];
-          
         }
       }else{
         Promise.resolve().then(() => {
@@ -200,7 +199,9 @@ export class AccountService{
   async updateTokens(){
     let self = this;
     let tokens : Array<any> = [];
-    for(let i = 0; i<tokens.length; i++){
+    console.log("UPDATE TOKENS?");
+    
+    for(let i = 0; i < tokens.length; i++){
       if(i==0) {
         this.newUpdateTokens=false;
       }
@@ -239,8 +240,14 @@ export class AccountService{
         }
       }
     }
+
       self.tokens = await tokens;
+      console.log("tokens len?", tokens.length);
+      
+      console.log("tokens?",tokens);
+      
       self.saveAccountTokens();
+
       if(this.loadingD != null){
         this.loadingD.close();
       }
@@ -314,13 +321,13 @@ export class AccountService{
   async startIntervalTokens(){
     let time = 1000;
     if(this.tokens.length>0){
-      time = this.tokens.length * 500;
+      time = this.tokens.length * 1500;
     }
-    this.tokenInterval = setInterval(()=>{
+    this.tokenInterval = setInterval(async()=>{
       if(this.tokens != []){
-        this.updateTokens();
+        await this.updateTokens();
       }
-    },time);
+    },60000);
   }
 
   clearIntervalTokens(){
