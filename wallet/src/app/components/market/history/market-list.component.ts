@@ -27,33 +27,45 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     intervalOrders;
     items: any[];
     orderDialog;
+    loadingD= null;
 
     constructor(private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
+        Promise.resolve().then(() => { this.loadingD = this._dialog.openLoadingDialog();});
     }
 
-    ngOnInit(): void {
+    async ngOnInit() {
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-    }
-    
-    ngOnChanges(): void {
+
+        let blockNum = await this._web3.blockNumber();
+        this.blockNumber = (typeof(blockNum)== "number")? blockNum : null;
+        this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
+        this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
+        
         if(this.action == "myOrders"){
+            if(this.loadingD != null){
+                this.loadingD.close();
+            }
             this.interval = setInterval(async()=>{
                 let blockNum = await this._web3.blockNumber();
                 this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
                 this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain); //updateMyOrders
                 this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
                 this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
-                //console.log("showsells",this._LSCXmarket.showSells);
-                //console.log("showbuys",this._LSCXmarket.showBuys);
+                console.log("showsells",this._LSCXmarket.showSells);
+                console.log("showbuys",this._LSCXmarket.showBuys);
                 
-            },500);
+            },10000);
             
             
         }
+    }
+
+    ngOnChanges(): void {
+      
         if(this.action != "myOrders" && this.interval != null){
-            clearInterval(this.interval);
-            this.interval= null;
+            //clearInterval(this.interval);
+            //this.interval= null;
         }
         this.totalPages = Math.ceil(this.history.length/this.limit);
         if(this.page==1){
@@ -95,7 +107,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     ngOnDestroy(): void {
         if(this.interval != null){
             clearInterval(this.interval);
-            this.interval= null;
+            this.interval = null;
         }
     }
 

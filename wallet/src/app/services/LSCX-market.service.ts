@@ -68,7 +68,9 @@ export class LSCXMarketService {
 		}
 	}
 
-	setToken(token?) {	
+	setToken(token?) {
+		this.showBuys = null;
+		this.showSells = null;
 		if(typeof(token)=="undefined"){	
 			let localToken = this.getLocalStorageToken();
 			if(localToken !=null && (this.config.tokens.find(token=>token.addr == localToken.addr) != null || this.marketState.tikers.find(token=>token.addr == localToken.addr))) {
@@ -84,6 +86,7 @@ export class LSCXMarketService {
 		this.setTokenContract();
 		this.getTokenState();
 		this.resetTokenBalances();
+		
 	}
 
 	getLocalStorageToken(){
@@ -260,6 +263,12 @@ export class LSCXMarketService {
 		await this.setBuys();
 		await this.setSells();
 		await this.setShowOrders();
+		
+		
+		let blockNum = await this._web3.blockNumber();
+        let blockNumber = (typeof(blockNum)== "number")? blockNum : null;
+        this.checkShowSellsDeleted(blockNumber, this._web3.network.chain); //updateShowBuys
+		this.checkShowBuysDeleted(blockNumber, this._web3.network.chain);  //updateShowSells
 	}
 
 	async setBuys() {
@@ -409,47 +418,52 @@ export class LSCXMarketService {
 		let myOrders = [];
 		let myNewOrders = [];
 		if(network == this._web3.network.chain){
+			console.log("showSells inside showSells deleted",this.showSells);
+			
 			myOrders = this.showSells;
-			for (let i = 0; i < myOrders.length; i++) {
-				let order = new Order(myOrders[i], myOrders[i].tokenDecimals);
-				if(blockNumber > order.expires){
-					order.deleted = true;
-					order.date = Date.now();
-				}
-				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user];
-				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
-				
-				order.setFilled(amountFilled);
-				if(order.deleted && order.amountFilled == 0 ){
-					//myOrders.splice(i,1);
-				} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
-					let side: string;
-					let amount: number;
-					let amountBase: number;
-					
-					if(order.tokenGet == this.config.tokens[0].addr) {
-						side = "sell";
-						amount = order.amountFilled/order.price;
-						amountBase =  order.amountFilled;
-					} else {
-						side = "buy";
-						amount = order.amountFilled;
-						amountBase = order.amountFilled * order.price;
+			if(myOrders != null){
+				for (let i = 0; i < myOrders.length; i++) {
+					let order = new Order(myOrders[i], myOrders[i].tokenDecimals);
+					if(blockNumber > order.expires){
+						order.deleted = true;
+						order.date = Date.now();
 					}
+					let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user];
+					let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
 					
-					//myOrders.splice(i,1);
-					
-				} else {		
-					myNewOrders.push(order);
+					order.setFilled(amountFilled);
+					if(order.deleted && order.amountFilled == 0 ){
+						//myOrders.splice(i,1);
+					} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
+						let side: string;
+						let amount: number;
+						let amountBase: number;
+						
+						if(order.tokenGet == this.config.tokens[0].addr) {
+							side = "sell";
+							amount = order.amountFilled/order.price;
+							amountBase =  order.amountFilled;
+						} else {
+							side = "buy";
+							amount = order.amountFilled;
+							amountBase = order.amountFilled * order.price;
+						}
+						
+						//myOrders.splice(i,1);
+						
+					} else {		
+						myNewOrders.push(order);
+					}
+				}
+	
+				if(this._web3.network.chain == network) {
+					myOrders = await myNewOrders;
+					this.showSells = myOrders;
+					this.marketState.showSells = this.showSells;
+					this.saveState();
 				}
 			}
-
-			if(this._web3.network.chain == network) {
-				myOrders = await myNewOrders;
-				this.showSells = myOrders;
-				this.marketState.showSells = this.showSells;
-				this.saveState();
-			}
+			
 		}
 	}
 
@@ -458,46 +472,48 @@ export class LSCXMarketService {
 		let myNewOrders = [];
 		if(network == this._web3.network.chain){
 			myOrders = this.showBuys;
-			for (let i = 0; i < myOrders.length; i++) {
-				//const element = array[i];
-				let order = new Order(myOrders[i], myOrders[i].tokenDecimals);
-				if(blockNumber > order.expires){
-					order.deleted = true;
-					order.date = Date.now();
-				}
-				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
-				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
-				order.setFilled(amountFilled); //Order Model
-				if(order.deleted && order.amountFilled == 0 ){
-					//myOrders.splice(i,1);
-				} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
-					let side: string;
-					let amount: number;
-					let amountBase: number;
-					
-					if(order.tokenGet == this.config.tokens[0].addr) {
-						side = "sell";
-						amount = order.amountFilled/order.price;
-						amountBase =  order.amountFilled;
-					} else {
-						side = "buy";
-						amount = order.amountFilled;
-						amountBase = order.amountFilled * order.price;
+			if(myOrders != null){
+				for (let i = 0; i < myOrders.length; i++) {
+					//const element = array[i];
+					let order = new Order(myOrders[i], myOrders[i].tokenDecimals);
+					if(blockNumber > order.expires){
+						order.deleted = true;
+						order.date = Date.now();
 					}
-					
-					//myOrders.splice(i,1);
-					
-				} else {		
-					myNewOrders.push(order);
+					let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
+					let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
+					order.setFilled(amountFilled); //Order Model
+					if(order.deleted && order.amountFilled == 0 ){
+						//myOrders.splice(i,1);
+					} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
+						let side: string;
+						let amount: number;
+						let amountBase: number;
+						
+						if(order.tokenGet == this.config.tokens[0].addr) {
+							side = "sell";
+							amount = order.amountFilled/order.price;
+							amountBase =  order.amountFilled;
+						} else {
+							side = "buy";
+							amount = order.amountFilled;
+							amountBase = order.amountFilled * order.price;
+						}
+						
+						//myOrders.splice(i,1);
+						
+					} else {		
+						myNewOrders.push(order);
+					}
 				}
-			}
-				
-			if(this._web3.network.chain == network) {
-				myOrders = await myNewOrders;
-				
-				this.showBuys = myOrders;
-				this.marketState.showBuys = this.showBuys;
-				this.saveState();
+					
+				if(this._web3.network.chain == network) {
+					myOrders = await myNewOrders;
+					
+					this.showBuys = myOrders;
+					this.marketState.showBuys = this.showBuys;
+					this.saveState();
+				}
 			}
 		}
 	}
