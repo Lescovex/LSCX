@@ -60,7 +60,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnChanges(): void {
-      
+        
         if(this.action != "myOrders" && this.interval != null){
             //clearInterval(this.interval);
             //this.interval= null;
@@ -85,8 +85,6 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
       }
 
     openOrderDialog(action, order){
-        //console.log("action",action);
-        //console.log("order",order);
         order.tokenName = this._LSCXmarket.token.name;
         order.action = action;
         if(order.action == "sell"){

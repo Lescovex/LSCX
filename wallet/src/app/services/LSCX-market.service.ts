@@ -71,6 +71,13 @@ export class LSCXMarketService {
 	setToken(token?) {
 		this.showBuys = null;
 		this.showSells = null;
+		
+		if(this.state.orders != null){
+			this.state.orders.buys = null;
+			this.state.orders.sells = null;
+			this.state.orders = null;
+		}
+		
 		if(typeof(token)=="undefined"){	
 			let localToken = this.getLocalStorageToken();
 			if(localToken !=null && (this.config.tokens.find(token=>token.addr == localToken.addr) != null || this.marketState.tikers.find(token=>token.addr == localToken.addr))) {
@@ -271,7 +278,7 @@ export class LSCXMarketService {
 	}
 
 
-	async getTokenState(){ // coje info de myorders, myfounds y mytrades de marketState
+	async getTokenState(){
 		if(this._account.account.address in this.marketState.myFunds){
 			this.state.myFunds = this.marketState.myFunds[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr || x.tokenAddr == this.config.tokens[0].addr);
 		} else {
@@ -604,7 +611,13 @@ export class LSCXMarketService {
 	async getTikers(){
 		//REVISAR TIKERS!!!!!
 		
-		let tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
+		let tikersResult;
+		try {
+			tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);	
+		} catch (error) {
+			console.log(error);
+			this.getTikers();
+		}
 		
 		if(tikersResult!=null && tikersResult.network == this._web3.network.chain){
 			
