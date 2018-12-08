@@ -18,7 +18,7 @@ export class TokensMarketListComponent {
   search(input?){
     let tokens = this._LSCXmarket.config.tokens.filter(x=> x.name!="ETH");
     let LSCX_tokens = this._LSCXmarket.marketState.tikers.filter(x=>x);
-    tokens = tokens.concat( LSCX_tokens);
+    tokens = tokens.concat(LSCX_tokens);
     tokens.sort((a, b)=> (a.name).localeCompare(b.name));
     if(typeof(input)!="undefined"){
       tokens = tokens.filter(token=> {
@@ -31,6 +31,7 @@ export class TokensMarketListComponent {
   }
   
   async selectToken(token){
+    await this._LSCXmarket.activateLoading();
     await this._LSCXmarket.setToken(token);
     this.show.emit(false);   
   }

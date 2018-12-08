@@ -22,6 +22,7 @@ export class MarketHistoryPage implements DoCheck {
   intervalLoops:number;
 
   constructor(protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
+    this._LSCXmarket.activateLoading();
     this._LSCXmarket.getTokenState();
     this.action = "myOrders";
     this.intervalLoops = 0;
@@ -49,7 +50,9 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   activeButton(action){
-    this.loadingDialog = this._dialog.openLoadingDialog();
+    if(action != "myOrders"){
+      this.loadingDialog = this._dialog.openLoadingDialog();
+    }
     this.intervalLoops = 0;
     let interval = setInterval(()=>{
       this.intervalLoops++;

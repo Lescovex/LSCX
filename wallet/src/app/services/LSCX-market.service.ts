@@ -9,6 +9,9 @@ import { BigNumber } from 'bignumber.js';
 import { Order } from '../models/order';
 import { Trade } from '../models/trade';
 
+import { MdDialog } from '@angular/material';
+import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
+
 declare var require: any;
 
 const fs = require('fs');
@@ -50,7 +53,12 @@ export class LSCXMarketService {
 	showBuys;
 	showSells;
 
-	constructor(private _web3 : Web3, private _account: AccountService, private http: Http, private _contract: ContractService, private _marketStorage: LSCXMarketStorageService) {
+	activeOrdersInterval;
+	blockNumber;
+
+	loadingD;
+
+	constructor(private _web3 : Web3, protected dialog: MdDialog, private _account: AccountService, private http: Http, private _contract: ContractService, private _marketStorage: LSCXMarketStorageService) {
 		this.updated = false;
 		this.setMarket();
 	}
@@ -68,7 +76,7 @@ export class LSCXMarketService {
 		}
 	}
 
-	setToken(token?) {
+	async setToken(token?) {
 		this.showBuys = null;
 		this.showSells = null;
 		
@@ -76,6 +84,9 @@ export class LSCXMarketService {
 			this.state.orders.buys = null;
 			this.state.orders.sells = null;
 			this.state.orders = null;
+		}
+		if(this.activeOrdersInterval != null){
+			await this.clearActiveOrdersInterval();
 		}
 		
 		if(typeof(token)=="undefined"){	
@@ -133,7 +144,7 @@ export class LSCXMarketService {
 		this.setFees().then();
 	}
 
-	async  setFees(){
+	async setFees(){
 		let fees = ['feeMake', 'feeTake', 'feeRebate', 'feeMarket'];
 		for(let i=0; i<fees.length; i++){
 			let fee;
@@ -302,18 +313,33 @@ export class LSCXMarketService {
 		
 		let blockNum = await this._web3.blockNumber();
         let blockNumber = (typeof(blockNum)== "number")? blockNum : null;
-        this.checkShowSellsDeleted(blockNumber, this._web3.network.chain); //updateShowBuys
-		this.checkShowBuysDeleted(blockNumber, this._web3.network.chain);  //updateShowSells
+        await this.checkShowSellsDeleted(blockNumber, this._web3.network.chain); //updateShowBuys
+		await this.checkShowBuysDeleted(blockNumber, this._web3.network.chain);  //updateShowSells
+		if(this.loadingD != null){
+			this.loadingD.close();
+		}
 	}
 
 	async setBuys() {
-		this.state.orders.buys = await this._marketStorage.getBuyOrders(this.token);
+		try {
+			this.state.orders.buys = await this._marketStorage.getBuyOrders(this.token);	
+		} catch (error) {
+			console.log(error);
+			this.setBuys();
+		}
+		
 		console.log("BUYS",this.state.orders.buys)
 
 	}
 
 	async setSells() {
-		this.state.orders.sells = await this._marketStorage.getSellOrders(this.token);
+		try {
+			this.state.orders.sells = await this._marketStorage.getSellOrders(this.token);	
+		} catch (error) {
+			console.log(error);
+			this.setSells();
+		}
+		
 		console.log("SELLS",this.state.orders.sells)
 	}
 
@@ -406,7 +432,7 @@ export class LSCXMarketService {
 					amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);	
 				} catch (error) {
 					console.log(error);
-					
+					this.checkMyOrdersDeleted(blockNumber, network)
 				}
 				
 				order.setFilled(amountFilled);
@@ -459,8 +485,13 @@ export class LSCXMarketService {
 	async checkShowSellsDeleted(blockNumber:number, network: number){
 		let myOrders = [];
 		let myNewOrders = [];
-		if(network == this._web3.network.chain){		
-			myOrders = this.showSells;
+		if(network == this._web3.network.chain){
+			try {
+				myOrders = await this._marketStorage.getSellOrders(this.token);	
+			} catch (error) {
+				this.checkShowSellsDeleted(blockNumber, network);
+			}
+			
 			if(myOrders != null){
 				for (let i = 0; i < myOrders.length; i++) {
 					let order = new Order(myOrders[i], myOrders[i].tokenDecimals);
@@ -474,7 +505,7 @@ export class LSCXMarketService {
 						amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);	
 					} catch (error) {
 						console.log(error);
-						
+						this.checkShowSellsDeleted(blockNumber, network);
 					}
 				
 					order.setFilled(amountFilled);
@@ -504,12 +535,15 @@ export class LSCXMarketService {
 	
 				if(this._web3.network.chain == network) {
 					myOrders = await myNewOrders;
-					this.showSells = myOrders;
-					this.marketState.showSells = this.showSells;
-					this.saveState();
+					if(myNewOrders.length > 0){
+						if(this.token.addr == myNewOrders[0].tokenGive){
+							this.showSells = myOrders;
+							this.marketState.showSells = this.showSells;
+							this.saveState();
+						}
+					}
 				}
 			}
-			
 		}
 	}
 
@@ -517,7 +551,15 @@ export class LSCXMarketService {
 		let myOrders = [];
 		let myNewOrders = [];
 		if(network == this._web3.network.chain){
-			myOrders = this.showBuys;
+			let buys;
+			try {
+				buys = await this._marketStorage.getBuyOrders(this.token);	
+			} catch (error) {
+				console.log(error);
+				this.checkShowBuysDeleted(blockNumber, network);
+			}
+			
+			myOrders = await this.orderByPrice(buys);
 			if(myOrders != null){
 				for (let i = 0; i < myOrders.length; i++) {
 					//const element = array[i];
@@ -532,7 +574,7 @@ export class LSCXMarketService {
 						amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);	
 					} catch (error) {
 						console.log(error);
-						
+						this.checkShowBuysDeleted(blockNumber, network)
 					}
 					
 					order.setFilled(amountFilled); //Order Model
@@ -562,10 +604,14 @@ export class LSCXMarketService {
 					
 				if(this._web3.network.chain == network) {
 					myOrders = await myNewOrders;
-					
-					this.showBuys = myOrders;
-					this.marketState.showBuys = this.showBuys;
-					this.saveState();
+					if(myNewOrders.length > 0){
+						if(this.token.addr == myNewOrders[0].tokenGet){
+						
+							this.showBuys = myOrders;
+							this.marketState.showBuys = this.showBuys;
+							this.saveState();
+						}
+					}
 				}
 			}
 		}
@@ -726,5 +772,29 @@ export class LSCXMarketService {
 		return new BigNumber(String(eth))
 		.times(new BigNumber(10 ** decimals));
 	}
+
+	startActiveOrdersInterval(){
+		this.activeOrdersInterval = setInterval(async()=>{
+			let blockNum = await this._web3.blockNumber();
+			this.blockNumber = (typeof(blockNum)== "number")? blockNum : null;
+			this.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
+			this.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
+			
+		},5000);
+	}
+
+	clearActiveOrdersInterval(){
+		clearInterval(this.activeOrdersInterval);
+	}
+
+	activateLoading(){
+		Promise.resolve().then(() => {
+		  this.loadingD = this.dialog.open(LoadingDialogComponent, {
+			width: '660px',
+			height: '150px',
+			disableClose: true,
+		  });
+		});
+	  }
 
 }

@@ -39,6 +39,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
 
         let blockNum = await this._web3.blockNumber();
         this.blockNumber = (typeof(blockNum)== "number")? blockNum : null;
+        this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain)
         this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
         this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
         
@@ -46,21 +47,17 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
             if(this.loadingD != null){
                 this.loadingD.close();
             }
-            this.interval = setInterval(async()=>{
-                let blockNum = await this._web3.blockNumber();
-                this.blockNumber = (typeof(blockNum)== "number")? blockNum : null
-                this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain); //updateMyOrders
-                this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
-                this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
-                
-            },10000);
+           
+            this._LSCXmarket.startActiveOrdersInterval();
             
             
         }
     }
 
     ngOnChanges(): void {
-        
+        if(this.action == "myOrders"){
+            this._LSCXmarket.startActiveOrdersInterval();
+        }
         if(this.action != "myOrders" && this.interval != null){
             //clearInterval(this.interval);
             //this.interval= null;
@@ -102,7 +99,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     }
     ngOnDestroy(): void {
         if(this.interval != null){
-            clearInterval(this.interval);
+            this._LSCXmarket.clearActiveOrdersInterval();
             this.interval = null;
         }
     }
