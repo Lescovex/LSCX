@@ -139,7 +139,7 @@ export class ContractStorageService {
                 let headers = new Headers();
                 headers.append('Content-Type', 'text/html');
                 setTimeout(function(){
-                    //do what you need here
+                    //do what you need here 
                 
                     self.http.get(url,  {headers: headers}).subscribe((res:any) =>{
                         let x = res._body;
@@ -148,8 +148,13 @@ export class ContractStorageService {
                         let z = y.split(">")[1];
                         let a =z.split("<")[0];
                         let _constructorArguments = a;
-        
-                        self._scan.setVerified(contractAddr, _sourceCode, _contractName, _compilerversion, _constructorArguments)
+                        
+                        try {
+                            self._scan.setVerified(contractAddr, _sourceCode, _contractName, _compilerversion, _constructorArguments)    
+                        } catch (error) {
+                            console.log("error set verified????", error);
+                        }
+                        
                     }, err =>{
                         console.log(err);               
                     });

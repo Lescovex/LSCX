@@ -60,11 +60,16 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     clearInterval(this.interval);
   }
 
-  ngDoCheck() {
+  async ngDoCheck() {
     if(JSON.stringify(this.nowNetwork)!= JSON.stringify(this._web3.network)){
       Promise.resolve().then(()=>{
         this.loadingD = this._dialog.openLoadingDialog();
-      })
+      });
+      if(this.interval != null){
+      
+        await clearInterval(this.interval);
+        this.interval = null;
+      }
       this.setContract();
     }
   }
@@ -110,16 +115,32 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     await this.getTime();
     
     this.expected =  (holded * contractBalance)/totalSupply;
-
-    this.loadingD.close();
-    this.loadingD = null;
+    if(this.loadingD != null){
+      this.loadingD.close();
+      this.loadingD = null;
+    }
   }
 
   async getTime(){
     
     this.interval = setInterval(async ()=>{
-      let tokenTx = await this.getTokenTx(this._account.account.address);
-      let history = await this.getTx(this._account.account.address);
+      let tokenTx ;
+      try {
+        tokenTx = await this.getTokenTx(this._account.account.address);
+      } catch (error) {
+        console.log(error);
+        await clearInterval(this.interval);
+        
+      }
+      let history;
+      try {
+        history = await this.getTx(this._account.account.address);
+      } catch (error) {
+        console.log(error);
+        await clearInterval(this.interval);
+        
+      }
+      
       let lastTimestamp;
       let now;
       let nowTime;
@@ -183,68 +204,118 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
   }
 
   getUserBalance(): Promise<number>{
-    let self=this;  
-    return new Promise (function (resolve, reject) {
-      self.LSCX_Contract.balanceOf.call(self._account.account.address, function(err, res){  
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res.toNumber());
-        }
+    let self=this;
+    try {
+      return new Promise (function (resolve, reject) {
+        self.LSCX_Contract.balanceOf.call(self._account.account.address, function(err, res){  
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res.toNumber());
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.log(error);
+      
+      if(this.loadingD != null){
+        this.loadingD.close();
+        this.loadingD = null;
+      }
+    }
+    
   }
 
   getHoldTime(): Promise<number>{
     let self=this;
-    return new Promise (function (resolve, reject) {
-      self.LSCX_Contract.holdTime.call(function(err, res){  
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res.toNumber());
-        }
+    try {
+      return new Promise (function (resolve, reject) {
+        self.LSCX_Contract.holdTime.call(function(err, res){  
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res.toNumber());
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.log(error);
+      
+      if(this.loadingD != null){
+        this.loadingD.close();
+        this.loadingD = null;
+      }
+    }
+    
   }
 
   getHoldedOf(): Promise<number>{
     let self=this;
-    return new Promise (function (resolve, reject) {
-      self.LSCX_Contract.holdedOf.call(self._account.account.address,function(err, res){  
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res.toNumber());
-        }
+    try {
+      return new Promise (function (resolve, reject) {
+        self.LSCX_Contract.holdedOf.call(self._account.account.address,function(err, res){  
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res.toNumber());
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.log(error);
+      
+      if(this.loadingD != null){
+        this.loadingD.close();
+        this.loadingD = null;
+      }
+    }
+    
   }
 
   getContractBalance(): Promise<number>{
     let self=this;
-    return new Promise (function (resolve, reject) {
-      self.LSCX_Contract.contractBalance.call(function(err, res){  
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res.toNumber());
-        }
+    try {
+      return new Promise (function (resolve, reject) {
+        self.LSCX_Contract.contractBalance.call(function(err, res){  
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res.toNumber());
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.log(error);
+      
+      if(this.loadingD != null){
+        this.loadingD.close();
+        this.loadingD = null;
+      }
+    }
+    
   }
   
   getTotalSupply(): Promise<number>{
-    let self=this;   
-    return new Promise (function (resolve, reject) {
-      self.LSCX_Contract.totalSupply.call(function(err, res){  
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res.toNumber());
-        }
+    let self = this;
+    try {
+      return new Promise (function (resolve, reject) {
+        self.LSCX_Contract.totalSupply.call(function(err, res){  
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res.toNumber());
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.log(error);
+      
+      if(this.loadingD != null){
+        this.loadingD.close();
+        this.loadingD = null;
+      }
+    }
+    
   }
 
   async withdraw(){

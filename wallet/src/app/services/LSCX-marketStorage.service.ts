@@ -31,11 +31,25 @@ export class LSCXMarketStorageService {
         if(tikersId != null) {
             i = tikersId;
         }
-        let respIds = await this.callFunction("tikersId",[]);
+        let respIds;
+        try {
+            respIds = await this.callFunction("tikersId",[]);    
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
         let ids = parseInt(respIds.toString());
         let newTikers = [];
         for(i; i <= ids; i++){
-            let rowTikers = await this.callFunction("tikers",[i]);
+            let rowTikers;
+            try {
+                rowTikers = await this.callFunction("tikers",[i]);    
+            } catch (error) {
+                console.log(error);
+                
+            }
+            
             let tikersStr = rowTikers.toString();
             let tikers = tikersStr.split("*****");
             
@@ -48,18 +62,39 @@ export class LSCXMarketStorageService {
                 }
             });           
         }
-        let lastId = await this.callFunction("tikersId",[]);
+        let lastId;
+        try {
+            lastId = await this.callFunction("tikersId",[]);    
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
         return {tikers:newTikers, tikersId :parseInt(lastId.toString()), network: network};
     }
 
     async getBuyOrders(token) {
-        let respBuy= await this.callFunction("getOrdersToBuy",[token.addr]);
+        let respBuy;
+        try {
+            respBuy = await this.callFunction("getOrdersToBuy",[token.addr]);    
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
         return this.convertOdersResponseToOrder(respBuy, token)
 
     }
 
     async getSellOrders(token) {
-        let respSell= await this.callFunction("getOrdersToSell",[token.addr]);
+        let respSell;
+        try {
+            respSell = await this.callFunction("getOrdersToSell",[token.addr]);    
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
         return this.convertOdersResponseToOrder(respSell, token)
         
     }

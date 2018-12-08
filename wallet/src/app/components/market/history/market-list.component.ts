@@ -52,8 +52,6 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
                 this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain); //updateMyOrders
                 this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
                 this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
-                console.log("showsells",this._LSCXmarket.showSells);
-                console.log("showbuys",this._LSCXmarket.showBuys);
                 
             },10000);
             

@@ -56,8 +56,21 @@ export class LSCXContractService {
 	async setContract(contract){
 		this.type = contract.type;
 		this.contractInfo = contract;
-		this.contract = await this.contractInstance(contract.type, contract.address)
-		let history = await this._scan.getHistory(contract.address);
+		try {
+			this.contract = await this.contractInstance(contract.type, contract.address)	
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
+		let history;
+		try {
+			history = await this._scan.getHistory(contract.address);	
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
 		for(let i =0; i<history.length; i++){
 			let date = this._scan.tm(history[i].timeStamp);
 			history[i].date = date;
@@ -90,9 +103,24 @@ export class LSCXContractService {
 		let abi =  this.getAbi(type);
 		let myContract = await this.contractInstance(type, address);
 		let info: any = {};
-		info.name = await this._contract.callFunction(myContract, 'name',[]);
-		info.totalSupply = await this._contract.callFunction(myContract, 'totalSupply',[]);
-		info.symbol = await this._contract.callFunction(myContract, 'symbol',[]);
+		try {
+			info.name = await this._contract.callFunction(myContract, 'name',[]);
+		} catch (error) {
+			console.log(error);
+		}
+	
+		try {
+			info.totalSupply = await this._contract.callFunction(myContract, 'totalSupply',[]);
+		} catch (error) {
+			console.log(error);
+			
+		}
+		try {
+			info.symbol = await this._contract.callFunction(myContract, 'symbol',[]);
+		} catch (error) {
+			console.log(error);
+			
+		}
 		
 		return info;
 	}
@@ -105,7 +133,14 @@ export class LSCXContractService {
 		functions = this.addDecimals(functions)
 		let info =[];
 		for(let i = 0; i<functions.length; i++) {
-			let result = await this._contract.callFunction(this.contract, functions[i].name,[]);
+			let result;
+			try {
+				result = await this._contract.callFunction(this.contract, functions[i].name,[]);	
+			} catch (error) {
+				console.log(error);
+				
+			}
+			
 			let value = result.toString()
 			if(functions[i].decimals == "decimals"){
 				let number = parseInt(value) /Math.pow(10,this.contractInfo.decimals);
@@ -262,7 +297,14 @@ export class LSCXContractService {
 	}
 
 	async checkContract(cAddress:string){
-		let response : any = await this._scan.getTx(cAddress).toPromise();
+		let response : any;
+		try {
+			response = await this._scan.getTx(cAddress).toPromise();
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
 		
 		if (response.status == 1){
 			let result = response.result[0];

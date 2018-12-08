@@ -51,6 +51,8 @@ export class GeneralPage implements OnInit, OnDestroy, DoCheck {
       await this.setTokens();
       this.allTokens = this._account.tokens.filter(x=>x);
     }
+
+    
   }
 
   openExternal(txHash){

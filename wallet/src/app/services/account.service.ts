@@ -69,7 +69,7 @@ export class AccountService{
     this.account = account;
     localStorage.setItem('acc',JSON.stringify(account.address));
     this.tokens = [];
-    this.getPendingTx();
+    await this.getPendingTx();
     await this.startIntervalData();
     this.newUpdateTokens = true;
     await this.setTokens();
@@ -83,6 +83,7 @@ export class AccountService{
       this.getPendingTx();
       await this.startIntervalData();
       this.newUpdateTokens = true;
+      this.activateLoading();
       await this.setTokens();
 
   }
@@ -114,9 +115,25 @@ export class AccountService{
   async setData(){
     let addr = this.account.address;
     let self= this;
-    self.account.balance = await this._web3.getBalance(addr);
-    let history = await this._scan.getHistory(addr);
-
+    try {
+      self.account.balance = await this._web3.getBalance(addr);  
+    } catch (error) {
+      console.log(error);
+      if(this.loadingD != null){
+        this.loadingD.close();
+      }
+      
+    }
+    let history;
+    try {
+      history = await this._scan.getHistory(addr);
+    } catch (error) {
+      console.log(error);
+      if(this.loadingD != null){
+        this.loadingD.close();
+      }
+    }
+    
     for(let i = 0; i<this.pending.length; i++){
       let result = history.findIndex(x => (x.hash).toLowerCase() == this.pending[i].hash.toLowerCase());
       let result2 = history.findIndex(x => x.nonce == this.pending[i].nonce && x.from.toLowerCase() == this.account.address.toLowerCase());
@@ -199,7 +216,6 @@ export class AccountService{
   async updateTokens(){
     let self = this;
     let tokens : Array<any> = [];
-    console.log("UPDATE TOKENS?");
     
     for(let i = 0; i < tokens.length; i++){
       if(i==0) {
@@ -211,46 +227,57 @@ export class AccountService{
         tokens[i] = await this.updateTokenBalance(tokens[i]);
       }
     }
-    let resultTokens =  await this._scan.getTokensTransfers(this.account.address).toPromise();
-    let tkns : Array<any> = [];
-    tkns = resultTokens.result;
-    
-    for(let i = 0; i<tkns.length; i++){
-      if(i==0) {
-        this.newUpdateTokens=false;
-      }
-      if(this.newUpdateTokens==true){
-        return false;
-      }
-      if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
-        
-        let token: any = {
-          contractAddress :  tkns[i].contractAddress,
-          tokenName:  tkns[i].tokenName,
-          tokenSymbol:  tkns[i].tokenSymbol,
-          tokenDecimal: parseInt(tkns[i].tokenDecimal),
-          network : self._web3.network,
-          deleted: false
-        }
-    
-        token = await self.updateTokenBalance(token);
-        
-        if(!isNaN(token.tokenDecimal) && token.tokenName != "" && token.tokenSymbol != ""){ 
-            tokens.push(token);
-        }
-      }
-    }
-
-      self.tokens = await tokens;
-      console.log("tokens len?", tokens.length);
-      
-      console.log("tokens?",tokens);
-      
-      self.saveAccountTokens();
-
+    let transfersError= null;
+    let resultTokens;
+    try {
+      resultTokens =  await this._scan.getTokensTransfers(this.account.address).toPromise();
+    } catch (error) {
+      console.log(error);
+      transfersError = error;
       if(this.loadingD != null){
         this.loadingD.close();
       }
+    }
+  
+    if(transfersError == null){
+      let tkns : Array<any> = [];
+      tkns = resultTokens.result;
+      
+      if(tkns != null){
+        for(let i = 0; i<tkns.length; i++){
+          if(i==0) {
+            this.newUpdateTokens=false;
+          }
+          if(this.newUpdateTokens==true){
+            return false;
+          }
+          if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
+            
+            let token: any = {
+              contractAddress :  tkns[i].contractAddress,
+              tokenName:  tkns[i].tokenName,
+              tokenSymbol:  tkns[i].tokenSymbol,
+              tokenDecimal: parseInt(tkns[i].tokenDecimal),
+              network : self._web3.network,
+              deleted: false
+            }
+        
+            token = await self.updateTokenBalance(token);
+            
+            if(!isNaN(token.tokenDecimal) && token.tokenName != "" && token.tokenSymbol != ""){ 
+                tokens.push(token);
+            }
+          }
+        }
+    
+          self.tokens = await tokens;
+          self.saveAccountTokens();
+    
+          if(this.loadingD != null){
+            this.loadingD.close();
+          }
+      }
+    }
   }
 
   async updateTokenBalance(token){
@@ -284,7 +311,7 @@ export class AccountService{
   }
   
   async addPendingTx(tx){
-    tx.network=this._web3.network.chain;
+    tx.network = this._web3.network.chain;
     let pendings = this.pending.filter(x=> x.nonce != tx.nonce);
     pendings.push(tx);
     this.pending= pendings;
@@ -340,5 +367,13 @@ export class AccountService{
     let  strDate = dt.getUTCDate()+"-"+(dt.getUTCMonth()+1)+"-"+dt.getUTCFullYear();
     return strDate;
   }
-
+  activateLoading(){
+    Promise.resolve().then(() => {
+      this.loadingD = this.dialog.open(LoadingDialogComponent, {
+        width: '660px',
+        height: '150px',
+        disableClose: true,
+      });
+    });
+  }
 }

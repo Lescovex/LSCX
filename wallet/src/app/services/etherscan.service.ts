@@ -49,18 +49,32 @@ export class EtherscanService {
 	getTx(address:string){
 		this.setUrlStarts();
 		let url = "https://api"+this.urlStarts+".etherscan.io/api?module=account&action=txlist&address="+address+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
-		return this.http.get(url).map(res => res.json());
+		return this.http.get(url).map(res => res.json(), err => console.log("getTx?", err));
 	}
 	
 	getInternalTx(address:string){
 		this.setUrlStarts();
 		let url = "https://api"+this.urlStarts+".etherscan.io/api?module=account&action=txlistinternal&address="+address+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
-		return this.http.get(url).map(res => res.json());
+		return this.http.get(url).map(res => res.json(), err => console.log("getInternalTx?", err));
 	}
 
 	async getHistory(address:string){
-		let historyResp = await this.getTx(address).toPromise();
-		let internalResp = await this.getInternalTx(address).toPromise()
+		let historyResp;
+		let internalResp;
+		try {
+			historyResp = await this.getTx(address).toPromise();	
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
+		try {
+			internalResp = await this.getInternalTx(address).toPromise()	
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
 		
 		let history = historyResp.result;
 		let intHistory  = internalResp.result;
@@ -91,13 +105,13 @@ export class EtherscanService {
 		this.setUrlStarts();
     	let url = "https://api"+this.urlStarts+".etherscan.io/api?module=account&action=tokentx&address="+addr+"&startblock=0&endblock=99999999&sort=asc&apikey="+this.apikey;
    
-    	return this.http.get(url).map(res => res.json());
+    	return this.http.get(url).map(res => res.json(), err => console.log("getTokenTransfers?", err));
 	}
 	
 	getAbi(contractAddr){
 		this.setUrlStarts();
 		let url = "https://api"+this.urlStarts+".etherscan.io/api?module=contract&action=getabi&address="+contractAddr+"&apikey="+this.apikey;
-		return this.http.get(url).map(res => res.json()).toPromise();
+		return this.http.get(url).map(res => res.json(), err => console.log("errorGetAbi?", err)).toPromise();
 	}
 
 	openTokenHolderUrl(txHash, address){

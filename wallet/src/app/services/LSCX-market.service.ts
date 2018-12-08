@@ -129,7 +129,14 @@ export class LSCXMarketService {
 	async  setFees(){
 		let fees = ['feeMake', 'feeTake', 'feeRebate', 'feeMarket'];
 		for(let i=0; i<fees.length; i++){
-			let fee = await this._contract.callFunction(this.contractMarket, fees[i], []);
+			let fee;
+			try {
+				fee = await this._contract.callFunction(this.contractMarket, fees[i], []);	
+			} catch (error) {
+				console.log(error);
+				
+			}
+			
 			this.fees[fees[i]] = parseInt(fee.toString());
 		}
 		
@@ -165,7 +172,14 @@ export class LSCXMarketService {
 			balance = this._account.account.balance
 		}else{
 			if(this.token.contract != null){
-				let value = await this._contract.callFunction(this.token.contract, 'balanceOf', [this._account.account.address]);
+				let value;
+				try {
+					value = await this._contract.callFunction(this.token.contract, 'balanceOf', [this._account.account.address]);	
+				} catch (error) {
+					console.log(error);
+					
+				}
+				
 				let x = value.toString();
 				let resBig = new BigNumber(x);
 				let y = resBig.div(Math.pow(10,this.token.decimals));
@@ -176,7 +190,14 @@ export class LSCXMarketService {
 	}
 
 	async getMarketBalance() {
-		let balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.token.addr, this._account.account.address]);
+		let balance;
+		try {
+			balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.token.addr, this._account.account.address]);	
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
 		let balanceBN = new BigNumber(balance.toString());
 		let value : number = (balanceBN.div(Math.pow(10,this.token.decimals))).toNumber();
 
@@ -184,7 +205,14 @@ export class LSCXMarketService {
 	}
 
 	async getMarketEther() {
-		let balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.config.tokens[0].addr, this._account.account.address]);
+		let balance;
+		try {
+			balance = await this._contract.callFunction(this.contractMarket, 'balanceOf', [this.config.tokens[0].addr, this._account.account.address]);	
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
 		let value:number = ((new BigNumber(balance.toString())).div(Math.pow(10,18))).toNumber();
 		return value
 	}
@@ -366,7 +394,14 @@ export class LSCXMarketService {
 					order.date = Date.now();
 				}
 				let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
-				let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
+				let amountFilled;
+				try {
+					amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);	
+				} catch (error) {
+					console.log(error);
+					
+				}
+				
 				order.setFilled(amountFilled);
 
 				for(let i=0; i<myOrdersAddress.length; i++){
@@ -417,9 +452,7 @@ export class LSCXMarketService {
 	async checkShowSellsDeleted(blockNumber:number, network: number){
 		let myOrders = [];
 		let myNewOrders = [];
-		if(network == this._web3.network.chain){
-			console.log("showSells inside showSells deleted",this.showSells);
-			
+		if(network == this._web3.network.chain){		
 			myOrders = this.showSells;
 			if(myOrders != null){
 				for (let i = 0; i < myOrders.length; i++) {
@@ -429,8 +462,14 @@ export class LSCXMarketService {
 						order.date = Date.now();
 					}
 					let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user];
-					let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
-					
+					let amountFilled;
+					try {
+						amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);	
+					} catch (error) {
+						console.log(error);
+						
+					}
+				
 					order.setFilled(amountFilled);
 					if(order.deleted && order.amountFilled == 0 ){
 						//myOrders.splice(i,1);
@@ -481,7 +520,14 @@ export class LSCXMarketService {
 						order.date = Date.now();
 					}
 					let filledParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user]
-					let amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);
+					let amountFilled;
+					try {
+						amountFilled = await this._contract.callFunction(this.contractMarket,'amountFilled', filledParams);	
+					} catch (error) {
+						console.log(error);
+						
+					}
+					
 					order.setFilled(amountFilled); //Order Model
 					if(order.deleted && order.amountFilled == 0 ){
 						//myOrders.splice(i,1);

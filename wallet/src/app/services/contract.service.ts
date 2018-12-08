@@ -20,10 +20,11 @@ export class ContractService {
 		return contract;
 	}
 
-	async callFunction(contractInst, functionName:string, params){
+	async callFunction(contractInst, functionName:string, params){		
 		return new Promise (function (resolve, reject) {
 			contractInst[functionName].call(...params, function(err, res){  
 				if (err) {
+					console.log("callfunction error?????"+functionName,err);
 					reject(err);
 				} else {
 					resolve(res);

@@ -64,13 +64,12 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this._LSCXmarket.setMarket();
         
         if('address' in this._account.account){
-                this._contractStorage.setAccContracts();
-                
-                //this._LSCXmarket.resetSocket();
-                this._LSCXcontract.reset();
-                this._customContract.reset();
-                await this._account.refreshAccountData();
-
+            this._contractStorage.setAccContracts();
+            
+            //this._LSCXmarket.resetSocket();
+            this._LSCXcontract.reset();
+            this._customContract.reset();
+            await this._account.refreshAccountData();
         }else{
             this.dialog.close();
             this.show = !this.show;

@@ -43,7 +43,10 @@ export class Web3 {
     let self= this;
     return new Promise((resolve, reject)=>{
       this.web3.eth.getBalance(addr,(err,result)=>{
-        if(typeof(result)!= "undefined") {
+        if(err){
+          console.log(err)
+          reject(err);
+        }else{
           resolve(parseFloat(self.web3.fromWei(result.toNumber(),'ether')));
         }
       })

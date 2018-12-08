@@ -30,8 +30,15 @@ export class CustomContractService {
 		this.contract = this._contract.contractInstance(abi,contract.address);
 		this.contractInfo = {address :contract.address, name: contract.name};
 		
-		this.moreInfo= await this.getContractData(); 
-		let history = await this._scan.getHistory(contract.address);
+		this.moreInfo= await this.getContractData();
+		let history;
+		try {
+			history = await this._scan.getHistory(contract.address);	
+		} catch (error) {
+			console.log(error);
+			
+		}
+		
 		for(let i =0; i<history.length; i++){
 			let date = this._scan.tm(history[i].timeStamp);
 			history[i].date = date;
@@ -53,25 +60,7 @@ export class CustomContractService {
 		let hasTotalsupply = false;
 		let hasBalanceOf = false;
 		let abi =  this.contract.abi;
-		/*for(let i = 0; i<abi.length; i++) {
-			if('constant' in abi[i] && abi[i].constant){
-				if(abi[i].name ="name" && abi[i].outputs[0].type=="string"){
-					hasName = true;
-				}
-				if(abi[i].name ="symbol" && abi[i].outputs[0].type=="string"){
-					hasSymbol = true;
-				}
-				if(abi[i].name ="decimals" && abi[i].outputs[0].type=="uint8"){
-					hasDecimals = true;
-				}
-				if(abi[i].name ="totalSupply" && abi[i].outputs[0].type=="uint256"){
-					hasTotalsupply = true;
-				}
-				if(abi[i].name ="balanceOf" && abi[i].outputs[0].type=="uint256"){
-					hasBalanceOf = true;
-				}
-			}
-		}*/
+
 		console.log(this.contract.address)
 		let isErc20 = true;
 		if(abi.find(x=> x.name ="name") == null){
@@ -101,8 +90,6 @@ export class CustomContractService {
 		if(abi.find(x=> x.name =="transferFrom")== null){
 			isErc20 = false;
 		}
-		//falta Mirar allowance, transfer, transferFrom, approve
-		 //return hasName && hasSymbol && hasSymbol && hasDecimals && hasTotalsupply && hasBalanceOf;
 		 return isErc20;
 	}
 
@@ -113,7 +100,14 @@ export class CustomContractService {
 		});
 			
 		for(let i = 0; i<functions.length; i++) {
-			let result = await this._contract.callFunction(this.contract, functions[i].name,[]);
+			let result;
+			try {
+				result = await this._contract.callFunction(this.contract, functions[i].name,[]);	
+			} catch (error) {
+				console.log(error);
+				
+			}
+			
 			info.push([functions[i].name,result]);
 		}
 		return info;
