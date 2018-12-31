@@ -1,0 +1,44 @@
+<nav class="flex-row">
+    <a routerLink="btcglobal" routerLinkActive="active" [class.disabled]="!_account.account?.address" #btcglobal="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="btcglobal.isActive" src='~icons/global_icon.svg'>
+                <img *ngIf="!btcglobal.isActive" src='~icons/global_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Global</p>
+        </div>
+    </a>
+
+    <a routerLink="btcsend" routerLinkActive="active" [class.disabled]="!_account.account?.address" #btcsend="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="btcsend.isActive" src='~icons/send_icon.svg'>
+                <img *ngIf="!btcsend.isActive" src='~icons/send_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Send</p>
+        </div>
+    </a>
+    <a routerLink="btcreceive" routerLinkActive="active" [class.disabled]="!_account.account?.address" #btcreceive="routerLinkActive">
+        <div>
+            <span>
+                <img class="top-nav-img" *ngIf="btcreceive.isActive" src='~icons/receive_icon.svg'>
+                <img class="top-nav-img" *ngIf="!btcreceive.isActive" src='~icons/receive_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Receive</p>
+        </div>
+    </a>
+    <a routerLink="btcwsettings" routerLinkActive="active" [class.disabled]="!_account.account?.address" #btcwsettings="routerLinkActive">
+        <div>
+            <span>
+                <img *ngIf="btcwsettings.isActive" src='~icons/walletsettings_icon.svg'>
+                <img *ngIf="!btcwsettings.isActive" src='~icons/walletsettings_inactive_icon.svg'>
+            </span>
+            <p class="title-button-navbar">Account settings</p>
+        </div>
+    </a>
+
+</nav>
+
+<div class="content flex-inside">
+    <router-outlet></router-outlet>
+</div>

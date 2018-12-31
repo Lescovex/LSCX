@@ -10,7 +10,7 @@ import { EtherscanService }  from '../../services/etherscan.service';
 /*Dialog*/
 import {MdDialog} from '@angular/material';
 import { SelectAccountDialogComponent } from './selectAccount-dialog.component';
-import { AddAccountDialogComponent } from './addAccount-dialog.component';
+import { AddAccountsDialogComponent } from './addAccounts-dialog.component';
 import { LoadingDialogComponent } from '../dialogs/loading-dialog.component';
 
 @Component({
@@ -34,7 +34,7 @@ export class NavComponent implements OnInit {
   }
   
   openAddAccount() {
-    let dialogRef = this.dialog.open(AddAccountDialogComponent, {
+    let dialogRef = this.dialog.open(AddAccountsDialogComponent, {
       width: '660px',
       height: '155px',
       panelClass: 'dialog'
@@ -45,7 +45,7 @@ export class NavComponent implements OnInit {
     let self= this;
     let dialogRef = this.dialog.open(SelectAccountDialogComponent, {
       width: '660px',
-      height: '400px',
+      height: '450px',
       panelClass: 'dialog'
     });
     dialogRef.afterClosed().subscribe(result => {

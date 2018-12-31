@@ -1,0 +1,29 @@
+<div>
+    <h1 style="text-align: center">Confirm transaction <img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class="margin">
+    <p class="black dist">Receiver account:</p>
+    <p>{{data.receiver}}</p>
+
+    <div class="flex-row dist">
+        <div style="flex:1">
+            <p class="black">Amount</p>
+            <p>BTC {{data.amount | number:'1.2-8':'en' }}</p>
+        </div>
+    </div>
+</div>
+
+<div>
+    <label class="title" for="password">Password</label>
+    <div class="input-container" [ngClass]="{'error': pass.invalid && (pass.dirty || pass.touched || submited )}">
+        <input id="password" required type="password" value="" name="password" [(ngModel)]="password" #pass="ngModel" />
+        <p class="italic">Type your account password to continue.</p>
+    </div>
+    <div>
+        <p class="error" [ngClass]="{'hidden': !(pass.errors?.required && (pass.dirty || pass.touched || submited ))}">Password required</p>
+    </div>
+</div>
+<div class="buttons">
+    <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+    <button class="btn-inverse half right" (click)="sendTx(password, data)">Send</button>
+</div>

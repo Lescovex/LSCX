@@ -1,0 +1,26 @@
+<div>
+    <h1 style="text-align: center">Import account from private key<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div>
+    <label class="title" for="nameAccount">Account name</label>
+    <input class="block" required id="nameAccount" type="text" value="" name="nameAccount" placeholder="enter wallet name" [(ngModel)]="nameAccount" />
+</div>
+<div>
+    <label class="title" for="json">Private key</label>
+    <textarea class="block scrollbar" id="json" required rows="2" [ngClass]="{'error': !checkInput(input)&& (privKey.dirty || privKey.touched || submited)}" placeholder="enter privatekey" [(ngModel)]="input" #privKey="ngModel"></textarea>
+    <p [ngClass]="{'hidden': !(!checkInput(input) && (privKey.dirty || privKey.touched || submited))} " class="error">This field is required</p>
+</div>
+<div>
+    <div class="half left">
+        <label class="title" for="pass">Set password</label>
+        <input required id="pass" class="block" type="password" value="" name="pass" [ngClass]="{'error': (pass.invalid && (pass.dirty || pass.touched || submited))}" [(ngModel)]="password" #pass="ngModel" />
+    </div>
+    <div class="half right">
+        <label class="title" for="pass2">Repeat password</label>
+        <input required id="pass2" class="block" type="password" [ngClass]="{'error': (pass2.invalid && submited) || (!checkPass(password, password2)&&(pass2.touched || !pass2.pristine))}" value="" name="pass2" [(ngModel)]="password2" #pass2="ngModel" />
+    </div>
+</div>
+<div class="clear buttons">
+    <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+    <button class="btn-black half right" id="create" (click)="importAccount (nameAccount,input, password, password2)">Import account</button>
+</div>

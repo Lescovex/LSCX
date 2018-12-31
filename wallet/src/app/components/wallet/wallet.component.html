@@ -40,7 +40,7 @@
     </a>
 </nav>
 <div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}">
-    <p *ngIf="!_account.account?.address; else content" class="text-center">Select an account</p>
+    <p *ngIf="!_account.account?.address; else content" class="text-center">Select an ETH account</p>
     <ng-template #content>
         <router-outlet></router-outlet>
     </ng-template>

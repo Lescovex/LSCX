@@ -49,13 +49,14 @@ export class SelectContractPage implements OnInit{
   }
   
   async setContract(contract){
+    console.log("contract",contract)
     if(contract.type !="custom" && !contract.active){
       return false
     }
     let dialogRef = this._dialog.openLoadingDialog();
     if(contract.type =="custom"){
       await this._customContract.setContract(JSON.parse(contract.abi), contract);
-      await this._customContract.getFunctions();
+      this._customContract.getFunctions();
       this.selectedContract = "custom";
     }else{
       await this._LSCXcontract.setContract(contract);

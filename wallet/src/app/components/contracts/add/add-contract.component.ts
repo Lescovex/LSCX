@@ -18,7 +18,7 @@ import { EtherscanService } from '../../../services/etherscan.service';
 import { DeployRawTx } from '../../../models/rawtx';
 
 import * as Web3L from 'web3';
-import { first } from '../../../../../node_modules/rxjs/operator/first';
+import { first } from 'rxjs/operator/first';
 var querystring = require("querystring");
 var fs = require('fs');
 import { Http, Headers, RequestOptions } from "@angular/http";
@@ -244,7 +244,9 @@ export class AddContractPage {
   async isVerifiedMessages(contractAddr, name){
     let message;
     let error = "";
-    let abi = await this._scan.getAbi(contractAddr)
+    let abi = await this._scan.getAbi(contractAddr);
+    console.log("abi??",abi);
+    
     if(abi.result == "Contract source code not verified"){
         message = "The contract you are are trying to import isn't verify, its code isn't public."
         error = " ";

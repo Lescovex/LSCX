@@ -1,0 +1,62 @@
+<ul class="extraTop listBTC">
+    <li>
+        <a>
+            <span class="pointer listWidth bold">Date</span>
+            <span class="bold pointer extra listWidth2">Action</span>
+            <span class="bold pointer listWidth2 extra2">State</span>
+            <span class="bold pointer right listWidth3">Amount</span>
+        </a>
+    </li>
+</ul>
+<div class="scroll scrollbar distBottom" style="height: 50vh">
+    <ng-container>
+        <ul class="list round">
+            <ng-container *ngFor="let transaction of items, index as j">
+                <li [ngClass]="((j+1)%2 == 0) ? 'even pointer' : 'odd pointer'" (click)="openExternal(transaction.format.txid)">
+                    <a *ngIf="transaction.outputs[1]">
+                        <div class="inlineblock listWidth" mdTooltip="{{transaction.fullDate}}" mdTooltipPosition="right">
+                            <span class="block bold dateMonth grey">{{transaction.month}}</span>
+                            <span class="block dateDay">{{transaction.day}}</span>
+                        </div>
+                        <span class="listWidth2 bold grey topText"><img src="~icons/receive_icon.svg">  BTC received</span>
+                        <div class="listWidth2 extra2 topText">
+                            <span class="grey" *ngIf="transaction.confirmations != null && transaction.confirmations <= 5">{{transaction.confirmations}} of 5 confirmations</span>
+                            <span class="grey" *ngIf="transaction.confirmations != null && transaction.confirmations > 5" mdTooltip="{{transaction.confirmations}} confirmations" mdTooltipPosition="right">{{transaction.countdown}}</span>
+                            <span class="grey" *ngIf="transaction.confirmations == null ">{{transaction.countdown}}</span>
+                        </div>
+                        <div class="inlineblock right">
+                            <div class="inlineblock listWidth3 topText">
+                                <span class="green">{{transaction.balance / 100000000}} BTC</span>
+                            </div>
+                            <div class="inline">
+                                <img src="~icons/Back_Arrow_Green.svg">
+                            </div>
+                        </div>
+                    </a>
+                    <a class="pointer" *ngIf="transaction.outputs[0].scriptPubKey.addresses[0] == address" (click)="openExternal(transaction.format.txid)">
+                        <div class="inlineblock listWidth" mdTooltip="{{transaction.fullDate}}" mdTooltipPosition="right">
+                            <span class="block bold dateMonth grey">{{transaction.month}}</span>
+                            <span class="block dateDay">{{transaction.day}}</span>
+                        </div>
+                        <span class="listWidth2 bold grey topText"><img src="~icons/send_icon.svg">  BTC sent</span>
+                        <div class="listWidth2 extra2 topText">
+                            <span class="grey" *ngIf="transaction.confirmations != null && transaction.confirmations <= 5">{{transaction.confirmations}} of 5 confirmations</span>
+                            <span class="grey" *ngIf="transaction.confirmations != null && transaction.confirmations > 5" mdTooltip="{{transaction.confirmations}} confirmations" mdTooltipPosition="right">{{transaction.countdown}}</span>
+                            <span class="grey" *ngIf="transaction.month == '' ">{{transaction.countdown}}</span>
+                        </div>
+                        <div class="inlineblock right">
+                            <div class="inlineblock listWidth3 topText">
+                                <span class="red" *ngIf="transaction.outputs[0].value > 0">- {{transaction.balance / 100000000}} BTC</span>
+                            </div>
+                            <div class=" inline">
+                                <img src="~icons/Next_Arrow_Red.svg">
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+    </ng-container>
+</div>
+
+<app-paginator (goPage)="goToPage($event)" [currentPage]="page" [perPage]="limit" [count]="totalPages"></app-paginator>

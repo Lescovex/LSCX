@@ -276,7 +276,7 @@ header>img {
 /************************* SIDE NAV *************************/
 
 .sidenav {
-    border-top: 7px solid #fff;
+    /*border-top: 7px solid #fff;*/
     display: inline-block;
     min-width: 250px;
     max-width: 250px;

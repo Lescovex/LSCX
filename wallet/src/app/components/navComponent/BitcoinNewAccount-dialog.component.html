@@ -1,0 +1,21 @@
+<div>
+    <h1 style="text-align: center">Create a new account<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div>
+    <label class="title" for="nameAccount">Account name</label>
+    <input class="block" required id="nameAccount" type="text" value="" name="nameAccount" placeholder="enter wallet name" [(ngModel)]="nameAccount" />
+</div>
+<div class="dist">
+    <div class="half left">
+        <label class="title" for="pass">Set password</label>
+        <input required id="pass" class="block" type="password" value="sss" name="pass" [(ngModel)]="pass" />
+    </div>
+    <div class="half right">
+        <label class="title" for="pass2">Repeat password</label>
+        <input required id="pass2" class="block" type="password" value="ssss" name="pass2" [(ngModel)]="pass2" (keyup.enter)="checkPass(pass, pass2)" (blur)="checkPass(pass, pass2)" />
+    </div>
+</div>
+<div class="clear buttons">
+    <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+    <button class="btn-black half right" id="create" (click)="createAccount(nameAccount, pass, pass2)">Create account</button>
+</div>

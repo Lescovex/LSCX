@@ -9,6 +9,8 @@ import { AccountService } from './services/account.service';
 import { EtherscanService } from './services/etherscan.service';
 import { ContractStorageService } from './services/contractStorage.service';
 import { LSCXMarketService } from './services/LSCX-market.service';
+import { BitcoinAccountService } from "./services/account-bitcoin.service";
+import { BitcoinWalletService } from "./services/wallet-bitcoin.service";
 
 @Component({
   selector: 'ion-app',
@@ -18,7 +20,7 @@ export class MyApp implements OnInit {
   loadingD;
   interval;
   
-  constructor(protected _account: AccountService, protected dialog: MdDialog, protected _web3: Web3, protected router : Router, protected _scan: EtherscanService, private _contracStorage: ContractStorageService, private _LSCXmarket: LSCXMarketService) {
+  constructor(protected _account: AccountService, protected dialog: MdDialog, protected _web3: Web3, protected router : Router, protected _scan: EtherscanService, private _contracStorage: ContractStorageService, private _LSCXmarket: LSCXMarketService, protected _btcAccount: BitcoinAccountService, protected _btcWallet: BitcoinWalletService) {
     if(this._scan.apikey==""){
       this.router.navigate(['/general-settings']);
     }else{

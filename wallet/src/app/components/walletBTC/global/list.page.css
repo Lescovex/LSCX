@@ -1,0 +1,50 @@
+.listWidth {
+    display: inline-block;
+    width: 50px !important;
+    margin-right: 100px;
+}
+
+.listWidth2 {
+    display: inline-block;
+    width: 150px !important;
+    margin-right: 25px;
+}
+
+.listWidth3 {
+    display: inline-block;
+    width: 200px !important;
+    /*margin-right: 25px;*/
+}
+
+.extra2 {
+    margin-left: 35px !important;
+}
+
+.topText {
+    vertical-align: top !important;
+}
+
+.dateMonth {
+    font-size: 16px;
+}
+
+.dateDay {
+    font-size: 22px;
+}
+
+.listBTC {
+    list-style-type: none !important;
+    color: #546a89 !important;
+    overflow: hidden !important;
+}
+
+.listBTC li {
+    overflow: hidden !important;
+    clear: both !important;
+    padding: 12px !important;
+    margin: .5rem 0 !important;
+}
+
+.listBTC li a {
+    text-decoration: none !important;
+}

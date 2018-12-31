@@ -1,0 +1,38 @@
+<!--
+    <div>
+        <label class="title" for="senderAddr">Select account</label>
+        <select id="senderAddr" class="block" [(ngModel)]="senderAddr" name="senderAddr" (change)="changeSelected($event.target.value)" #sender="ngModel">
+            <option class="pointer" *ngFor="let fils of _wallet.wallet" value="{{fils.address}}" >{{fils.name}} - {{fils.address}}</option>
+        </select>
+    </div>    
+-->
+
+<div>
+    <label class="title" for="name">Account name</label> <span class="pointer darkBlue bold underline right" (click)="changeAccountName()">Change account name</span>
+    <div class="input-container" [ngClass]="{'error': nam.invalid && (nam.dirty ||  submited )}">
+        <input id="name" class="borderNone" required type="text" value="{{name}}" name="name" [(ngModel)]="name" #nam="ngModel" />
+    </div>
+    <div>
+        <p class="error" [ngClass]="{'hidden': !(nam.errors?.required && (nam.dirty || submited ))}">Name required</p>
+    </div>
+</div>
+
+<div>
+    <label class="title" for="password">Password</label>
+    <div class="input-container" [ngClass]="{'error': pass.invalid && (pass.dirty || pass.touched || submited )}">
+        <input id="password" required type="password" value="" name="password" [(ngModel)]="password" #pass="ngModel" />
+        <span class="right" (click)="showPassword()">{{message}}</span>
+    </div>
+    <div>
+        <p class="error" [ngClass]="{'hidden': !(pass.errors?.required && (pass.dirty || pass.touched || submited ))}">Password required</p>
+    </div>
+</div>
+
+<div class="inline right">
+    <button type="button" class="btn-black" (click)="exportWIF(password)">Export private key</button>
+</div>
+
+
+<div class="clear bottomR">
+    <button type="button" class="btn warning" (click)="deleteAccount()">Delete Account</button>
+</div>

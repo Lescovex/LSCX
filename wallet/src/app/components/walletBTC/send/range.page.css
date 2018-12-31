@@ -1,0 +1,117 @@
+    /*Range Css*/
+    
+    .inp1 {
+        width: 22%;
+    }
+    
+    .range {
+        position: relative;
+        flex-grow: 1;
+        margin: 12px 20px;
+    }
+    
+    .inp2 {
+        width: 50px;
+        text-align: right;
+        appearance: textfield;
+        -moz-appearance: textfield;
+    }
+    
+    .inp2::-webkit-outer-spin-button,
+    .inp2::-webkit-inner-spin-button {
+        appearance: none;
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+    .input-container span {
+        padding-left: 0;
+        margin-left: -10px;
+        z-index: 1;
+    }
+    
+    .input-container #currency {
+        margin-left: 15px;
+        padding-right: 5px;
+    }
+    
+    .bar {
+        position: absolute;
+        bottom: 20px;
+        width: 0%;
+        height: 2px;
+        background: #516889;
+        ;
+        border-radius: 2.5px;
+        z-index: 3;
+    }
+    
+    input[type=range] {
+        padding: 0;
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        background: none;
+    }
+    
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 2px;
+        cursor: pointer;
+        background: #8798B2;
+        border-radius: 2.5px;
+        z-index: 1;
+    }
+    
+    input[type=range]::-webkit-slider-thumb {
+        height: 16px;
+        width: 16px;
+        border-radius: 3px;
+        background: #516889;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        margin-top: -7px;
+        z-index: 100;
+    }
+    
+    .checkbox {
+        margin: 10px 0 0 15px;
+        width: 60px;
+    }
+    
+    .checkbox div {
+        margin-left: 10px;
+    }
+    
+    .checkbox img {
+        margin: 3px;
+    }
+    
+    input[type="checkbox"] {
+        display: none;
+    }
+    
+    input[type="checkbox"]+label {
+        cursor: pointer;
+    }
+    
+    input[type="checkbox"]+label span {
+        box-shadow: 0 0 0 2px 0.5;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid #516889;
+        border-radius: 5px;
+        background-color: white;
+    }
+    
+    .reset {
+        background: none;
+        border: none;
+        text-decoration: underline;
+        color: #516889;
+        font-family: "Lato-Bold";
+    }

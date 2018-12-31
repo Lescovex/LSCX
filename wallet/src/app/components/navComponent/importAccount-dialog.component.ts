@@ -35,7 +35,7 @@ export class ImportAccountDialogComponent{
     if(_wallet.wallet == null ){
       this.nameAccount= "Account 1"
     }else{
-      this.nameAccount = "Account"+(_wallet.wallet.length+1);
+      this.nameAccount = "Account "+(_wallet.wallet.length+1);
     }
   }
 

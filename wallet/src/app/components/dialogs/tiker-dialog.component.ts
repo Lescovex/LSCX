@@ -16,7 +16,7 @@ import BigNumber from 'bignumber.js';
 
 export class TikerDialogComponent {
     submited = false;
-    constructor(@Inject(MD_DIALOG_DATA) public data: any, private dialog: MdDialog, private _account: AccountService, private _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<TikerDialogComponent>, private _web3: Web3){
+    constructor(@Inject(MD_DIALOG_DATA) public data: any, protected dialog: MdDialog, protected _account: AccountService, protected _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<TikerDialogComponent>, protected _web3: Web3){
     }
     closeDialog(){
         this.dialogRef.close();

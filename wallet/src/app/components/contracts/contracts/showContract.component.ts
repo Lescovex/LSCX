@@ -10,7 +10,7 @@ import { EtherscanService } from '../../../services/etherscan.service';
 import { Router } from '@angular/router';
 import { Web3 } from '../../../services/web3.service';
 
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { RawTx } from '../../../models/rawtx';
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { ContractStorageService } from '../../../services/contractStorage.service';
@@ -37,7 +37,7 @@ export class ShowContract implements OnInit{
   protected owner: string;
   protected response: any = null;
   protected function;
-  protected goHover=false;
+  protected goHover = false;
   protected addMarket = false;
   protected isInMarket = false;
   protected isERC20 = true;

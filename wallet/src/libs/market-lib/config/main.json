@@ -24,7 +24,7 @@
     "tokens": [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
         { "addr": "0x5bf5f85480848eb92af31e610cd65902bcf22648", "name": "LSCX", "decimals": 8 },
-        { "addr": "0x4470BB87d77b963A013DB939BE332f927f2b992e", "name": "ADX", "decimals": 4 },
+        { "addr": "0x4470BB87d77b963A013DB939BE332f927f2b992e", "name": "ADEX", "decimals": 4 },
         { "addr": "0xB8c77482e45F1F44dE1745F52C74426C631bDD52", "name": "BNB", "decimals": 18 },
         { "addr": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", "name": "MKR", "decimals": 18 },
         { "addr": "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07", "name": "OMG", "decimals": 18 },

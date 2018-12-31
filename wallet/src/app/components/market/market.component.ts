@@ -47,5 +47,4 @@ export class MarketComponent implements DoCheck, OnDestroy{
     this.showList = ! this.showList;
   }
 
-  set
 }

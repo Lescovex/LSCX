@@ -1,4 +1,3 @@
-
 <div class="radioDiv">
     <input type="radio" id="address" name="sendTo" value="address" [(ngModel)]="sendTo" />
     <label for="address" class="black"><span><span></span></span>Etherum address</label>
@@ -13,7 +12,7 @@
     <div *ngIf="sendTo == 'address'">
         <label class="title" for="receiverAddr">Receiver address</label>
         <input class="block" [ngClass]="{'error': submited && receiverAddr.invalid}" required invalidAddress id="receiverAddr" type="text" value="" name="receiverAddr" ngModel #receiverAddr="ngModel" />
-        <p [ngClass]="{'hidden':!(submited && receiverAddr.invalid)}"  class="error">
+        <p [ngClass]="{'hidden':!(submited && receiverAddr.invalid)}" class="error">
             <span *ngIf="receiverAddr.errors?.required" class="error">This field is required</span>
             <span *ngIf="!receiverAddr.errors?.required && receiverAddr.errors?.invalidAddress" class="error">Invalid receiver address</span>
         </p>
@@ -48,20 +47,20 @@
 
     <div class="clear">
         <label class="title" for="amount">Ether amount</label>
-        <input type="number" class="block" step="any" [customMin]="0" value="0" [funds]="_account.account.balance" name="amount" [ngClass]="{'error': submited && amount.invalid}" ngModel required #amount="ngModel"/>
+        <input type="number" class="block" step="any" [customMin]="0" value="0" [funds]="_account.account.balance" name="amount" [ngClass]="{'error': submited && amount.invalid}" ngModel required #amount="ngModel" />
         <p [ngClass]="{'hidden':!(submited && amount.invalid)}" class="error">
             <span *ngIf="amount.errors?.required" class="error">This field is required</span>
             <span *ngIf="!amount.errors?.required && amount.errors?.customMin " class="error">Can not send negative amounts of ETH</span>
             <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds" class="error">You don't have enough funds</span>
-        </p>  
+        </p>
     </div>
     <div>
         <button type="submit" class="btn-solid right"> Send </button>
     </div>
-    
+
     <div class="clear">
         <label class="title" for="trans_data">Transaction data (optional)</label>
-        <input class="block" id="trans_data" type="text" value="" name="trans_data" placeholder="e.g. Market supplys payment" ngModel #trans_data="ngModel"/>
+        <input class="block" id="trans_data" type="text" value="" name="trans_data" placeholder="e.g. Market supplys payment" ngModel #trans_data="ngModel" />
     </div>
 </form>
 

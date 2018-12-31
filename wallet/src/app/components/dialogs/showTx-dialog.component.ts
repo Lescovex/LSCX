@@ -1,7 +1,7 @@
 import { Component,  Inject, OnInit} from '@angular/core';
 import { MdDialog, MdDialogRef, MD_DIALOG_DATA} from '@angular/material';
 import { Web3 } from '../../services/web3.service';
-import { ResendTxDialogComponent } from '../dialogs/resendTx-dialog.component';
+import { ResendTxDialogComponent } from './resendTx-dialog.component';
 import { EtherscanService } from '../../services/etherscan.service';
 
 

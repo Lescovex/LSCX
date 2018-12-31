@@ -28,9 +28,12 @@ export class CustomContractService {
     
     async setContract(abi, contract){
 		this.contract = this._contract.contractInstance(abi,contract.address);
+		console.log("this contract", this.contract);
 		this.contractInfo = {address :contract.address, name: contract.name};
-		
+		console.log("this.contractInfo", this.contractInfo);
 		this.moreInfo= await this.getContractData();
+		console.log("this.moreInfo", this.moreInfo);
+		/*
 		let history;
 		try {
 			history = await this._scan.getHistory(contract.address);	
@@ -39,11 +42,18 @@ export class CustomContractService {
 			
 		}
 		
-		for(let i =0; i<history.length; i++){
+		for(let i =0; i < history.length; i++){
 			let date = this._scan.tm(history[i].timeStamp);
 			history[i].date = date;
 		}
+		
 		this.contractHist = history;
+		*/
+		
+		
+		
+		//console.log("this.contractHist", this.contractHist);
+		
 	}
     
     getFunctionData(functionName:string, params?){
@@ -105,10 +115,11 @@ export class CustomContractService {
 				result = await this._contract.callFunction(this.contract, functions[i].name,[]);	
 			} catch (error) {
 				console.log(error);
-				
 			}
 			
 			info.push([functions[i].name,result]);
+			console.log("info?",info);
+			
 		}
 		return info;
 	}
@@ -117,8 +128,10 @@ export class CustomContractService {
 		let txFunctions = this. getTransFunctions();
 		let infoFunctions = this.getInfoFunctions();
 		let functions = txFunctions.concat(infoFunctions);
-	
-		this.functions = functions
+		
+		this.functions = functions;
+		console.log("this.functions", this.functions);
+		
 	}
 
 	getTransFunctions(): any[]{

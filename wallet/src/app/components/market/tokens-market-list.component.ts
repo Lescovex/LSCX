@@ -27,7 +27,7 @@ export class TokensMarketListComponent {
         }
       });
     }
-    this.tokens =  tokens;
+    this.tokens =  tokens;    
   }
   
   async selectToken(token){

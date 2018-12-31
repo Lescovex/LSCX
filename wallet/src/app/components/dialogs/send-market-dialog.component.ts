@@ -28,8 +28,6 @@ export class SendMarketDialogComponent{
   messageTrade="";
 
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, private _LSCXmarket: LSCXMarketService,  public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendMarketDialogComponent>) {
-    console.log("This data???????!!!!!!!!!!!!!!!!!!!!!!!??????????",this.data);
-    
     if(parseInt(_web3.web3.toWei(this._account.account.balance,'ether')) < data.total ){
       this.insufficient= true;
     }
@@ -109,9 +107,7 @@ export class SendMarketDialogComponent{
           this._account.addPendingTx(pending);
 
           if(i==this.txs.length-1){
-            console.log("antes de añadir State");
             this.addToMarket();
-            console.log("despues de añadir State");
             this.title = "Your transaction has been sent";
             this.message = "You can see the progress in the global tab"
             //self.dialogRef.close();
@@ -157,10 +153,6 @@ export class SendMarketDialogComponent{
   }
 
     addToMarket(){
-      console.log("log this data in addToMarket funcion", this.data );
-      console.log("logg typeFunction", this.data.typeFunction);
-      
-      
       if(this.data.typeFunction=="listTiker"){
         this._LSCXmarket.addTikerToList(this.data.functionObj);
       }else{

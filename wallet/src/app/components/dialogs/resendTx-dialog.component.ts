@@ -4,7 +4,7 @@ import { Web3 } from '../../services/web3.service';
 
 import { AccountService } from '../../services/account.service';
 import { Transaction } from '../../models/transaction'
-import { SendDialogComponent } from '../dialogs/send-dialog.component';
+import { SendDialogComponent } from './send-dialog.component';
 
 import { ResendTx } from '../../models/rawtx';
 import BigNumber from 'bignumber.js';
@@ -62,7 +62,6 @@ export class ResendTxDialogComponent implements OnInit{
         gasPrice = parseInt(this._web3.web3.toWei(parseFloat(this._web3.web3.fromWei(gasPrice, 'Gwei')).toFixed(1), "Gwei"));
         console.log(gasPrice,parseInt(this.data.gasPrice), gasPrice <= parseInt(this.data.gasPrice))
         if(gasPrice <= parseInt(this.data.gasPrice)){
-            console.log("dentro cambio gas")
             gasPrice = this.data.gasPrice;
         }
         console.log(gasPrice*2)

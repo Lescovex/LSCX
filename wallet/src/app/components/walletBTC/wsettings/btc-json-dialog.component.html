@@ -1,0 +1,10 @@
+<div>
+    <h1 style="text-align: center">Ethereum account (v3 format)<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class="round whiteBox dist">
+    {{data.v3 | json}}
+</div>
+<div class="buttons">
+    <button class="btn-black half left" (click)="closeDialog()">Close</button>
+    <button class="btn-black half right" (click)="downloadFile()">Downolad file</button>
+</div>

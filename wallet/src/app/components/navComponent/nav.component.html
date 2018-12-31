@@ -1,16 +1,18 @@
-<div id="account">
+<!--
+    <div id="account">
     <div *ngIf="_account?.account" mdTooltip="{{_account.account.name}}" mdTooltipPosition="right">
         <p>{{_account.account.name}}</p>
     </div>
 </div>
+-->
+
 <button class="link" routerLink="/wallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #wallet="routerLinkActive">
     <div>
         <img *ngIf="wallet.isActive == true" src="~icons/wallet_icon.svg" alt="wallet_icon">
         <img *ngIf="wallet.isActive == false" src="~icons/wallet_inactive_icon.svg" alt="wallet_icon">
     </div>
-    <span class="title-button-left">Wallet</span>
+    <span class="title-button-left">Ethereum Wallet</span>
 </button>
-
 <button class="link" routerLink="/tokens" [disabled]="_web3. infuraKey == '' ||_scan.apikey == ''" routerLinkActive="active" #tokens="routerLinkActive">
     <div>
         <img *ngIf="tokens.isActive" src="~icons/token_icon.svg" alt="settings_icon">
@@ -39,7 +41,13 @@
     </div>
     <span class="title-button-left">Market</span>
 </button>
-
+<button class="link" routerLink="/btcwallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #btcwallet="routerLinkActive">
+    <div>
+        <img *ngIf="btcwallet.isActive == true" src="~icons/wallet_icon.svg" alt="wallet_icon">
+        <img *ngIf="btcwallet.isActive == false" src="~icons/wallet_inactive_icon.svg" alt="wallet_icon">
+    </div>
+    <span class="title-button-left">Bitcoin Wallet</span>
+</button>
 <button class="link" routerLink="/general-settings" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #settings="routerLinkActive">
     <div>
         <img *ngIf="settings.isActive" src="~icons/generalsettings_icon.svg" alt="settings_icon">

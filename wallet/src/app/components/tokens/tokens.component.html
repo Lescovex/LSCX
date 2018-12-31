@@ -1,5 +1,5 @@
 <nav class="flex-row">
-    
+
     <a routerLink="general" routerLinkActive="active" #general="routerLinkActive">
         <div>
             <span>
@@ -31,8 +31,8 @@
     </a>
 </nav>
 <div class="content flex-inside">
-  <p *ngIf="!_account.account?.address; else content" class="text-center">Select an account</p>
-  <ng-template #content>
-    <router-outlet></router-outlet>
-  </ng-template>
+    <p *ngIf="!_account.account?.address; else content" class="text-center">Select an ETH account</p>
+    <ng-template #content>
+        <router-outlet></router-outlet>
+    </ng-template>
 </div>

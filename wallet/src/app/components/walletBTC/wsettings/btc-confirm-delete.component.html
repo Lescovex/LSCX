@@ -1,0 +1,9 @@
+<div>
+    <h1 style="text-align: center">Are you sure to delete this account?<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+
+<p class="text-center bold dist"><img src="~icons/failed_icon.svg"> This action can not be undone</p>
+<div class="buttons">
+    <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+    <button class="btn warning half right" (click)="deleteWallet()">Delete Account</button>
+</div>

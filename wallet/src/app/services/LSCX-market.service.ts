@@ -660,6 +660,8 @@ export class LSCXMarketService {
 		let tikersResult;
 		try {
 			tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);	
+			console.log("tikersResult",tikersResult);
+			
 		} catch (error) {
 			console.log(error);
 			this.getTikers();
