@@ -21,7 +21,6 @@ export class BitcoinSendDialogComponent{
     
    }
   async sendTx(pass, data){
-    console.log("data?",data);
     
     this.submited = true;
  
@@ -57,7 +56,7 @@ export class BitcoinSendDialogComponent{
       this.submited = true;
       return false;
     }
-    let pylon = bitcoin.networks.bitcoin;
+    let btc = bitcoin.networks.bitcoin;
     const txb = new bitcoin.TransactionBuilder();
     
     txb.setVersion(1)
@@ -76,7 +75,6 @@ export class BitcoinSendDialogComponent{
     //Note that -for some reason- Electrum uses the reverse scripthash
 
     let prevBalance = await ecl.blockchainScripthash_getBalance(scripthash)
-    console.log("previous balance",prevBalance, amount);
     
     if(prevBalance.confirmed >= amount){
       try{
@@ -97,11 +95,6 @@ export class BitcoinSendDialogComponent{
             sum =  sum + unspent[i].value;
           }
         }
-     
-        
-       
-        //txb.addOutput(to, amount);
-        //lo del else estava aqui fora
         
         if(prevBalance.confirmed > amount){
           txb.addOutput(sender, prevBalance.confirmed - amount);
@@ -117,7 +110,6 @@ export class BitcoinSendDialogComponent{
         }
     
         let txString = txb.build().toHex();
-        console.log("txString",txString);
         
         let sendResult = await ecl.blockchainTransaction_broadcast(txString);
 

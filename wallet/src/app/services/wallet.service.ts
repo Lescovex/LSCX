@@ -70,7 +70,6 @@ export class WalletService {
       wallet = new EthWallet( EthUtil.toBuffer(privateKey));
 
     }catch(e){
-      //error = true;
       throw e;
     }
 

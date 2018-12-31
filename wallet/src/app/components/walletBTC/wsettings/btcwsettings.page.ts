@@ -150,25 +150,5 @@ export class BitcoinWsettingsPage implements OnInit {
     pass.type = (this.show == true) ? "text" :"password";
     
   }
-  /*
-  async changeSelected(account){
-    
-    for (let index = 0; index < this._wallet.wallet.length; index++) {
-      if(this._wallet.wallet[index].address == account){
-        this.name = this._wallet.wallet[index].name;
-        this.selectedAcc = this._wallet.wallet[index];
-      }
-    }
-    
-    await this.selectAccount();
-  }
-  async selectAccount(){
-    if(this._account.account.address != this.selectedAcc.address){
- 
-      this._account.setAccount(this.selectedAcc);
-      
-    }
-    
-  }
-  */
+
 }

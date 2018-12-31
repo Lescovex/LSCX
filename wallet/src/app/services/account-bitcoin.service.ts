@@ -72,8 +72,7 @@ export class BitcoinAccountService{
   }
 
   async setData(){
-      console.log("setData");
-    //this.account.address
+    
     let addr = this.account.address;
     let self= this;
     let script = bitcoin.address.toOutputScript(addr)
@@ -89,11 +88,9 @@ export class BitcoinAccountService{
 
       
       let prevBalance = await ecl.blockchainScripthash_getBalance(scripthash);
-      //console.log("blockchainScripthash_getBalance",prevBalance);
       
       self.account.balance = prevBalance.confirmed;
       let data = await ecl.blockchainScripthash_getHistory(scripthash);
-      //console.log("blockchainScripthash_getHistory", data);
       
       let x;
       let net = bitcoin.networks.bitcoin;
@@ -105,7 +102,6 @@ export class BitcoinAccountService{
         if(data[index].height != 0){
            
           x = await ecl.blockchainTransaction_get(data[index].tx_hash, data[index].height);
-          //console.log("blockchainTransaction_get",x);
           
           var tx = bitcoin.Transaction.fromHex(x);
           
@@ -113,7 +109,6 @@ export class BitcoinAccountService{
           
           this.block = currentBlock.height;
           var header = await ecl.blockchainBlock_getHeader(data[index].height);
-          //console.log("blockchainBlock_getHeader", header);
           
           let objTime = await this.timestampFormats(header.timestamp);
           let obj ={
@@ -130,7 +125,7 @@ export class BitcoinAccountService{
             confirmations: this.block - data[index].height,
             balance:null
           }
-          //console.log("obj", obj);
+          
           let ref = index-1;
             if(ref >= 0){
                 if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
@@ -246,14 +241,6 @@ export class BitcoinAccountService{
      // await this.setTokens();
     }
   }
-
-  /*
-  getTx(tx){
-    let url = 'https://chain.pylon-network.org/transaction?transaction='+tx;
-    let response = this.http.get(url).map(res => res.json());
-    return response;
-  }
-*/  
 
   getPendingTx(){
     if(localStorage.getItem('btcAcc')){

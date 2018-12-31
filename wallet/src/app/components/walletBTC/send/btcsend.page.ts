@@ -53,7 +53,6 @@ export class BitcoinSendPage implements OnInit {
   }
 
   async createBitcoinTx(sender, receiver, value){
-    console.log("value to send", value);
     
       let getDecimals = this.decimalPlaces(value)
       if(getDecimals > 8){
@@ -105,26 +104,6 @@ export class BitcoinSendPage implements OnInit {
     }
   }
 
-/*
-  async changeSelected(account){
-    
-    for (let index = 0; index < this._wallet.wallet.length; index++) {
-      if(this._wallet.wallet[index].address == account){
-        this.selectedAcc = this._wallet.wallet[index];
-      }
-    }
-    await this.selectAccount();
-  }
-  */
- /*
-  async selectAccount(){
-    if(this._account.account.address != this.selectedAcc.address){
- 
-      this._account.setAccount(this.selectedAcc);
-      
-    } 
-  }
-  */
   showPassword(){
     this.show = !this.show;
     this.message = (this.show == false)? "see password" : "hide password";
