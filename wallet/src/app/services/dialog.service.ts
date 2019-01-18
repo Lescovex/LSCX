@@ -9,7 +9,7 @@ import { GasDialogComponent } from '../components/dialogs/gas-dialog.component';
 import { MessageDialogComponent } from '../components/dialogs/message-dialog.component';
 import { ContractDialogComponent } from '../components/contracts/add/contract-dialog.component';
 import { ShowTxDialogComponent } from '../components/dialogs/showTx-dialog.component';
-
+import { SendWethDialogComponent } from "../components/dialogs/send-weth-dialog.component";
 
 
 @Injectable()
@@ -62,8 +62,7 @@ export class DialogService{
             height: '',
             panelClass: 'dialog',
             data: {
-              title: contract,
-  
+              title: contract
             }
           });
     }
@@ -78,7 +77,6 @@ export class DialogService{
 
     }
     openShowTx(tx){
-        
         return this.dialog.open( ShowTxDialogComponent, {
             width: '660px',
             height: '',
@@ -86,4 +84,16 @@ export class DialogService{
             data: tx
         });
     }
+    
+    openWethDialog(value, action){
+        return this.dialog.open( SendWethDialogComponent, {
+            width: "660px",
+            height: "350px",
+            data: {
+                amount: value,
+                action: action
+            }
+        });
+    }
+    
 }

@@ -155,7 +155,8 @@ export class Web3 {
   }
 
   async sendRawTx(txData:string){
-
+    console.log("sendRawTx",txData);
+    
     let self= this;
 
     let AsyncFunction = new Promise (function (resolve, reject) {      

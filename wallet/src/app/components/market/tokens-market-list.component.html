@@ -1,7 +1,7 @@
 <div>
     <input type="text" placeholder="Search..." (input)="search(token.value)" #token>
 </div>
-<ul *ngIf="tokens.length>0">
+<ul *ngIf="tokens.length > 0">
     <li class="pointer" *ngFor="let token of tokens" (click)="selectToken(token)">{{token.name}}</li>
 </ul>
 <p *ngIf="tokens.length==0">No tokens found</p>

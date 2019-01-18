@@ -12,6 +12,7 @@ import { BitcoinWalletService } from '../../../services/wallet-bitcoin.service'
 })
 export class BitcoinDeleteComponent{
   constructor(public dialog: MdDialog,public dialogRef: MdDialogRef<BitcoinDeleteComponent>, private _account: BitcoinAccountService, private _wallet: BitcoinWalletService) {
+    
    }
 
   deleteWallet(){
@@ -25,5 +26,4 @@ export class BitcoinDeleteComponent{
   closeDialog(){
     this.dialogRef.close();
   }
-
 }

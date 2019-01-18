@@ -1,0 +1,30 @@
+<div>
+    <h1 class="text-center" *ngIf="data.action == 'wrap'">Confirm Deposit Ethers<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+    <h1 class="text-center" *ngIf="data.action == 'unwrap'">Confirm Withdraw Ethers<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div>
+    <div class="flex-row dist">
+        <div class="flex1">
+            <p class="black inline" *ngIf="data.action == 'wrap'">Amount to deposit: </p>
+            <p class="black inline" *ngIf="data.action == 'unwrap'">Amount to withdraw: </p>
+            <p class="inline extra" *ngIf="data.action == 'wrap'">{{(data.amount) | number:'1.2-8':'en'}} ETH</p>
+            <p class="inline extra" *ngIf="data.action == 'unwrap'">{{(data.amount) | number:'1.2-8':'en'}} WETH</p>
+        </div>
+
+    </div>
+    <div class="dist">
+        <label class="bold" for="password">Password</label>
+        <div class="input-container" [ngClass]="{'error': pass.invalid && (pass.dirty || pass.touched || submited )}">
+            <input id="password" required type="password" value="" name="password" [(ngModel)]="password" #pass="ngModel" />
+            <p class="italic">Type your account password to continue.</p>
+        </div>
+        <div>
+            <p class="error" [ngClass]="{'hidden': !(pass.errors?.required && (pass.dirty || pass.touched || submited ))}">Password required</p>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+        <button class="btn-inverse half right" (click)="sendTx(password)">Confirm</button>
+    </div>
+</div>

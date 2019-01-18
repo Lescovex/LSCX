@@ -1,0 +1,42 @@
+<div>
+    <h1 class="text-center">Confirm {{data.action}} order<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+
+
+<div class="flex-row dist" *ngIf="data.action == 'buy'">
+    <div class="flex1">
+        <p class="black">Amount to {{data.action}}</p>
+        <p>{{data.token.assetDataA.name}} {{(data.form.amount.value) | number:'1.2-8':'en'}}</p>
+    </div>
+    <div class="flex1">
+        <p class="black">Price</p>
+        <p>{{data.token.assetDataB.name}} {{(data.form.price.value) | number:'1.2-8':'en'}}</p>
+    </div>
+    <div class="flex1">
+        <p class="black">Total</p>
+        <p>{{data.token.assetDataB.name}} {{(data.form.total.value) | number:'1.2-8':'en'}}</p>
+    </div>
+</div>
+<div class="flex-row dist" *ngIf="data.action == 'sell'">
+    <div class="flex1">
+        <p class="black">Amount to {{data.action}}</p>
+        <p>{{data.token.assetDataB.name}} {{(data.form.amount.value) | number:'1.2-8':'en'}}</p>
+    </div>
+    <div class="flex1">
+        <p class="black">Price</p>
+        <p>{{data.token.assetDataA.name}} {{(data.form.price.value) | number:'1.2-8':'en'}}</p>
+    </div>
+    <div class="flex1">
+        <p class="black">Total</p>
+        <p>{{data.token.assetDataA.name}} {{(data.form.total.value) | number:'1.2-8':'en'}}</p>
+    </div>
+</div>
+<div class="dist">
+    <label class="title block">Password*</label>
+    <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" />
+    <p class="italic">Type your account password to continue.</p>
+</div>
+<div class="buttons">
+    <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+    <button class="btn-inverse half right" (click)="confirm(pass)">Confirm</button>
+</div>

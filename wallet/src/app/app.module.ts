@@ -78,6 +78,8 @@ import { JSONDialogComponent } from './components/wallet/wsettings/json-dialog.c
 import { PrivateKeyDialogComponent } from './components/wallet/wsettings/privatekey-dialog.component';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
+import { ConfirmDialogComponent } from "./components/dialogs/confirm-dialog.component";
+import { ZeroExConfirmDialogComponent } from "./components/dialogs/zeroExConfirm-dialog.component";
 import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
 import { DeleteDialog } from './components/dialogs/confirm-delete.component';
 import { GasDialogComponent } from './components/dialogs/gas-dialog.component';
@@ -92,6 +94,8 @@ import { BitcoinDeleteComponent } from "./components/walletBTC/wsettings/btc-con
 import { BitcoinJSONDialogComponent } from "./components/walletBTC/wsettings/btc-json-dialog.component";
 import { BitcoinPrivateKeyDialogComponent } from "./components/walletBTC/wsettings/btc-privatekey-dialog.component";
 import { BitcoinChangeNameComponent } from "./components/walletBTC/wsettings/btcchange-name.component";
+import { WrapUnwrapDialogComponent } from "./components/dialogs/wrap-unwrap.component";
+import { SendWethDialogComponent } from "./components/dialogs/send-weth-dialog.component";
 
 /*Servicies*/
 import { WalletService } from './services/wallet.service';
@@ -110,6 +114,7 @@ import { LSCXMarketStorageService } from './services/LSCX-marketStorage.service'
 import { CustomContractService } from './services/custom-contract.service';
 import { BitcoinAccountService } from "./services/account-bitcoin.service";
 import { BitcoinWalletService } from "./services/wallet-bitcoin.service";
+import { ZeroExService } from "./services/0x.service";
 
 /*Pipes*/
 import { ConverterPipe } from './pipes/converter.pipe';
@@ -158,6 +163,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     DeleteComponent,
     ErrorDialogComponent,
     LoadingDialogComponent,
+    ConfirmDialogComponent,
+    ZeroExConfirmDialogComponent,
     JSONDialogComponent,
     PrivateKeyDialogComponent,
     NetworkDialogComponent,
@@ -197,7 +204,9 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     BitcoinDeleteComponent,
     BitcoinJSONDialogComponent,
     BitcoinPrivateKeyDialogComponent,
-    BitcoinChangeNameComponent
+    BitcoinChangeNameComponent,
+    WrapUnwrapDialogComponent,
+    SendWethDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -231,6 +240,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     DeleteComponent,
     ErrorDialogComponent,
     LoadingDialogComponent,
+    ConfirmDialogComponent,
+    ZeroExConfirmDialogComponent,
     JSONDialogComponent,
     PrivateKeyDialogComponent,
     MessageDialogComponent,
@@ -247,7 +258,9 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     BitcoinDeleteComponent,
     BitcoinJSONDialogComponent,
     BitcoinPrivateKeyDialogComponent,
-    BitcoinChangeNameComponent
+    BitcoinChangeNameComponent,
+    WrapUnwrapDialogComponent,
+    SendWethDialogComponent
   ],
   providers: [
     WalletService,
@@ -265,7 +278,8 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     LSCXMarketStorageService,
     CustomContractService,
     BitcoinAccountService,
-    BitcoinWalletService
+    BitcoinWalletService,
+    ZeroExService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

@@ -44,7 +44,6 @@
            <span *ngIf="!receiverEmail.errors?.required && receiverEmail.errors?.email" class="error">Invalid receiver email</span>
         </p>
     </div>-->
-
     <div class="clear">
         <label class="title" for="amount">Ether amount</label>
         <input type="number" class="block" step="any" [customMin]="0" value="0" [funds]="_account.account.balance" name="amount" [ngClass]="{'error': submited && amount.invalid}" ngModel required #amount="ngModel" />
@@ -63,7 +62,6 @@
         <input class="block" id="trans_data" type="text" value="" name="trans_data" placeholder="e.g. Market supplys payment" ngModel #trans_data="ngModel" />
     </div>
 </form>
-
 <!--<div>
     <label class="title" for="lang">Terms of use</label>
     <div class="scroll scrollbar settings auto-h" id="sendings-bottom"></div>

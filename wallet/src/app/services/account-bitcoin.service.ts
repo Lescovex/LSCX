@@ -225,7 +225,7 @@ export class BitcoinAccountService{
       }
       this.removePendingTx();      
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
     
   }

@@ -8,6 +8,7 @@ import { ContractStorageService } from '../../services/contractStorage.service';
 import { LSCXContractService } from '../../services/LSCX-contract.service';
 import { CustomContractService } from '../../services/custom-contract.service';
 import { LSCXMarketService } from '../../services/LSCX-market.service';
+import { ZeroExService } from "../../services/0x.service";
 
 @Component({
     selector: 'app-network',
@@ -19,7 +20,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
     show: boolean = false;
     loading: boolean =  false;
     dialog;
-    constructor(private _LSCXmarket: LSCXMarketService, private _web3: Web3, private _account: AccountService, private _dialog: DialogService, private _LSCXcontract: LSCXContractService, private _customContract: CustomContractService, private _contractStorage: ContractStorageService) {
+    constructor(private _zeroEx: ZeroExService,private _LSCXmarket: LSCXMarketService, private _web3: Web3, private _account: AccountService, private _dialog: DialogService, private _LSCXcontract: LSCXContractService, private _customContract: CustomContractService, private _contractStorage: ContractStorageService) {
 
     }
     ngOnInit(){
@@ -61,6 +62,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this._web3.setNetwork(network);
         this._LSCXmarket.showBuys = null;
         this._LSCXmarket.showSells = null;
+        this._zeroEx.init();
         this._LSCXmarket.setMarket();
         
         if('address' in this._account.account){

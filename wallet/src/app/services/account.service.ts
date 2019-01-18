@@ -24,6 +24,7 @@ export class AccountService{
   tokenInterval;
   apikey: string = "";
   loadingD;
+  
   constructor(private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
     
     Promise.resolve().then(() => {

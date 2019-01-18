@@ -1,13 +1,13 @@
-import { Component, Inject  } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, Inject  } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { DialogService } from '../../services/dialog.service'
+import { DialogService } from '../../services/dialog.service';
 import { MdDialogRef } from '@angular/material';
 import { MD_DIALOG_DATA } from '@angular/material';
 
 
-import { Web3 } from '../../services/web3.service'
-import { AccountService } from '../../services/account.service'
+import { Web3 } from '../../services/web3.service';
+import { AccountService } from '../../services/account.service';
 
 import { LSCX_Contract } from '../../models/LSCX_contract';
 import { ContractStorageService } from '../../services/contractStorage.service';
@@ -85,6 +85,8 @@ export class SendDialogComponent{
         if(j==60){
           //Create pending object
           pending = this.createPendingObject(sendResult, i);
+          console.log("pending obj",pending);
+          
           this._account.addPendingTx(pending);
           if(i==this.txs.length-1){
             this.setErroParamsWhenNotConfiramtion();
@@ -100,12 +102,15 @@ export class SendDialogComponent{
           if(loadingDialog!=null){
             loadingDialog.close();
           }
-          pending.timeStamp = Date.now()/1000;
-          this._account.addPendingTx(pending);
+          if(this.data.action != 'approve'){
+            pending.timeStamp = Date.now()/1000;
+            this._account.addPendingTx(pending);
+          }
+          
           if(this.data.action == 'contractDeploy'){
             this.addLSCXContract(sendResult);
           }
-          if(i==this.txs.length-1){
+          if(i==this.txs.length-1 && this.data.action != 'approve'){
             this.title = "Your transaction has been sent";
             this.message = "You can see the progress in the global tab"
             //self.dialogRef.close();

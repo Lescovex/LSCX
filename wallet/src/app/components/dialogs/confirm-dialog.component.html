@@ -1,0 +1,12 @@
+<div>
+    <h1 class="text-center">Are you sure to allow proxy to operate with this token?<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class="dist">
+    <label class="title block">Password*</label>
+    <input class="half" type="password" required id="pass" name="pass" [(ngModel)]="pass" />
+    <p class="italic">Type your account password to continue.</p>
+</div>
+<div class="buttons">
+    <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
+    <button class="btn-inverse half right" (click)="confirm(pass)">Confirm</button>
+</div>

@@ -1,15 +1,27 @@
-
 <form class="flex-row market-action" (ngSubmit)="onSubmit(form)" #form="ngForm">
-    <div *ngIf="action=='deposit'">
+    <div *ngIf="action =='deposit' && _market.display == 'eth'">
         <label class="black">Deposit {{token?.name}}</label>
-        <input name="amount" id="amount" [funds]="walletAmount" type="number" [customMin]="0.001" placeholder="0.000"class="block" [ngClass]="{'error':submited && amount.errors != null}" ngModel required #amount="ngModel">
+        <input name="amount" id="amount" [funds]="walletAmount" type="number" [customMin]="0.001" placeholder="0.000" class="block" [ngClass]="{'error':submited && amount.errors != null}" ngModel required #amount="ngModel">
         <p class="error" [ngClass]="{'hidden':!(submited && amount.errors != null)}">
             <span *ngIf="amount.errors?.required">This field is required</span>
             <span *ngIf="!amount.errors?.required && amount.errors?.customMin">Minimum required amount is 0.001</span>
             <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds">Insufficient funds in your wallet</span>
         </p>
     </div>
-    <div *ngIf="action=='withdraw'">
+    <div *ngIf="(action=='deposit' && _market.display == 'weth')&& token?.tokenAddress == _zeroEx.contractAddresses.etherToken">
+        <label class="black">Deposit {{token?.name}}</label>
+        <input name="amount" id="amount" [funds]="walletAmount" type="number" [customMin]="0.001" placeholder="0.000" class="block" [ngClass]="{'error':submited && amount.errors != null}" ngModel required #amount="ngModel">
+        <p class="error" [ngClass]="{'hidden':!(submited && amount.errors != null)}">
+            <span *ngIf="amount.errors?.required">This field is required</span>
+            <span *ngIf="!amount.errors?.required && amount.errors?.customMin">Minimum required amount is 0.001</span>
+            <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds">Insufficient funds in your wallet</span>
+        </p>
+    </div>
+    <div *ngIf="(action=='deposit' && _market.display == 'weth')&& token?.tokenAddress != _zeroEx.contractAddresses.etherToken">
+        <label class="black">Allowance {{token?.name}}</label>
+
+    </div>
+    <div *ngIf="action=='withdraw' && _market.display == 'eth'">
         <label class="black">Withdraw {{token?.name}}</label>
         <input name="amount" id="amount" [funds]="deltaAmount" type="number" [customMin]="0.001" placeholder="0.000" class="block" [ngClass]="{'error':submited && amount.errors != null}" ngModel required #amount="ngModel">
         <p class="error" [ngClass]="{'hidden':!(submited && amount.errors != null)}">
@@ -17,6 +29,21 @@
             <span *ngIf="!amount.errors?.required && amount.errors?.customMin">Minimum required amount is 0.001</span>
             <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds">Insufficient funds in Market</span>
         </p>
-    </div>    
-    <button type="submit" class="btn-solid">{{action | titlecase}}</button>
+    </div>
+    <div *ngIf="(action=='withdraw' && _market.display == 'weth') && token?.tokenAddress == _zeroEx.contractAddresses.etherToken">
+        <div>
+            <label class="black">Withdraw {{token?.name}}</label>
+            <input name="amount" id="amount" [funds]="wethAmount" type="number" [customMin]="0.001" placeholder="0.000" class="block" [ngClass]="{'error':submited && amount.errors != null}" ngModel required #amount="ngModel">
+            <p class="error" [ngClass]="{'hidden':!(submited && amount.errors != null)}">
+                <span *ngIf="amount.errors?.required">This field is required</span>
+                <span *ngIf="!amount.errors?.required && amount.errors?.customMin">Minimum required amount is 0.001</span>
+                <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds">Insufficient funds in Market</span>
+            </p>
+        </div>
+
+
+    </div>
+    <button *ngIf="action =='deposit' && _market.display == 'weth'" type="submit" class="btn-solid left">{{actionName | titlecase}}</button>
+    <button *ngIf="(action=='withdraw' && _market.display == 'weth') && token?.tokenAddress == _zeroEx.contractAddresses.etherToken" type="submit" class="btn-solid">{{actionName | titlecase}}</button>
+    <button *ngIf="_market.display == 'eth'" type="submit" class="btn-solid">{{actionName | titlecase}}</button>
 </form>

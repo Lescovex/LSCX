@@ -24,7 +24,7 @@
 </div>
 <div class="clear"></div>
 
-<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist" *ngIf="_market.display == 'eth'">
     <div class="dist">
         <div class="half left">
             <label class="title" for="amount">Amount to {{action}}</label>
@@ -58,6 +58,90 @@
             <div class="input-container" [ngClass]="{'error': expires.invalid && submited}">
                 <input type="number" [customMin]="1" placeholder="0.000" step="any" name="expires" [(ngModel)]="f.expires" required ngModel #expires="ngModel" />
                 <span class="right">Blocks</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && expires.invalid)}">
+                <span *ngIf="expires.errors?.required">This field is required</span>
+            </p>
+        </div>
+        <p *ngIf="buyInCross != ''" class="clear dist">{{buyInCross}}</p>
+        <button type="submit" class="dist block" [ngClass]="(action=='buy')? 'btn-inverse' : 'btn warning'">{{action | titlecase}} order</button>
+    </div>
+</form>
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist" *ngIf="_market.display == 'weth'">
+    <div class="dist" *ngIf="action == 'buy'">
+        <div class="half left">
+            <label class="title" for="amount">Amount to {{action}}</label>
+            <div class="input-container" [ngClass]="{'error': submited  && (amount.invalid || eth.invalid)}">
+                <input type="number" [placeholder]="0.+('0').repeat(_zeroEx.token.assetDataA.decimals)" step="any" name="amount" (input)="total()" [(ngModel)]="f.amount" ngModel required #amount="ngModel" />
+                <span class="right">{{_zeroEx.token.assetDataA.name}}</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
+                <span *ngIf="amount.errors?.required">This field is required</span>
+                <span *ngIf="!amount.errors?.required && eth.errors?.customMin">The minimum order is 0.001</span>
+            </p>
+        </div>
+        <div class="half right">
+            <label class="title" for="price">Price</label>
+            <div class="input-container" [ngClass]="{'error': submited && (price.invalid || eth.invalid) }">
+                <input type="number" value="{{_LSCXmarket.lastPrice}}" step="any" name="price" (input)="total()" [(ngModel)]="f.price" ngModel required #price="ngModel" />
+                <span class="right">{{_zeroEx.token.assetDataB.name}}</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && (price.invalid || eth.invalid))}">
+                <span *ngIf="price.errors?.required">This field is required</span>
+                <span *ngIf="!price.errors?.required">The minimum order is 0.001</span>
+            </p>
+        </div>
+        <div class="clear half left">
+            <label class="title" for="total">Total</label>
+            <p class="input">{{f.total | number:'1.3-3':'en'}}</p>
+            <input type="hidden" name="total" [customMin]="0.001" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
+        </div>
+        <div class="half right">
+            <label class="title" for="expires">Expires</label>
+            <div class="input-container" [ngClass]="{'error': expires.invalid && submited}">
+                <input type="number" [customMin]="1" placeholder="0.000" step="any" name="expires" [(ngModel)]="f.expires" required ngModel #expires="ngModel" />
+                <span class="right">seconds</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && expires.invalid)}">
+                <span *ngIf="expires.errors?.required">This field is required</span>
+            </p>
+        </div>
+        <p *ngIf="buyInCross != ''" class="clear dist">{{buyInCross}}</p>
+        <button type="submit" class="dist block" [ngClass]="(action=='buy')? 'btn-inverse' : 'btn warning'">{{action | titlecase}} order</button>
+    </div>
+    <div class="dist" *ngIf="action == 'sell'">
+        <div class="half left">
+            <label class="title" for="amount">Amount to {{action}}</label>
+            <div class="input-container" [ngClass]="{'error': submited  && (amount.invalid || eth.invalid)}">
+                <input type="number" [placeholder]="0.+('0').repeat(_zeroEx.token.assetDataB.decimals)" step="any" name="amount" (input)="total()" [(ngModel)]="f.amount" ngModel required #amount="ngModel" />
+                <span class="right">{{_zeroEx.token.assetDataB.name}}</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
+                <span *ngIf="amount.errors?.required">This field is required</span>
+                <span *ngIf="!amount.errors?.required && eth.errors?.customMin">The minimum order is 0.001</span>
+            </p>
+        </div>
+        <div class="half right">
+            <label class="title" for="price">Price</label>
+            <div class="input-container" [ngClass]="{'error': submited && (price.invalid || eth.invalid) }">
+                <input type="number" value="{{_LSCXmarket.lastPrice}}" step="any" name="price" (input)="total()" [(ngModel)]="f.price" ngModel required #price="ngModel" />
+                <span class="right">{{_zeroEx.token.assetDataA.name}}</span>
+            </div>
+            <p class="error" [ngClass]="{'hidden':!(submited && (price.invalid || eth.invalid))}">
+                <span *ngIf="price.errors?.required">This field is required</span>
+                <span *ngIf="!price.errors?.required">The minimum order is 0.001</span>
+            </p>
+        </div>
+        <div class="clear half left">
+            <label class="title" for="total">Total</label>
+            <p class="input">{{f.total | number:'1.3-3':'en'}}</p>
+            <input type="hidden" name="total" [customMin]="0.001" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
+        </div>
+        <div class="half right">
+            <label class="title" for="expires">Expires</label>
+            <div class="input-container" [ngClass]="{'error': expires.invalid && submited}">
+                <input type="number" [customMin]="1" placeholder="0.000" step="any" name="expires" [(ngModel)]="f.expires" required ngModel #expires="ngModel" />
+                <span class="right">seconds</span>
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && expires.invalid)}">
                 <span *ngIf="expires.errors?.required">This field is required</span>

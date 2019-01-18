@@ -1,0 +1,45 @@
+<div>
+    <h1 class="text-center">Wrap / Unwrap Ethers<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+</div>
+<div class="extra radioDiv">
+    <input type="radio" id="wrap" name="display" value="wrap" [(ngModel)]="display" />
+    <label for="wrap" class="black"><span><span></span></span>Wrap Ethers</label>
+    <input type="radio" id="unwrap" name="display" value="unwrap" [(ngModel)]="display" />
+    <label for="unwrap" class="black"><span><span></span></span>Unwrap Ethers</label>
+</div>
+
+<div *ngIf="display == 'wrap'">
+    <form (ngSubmit)="wrap(form)" #form="ngForm">
+        <p class="grey">Convert ETH into WETH 1:1</p>
+        <div class="clear">
+            <input type="number" class="block" step="any" [customMin]="0" value="0" [funds]="_account.account.balance" name="amount" [ngClass]="{'error': submited && amount.invalid}" ngModel required #amount="ngModel" />
+
+            <p [ngClass]="{'hidden':!(submited && amount.invalid)}" class="error">
+                <span *ngIf="amount.errors?.required" class="error">This field is required</span>
+                <span *ngIf="!amount.errors?.required && amount.errors?.customMin " class="error">Can not send negative amounts of ETH</span>
+                <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds" class="error">You don't have enough funds</span>
+            </p>
+        </div>
+        <div>
+            <button type="button" class="btn-black half left" (click)="closeDialog()">Back</button>
+            <button type="submit" class="btn-inverse half right"> Wrap </button>
+        </div>
+    </form>
+</div>
+<div *ngIf="display == 'unwrap'">
+    <form (ngSubmit)="unwrap(form)" #form="ngForm">
+        <p class="grey">Convert WETH into ETH 1:1</p>
+        <div class="clear">
+            <input type="number" class="block" step="any" [customMin]="0" value="0" [funds]="_zeroEx.balance_weth" name="amount" [ngClass]="{'error': submited && amount.invalid}" ngModel required #amount="ngModel" />
+            <p [ngClass]="{'hidden':!(submited && amount.invalid)}" class="error">
+                <span *ngIf="amount.errors?.required" class="error">This field is required</span>
+                <span *ngIf="!amount.errors?.required && amount.errors?.customMin " class="error">Can not send negative amounts of ETH</span>
+                <span *ngIf="!amount.errors?.required && !amount.errors?.customMin && amount.errors?.notFunds" class="error">You don't have enough funds</span>
+            </p>
+        </div>
+        <div>
+            <button type="button" class="btn-black half left" (click)="closeDialog()">Back</button>
+            <button type="submit" class="btn-inverse half right"> Unwrap </button>
+        </div>
+    </form>
+</div>

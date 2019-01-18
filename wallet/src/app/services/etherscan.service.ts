@@ -111,8 +111,7 @@ export class EtherscanService {
 	getAbi(contractAddr){
 		this.setUrlStarts();
 		let url = "https://api"+this.urlStarts+".etherscan.io/api?module=contract&action=getabi&address="+contractAddr+"&apikey="+this.apikey;
-		console.log("url?", url);
-		
+	
 		return this.http.get(url).map(res => res.json(), err => console.log("errorGetAbi?", err)).toPromise();
 	}
 
