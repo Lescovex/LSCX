@@ -66,7 +66,7 @@ export class TokensMarketListComponent implements OnChanges {
       this.show.emit(false);
     }
     if(this._market.display == 'weth'){
-      await this._zeroEx.activateLoading();
+      //await this._zeroEx.activateLoading();
       await this._zeroEx.setToken(token);
       this.show.emit(false);
     }

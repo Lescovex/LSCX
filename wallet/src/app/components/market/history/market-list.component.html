@@ -86,6 +86,7 @@
             <tr class="pointer" *ngFor="let order of _LSCXmarket.showBuys, index as i">
                 <td (click)="openOrderDialog('buy', order)">
                     <p *ngIf="blockNumber <= order.expires" class="green">{{order.price | number:"1.4-8":"en"}}</p>
+                    <p *ngIf="blockNumber <= order.expires" class="green">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
                 <td (click)="openOrderDialog('buy', order)">
                     <p *ngIf="blockNumber <= order.expires">
@@ -110,15 +111,14 @@
             <tr>
                 <th>{{_zeroEx.token.name}}</th>
                 <th>Available volume</th>
-                <th class="history-expireSize">Expires in</th>
+                <th class="history-expireSize-weth">Expires in</th>
             </tr>
         </thead>
-        <tr *ngIf="_zeroEx.state.sells == null">
+        <tr *ngIf="_zeroEx.showSells == 0">
             <td colspan="3" class="collapse">There are no orders here</td>
         </tr>
-        <tbody *ngIf="_zeroEx.state.sells != null">
-
-            <tr class="pointer" *ngFor="let order of _zeroEx.state.sells, index as i">
+        <tbody *ngIf="_zeroEx.showSells != 0">
+            <tr class="pointer" *ngFor="let order of _zeroEx.showSells, index as i">
                 <td (click)="openOrderDialog('sell', order)">
                     <p class="red">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
@@ -128,7 +128,7 @@
                     </p>
                 </td>
                 <td *ngIf="blockNumber != null" (click)="openOrderDialog('sell', order)">
-                    <p class="history-expireSize">{{order.expirationTimeSeconds}}</p>
+                    <p class="history-expireSize-weth">{{order.expirationTimeSeconds}}</p>
                 </td>
                 <td *ngIf="blockNumber == null" class="red">Not available</td>
 
@@ -146,17 +146,17 @@
             <tr>
                 <th>{{_zeroEx.token.name}}</th>
                 <th>Available volume</th>
-                <th class="history-expireSize">Expires in</th>
+                <th class="history-expireSize-weth">Expires in</th>
             </tr>
         </thead>
-        <tbody *ngIf="_zeroEx.state.buys == null">
+        <tbody *ngIf="_zeroEx.showBuys == 0">
             <tr>
                 <td colspan="3" class="collapse">There are no orders here</td>
             </tr>
         </tbody>
 
-        <tbody *ngIf="_zeroEx.state.buys != null">
-            <tr class="pointer" *ngFor="let order of _zeroEx.state.buys, index as i">
+        <tbody *ngIf="_zeroEx.showBuys != 0">
+            <tr class="pointer" *ngFor="let order of _zeroEx.showBuys, index as i">
                 <td (click)="openOrderDialog('buy', order)">
                     <p class="green">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
@@ -166,7 +166,7 @@
                     </p>
                 </td>
                 <td *ngIf="blockNumber != null" (click)="openOrderDialog('buy', order)">
-                    <p class="history-expireSize">
+                    <p class="history-expireSize-weth">
                         {{order.expirationTimeSeconds}}
                     </p>
                 </td>

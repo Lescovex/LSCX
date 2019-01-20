@@ -63,7 +63,9 @@ export class ZeroExService{
 		myOrders: undefined,
 		myTrades: undefined,
 		myFunds: undefined	
-	};
+  };
+  showBuys;
+  showSells;
   constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
     
     this.init();
@@ -223,7 +225,7 @@ export class ZeroExService{
     let decodedTakerDataAsks;
     let decodedTakerDataBids
     if (response.asks.total === 0){
-        console.log("this.asks.length",this.asks.length);
+        console.log("ZEROEX THIS ASKS",this.asks);
         
         this.orderbook = {
           asks: this.asks
@@ -240,7 +242,7 @@ export class ZeroExService{
         let decodedMakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.makerAssetData);
         let decodedTakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.takerAssetData);
 
-        let orderPrice = response.asks.records[i].order.makerAssetAmount.div(response.asks.records[i].order.takerAssetAmount).toNumber();
+        let orderPrice = response.asks.records[i].order.takerAssetAmount.div(response.asks.records[i].order.makerAssetAmount).toNumber();
         let takerAmount = response.asks.records[i].order.takerAssetAmount.toNumber();
         let makerAmount = response.asks.records[i].order.makerAssetAmount.toNumber();
         let remainingAmount = parseInt(response.asks.records[i].metaData.takerAssetAmountRemaining);
@@ -277,7 +279,7 @@ export class ZeroExService{
       }
     }
     if(response.bids.total === 0){
-      console.log("bids length",this.bids.length);
+      console.log("ZEROEX THIS BIDS",this.bids);
       
       this.orderbook = {
         bids: this.bids
@@ -288,7 +290,6 @@ export class ZeroExService{
       let makerSymbolBids = await this.getSymbol(decodedMakerDataBids.tokenAddress);        
       let takerSymbolBids = await this.getSymbol(decodedTakerDataBids.tokenAddress);
       let takerDecimals = await this.getDecimals(decodedTakerDataBids.tokenAddress);
-      console.log("TAKER DECIMALS", takerDecimals.toString());
       
       for (let i = 0; i < response.bids.records.length; i++) {
         let decodedMakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[i].order.makerAssetData);
@@ -299,11 +300,6 @@ export class ZeroExService{
         let makerAmount = response.bids.records[i].order.makerAssetAmount.toNumber();
         let remainingAmount = parseInt(response.bids.records[i].metaData.takerAssetAmountRemaining);
         let availableAmount = takerAmount - remainingAmount;
-        //let exp = 10 ** token.tokenDecimal;
-        //let balance : any = await this._token.getBalanceOf(this.account.address);
-        //token.balance = balance.div(exp).toNumber();
-        
-
         
         let x = takerDecimals.toString();
         let exp = 10 ** parseInt(x)
@@ -343,19 +339,40 @@ export class ZeroExService{
             asks: this.asks,
             bids: this.bids
           }
+          this.state.orders = {buys:[], sells:[]};
           console.log("this.orderbook",this.orderbook);
-          //when buy maker addr gets assetDataB addr
-          //when sell maker addr gets assetDataA addr
+          
           if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
+            if(this.loadingD != null){
+              this.loadingD.close();
+            }
             this.getBuys(this.orderbook.asks);
             this.getSells(this.orderbook.bids);
+            this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
+            
           }
           if(decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress){
+            if(this.loadingD != null){
+              this.loadingD.close();
+            }
             this.getBuys(this.orderbook.bids);
             this.getSells(this.orderbook.asks);
+            this.setShowOrders(this.orderbook.bids, this.orderbook.asks);
+            
           }
-        
+          
         }
+      }else{
+        this.orderbook = {
+          asks: this.asks,
+          bids: this.bids
+        }
+        if(this.loadingD != null){
+          this.loadingD.close();
+        }
+        this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
+        
+        
       }
       
   }
@@ -413,6 +430,7 @@ export class ZeroExService{
   }
 
   async init(){
+    this.activateLoading();
     await this.setProvider();
     await this.getAssetPairs(1);
     
@@ -491,9 +509,6 @@ export class ZeroExService{
         this.setToken();
         console.log("this.asset_pairs",this.asset_pairs);
         
-        if(this.loadingD != null){
-          this.loadingD.close();
-        }
       }
     }
   }
@@ -678,21 +693,31 @@ export class ZeroExService{
   }
 
   async setToken(token?) {
+    console.log("VALUE THIS LOADINGD", this.loadingD);
+    
+    if(this.loadingD == null){
+      this.activateLoading();
+    }
     console.log("SET TOKEN FUNCTION??????!?!?!?");
     
     if(token!= null){
       console.log("setTokenFunction 0x Service", token);
       
     }
-		//this.showBuys = null;
-		//this.showSells = null;
-		
+		this.showBuys = null;
+		this.showSells = null;
+		console.log("THIS STATE ORDERS???????", this.state.orders);
+    
 		if(this.state.orders != null){
+      console.log("if this state orders != null");
+      
 			this.state.orders.buys = null;
 			this.state.orders.sells = null;
-			this.state.orders = null;
+      this.state.orders = null;
+      this.orderbook = null;
+      this.asks=[];
+      this.bids=[];
     }
-    
     
 		//if(this.activeOrdersInterval != null){
 			//await this.clearActiveOrdersInterval();
@@ -716,30 +741,34 @@ export class ZeroExService{
 		//this.getTokenState();
 		this.resetTokenBalances();
     this.setBalances();
-    this.orderbook = null;
-    this.asks=[];
-    this.bids=[];
+    
     this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
-    //this.getOrderbook(this.token.assetDataB.assetData, this.token.assetDataA.assetData, 1)
-    if(this.loadingD != null){
-      this.loadingD.close();
-    }
+    
   }
 
   getBuys(orders){
     console.log("getBuys function");
-    console.log("orders",orders);
     
-    this.state.buys = orders;
-    console.log("this.state.buys.length",this.state.buys.length);
+    this.state.orders.buys = orders;
+    console.log("THIS.STATE.ORDERS.BUYS",this.state.orders.buys);
     
   }
 
   getSells(orders){
     console.log("getSells function");
     console.log("orders", orders);
-    this.state.sells = orders;
+    this.state.orders.sells = orders;
+    console.log("THIS.STATE.ORDERS.SELLS",this.state.orders.sells);
   }
+  async setShowOrders(buys, sells){
+    console.log("BUYS ZEROEX",buys);
+    console.log("SELLS ZEROEX", sells);
+    
+    
+		this.showBuys = buys;
+		this.showSells = sells;
+	}
+
 
   getLocalStorageToken(){
 		if(localStorage.getItem('0xToken')){
