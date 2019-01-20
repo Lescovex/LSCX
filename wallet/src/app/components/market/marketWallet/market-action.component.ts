@@ -104,8 +104,12 @@ export class MarketActionComponent implements OnChanges{
             this.dialogRef = this._dialog.openWethDialog(form.controls.amount.value, "wrap");
             this.dialogRef.afterClosed().subscribe(async result=>{
                 console.log("result AfterClosed",result);
+                console.log("JSONPARSE",JSON.parse(result));
+                let res = JSON.parse(result)
+                
                 if(result != null){
                     this.dialogRef = this._dialog.openLoadingDialog();
+                    await this._zeroEx.setProvider(res.key)
                     await this._zeroEx.depositWETH(form.controls.amount.value);
                     
                     this.dialogRef.close();
@@ -180,8 +184,10 @@ export class MarketActionComponent implements OnChanges{
             this.dialogRef = this._dialog.openWethDialog(form.controls.amount.value, "unwrap");
             this.dialogRef.afterClosed().subscribe(async result=>{
                 console.log("result AfterClosed",result);
+                let res = JSON.parse(result)
                 if(result != null){
                     this.dialogRef = this._dialog.openLoadingDialog();
+                    await this._zeroEx.setProvider(res.key);
                     await this._zeroEx.withdrawWETH(form.controls.amount.value);
                     this.dialogRef.close();
                 }

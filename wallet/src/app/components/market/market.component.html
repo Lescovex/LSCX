@@ -35,6 +35,7 @@
         <md-slide-toggle class="right" (click)="changeDisplay()"> <span [ngClass]="(display == 'eth') ? 'lscx_color bold':'bold grey'">ETH</span> / <span [ngClass]="(display == 'weth') ? 'lscx_color bold':'bold grey'">WETH</span></md-slide-toggle>
     </div>
     <p *ngIf="!_account.account.hasOwnProperty('address'); else content" class="text-center">Select an ETH account</p>
+
     <ng-template #content>
         <div *ngIf="display == 'eth'">
             <div class="half left" class="market-token">

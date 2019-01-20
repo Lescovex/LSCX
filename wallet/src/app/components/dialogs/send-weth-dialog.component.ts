@@ -63,7 +63,7 @@ export class SendWethDialogComponent implements OnInit{
         let privateKey =  this.getPrivate(pass);
         if(privateKey == null) return false;
         
-        this.dialogRef.close(JSON.stringify({status: "OK"}));
+        this.dialogRef.close(JSON.stringify({status: "OK", key: pass}));
         /*
         let dataTx;
         let tx;

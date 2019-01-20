@@ -51,59 +51,25 @@ export class ZeroExService{
   public interval;
   public loadingD;
 
-  public orderbook = [];
+  public orderbook;
+  public asks=[];
+  public bids = [];
   public selectedPair = [];
   public asset_pairs = [];
   public contractToken;
   public token: any;
+  public state:any={
+		orders : undefined,
+		myOrders: undefined,
+		myTrades: undefined,
+		myFunds: undefined	
+	};
   constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
     
     this.init();
     
   }
-  /*
-  async test(){
-    let tokenAddr = "0x2002d3812f58e35f0ea1ffbf80a75a38c32175fa";
-    let result;
-    let abi;
-    try {
-      result = await this._scan.getAbi(tokenAddr);
-    } catch (error) { 
-    }
-    if(result.result == 'Contract source code not verified'){
-      abi = require('human-standard-token-abi');
-    }else{
-      abi = JSON.parse(result.result)
-    }
-    
-    let contract = this._contract.contractInstance(abi, tokenAddr);
-    let symbol = await this.testSymbol(contract)
-    
-   
-  }
   
-  testSymbol(contract){
-    let self=contract;
-    try {
-      return new Promise (function (resolve, reject) {
-        self.symbol.call(function(err, res){  
-          if (err) {
-            reject(err);
-          } else {
-            resolve(res);
-          }
-        });
-      });
-    } catch (error) {
-      console.log(error);
-      
-      if(this.loadingD != null){
-        this.loadingD.close();
-        this.loadingD = null;
-      }
-    }
-  }
-  */
   async order(form, action, pass, randomExpiration){
     
     const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -134,18 +100,20 @@ export class ZeroExService{
     this.httpClient = new HttpClient(this.providerAddress);
     this.providerEngine.start();
 
+    console.log("this.providerEngine",this.providerEngine);
+    
     this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
     console.log("ContractWrappers",this.contractWrappers);
     this.web3Wrapper = new Web3Wrapper(this.providerEngine);
     let [maker, taker]= await this.web3Wrapper.getAvailableAddressesAsync();
+    console.log("maker", maker);
+    
     taker = NULL_ADDRESS;
     this.contractAddresses = getContractAddressesForNetworkOrThrow(netNumber);
-    //const randomExpiration = this.getRandomFutureDateInSeconds();
+    
     const exchangeAddress = this.contractAddresses.exchange;
     console.log("exchangeAddress",exchangeAddress);
     
-
-    //const zrxTokenAddress = contractAddresses.zrxToken;
     const etherTokenAddress = this.contractAddresses.etherToken;
 
     let makerAssetData;
@@ -155,29 +123,31 @@ export class ZeroExService{
 
     if(action == 'buy'){
       console.log("action == buy");
+      //want to buy ZRX for WETH
       makerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataB.tokenAddress);
       takerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataA.tokenAddress);
 
-      //let makerDecimals:number = this.token.assetDataB.decimals;
-      //let takerDecimals:number = this.token.assetDataA.decimals;
+      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataB.decimals));
+      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataA.decimals));
+      console.log("makerAmount", makerAssetAmount.toNumber());
+      console.log("takerAmount", takerAssetAmount.toNumber());
+      console.log("price?", makerAssetAmount.div(takerAssetAmount).toNumber());
       
-      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataB.decimals));
-      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataA.decimals));
-
+      
+      
+      
       let x = await this.setUnlimitedProxyAllowance(this.token.assetDataB.tokenAddress, maker);
       console.log("setUnlimitedProxyAllowance",x);
     }
 
     if(action == 'sell'){
       console.log("action == sell");
+      //want to buy WETH for ZRX
       makerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataA.tokenAddress);
       takerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataB.tokenAddress);
-      
-      //let makerDecimals:number = this.token.assetDataA.decimals.toNumber();
-      //let takerDecimals:number = this.token.assetDataB.decimals.toNumber();
 
-      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataA.decimals));
-      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataB.decimals));
+      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataA.decimals));
+      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataB.decimals));
 
       let x = await this.setUnlimitedProxyAllowance(this.token.assetDataA.tokenAddress, maker);
       console.log("setUnlimitedProxyAllowance",x);
@@ -203,6 +173,7 @@ export class ZeroExService{
         ...orderConfigRequest,
         ...orderConfig,
     };
+
     console.log("order",order);
     // Generate the order hash and sign it
     const orderHashHex = await orderHashUtils.getOrderHashHex(order);
@@ -212,40 +183,185 @@ export class ZeroExService{
 
     const signedOrder : SignedOrder = {
       ...order, 
-      signature 
+      signature
     };
+    console.log("signedOrder",signedOrder);
+    
+
     try {
       await this.contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);
-      await this.httpClient.submitOrderAsync(signedOrder, { networkId: this._web3.network.chain});
+      console.log("validateOrder OK!");
+      
       
     } catch (error) {
-      this.order(form, action, pass, randomExpiration)
+      console.log("validateOrderFillable error",error); 
+      //this.order(form, action, pass, randomExpiration)
     }
-    this.orderbook = [];
-    this.getOrderbook(makerAssetData, takerAssetData, 1)  
+
+    try {
+      await this.httpClient.submitOrderAsync(signedOrder, { networkId: this._web3.network.chain});
+      console.log("submit OK!");
+      
+    } catch (error) {
+      console.log("submitOrder error",error);
+    }
+
+    this.orderbook = null;
+    this.asks=[];
+    this.bids=[];
+    this.getOrderbook(makerAssetData, takerAssetData, 1);
    
   }
+  
 
   async getOrderbook(makerAssetData, takerAssetData, pageNumber){
     const orderbookRequest: OrderbookRequest = { baseAssetData: makerAssetData, quoteAssetData: takerAssetData };
     const response = await this.httpClient.getOrderbookAsync(orderbookRequest, { networkId: this._web3.network.chain, page: pageNumber});
-    console.log("OrderBook response?",response);
-    if (response.asks.total === 0) {
-        throw new Error('No orders found on the SRA Endpoint');
+    console.log("ORDERBOOK RESPONSE?",response);
+    let decodedMakerDataAsks;
+    let decodedMakerDataBids;
+    let decodedTakerDataAsks;
+    let decodedTakerDataBids
+    if (response.asks.total === 0){
+        console.log("this.asks.length",this.asks.length);
+        
+        this.orderbook = {
+          asks: this.asks
+        }
     }else{
+      decodedMakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[0].order.makerAssetData);
+      decodedTakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[0].order.takerAssetData);
+      let makerSymbolAsks = await this.getSymbol(decodedMakerDataAsks.tokenAddress);        
+      let takerSymbolAsks = await this.getSymbol(decodedTakerDataAsks.tokenAddress);
+      let takerDecimals = await this.getDecimals(decodedTakerDataAsks.tokenAddress);
+      console.log("TAKER DECIMALS", takerDecimals.toString());
+
       for (let i = 0; i < response.asks.records.length; i++) {
-        this.orderbook.push(response.asks.records[i]);
-      } 
-      if(response.asks.total > response.asks.page * response.asks.perPage){
-        await this.getOrderbook(makerAssetData, takerAssetData, pageNumber+1);
-      }else{
-        console.log("this.orderbook",this.orderbook);
+        let decodedMakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.makerAssetData);
+        let decodedTakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.takerAssetData);
+
+        let orderPrice = response.asks.records[i].order.makerAssetAmount.div(response.asks.records[i].order.takerAssetAmount).toNumber();
+        let takerAmount = response.asks.records[i].order.takerAssetAmount.toNumber();
+        let makerAmount = response.asks.records[i].order.makerAssetAmount.toNumber();
+        let remainingAmount = parseInt(response.asks.records[i].metaData.takerAssetAmountRemaining);
+        let availableAmount = takerAmount - remainingAmount;
+
+        let x = takerDecimals.toString();
+        let exp = 10 ** parseInt(x)
+        let readableTakerAmount = takerAmount / exp;
+        
+        console.log("takerAmount", takerAmount);
+        console.log("takerAmount div exp decimals", readableTakerAmount ) ;
+        
+
+        let decodedMakerData = {
+          ...decodedMakerDataAsks,
+          symbol: makerSymbolAsks
+        }
+        let decodedTakerData = {
+          ...decodedTakerDataAsks,
+          symbol: takerSymbolAsks
+        }
+        let obj = {
+          orderResponse: response.asks.records[i],
+          decodedMakerData: decodedMakerData,
+          decodedTakerData: decodedTakerData,
+          price: orderPrice,
+          takerAmount: takerAmount,
+          makerAmount: makerAmount,
+          filledAmount: availableAmount,
+          expirationTimeSeconds: response.asks.records[i].order.expirationTimeSeconds.toNumber(),
+          readableTakerAmount: readableTakerAmount
+        }
+        this.asks.push(obj);
       }
     }
+    if(response.bids.total === 0){
+      console.log("bids length",this.bids.length);
+      
+      this.orderbook = {
+        bids: this.bids
+      }
+    }else{
+      decodedMakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[0].order.makerAssetData);
+      decodedTakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[0].order.takerAssetData);
+      let makerSymbolBids = await this.getSymbol(decodedMakerDataBids.tokenAddress);        
+      let takerSymbolBids = await this.getSymbol(decodedTakerDataBids.tokenAddress);
+      let takerDecimals = await this.getDecimals(decodedTakerDataBids.tokenAddress);
+      console.log("TAKER DECIMALS", takerDecimals.toString());
+      
+      for (let i = 0; i < response.bids.records.length; i++) {
+        let decodedMakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[i].order.makerAssetData);
+        let decodedTakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[i].order.takerAssetData);
+
+        let orderPrice = response.bids.records[i].order.makerAssetAmount.div(response.bids.records[i].order.takerAssetAmount).toNumber();
+        let takerAmount = response.bids.records[i].order.takerAssetAmount.toNumber();
+        let makerAmount = response.bids.records[i].order.makerAssetAmount.toNumber();
+        let remainingAmount = parseInt(response.bids.records[i].metaData.takerAssetAmountRemaining);
+        let availableAmount = takerAmount - remainingAmount;
+        //let exp = 10 ** token.tokenDecimal;
+        //let balance : any = await this._token.getBalanceOf(this.account.address);
+        //token.balance = balance.div(exp).toNumber();
+        
+
+        
+        let x = takerDecimals.toString();
+        let exp = 10 ** parseInt(x)
+        let readableTakerAmount = takerAmount / exp;
+        
+        console.log("takerAmount", takerAmount);
+        console.log("takerAmount div exp decimals", readableTakerAmount ) ;
+        
+        
+        let decodedMakerData = {
+          ...decodedMakerDataBids,
+          symbol: makerSymbolBids
+        }
+        let decodedTakerData = {
+          ...decodedTakerDataBids,
+          symbol: takerSymbolBids
+        }
+        let obj = {
+          orderResponse: response.bids.records[i],
+          decodedMakerData: decodedMakerData,
+          decodedTakerData: decodedTakerData,
+          price: orderPrice,
+          takerAmount: takerAmount,
+          makerAmount: makerAmount,
+          filledAmount: availableAmount,
+          expirationTimeSeconds: response.bids.records[i].order.expirationTimeSeconds.toNumber(),
+          readableTakerAmount: readableTakerAmount
+        }
+        this.bids.push(obj);
+      }
+    }
+      if(response.asks.total != 0 && response.bids.total != 0){
+        if(response.asks.total > (response.asks.page * response.asks.perPage) || response.bids.total > (response.bids.page * response.bids.perPage)){
+          await this.getOrderbook(makerAssetData, takerAssetData, pageNumber+1);
+        }else{
+          this.orderbook = {
+            asks: this.asks,
+            bids: this.bids
+          }
+          console.log("this.orderbook",this.orderbook);
+          //when buy maker addr gets assetDataB addr
+          //when sell maker addr gets assetDataA addr
+          if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
+            this.getBuys(this.orderbook.asks);
+            this.getSells(this.orderbook.bids);
+          }
+          if(decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress){
+            this.getBuys(this.orderbook.bids);
+            this.getSells(this.orderbook.asks);
+          }
+        
+        }
+      }
+      
   }
 
   setProvider(pass?){
-    const ZERO = new BigNumber(0);
+      const ZERO = new BigNumber(0);
       let netNumber = this._web3.network.chain;
       let net = this._web3.network.urlStarts;
     if(pass != null){
@@ -258,10 +374,14 @@ export class ZeroExService{
       }catch(e){
         error= e.message;
       }
+      console.log("wallet", wallet);
+      
       if(error==""){
         key = wallet.getPrivateKeyString()
         
       }
+      console.log("key",key);
+      
       let substr = key.substring(2, key.length)
       
       this.providerEngine = new Web3ProviderEngine();
@@ -295,7 +415,6 @@ export class ZeroExService{
   async init(){
     await this.setProvider();
     await this.getAssetPairs(1);
-    await this.setToken();
     
     if(this.interval != null){
       this.clearBalancesInterval();
@@ -321,9 +440,9 @@ export class ZeroExService{
     console.log("assetPairs 0x");
     
     const response = await this.httpClient.getAssetPairsAsync({ networkId: this._web3.network.chain, page: pageNumber});
-    console.log("response?",response);
+
     if (response.total === 0) {
-        throw new Error('No pairs found on the SRA Endpoint');
+        //throw new Error('No pairs found on the SRA Endpoint');
     }else{
       console.log("response?",response);
       
@@ -369,7 +488,7 @@ export class ZeroExService{
       if(response.total > response.page * response.perPage){
         await this.getAssetPairs(pageNumber+1);
       }else{
-        //await this.setToken();
+        this.setToken();
         console.log("this.asset_pairs",this.asset_pairs);
         
         if(this.loadingD != null){
@@ -446,6 +565,7 @@ export class ZeroExService{
   }
   
   async depositWETH(amount){
+    
     let value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), this.DECIMALS);
     let contractAddr = await this.getContractAddresses();
     let WETHDepositTxHash = await this.contractWrappers.etherToken.depositAsync(
@@ -454,7 +574,7 @@ export class ZeroExService{
       this._account.account.address.toLowerCase(),
     );
     await this.web3Wrapper.awaitTransactionSuccessAsync(WETHDepositTxHash);
-    this.init();
+    this.setBalances();
   }
 
   async withdrawWETH(amount){
@@ -466,7 +586,7 @@ export class ZeroExService{
       this._account.account.address.toLowerCase(),
     );
     await this.web3Wrapper.awaitTransactionSuccessAsync(WETHWithdrawTxHash);
-    this.getWethBalance();
+    this.setBalances();
   }
   
   async setUnlimitedProxyAllowance(contractAddr, addr){
@@ -505,10 +625,7 @@ export class ZeroExService{
     //OrderConfigRequest object needed to get orderConfig
     return await this.httpClient.getOrderConfigAsync(orderConfigRequestObject);
   }
-  async getOrderBook(OrderbookRequestObject){
-    //OrderbookRequest object needed to get order book
-    return await this.httpClient.getOrderbookAsync(OrderbookRequestObject);
-  }
+  
   async getOrders(){
     return await this.httpClient.getOrdersAsync({network: this._web3.network.chain});
   }
@@ -561,20 +678,22 @@ export class ZeroExService{
   }
 
   async setToken(token?) {
-    //console.log("setToken funcion 0xService");
+    console.log("SET TOKEN FUNCTION??????!?!?!?");
+    
     if(token!= null){
       console.log("setTokenFunction 0x Service", token);
       
     }
 		//this.showBuys = null;
 		//this.showSells = null;
-		/*
+		
 		if(this.state.orders != null){
 			this.state.orders.buys = null;
 			this.state.orders.sells = null;
 			this.state.orders = null;
     }
-    */
+    
+    
 		//if(this.activeOrdersInterval != null){
 			//await this.clearActiveOrdersInterval();
 		//}
@@ -588,7 +707,7 @@ export class ZeroExService{
 				this.token = this.asset_pairs[1]; 
 			}
 		}else{
-			this.token = token
+			this.token = token;
 		}
 		console.log("this.token", this.token);
     
@@ -597,12 +716,31 @@ export class ZeroExService{
 		//this.getTokenState();
 		this.resetTokenBalances();
     this.setBalances();
+    this.orderbook = null;
+    this.asks=[];
+    this.bids=[];
+    this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
+    //this.getOrderbook(this.token.assetDataB.assetData, this.token.assetDataA.assetData, 1)
     if(this.loadingD != null){
       this.loadingD.close();
     }
+  }
 
+  getBuys(orders){
+    console.log("getBuys function");
+    console.log("orders",orders);
+    
+    this.state.buys = orders;
+    console.log("this.state.buys.length",this.state.buys.length);
     
   }
+
+  getSells(orders){
+    console.log("getSells function");
+    console.log("orders", orders);
+    this.state.sells = orders;
+  }
+
   getLocalStorageToken(){
 		if(localStorage.getItem('0xToken')){
 			return JSON.parse(localStorage.getItem('0xToken'));
@@ -619,18 +757,10 @@ export class ZeroExService{
 		}else{
 			localStorage.removeItem('0xToken');	
 		}
-		let contenido = JSON.parse(localStorage.getItem('0xToken'));
+		let contenido = JSON.parse(localStorage.getItem('0xToken')); //don't do nothing
 		
   }
 
-  /*
-  setTokenContract() {
-    let abi = require('human-standard-token-abi');
-    //let contract = this._contract.contractInstance(abi, token);
-    this.contractToken = this._web3.web3.eth.contract(abi);
-		this.token.contract = this.contractToken.at(this.token.addr)
-  }
-  */
   resetTokenBalances() {
 		this.token.assetDataA.balance = null;
     this.token.assetDataB.balance = null;
@@ -672,34 +802,25 @@ export class ZeroExService{
     }else{
       abi = JSON.parse(result.result)
     }
-    
     let contract = this._contract.contractInstance(abi, token.tokenAddress);
-    
-			if(contract != null){
-				let value;
-				try {
-          value = await this._contract.callFunction(contract, 'balanceOf', [this._account.account.address]);
-          console.log("try value",value.toNumber());
-          
-				} catch (error) {
-					console.log(error);
-					this.getBalance(token);
-				}
-				
-        let x = value.toString();
-        
-        let resBig = new BigNumber(x);
-        let y;
-        if(token.decimals != null){
-          y = resBig.div(Math.pow(10,token.decimals));
-        }else{
-          y = resBig.div(Math.pow(10,18));
-        }
-				
-        balance = y.toNumber();
-        
-			}
-		
+    if(contract != null){
+      let value;
+      try {
+        value = await this._contract.callFunction(contract, 'balanceOf', [this._account.account.address]);
+      } catch (error) {
+        console.log(error);
+        this.getBalance(token);
+      }
+      let x = value.toString();
+      let resBig = new BigNumber(x);
+      let y;
+      if(token.decimals != null){
+        y = resBig.div(Math.pow(10,token.decimals));
+      }else{
+        y = resBig.div(Math.pow(10,18));
+      }
+      balance = y.toNumber(); 
+    }		
 		return balance;
   }
   

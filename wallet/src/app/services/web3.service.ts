@@ -47,7 +47,8 @@ export class Web3 {
       this.web3.eth.getBalance(addr,(err,result)=>{
         if(err){
           console.log(err)
-          reject(err);
+          this.getBalance(addr)
+          //reject(err);
         }else{
           resolve(parseFloat(self.web3.fromWei(result.toNumber(),'ether')));
         }

@@ -8,7 +8,8 @@ import { RawTx } from '../../../models/rawtx';
 import BigNumber from 'bignumber.js';
 import { AccountService } from '../../../services/account.service';
 import { OrderDialogComponent } from "./order-dialog.component";
-
+import { MarketComponent } from "../market.component";
+import { ZeroExService } from "../../../services/0x.service";
 @Component({
   selector: 'app-market-list',
   templateUrl: './market-list.component.html',
@@ -29,7 +30,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     orderDialog;
     loadingD= null;
 
-    constructor(private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
+    constructor(protected _zeroEx:ZeroExService,public _market: MarketComponent,private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
         Promise.resolve().then(() => { this.loadingD = this._dialog.openLoadingDialog();});
     }
 

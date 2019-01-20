@@ -1,6 +1,6 @@
 <div id="hist-market" class="scroll scrollbar auto-h">
 
-    <table *ngIf="action=='myTrades'" class="history-table">
+    <table *ngIf="action=='myTrades' && _market.display == 'eth'" class="history-table">
         <thead>
             <tr>
                 <th>Transaction</th>
@@ -29,7 +29,7 @@
         </tbody>
     </table>
 
-    <table *ngIf="action=='myOrders'" class="history-table inline">
+    <table *ngIf="action=='myOrders' && _market.display == 'eth'" class="history-table inline">
         <thead>
             <tr>
                 <td class="red bold">SELL ORDERS</td>
@@ -63,9 +63,9 @@
 
         </tbody>
     </table>
-    <div class="extra inline">
+    <div class="extra inline" *ngIf="action=='myOrders' && _market.display == 'eth'">
     </div>
-    <table *ngIf="action=='myOrders'" class="history-table inline">
+    <table *ngIf="action=='myOrders' && _market.display == 'eth'" class="history-table inline">
         <thead>
             <tr>
                 <td class="green bold">BUY ORDERS</td>
@@ -102,7 +102,79 @@
         </tbody>
     </table>
 
-    <table *ngIf="action=='myFunds'" class="history-table">
+    <table *ngIf="action=='myOrders' && _market.display == 'weth'" class="history-table inline">
+        <thead>
+            <tr>
+                <td class="red bold">SELL ORDERS</td>
+            </tr>
+            <tr>
+                <th>{{_zeroEx.token.name}}</th>
+                <th>Available volume</th>
+                <th class="history-expireSize">Expires in</th>
+            </tr>
+        </thead>
+        <tr *ngIf="_zeroEx.state.sells == null">
+            <td colspan="3" class="collapse">There are no orders here</td>
+        </tr>
+        <tbody *ngIf="_zeroEx.state.sells != null">
+
+            <tr class="pointer" *ngFor="let order of _zeroEx.state.sells, index as i">
+                <td (click)="openOrderDialog('sell', order)">
+                    <p class="red">{{order.price | number:"1.4-8":"en"}}</p>
+                </td>
+                <td (click)="openOrderDialog('sell', order)">
+                    <p>
+                        {{order.filledAmount | number:"1.8-8":"en"}} {{order.decodedTakerData.symbol}} / {{order.readableTakerAmount | number:"1.8-8":"en"}} {{order.decodedTakerData.symbol}}
+                    </p>
+                </td>
+                <td *ngIf="blockNumber != null" (click)="openOrderDialog('sell', order)">
+                    <p class="history-expireSize">{{order.expirationTimeSeconds}}</p>
+                </td>
+                <td *ngIf="blockNumber == null" class="red">Not available</td>
+
+            </tr>
+
+        </tbody>
+    </table>
+    <div class="extra inline" *ngIf="action=='myOrders' && _market.display == 'weth'">
+    </div>
+    <table *ngIf="action=='myOrders' && _market.display == 'weth'" class="history-table inline">
+        <thead>
+            <tr>
+                <td class="green bold">BUY ORDERS</td>
+            </tr>
+            <tr>
+                <th>{{_zeroEx.token.name}}</th>
+                <th>Available volume</th>
+                <th class="history-expireSize">Expires in</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="_zeroEx.state.buys == null">
+            <tr>
+                <td colspan="3" class="collapse">There are no orders here</td>
+            </tr>
+        </tbody>
+
+        <tbody *ngIf="_zeroEx.state.buys != null">
+            <tr class="pointer" *ngFor="let order of _zeroEx.state.buys, index as i">
+                <td (click)="openOrderDialog('buy', order)">
+                    <p class="green">{{order.price | number:"1.4-8":"en"}}</p>
+                </td>
+                <td (click)="openOrderDialog('buy', order)">
+                    <p>
+                        {{order.filledAmount | number:"1.8-8":"en"}} {{order.decodedTakerData.symbol}} / {{order.readableTakerAmount | number:"1.8-8":"en"}} {{order.decodedTakerData.symbol}}
+                    </p>
+                </td>
+                <td *ngIf="blockNumber != null" (click)="openOrderDialog('buy', order)">
+                    <p class="history-expireSize">
+                        {{order.expirationTimeSeconds}}
+                    </p>
+                </td>
+                <td *ngIf="blockNumber == null" class="red">Not available</td>
+            </tr>
+        </tbody>
+    </table>
+    <table *ngIf="action=='myFunds' && _market.display == 'eth'" class="history-table">
         <thead>
             <tr>
                 <th>Transaction</th>
