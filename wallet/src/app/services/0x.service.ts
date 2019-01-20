@@ -223,9 +223,7 @@ export class ZeroExService{
     //setUnlimitedAllowance
     let x = await this.setUnlimitedProxyAllowance(order.decodedTakerData.tokenAddress, taker);
     console.log(x);
-      
     
-    console.log("order?",order);
     const TX_DEFAULTS = { gas: 400000 };
     let decimals;
     if(order.decodedTakerData.tokenAddress == this.token.assetDataA.tokenAddress){

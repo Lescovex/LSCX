@@ -86,7 +86,6 @@
             <tr class="pointer" *ngFor="let order of _LSCXmarket.showBuys, index as i">
                 <td (click)="openOrderDialog('buy', order)">
                     <p *ngIf="blockNumber <= order.expires" class="green">{{order.price | number:"1.4-8":"en"}}</p>
-                    <p *ngIf="blockNumber <= order.expires" class="green">{{order.price | number:"1.4-8":"en"}}</p>
                 </td>
                 <td (click)="openOrderDialog('buy', order)">
                     <p *ngIf="blockNumber <= order.expires">

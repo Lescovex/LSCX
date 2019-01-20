@@ -344,7 +344,8 @@ export class LSCXMarketService {
 	}
 
 	async setShowOrders(){
-		this.showBuys = await this.orderByPrice(this.state.orders.buys);
+		let x = this.state.orders.buys
+		this.showBuys = await this.orderByPrice(x);
 		this.showSells = this.state.orders.sells;
 	}
 	orderByPrice(object){

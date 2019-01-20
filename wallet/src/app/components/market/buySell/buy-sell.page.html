@@ -9,15 +9,27 @@
         <button [ngClass]="(action == 'buy') ? 'btn-solid':'btn-inverse'" (click)="activeButton('buy')">Buy order</button>
         <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
     </div>
-    <div class="half right best-prices">
+    <div class="half right best-prices" *ngIf="_market.display == 'eth'">
         <p class="half left">
             <span class="title">Best Sell: </span>
-            <span *ngIf="_LSCXmarket.state.orders.sells.length>0" class="red">{{bestSell}}</span>
+            <span *ngIf="_LSCXmarket.state.orders.sells.length>0" class="red">{{bestSell | number:'1.3-3':'en'}}</span>
             <span *ngIf="_LSCXmarket.state.orders.sells.length==0">----</span>
         </p>
         <p class="half right">
             <span class="black">Best Buy: </span>
-            <span *ngIf="_LSCXmarket.state.orders.buys.length>0" class="green">{{bestBuy}}</span>
+            <span *ngIf="_LSCXmarket.state.orders.buys.length>0" class="green">{{bestBuy | number:'1.3-3':'en'}}</span>
+            <span *ngIf="_LSCXmarket.state.orders.buys.length==0">----</span>
+        </p>
+    </div>
+    <div class="half right best-prices" *ngIf="_market.display == 'weth'">
+        <p class="half left">
+            <span class="title">Best Sell: </span>
+            <span *ngIf="_LSCXmarket.state.orders.sells.length>0" class="red">{{bestSellWeth | number:'1.3-3':'en'}}</span>
+            <span *ngIf="_LSCXmarket.state.orders.sells.length==0">----</span>
+        </p>
+        <p class="half right">
+            <span class="black">Best Buy: </span>
+            <span *ngIf="_LSCXmarket.state.orders.buys.length>0" class="green">{{bestBuyWeth | number:'1.3-3':'en'}}</span>
             <span *ngIf="_LSCXmarket.state.orders.buys.length==0">----</span>
         </p>
     </div>

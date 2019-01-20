@@ -39,6 +39,8 @@ export class BuySellPage implements OnInit, DoCheck {
     private loadingDialog;
     protected bestSell;
     protected bestBuy;
+    protected bestSellWeth;
+    protected bestBuyWeth;
     protected expiresBigNumber;
     lastDisplay;
     constructor(public dialog: MdDialog, public _zeroEx: ZeroExService, public _market: MarketComponent, public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
@@ -48,15 +50,46 @@ export class BuySellPage implements OnInit, DoCheck {
     async ngOnInit() {
       await this._LSCXmarket.setBalancesInterval();
       await this._LSCXmarket.setStateOrdersInterval();
+      
       if(this._LSCXmarket.state.orders.sells.length != 0){
-        let sellLength = this._LSCXmarket.state.orders.sells.length;
+        let sellLength = this._LSCXmarket.state.orders.sells.length;          
         this.bestSell = this._LSCXmarket.state.orders.sells[sellLength -1].price;
+        console.log("sells", this._LSCXmarket.state.orders.sells);
+        
+        console.log("bestSell", this.bestSell);
+        
+        //lowerPrice
       }
       
       if(this._LSCXmarket.state.orders.buys.length != 0){
         let buyLength = this._LSCXmarket.state.orders.buys.length;
-        this.bestBuy = this._LSCXmarket.state.orders.buys[buyLength -1].price
+        this.bestBuy = this._LSCXmarket.state.orders.buys[0].price;
+        console.log("buys", this._LSCXmarket.state.orders.buys);
+        
+        console.log("bestBuy", this.bestBuy);
+        
+        //higherPrice
       }
+      
+      
+      if(this._zeroEx.state.orders.sells.length != 0){
+        let sellLength = this._zeroEx.state.orders.sells.length;
+        console.log("sells Len", sellLength);
+        this.bestSellWeth = this._zeroEx.state.orders.sells[0].price;
+        console.log("WETH BEST SELL PRICE",this.bestSellWeth);
+        
+        //lowerPrice
+      }
+      if(this._zeroEx.state.orders.buys.length != 0){
+        let buyLength = this._zeroEx.state.orders.buys.length;
+        console.log("buys len", buyLength);
+        this.bestBuyWeth = this._zeroEx.state.orders.buys[0].price;
+        console.log("WETH BEST BUY PRICE",this.bestBuyWeth);
+        
+        //higherPrice
+      }
+    
+      
       this.lastDisplay = this._market.display;
       if(this._market.display == 'weth'){
         this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
