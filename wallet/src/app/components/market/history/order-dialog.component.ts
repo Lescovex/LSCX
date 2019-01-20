@@ -7,6 +7,7 @@ import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { AccountService } from '../../../services/account.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
 import { ContractService } from '../../../services/contract.service';
+import { ZeroExService } from "../../../services/0x.service";
 
 import { SendMarketDialogComponent } from '../../dialogs/send-market-dialog.component';
 import { GasDialogComponent } from '../../dialogs/gas-dialog.component';
@@ -17,6 +18,7 @@ import { RawTx } from '../../../models/rawtx';
 import BigNumber from 'bignumber.js';
 import { Trade } from '../../../models/trade';
 import { Order } from '../../../models/order';
+
 @Component({
     selector: 'order-dialog',
     templateUrl: './order-dialog.component.html'
@@ -31,18 +33,20 @@ export class OrderDialogComponent {
       amount : undefined,
       price : undefined,
       total: 0,
-      expires : 10000
+      expires : 10000,
+      pass: undefined
     }
     private tokenAmount:number;
     private ethAmount: number;
     private amount: number;
     private loadingDialog;
     protected bestSell;
-    protected bestBuy
+    protected bestBuy;
+    pass;
+    
 
-    constructor(@Inject(MD_DIALOG_DATA) public data: any,private _contract: ContractService, private dialog: MdDialog, private _account: AccountService, private _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<OrderDialogComponent>, private _web3: Web3, private _dialog: DialogService, private sendDialogService: SendDialogService){
-        console.log("data????",data);
-        this.f.price = data.price;
+    constructor(@Inject(MD_DIALOG_DATA) public data: any,protected _zeroEx:ZeroExService,private _contract: ContractService, private dialog: MdDialog, private _account: AccountService, private _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<OrderDialogComponent>, private _web3: Web3, private _dialog: DialogService, private sendDialogService: SendDialogService){
+        this.f.price = data.price;        
         if(this.data.action == "buy"){
             this.action = "sell";
         }
@@ -55,52 +59,68 @@ export class OrderDialogComponent {
     }
 
     async confirm(form){
-        this.submited = true;
-        if(form.invalid) return false;
-        this.loadingDialog = this._dialog.openLoadingDialog();
-        let price =new BigNumber(this.f.price);
-        
-        this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
-        this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
-        
-        this.amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
-            //change to > to get total
-        if(this.action == "buy" && this.f.total > this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount > this._LSCXmarket.marketBalances.token){
-            this.loadingDialog.close();
-            //calculate market fee, if buy you'll need f.total + feeMarket
-            if(this.action=="buy"){
-            let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
-            }
-            if(this.action =="sell"){
-            let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
-            }
+        if(this.data.display == 'eth'){
+            this.submited = true;
+            if(form.invalid) return false;
+            this.loadingDialog = this._dialog.openLoadingDialog();
+            let price =new BigNumber(this.f.price);
+            
+            this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
+            this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
+            
+            this.amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
+                //change to > to get total
+            if(this.action == "buy" && this.f.total > this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount > this._LSCXmarket.marketBalances.token){
+                this.loadingDialog.close();
+                //calculate market fee, if buy you'll need f.total + feeMarket
+                if(this.action=="buy"){
+                let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
+                }
+                if(this.action =="sell"){
+                let dialogRef = this._dialog.openErrorDialog('Unable to send this order', "You don't have enough funds. Please DEPOSIT first using the Deposit form in the market wallet tab.", " ");
+                }
 
-            return false
+                return false
+            }
+            
+            let amountCross = (this.action == 'buy')? this.f.total : this.f.amount;
+            
+            let matchs = await this.getCross(amountCross, this.f.price);
+            
+            if(matchs.length > 0){
+                let testTrade = false;
+                let params = [];
+                let order: any;
+                order = this.data;
+                let testParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  this.f.amount, this._account.account.address];
+                let testTradeResp = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
+                testTrade = (testTradeResp.toString() == "true")? true: false;
+                if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, this.amount];
+                if(params.length > 0){
+                    this.trade(params, order);
+                }
+                this.dialogRef.close();
+            }
         }
-        
-        let amountCross = (this.action == 'buy')? this.f.total : this.f.amount;
-        
-        let matchs = await this.getCross(amountCross, this.f.price);
-        
-        if(matchs.length > 0){
-            let testTrade = false;
-            let params = [];
-            let order: any;
-        
-            
-            order = this.data;
-            
-            let testParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  this.f.amount, this._account.account.address];
-            let testTradeResp = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
-            testTrade = (testTradeResp.toString() == "true")? true: false;
-            
-            if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, this.amount];
-            
+        if(this.data.display == 'weth'){
+            this.submited = true;
+            if(form.invalid) return false;
 
-            if(params.length > 0){
-                this.trade(params, order);
-            }
-            this.dialogRef.close();
+            this.dialogRef.close(this.f.pass);
+            console.log("form!!!!??!?!!",this.f);
+            
+            this.dialogRef.afterClosed().subscribe(async result=>{
+                console.log("result AfterClosed",result);
+                if(result != null){
+                    this.loadingDialog = this._dialog.openLoadingDialog();
+                    await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, this.data.action, result);
+                    this.loadingDialog.close();        
+                }else{
+                    console.log("DIALOG CLOSED!!!!!!");
+                    
+                }
+            });
+            
         }
     }
 

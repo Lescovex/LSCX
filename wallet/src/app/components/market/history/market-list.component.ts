@@ -83,19 +83,42 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
       }
 
     openOrderDialog(action, order){
-        order.tokenName = this._LSCXmarket.token.name;
-        order.action = action;
-        if(order.action == "sell"){
-            order.totalAmount = order.amountBase;
-        }else{
-            order.totalAmount = order.amount;
+        if(this._market.display == 'eth'){
+            order.tokenName = this._LSCXmarket.token.name;
+            order.action = action;
+            order.display = this._market.display;
+            if(order.action == "sell"){
+                order.totalAmount = order.amountBase;
+            }else{
+                order.totalAmount = order.amount;
+            }
+            let orderDialog = this.dialog.open( OrderDialogComponent, {
+                width: '660px',
+                height: '450px',
+                panelClass: 'dialog',
+                data: order
+            });
         }
-        let orderDialog = this.dialog.open( OrderDialogComponent, {
-            width: '660px',
-            height: '450px',
-            panelClass: 'dialog',
-            data: order
-        });
+        if(this._market.display == 'weth'){
+            console.log("order!!!!",order);
+            
+            order.action = action;
+            order.taker = this._account.account.address;
+            order.display = this._market.display;
+
+            order.tokenName = this._zeroEx.token.assetDataB.name;
+            order.tokenAddr = this._zeroEx.token.assetDataB.tokenAddress;
+            order.displayToken = order.decodedTakerData.symbol;
+            order.priceSymbol = order.decodedMakerData.symbol;
+
+            let orderDialog = this.dialog.open( OrderDialogComponent, {
+                width: '660px',
+                height: '520px',
+                panelClass: 'dialog',
+                data: order
+            });
+            
+        }
 
     }
     ngOnDestroy(): void {

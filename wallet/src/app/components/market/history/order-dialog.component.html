@@ -1,15 +1,22 @@
 <div>
     <h1 class="text-center">Trade order<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
 </div>
-<div class=" dist block" *ngIf="data.action == 'sell'">
+<div class=" dist block" *ngIf="data.action == 'sell' && data.display == 'eth'">
     <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenGive}}</span></p>
     <p class="title">Available amount: <span>{{data.available | number:"1.8-8":"en"}} ETH</span></p>
 </div>
-<div class=" dist block" *ngIf="data.action == 'buy'">
+<div class=" dist block" *ngIf="data.action == 'buy' && data.display == 'eth'">
     <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenGet}}</span></p>
     <p class="title">Available amount: <span>{{data.available | number:"1.8-8":"en"}} {{data.tokenName}}</span></p>
 </div>
-
+<div class=" dist block" *ngIf="data.action == 'buy' && data.display == 'weth'">
+    <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenAddr}}</span></p>
+    <p class="title">Available amount: <span>{{data.amountRemaining | number:"1.8-8":"en"}} {{data.displayToken}}</span></p>
+</div>
+<div class=" dist block" *ngIf="data.action == 'sell' && data.display == 'weth'">
+    <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenAddr}}</span></p>
+    <p class="title">Available amount: <span>{{data.amountRemaining | number:"1.8-8":"en"}} {{data.displayToken}}</span></p>
+</div>
 <form (ngSubmit)="confirm(form)" #form="ngForm" class="clear dist">
     <div class="dist">
         <div class="half left">
@@ -17,7 +24,8 @@
             <label class="title" *ngIf="data.action == 'buy'" for="amount">Amount to sell</label>
             <div class="input-container" [ngClass]="{'error': submited  && (amount.invalid || eth.invalid)}">
                 <input type="number" [placeholder]="0.+('0').repeat(data.decimals)" step="any" name="amount" (input)="total()" [(ngModel)]="f.amount" ngModel required #amount="ngModel" />
-                <span class="right">{{data.tokenName}}</span>
+                <span class="right" *ngIf="data.display == 'eth'">{{data.tokenName}}</span>
+                <span class="right" *ngIf="data.display == 'weth'">{{data.displayToken}}</span>
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
                 <span *ngIf="amount.errors?.required">This field is required</span>
@@ -28,7 +36,9 @@
             <label class="title" for="price">Price</label>
             <div class="input-container" [ngClass]="{'error': submited && (price.invalid || eth.invalid) }">
                 <input class="lightGrey" type="number" [placeholder]="data.price" [value]="data.price" step="any" name="price" (input)="total()" [(ngModel)]="f.price" ngModel disabled required #price="ngModel" />
-                <span class="right">ETH</span>
+
+                <span class="right" *ngIf="data.display == 'eth'">ETH</span>
+                <span class="right" *ngIf="data.display == 'weth'">{{data.priceSymbol}}</span>
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && (price.invalid || eth.invalid))}">
                 <span *ngIf="price.errors?.required">This field is required</span>
@@ -53,6 +63,16 @@
             <p class="error" [ngClass]="{'hidden':!(submited && expires.invalid)}">
                 <span *ngIf="expires.errors?.required">This field is required</span>
             </p>
+        </div>
+        <div class="clear left" *ngIf="data.display == 'weth'">
+            <label class="title" for="password">Password</label>
+            <div class="input-container" [ngClass]="{'error': pass.invalid && (pass.dirty || pass.touched || submited )}">
+                <input id="password" type="password" value="" name="password" [(ngModel)]="f.pass" required ngModel #pass="ngModel" />
+                <p class="italic">Type your account password to continue.</p>
+            </div>
+            <div>
+                <p class="error" [ngClass]="{'hidden': !(pass.errors?.required && (pass.dirty || pass.touched || submited ))}">Password required</p>
+            </div>
         </div>
         <p *ngIf="buyInCross != ''" class="clear dist">{{buyInCross}}</p>
         <div *ngIf="!insufficient">

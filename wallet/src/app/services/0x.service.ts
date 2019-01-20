@@ -49,6 +49,8 @@ export class ZeroExService{
   protected DECIMALS = 18;
   
   public interval;
+  public interval2;
+
   public loadingD;
 
   public orderbook;
@@ -56,6 +58,7 @@ export class ZeroExService{
   public bids = [];
   public selectedPair = [];
   public asset_pairs = [];
+  public asset_pairs_mem = [];
   public contractToken;
   public token: any;
   public state:any={
@@ -211,10 +214,38 @@ export class ZeroExService{
     this.orderbook = null;
     this.asks=[];
     this.bids=[];
-    this.getOrderbook(makerAssetData, takerAssetData, 1);
-   
+    await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
   
+  async fillOrder(order, value, taker, action, key){
+    await this.setProvider(key)
+    
+    //setUnlimitedAllowance
+    let x = await this.setUnlimitedProxyAllowance(order.decodedTakerData.tokenAddress, taker);
+    console.log(x);
+      
+    
+    console.log("order?",order);
+    const TX_DEFAULTS = { gas: 400000 };
+    let decimals;
+    if(order.decodedTakerData.tokenAddress == this.token.assetDataA.tokenAddress){
+      decimals = this.token.assetDataA.decimals;
+    }
+    if(order.decodedTakerData.tokenAddress == this.token.assetDataB.tokenAddress){
+      decimals = this.token.assetDataB.decimals;
+    }
+    let takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(value), parseInt(decimals))
+    await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.orderResponse.order, takerAssetAmount, taker);
+    let txHash = await this.contractWrappers.exchange.fillOrderAsync(order.orderResponse.order, takerAssetAmount, taker, {
+        gasLimit: TX_DEFAULTS.gas,
+    });
+    await this.web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    this.orderbook = null;
+    this.asks=[];
+    this.bids=[];
+    await this.setBalances();
+    await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
+  }
 
   async getOrderbook(makerAssetData, takerAssetData, pageNumber){
     const orderbookRequest: OrderbookRequest = { baseAssetData: makerAssetData, quoteAssetData: takerAssetData };
@@ -225,8 +256,6 @@ export class ZeroExService{
     let decodedTakerDataAsks;
     let decodedTakerDataBids
     if (response.asks.total === 0){
-        console.log("ZEROEX THIS ASKS",this.asks);
-        
         this.orderbook = {
           asks: this.asks
         }
@@ -251,7 +280,10 @@ export class ZeroExService{
         let x = takerDecimals.toString();
         let exp = 10 ** parseInt(x)
         let readableTakerAmount = takerAmount / exp;
-        
+        let filledAmount = availableAmount / exp;
+
+        let takerAssetAmountRemaining = response.asks.records[i].metaData.takerAssetAmountRemaining / exp;
+        console.log("takerAssetAmountRemaining",response.asks.records[i].metaData.takerAssetAmountRemaining);
         console.log("takerAmount", takerAmount);
         console.log("takerAmount div exp decimals", readableTakerAmount ) ;
         
@@ -269,18 +301,17 @@ export class ZeroExService{
           decodedMakerData: decodedMakerData,
           decodedTakerData: decodedTakerData,
           price: orderPrice,
-          takerAmount: takerAmount,
+          //takerAmount: takerAmount,
           makerAmount: makerAmount,
-          filledAmount: availableAmount,
+          filledAmount: filledAmount,
           expirationTimeSeconds: response.asks.records[i].order.expirationTimeSeconds.toNumber(),
-          readableTakerAmount: readableTakerAmount
+          takerAmount: readableTakerAmount,
+          amountRemaining: takerAssetAmountRemaining
         }
         this.asks.push(obj);
       }
     }
     if(response.bids.total === 0){
-      console.log("ZEROEX THIS BIDS",this.bids);
-      
       this.orderbook = {
         bids: this.bids
       }
@@ -304,7 +335,9 @@ export class ZeroExService{
         let x = takerDecimals.toString();
         let exp = 10 ** parseInt(x)
         let readableTakerAmount = takerAmount / exp;
-        
+        let filledAmount = availableAmount / exp;
+        //console.log("takerAssetAmountRemaining",response.bids.records[i].metaData.takerAssetAmountRemaining);
+        let takerAssetAmountRemaining = response.bids.records[i].metaData.takerAssetAmountRemaining / exp;
         console.log("takerAmount", takerAmount);
         console.log("takerAmount div exp decimals", readableTakerAmount ) ;
         
@@ -322,11 +355,12 @@ export class ZeroExService{
           decodedMakerData: decodedMakerData,
           decodedTakerData: decodedTakerData,
           price: orderPrice,
-          takerAmount: takerAmount,
+          //takerAmount: takerAmount,
           makerAmount: makerAmount,
-          filledAmount: availableAmount,
+          filledAmount: filledAmount,
           expirationTimeSeconds: response.bids.records[i].order.expirationTimeSeconds.toNumber(),
-          readableTakerAmount: readableTakerAmount
+          takerAmount: readableTakerAmount,
+          amountRemaining: takerAssetAmountRemaining
         }
         this.bids.push(obj);
       }
@@ -345,6 +379,7 @@ export class ZeroExService{
           if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
             if(this.loadingD != null){
               this.loadingD.close();
+              this.loadingD = null;
             }
             this.getBuys(this.orderbook.asks);
             this.getSells(this.orderbook.bids);
@@ -354,6 +389,7 @@ export class ZeroExService{
           if(decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress){
             if(this.loadingD != null){
               this.loadingD.close();
+              this.loadingD = null;
             }
             this.getBuys(this.orderbook.bids);
             this.getSells(this.orderbook.asks);
@@ -369,6 +405,7 @@ export class ZeroExService{
         }
         if(this.loadingD != null){
           this.loadingD.close();
+          this.loadingD = null;
         }
         this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
         
@@ -438,14 +475,22 @@ export class ZeroExService{
       this.clearBalancesInterval();
     }
     this.startIntervalBalance();
+    this.startIntervalPairs();
   }
 
   async startIntervalBalance(){
     await this.getWethBalance();
     this.interval = setInterval(async ()=>{
       await this.getWethBalance();
+      await this.setBalances();
       await this.updateAllowance();
-    },5000);    
+    },5000);
+  }
+  async startIntervalPairs(){
+    
+    this.interval2 = setInterval(async ()=>{
+      //await this.getAssetPairs(1);
+    },10000);
   }
 
   clearBalancesInterval(){
@@ -500,12 +545,15 @@ export class ZeroExService{
           name: reverseSymbolString
         }
         
-        this.asset_pairs.push(pairC);
+        this.asset_pairs_mem.push(pairC)
+        //this.asset_pairs.push(pairC);
 
       } 
       if(response.total > response.page * response.perPage){
         await this.getAssetPairs(pageNumber+1);
       }else{
+        this.asset_pairs = this.asset_pairs_mem;
+        this.asset_pairs_mem = [];
         this.setToken();
         console.log("this.asset_pairs",this.asset_pairs);
         
@@ -704,8 +752,8 @@ export class ZeroExService{
       console.log("setTokenFunction 0x Service", token);
       
     }
-		this.showBuys = null;
-		this.showSells = null;
+		//this.showBuys = null;
+		//this.showSells = null;
 		console.log("THIS STATE ORDERS???????", this.state.orders);
     
 		if(this.state.orders != null){
@@ -861,5 +909,6 @@ export class ZeroExService{
 			disableClose: true,
 		  });
 		});
-	}
+  }
+  
 }
