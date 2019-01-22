@@ -105,7 +105,19 @@ export class OrderDialogComponent {
         if(this.data.display == 'weth'){
             this.submited = true;
             if(form.invalid) return false;
-
+            if(this.data.decodedTakerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress){
+                if(this.f.amount >= this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.amountRemaining){
+                    //must display error message
+                    return false;
+                }
+            }
+            if(this.data.decodedTakerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress){
+                if(this.f.amount >= this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.amountRemaining){
+                    //must display error message
+                    return false;
+                }
+            }
+            
             this.dialogRef.close(this.f.pass);
             console.log("form!!!!??!?!!",this.f);
             
@@ -113,7 +125,14 @@ export class OrderDialogComponent {
                 console.log("result AfterClosed",result);
                 if(result != null){
                     this.loadingDialog = this._dialog.openLoadingDialog();
-                    await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, this.data.action, result);
+                    try {
+                        await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, this.data.action, result);    
+                    } catch (error) {
+                        console.log(error);
+                        
+                        this.loadingDialog.close();    
+                    }
+                    
                     this.loadingDialog.close();        
                 }else{
                     console.log("DIALOG CLOSED!!!!!!");

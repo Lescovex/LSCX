@@ -328,7 +328,7 @@ export class LSCXMarketService {
 			this.setBuys();
 		}
 		
-		console.log("BUYS",this.state.orders.buys)
+		//console.log("BUYS",this.state.orders.buys)
 
 	}
 
@@ -340,7 +340,7 @@ export class LSCXMarketService {
 			this.setSells();
 		}
 		
-		console.log("SELLS",this.state.orders.sells)
+		//console.log("SELLS",this.state.orders.sells)
 	}
 
 	async setShowOrders(){

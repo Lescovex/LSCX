@@ -46,13 +46,16 @@
             </div>
             <router-outlet></router-outlet>
         </div>
-        <div *ngIf="display == 'weth'">
+        <div *ngIf="display == 'weth' && _zeroEx.asset_pairs.length > 0">
             <div class="half left" class="market-token">
                 <p class="title inlineBlock" for="contract">Pair <a (click)="toggleList()">{{_zeroEx.token?.name}} <img src="~icons/select_icon.svg"></a> </p>
                 <app-tokens-market-list *ngIf="showList" (show)="onSelect($event)" id="token-list" class="select-list scrollbar"></app-tokens-market-list>
                 <div *ngIf="showList" class="overlay" (click)="toggleShow()"></div>
             </div>
             <router-outlet></router-outlet>
+        </div>
+        <div *ngIf="display == 'weth' && _zeroEx.asset_pairs.length == 0">
+            <p>This service is not available on this network</p>
         </div>
     </ng-template>
 </div>

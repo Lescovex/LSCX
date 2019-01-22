@@ -22,8 +22,6 @@ export class Web3 {
     let net = this.network.urlStarts;
     let url= "https://"+net+".infura.io/v3/"+this.infuraKey;
     this.web3 = new Web3L(new Web3L.providers.HttpProvider(url));
-    console.log("web3 url",url)
-    console.log("this.web3", this.web3)
   }
 
   setNetwork(networkObj:any){
