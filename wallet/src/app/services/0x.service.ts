@@ -27,8 +27,8 @@ import * as EthWallet from 'ethereumjs-wallet';
 @Injectable()
 export class ZeroExService{
   protected providerEngine;
-  //protected providerAddress = "https://sra.bamboorelay.com/0x/v2/";
   protected providerAddress = "https://sra.bamboorelay.com/0x/v2/";
+  protected webSocketProviderAddress = "wss://sra.bamboorelay.com/0x/v2/ws";
   //protected providerAddress = "https://api.openrelay.xyz/v2/";
   //protected providerAddress = "http://0x.lescovex.com/v2";
   protected web3;
@@ -170,7 +170,7 @@ export class ZeroExService{
     
     console.log(order.makerFee.toNumber());
     let redeableMakerFee:any = makerAssetAmount.div(exp).toNumber();
-    console.log("REDEABLE MAKER FEE", redeableMakerFee);
+    console.log("REDEABLE MAKER FEE", redeableMakerFee );
     
     let orderHashHex = await orderHashUtils.getOrderHashHex(order);
     console.log("orderHashHex",orderHashHex)
@@ -204,11 +204,6 @@ export class ZeroExService{
       return false;
     }
 
-    /*
-    this.orderbook = null;
-    this.asks=[];
-    this.bids=[];
-    */
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
   
@@ -238,16 +233,11 @@ export class ZeroExService{
         gasLimit: TX_DEFAULTS.gas,
     });
     await this.web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    /*
-    this.orderbook = null;
-    this.asks=[];
-    this.bids=[];
-    */
     await this.setBalances();
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
 
-  async getOrderbook(makerAssetData, takerAssetData, pageNumber){
+  async getOrderbook(makerAssetData, takerAssetData, pageNumber){    
     this.orderbook = null;
     this.asks=[];
     this.bids=[];
@@ -255,31 +245,37 @@ export class ZeroExService{
     let orderbookRequest: OrderbookRequest = { baseAssetData: makerAssetData, quoteAssetData: takerAssetData };
     let response = await this.httpClient.getOrderbookAsync(orderbookRequest, { networkId: this._web3.network.chain, page: pageNumber});
     console.log("ORDERBOOK RESPONSE?",response);
-    let decodedMakerDataAsks;
-    let decodedMakerDataBids;
-    let decodedTakerDataAsks;
-    let decodedTakerDataBids
+    let decodedMakerDataAsks:any;
+    let decodedMakerDataBids:any;
+    let decodedTakerDataAsks:any;
+    let decodedTakerDataBids:any;
+    let makerSymbol:any;
+    let takerSymbol:any;
+    let takerDecimals:any;
+
     if (response.asks.total === 0){
         this.orderbook = {
           asks: this.asks
         }
     }else{
-      //if decodedDataAsks.tokenAddress == this.token.assetDataA.tokenAddress then => makersymbol = makersymbolAsks
-      //if decodedDataAsks.tokenAddress == this.token.assetDataBTokenAddress then => makerSymbol = makersymbolAsks
-
+      
       decodedMakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[0].order.makerAssetData);
       decodedTakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[0].order.takerAssetData);
-      console.log("decodedMakerDataAsks",decodedMakerDataAsks);
-      console.log("decodedTakerDataBids",decodedTakerDataBids);
       
-      let makerSymbolAsks = await this.getSymbol(decodedMakerDataAsks.tokenAddress);        
-      let takerSymbolAsks = await this.getSymbol(decodedTakerDataAsks.tokenAddress);
-      let takerDecimals = await this.getDecimals(decodedTakerDataAsks.tokenAddress);
-      //console.log("TAKER DECIMALS", takerDecimals.toString());
+      if(decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedTakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress){
+        makerSymbol = this.token.assetDataA.name;
+        takerSymbol = this.token.assetDataB.name;
+        takerDecimals = this.token.assetDataB.decimals;
+      }
+      if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedTakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress){
+        makerSymbol = this.token.assetDataB.name;
+        takerSymbol = this.token.assetDataA.name;
+        takerDecimals = this.token.assetDataA.decimals
+      }
 
       for (let i = 0; i < response.asks.records.length; i++) {
-        let decodedMakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.makerAssetData);
-        let decodedTakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.takerAssetData);
+        decodedMakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.makerAssetData);
+        decodedTakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[i].order.takerAssetData);
 
         let orderPrice = response.asks.records[i].order.takerAssetAmount.div(response.asks.records[i].order.makerAssetAmount).toNumber();
         let takerAmount = response.asks.records[i].order.takerAssetAmount.toNumber();
@@ -301,18 +297,18 @@ export class ZeroExService{
         //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
         
 
-        let decodedMakerData = {
+        let makerData = {
           ...decodedMakerDataAsks,
-          symbol: makerSymbolAsks
+          symbol: makerSymbol
         }
-        let decodedTakerData = {
+        let takerData = {
           ...decodedTakerDataAsks,
-          symbol: takerSymbolAsks
+          symbol: takerSymbol
         }
         let obj = {
           orderResponse: response.asks.records[i],
-          decodedMakerData: decodedMakerData,
-          decodedTakerData: decodedTakerData,
+          decodedMakerData: makerData,
+          decodedTakerData: takerData,
           price: orderPrice,
           makerAmount: makerAmount,
           filledAmount: filledAmount,
@@ -330,13 +326,20 @@ export class ZeroExService{
     }else{
       decodedMakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[0].order.makerAssetData);
       decodedTakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[0].order.takerAssetData);
-      let makerSymbolBids = await this.getSymbol(decodedMakerDataBids.tokenAddress);        
-      let takerSymbolBids = await this.getSymbol(decodedTakerDataBids.tokenAddress);
-      let takerDecimals = await this.getDecimals(decodedTakerDataBids.tokenAddress);
+      if(decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress && decodedTakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress){
+        makerSymbol = this.token.assetDataA.name;
+        takerSymbol = this.token.assetDataB.name;
+        takerDecimals = this.token.assetDataB.decimals;
+      }
+      if(decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress && decodedTakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
+        makerSymbol = this.token.assetDataB.name;
+        takerSymbol = this.token.assetDataA.name;
+        takerDecimals = this.token.assetDataA.decimals
+      }
       
       for (let i = 0; i < response.bids.records.length; i++) {
-        let decodedMakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[i].order.makerAssetData);
-        let decodedTakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[i].order.takerAssetData);
+        decodedMakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[i].order.makerAssetData);
+        decodedTakerDataBids = assetDataUtils.decodeERC20AssetData(response.bids.records[i].order.takerAssetData);
 
         let orderPrice = response.bids.records[i].order.makerAssetAmount.div(response.bids.records[i].order.takerAssetAmount).toNumber();
         let takerAmount = response.bids.records[i].order.takerAssetAmount.toNumber();
@@ -358,18 +361,18 @@ export class ZeroExService{
         //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
         
         
-        let decodedMakerData = {
+        let makerData = {
           ...decodedMakerDataBids,
-          symbol: makerSymbolBids
+          symbol: makerSymbol
         }
-        let decodedTakerData = {
+        let takerData = {
           ...decodedTakerDataBids,
-          symbol: takerSymbolBids
+          symbol: takerSymbol
         }
         let obj = {
           orderResponse: response.bids.records[i],
-          decodedMakerData: decodedMakerData,
-          decodedTakerData: decodedTakerData,
+          decodedMakerData: makerData,
+          decodedTakerData: takerData,
           price: orderPrice,
           makerAmount: makerAmount,
           filledAmount: filledAmount,
@@ -409,8 +412,7 @@ export class ZeroExService{
           bids: this.bids
         }
         this.state.orders = {buys:[], sells:[]};
-        console.log("decodedMakerDataAsks before ifs",decodedMakerDataAsks);
-        console.log("decodedTakerDataBids before ifs",decodedTakerDataBids);
+
         //if not null decodedDataAsks and decodedDataBids
         if(decodedMakerDataAsks != null && decodedMakerDataBids != null){
           if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
@@ -836,19 +838,11 @@ export class ZeroExService{
     }
 		//this.showBuys = null;
 		//this.showSells = null;
-		console.log("THIS STATE ORDERS???????", this.state.orders);
-    
+		
 		if(this.state.orders != null){
-      console.log("if this state orders != null");
-      
 			this.state.orders.buys = null;
 			this.state.orders.sells = null;
       this.state.orders = null;
-      /*
-      this.orderbook = null;
-      this.asks=[];
-      this.bids=[];
-      */
     }
     
 		//if(this.activeOrdersInterval != null){
