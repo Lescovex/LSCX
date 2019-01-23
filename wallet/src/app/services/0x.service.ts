@@ -30,8 +30,8 @@ const lescovexPath = homedir+"/.lescovex";
 @Injectable()
 export class ZeroExService{
   protected providerEngine;
-  protected providerAddress = "https://sra.bamboorelay.com/0x/v2/";
-  protected webSocketProviderAddress = "wss://sra.bamboorelay.com/0x/v2/ws";
+  protected providerAddress;
+  protected webSocketProviderAddress;
   
   //protected providerAddress = "http://0x.lescovex.com/v2";
   protected web3;
@@ -96,8 +96,6 @@ export class ZeroExService{
     
     this.activateLoading();
     await this.setProvider();
-    console.log("defaultToken???",this.config.default_token);
-    
     await this.getLocalInfo();
     this.loadingD.close();
     
@@ -781,14 +779,10 @@ export class ZeroExService{
     try {
       result = await this._scan.getAbi(token);
     } catch (error) {
-      console.log(error);
-      
+      console.log(error); 
     }
-    console.log("_scan result???????????!?!?!??!!",result);
-    console.log(result.status);
     
     if(result.status != 0){
-      console.log("if status es distinto a 0");
       let checkAbi = JSON.parse(result.result)
       for (let i = 0; i < checkAbi.length; i++) {
         if(checkAbi[i].name == 'symbol' || checkAbi[i].name == 'SYMBOL'){
@@ -801,8 +795,6 @@ export class ZeroExService{
         }
       }
     }else{
-      console.log("if status == 0");
-      
       abi = require('human-standard-token-abi');
       callName = 'symbol'
     }
@@ -815,7 +807,7 @@ export class ZeroExService{
       
       if(type == "bytes32"){
         let toASCII = this._web3.web3.toAscii(response);
-        console.log("dentro de bytes32, toASCII", toASCII);
+        console.log("inside bytes32, toASCII", toASCII);
         
         symbol = '';
         for (var i = 0; i < toASCII.length; i++) {
@@ -868,8 +860,6 @@ export class ZeroExService{
   }
   
   async getDecimals(token){
-    console.log("GET DECIMALS QUE ES TOKEN", token);
-    
     let result;
     let abi;
     let callName;
@@ -901,7 +891,6 @@ export class ZeroExService{
     } catch (error) {
       console.log(error);
       return null;
-      //this.getDecimals(token);
     }
   }
   
@@ -1102,15 +1091,12 @@ export class ZeroExService{
 		
 		if(typeof(token) == "undefined"){
       let localToken = this.getLocalStorageToken();
-			if(localToken != null && (this.asset_pairs.find(token=>token.assetDataA == localToken.assetDataA && token.assetDataB == localToken.assetDataB) != null)) {
-        console.log("El token almacenado coincide con lo almacenado en asset_pairs");
-        
+      let localToken_inArray = this.in_Array(localToken, this.asset_pairs)
+			if(localToken_inArray != false) {
         this.token = localToken;
-        this.updateAllowance();
+        //this.updateAllowance();
 			} else {
-        console.log("default",this.config.default_token);
         let default_config_inArray = this.in_Array(this.config.default_token, this.asset_pairs);
-        console.log("in_Array?????",default_config_inArray);
         
         if(default_config_inArray != false){
           this.token = default_config_inArray;
