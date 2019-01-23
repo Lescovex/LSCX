@@ -110,7 +110,7 @@ export class ZeroExService{
 		  fs.mkdirSync(lescovexPath);
 		}
 		
-		let filePath = lescovexPath+"/.0x"+this._web3.network.urlStarts+".json";
+		let filePath = lescovexPath+"/.0x-"+this._web3.network.urlStarts+".json";
 		
 		if(!fs.existsSync(filePath)){
 			let objNet = {
@@ -316,7 +316,7 @@ export class ZeroExService{
   }
 
   async saveConfigFile(){
-    let filePath = lescovexPath+"/.0x"+this._web3.network.urlStarts+".json";
+    let filePath = lescovexPath+"/.0x-"+this._web3.network.urlStarts+".json";
     if(this.updated_asset_pairs.length > 0){
       for (let i = 0; i < this.updated_asset_pairs.length; i++) {
         this.localState.asset_pairs.push(this.updated_asset_pairs[i]);
@@ -772,6 +772,8 @@ export class ZeroExService{
   }
 
   async getSymbol(token){
+    console.log("GETSYMBOL Q ES TOKEN",token);
+    
     let result;
     let abi;
     let callName;
@@ -782,7 +784,11 @@ export class ZeroExService{
       console.log(error);
       
     }
-    if(result.result != 'Contract source code not verified' || result != null){
+    console.log("_scan result???????????!?!?!??!!",result);
+    console.log(result.status);
+    
+    if(result.status != 0){
+      console.log("if status es distinto a 0");
       let checkAbi = JSON.parse(result.result)
       for (let i = 0; i < checkAbi.length; i++) {
         if(checkAbi[i].name == 'symbol' || checkAbi[i].name == 'SYMBOL'){
@@ -790,10 +796,13 @@ export class ZeroExService{
           type = checkAbi[i].outputs[0].type;
           abi = JSON.parse(result.result);
         }else{
-          return null;
+          abi = require('human-standard-token-abi');
+          callName = 'symbol'
         }
       }
     }else{
+      console.log("if status == 0");
+      
       abi = require('human-standard-token-abi');
       callName = 'symbol'
     }
@@ -859,6 +868,8 @@ export class ZeroExService{
   }
   
   async getDecimals(token){
+    console.log("GET DECIMALS QUE ES TOKEN", token);
+    
     let result;
     let abi;
     let callName;
@@ -868,14 +879,15 @@ export class ZeroExService{
       console.log(error);
       
     }
-    if(result.result != 'Contract source code not verified' || result != null){
+    if(result.status != "0"){
       let checkAbi = JSON.parse(result.result)
       for (let i = 0; i < checkAbi.length; i++) {
         if(checkAbi[i].name == 'decimals' || checkAbi[i].name == 'DECIMALS'){
           callName = checkAbi[i].name;
           abi = JSON.parse(result.result);
         }else{
-          return null;
+          abi = require('human-standard-token-abi');
+          callName = 'decimals'
         }
       }
     }else{
