@@ -1,0 +1,12 @@
+{
+
+    "ethTestnet": "kovan",
+    "ethChainId": 42,
+
+    "asset_pairs": [
+        { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
+        { "addr": "0x4007625b68b57748b99d1418b1e17bfb3697c949", "name": "LSCX", "decimals": 8 }
+    ],
+    "defaultPair": { "token": "LSCX", "base": "ETH" }
+
+}

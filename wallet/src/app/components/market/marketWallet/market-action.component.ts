@@ -37,6 +37,7 @@ export class MarketActionComponent implements OnChanges{
         this.lastAction = this.action;
         console.log("_zeroEx token", this._zeroEx.token);
         console.log("_zeroEx contracts", this._zeroEx.contractAddresses);
+        console.log(JSON.stringify(this._zeroEx.asset_pairs));
         
         
     }

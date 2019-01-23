@@ -605,20 +605,34 @@ export class ZeroExService{
         let symbolB = await this.getSymbol(decodedB.tokenAddress);
         console.log("symbol",symbolA, symbolB);
         
+        let decimalsA;
+        let decimalsB;
+
+        try {
+          decimalsA = await this.getDecimals(decodedA.tokenAddress);  
+        } catch (error) {
+          decimalsA = null
+        }
+        
+        try {
+          decimalsB = await this.getDecimals(decodedA.tokenAddress);
+        } catch (error) {
+          decimalsB = null
+        }
         let symbolString = symbolA + " - " + symbolB;
         let reverseSymbolString = symbolB + " - " + symbolA;
 
         let pairA = {
           ...response.records[i].assetDataA,
           ...decodedA,
-          decimals: null,
+          decimals: decimalsA,
           name: symbolA,
           allowed: null
         };
         let pairB = {
           ...response.records[i].assetDataB,
           ...decodedB,
-          decimals: null,
+          decimals: decimalsB,
           name: symbolB,
           allowed: null
         }
@@ -667,8 +681,12 @@ export class ZeroExService{
     try {
       let symbol;
       let response = await this._contract.callFunction(contract, 'symbol',[]);
+      console.log("response primer try getSymbol",response);
+      
       if(type == "bytes32"){
         let toASCII = this._web3.web3.toAscii(response);
+        console.log("dentro de bytes32, toASCII", toASCII);
+        
         symbol = '';
         for (var i = 0; i < toASCII.length; i++) {
           if(toASCII.charCodeAt(i) != 0){
@@ -678,8 +696,12 @@ export class ZeroExService{
       }else{
         symbol = response;
       }
-      return symbol;  
+      console.log("returned Symbol?????", symbol);
+      
+      return symbol;
     } catch (error) {
+      console.log("SYMBOL CATCH!!!!!!");
+      
       let contract = this._contract.contractInstance(this.abiBytes, token);
       let symbol; 
       let type;
@@ -690,8 +712,12 @@ export class ZeroExService{
       }
       try {
         let response = await this._contract.callFunction(contract, 'symbol', []);
+        console.log("response del catch!!!!!", response);
+        
         if(type == "bytes32"){
           let toASCII = this._web3.web3.toAscii(response);
+          console.log("SYMBOL catch toASCII"), toASCII;
+          
           symbol = '';
           for (var i = 0; i < toASCII.length; i++) {
             if(toASCII.charCodeAt(i) != 0){
@@ -701,10 +727,12 @@ export class ZeroExService{
         }else{
           symbol = response;
         }
+        console.log("Symbol response CATCH", symbol);
+        
         return symbol; 
       } catch (error) {
         console.log("GET SYMBOL ERROR OF ERRROR!!!!!!!!!!!",error);
-        return "Symbol error"
+        return "SymbolError"
       }
     }
   }
@@ -729,7 +757,7 @@ export class ZeroExService{
       return decimals;  
     } catch (error) {
       console.log(error);
-      return 18;
+      return null;
       //this.getDecimals(token);
     }
   }
