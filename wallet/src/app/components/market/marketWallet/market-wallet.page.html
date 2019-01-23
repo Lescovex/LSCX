@@ -8,8 +8,8 @@
 <div *ngIf="_marketComponent.display == 'eth'">
     <app-market-amounts [token]="_LSCXmarket.token" [walletAmount]="_LSCXmarket.token?.balance" [deltaAmount]="_LSCXmarket.marketBalances.token" class="clear dist block"></app-market-amounts>
     <app-action-amounts [action]="action" [actionName]="actionNameA" [token]="_LSCXmarket.token" [walletAmount]="_LSCXmarket.token?.balance" [deltaAmount]="_LSCXmarket.marketBalances.token" class="clear block"></app-action-amounts>
-    <app-market-amounts [token]="_LSCXmarket.config.tokens[0]" [walletAmount]="_account.account.balance" [wethAmount]="_zeroEx.balance_weth" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-market-amounts>
-    <app-action-amounts [action]="action" [actionName]="actionNameB" [token]="_LSCXmarket.config.tokens[0]" [walletAmount]="_account.account.balance" [wethAmount]="_zeroEx.balance_weth" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-action-amounts>
+    <app-market-amounts [token]="_LSCXmarket.config.tokens[0]" [walletAmount]="_account.account.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-market-amounts>
+    <app-action-amounts [action]="action" [actionName]="actionNameB" [token]="_LSCXmarket.config.tokens[0]" [walletAmount]="_account.account.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-action-amounts>
 </div>
 <div *ngIf="_marketComponent.display == 'weth'">
     <app-market-amounts [token]="_zeroEx.token.assetDataA" [accountAmount]="_account.account.balance" [walletAmount]="_zeroEx.token.assetDataA.balance" [deltaAmount]="_LSCXmarket.marketBalances.token" class="clear dist block"></app-market-amounts>

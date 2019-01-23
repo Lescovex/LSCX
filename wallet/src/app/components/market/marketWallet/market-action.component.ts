@@ -25,7 +25,6 @@ export class MarketActionComponent implements OnChanges{
     @Input() token: any;
     @Input() walletAmount: number;
     @Input() deltaAmount: number;
-    //@Input() wethAmount: number;
     @Input() actionName: string;
 
     submited: boolean = false;

@@ -13,7 +13,16 @@ export class MarketAmountsComponent {
   @Input() deltaAmount: number;
   @Input() accountAmount: number;
   constructor(protected _market:MarketComponent, public _zeroEx: ZeroExService) {
-
+    console.log("MarketAmountsComponent Data!!!!!!!!!!!!!!!!!");
+    
+    console.log("token????", this.token);
+    console.log("walletAmount", this.walletAmount);
+    console.log("deltaAMount", this.deltaAmount);
+    console.log("accountAmount", this.accountAmount);
+    
+    
+    
+    
   }
   amount(amount){
     return amount/Math.pow(10,this.token.decimals)

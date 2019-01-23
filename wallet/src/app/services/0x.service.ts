@@ -77,6 +77,8 @@ export class ZeroExService{
   public UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1)
   protected abiBytes = require("../../libs/0x/x.json");
   protected config;
+
+  public check_asset_pairs = [];
   
   constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
@@ -85,13 +87,18 @@ export class ZeroExService{
   async init(){
     this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
     console.log("this.config??????",this.config);
+    console.log("this.config.default_token?",this.config.default_token);
+    
     this.asset_pairs = this.config.asset_pairs;
-    this.token = this.config.default_token;
     
     this.activateLoading();
     await this.setProvider();
+    console.log("defaultToken???",this.config.default_token);
+    
+    await this.setToken(this.config.default_token);
     this.loadingD.close();
     //await this.getAssetPairs(1);
+    this.checkAssetPairs(1);
     
   }
 
@@ -142,9 +149,136 @@ export class ZeroExService{
     this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
     console.log("contractAddresses", this.contractAddresses);
     
-    this.setContract();
+    //this.setContract();
     this.httpClient = new HttpClient(this.providerAddress);
     this.web3Wrapper = new Web3Wrapper(this.providerEngine);
+}
+
+  async checkAssetPairs(checkTime){
+    let response = await this.httpClient.getAssetPairsAsync({ networkId: this._web3.network.chain, page: checkTime});
+    console.log("CheckAssetPairs response???", response);
+    if (response.total === 0) {
+      console.log("ASSET PAIRS RESPONSE == 0");
+      
+      //this.asset_pairs == response.response;
+    }else{
+      //do things
+      let storedInfo;
+      let decodedInfo;
+      for (let i = 0; i < response.records.length; i++) {
+        storedInfo = this.in_Array(response.records[i], this.asset_pairs)
+        //console.log("CHECKPOINT VALUE",storedInfo);
+        if(storedInfo != false){
+          this.check_asset_pairs.push(storedInfo);
+        }else{
+          decodedInfo = await this.decodeAssetPairInfo(response.records[i]);
+          this.check_asset_pairs.push(decodedInfo);
+        }
+        
+      }
+
+      if(response.total > response.page * response.perPage){
+        await this.checkAssetPairs(checkTime+1);
+      } else {
+        console.log("CHECK ASSET PAIRS DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        this.asset_pairs = this.check_asset_pairs;
+        this.check_asset_pairs = [];
+        console.log("All Asset Pairs", this.asset_pairs);
+        
+        //this.asset_pairs = this.check_asset_pairs;
+        //this.check_asset_pairs = [];
+        
+        //this.setToken();
+        //console.log("this.asset_pairs",this.asset_pairs);
+        
+      }
+    }
+  }
+  async decodeAssetPairInfo(tokenToDecode){
+    //let decodedToken;
+    console.log("tokenToDecode",tokenToDecode);
+    let decodedA;
+    let decodedB;
+    try {
+      decodedA = assetDataUtils.decodeERC20AssetData(tokenToDecode.assetDataA.assetData);
+      console.log("decoded A oK");
+      
+    } catch (error) {
+      console.log("DECODE A ERROR", error);
+      
+    }
+    try {
+      decodedB = assetDataUtils.decodeERC20AssetData(tokenToDecode.assetDataB.assetData);
+      console.log("decoded B oK");
+      
+    } catch (error) {
+      console.log("DECODE B ERROR", error);
+    }
+    
+    console.log("before get Symbol");
+    
+    let symbolA = await this.getSymbol(decodedA.tokenAddress);
+    let symbolB = await this.getSymbol(decodedB.tokenAddress);
+    console.log("symbol",symbolA, symbolB);
+    
+    let decimalsA;
+    let decimalsB;
+
+    try {
+      decimalsA = await this.getDecimals(decodedA.tokenAddress);  
+    } catch (error) {
+      decimalsA = null
+    }
+    
+    try {
+      decimalsB = await this.getDecimals(decodedA.tokenAddress);
+    } catch (error) {
+      decimalsB = null
+    }
+    let symbolString = symbolA + " - " + symbolB;
+    let reverseSymbolString = symbolB + " - " + symbolA;
+
+    let pairA = {
+      ...tokenToDecode.assetDataA,
+      ...decodedA,
+      decimals: decimalsA,
+      name: symbolA,
+      allowed: null
+    };
+    let pairB = {
+      ...tokenToDecode.assetDataB,
+      ...decodedB,
+      decimals: decimalsB,
+      name: symbolB,
+      allowed: null
+    }
+
+    let pairC = {
+      assetDataA: pairA,
+      assetDataB: pairB,
+      reverseName: symbolString,
+      name: reverseSymbolString
+    }
+    
+    return pairC;
+  }
+
+  in_Array(responseObject, storedObject) {
+    //console.log("responseObject????", responseObject);
+    
+    //haystack debe ser this.assetPairs, se le pasa objeto assetPairGive de response, si no esta almacenado en this.assetPairs
+    //se hace push y decode de ese order.
+    var length = storedObject.length;
+    for(var i = 0; i < length; i++) {
+        if(storedObject[i].assetDataA.assetData == responseObject.assetDataA.assetData && storedObject[i].assetDataB.assetData == responseObject.assetDataB.assetData){
+          return storedObject[i];
+        }
+
+        //if(storedObject[i] == responseObject) return storedObject[i];
+    }
+    console.log("false_?", responseObject);
+    
+    return false;
 }
 
   async order(form, action, pass, randomExpiration){
@@ -273,15 +407,7 @@ export class ZeroExService{
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
 
-  in_Array(responseObject, storedObject) {
-      //haystack debe ser this.assetPairs, se le pasa objeto assetPairGive de response, si no esta almacenado en this.assetPairs
-      //se hace push y decode de ese order.
-      var length = storedObject.length;
-      for(var i = 0; i < length; i++) {
-          if(storedObject[i] == responseObject) return storedObject[i];
-      }
-      return false;
-  }
+  
   async fillOrder(order, value, taker, action, key){
     await this.setProvider(key)
     
@@ -356,15 +482,15 @@ export class ZeroExService{
         let remainingAmount = parseInt(response.asks.records[i].metaData.remainingTakerAssetAmount);
                                                                         
         let availableAmount = takerAmount - remainingAmount;
-        console.log("availableAmount asks",availableAmount);
+        //console.log("availableAmount asks",availableAmount);
         let x = takerDecimals.toString();
         let exp = 10 ** parseInt(x)
         let readableTakerAmount = takerAmount / exp;
         let filledAmount = availableAmount / exp;
 
         let takerAssetAmountRemaining = response.asks.records[i].metaData.remainingTakerAssetAmount / exp;
-        console.log("takerAssetAmountRemaining",takerAssetAmountRemaining);
-        console.log("takerAssetAmountRemaining before parse",response.asks.records[i].metaData.remainingTakerAssetAmount);
+        //console.log("takerAssetAmountRemaining",takerAssetAmountRemaining);
+        //console.log("takerAssetAmountRemaining before parse",response.asks.records[i].metaData.remainingTakerAssetAmount);
         
         //console.log("takerAmount", takerAmount);
         //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
@@ -419,7 +545,7 @@ export class ZeroExService{
         let makerAmount = response.bids.records[i].order.makerAssetAmount.toNumber();
         let remainingAmount = parseInt(response.bids.records[i].metaData.remainingTakerAssetAmount);
         let availableAmount = takerAmount - remainingAmount;
-        console.log("availableAmount bids",availableAmount);
+        //console.log("availableAmount bids",availableAmount);
         
         let x = takerDecimals.toString();
         let exp = 10 ** parseInt(x)
@@ -427,8 +553,8 @@ export class ZeroExService{
         let filledAmount = availableAmount / exp;
         //console.log("takerAssetAmountRemaining",response.bids.records[i].metaData.takerAssetAmountRemaining);
         let takerAssetAmountRemaining = response.bids.records[i].metaData.remainingTakerAssetAmount / exp;
-        console.log("takerAssetAmountRemaining",takerAssetAmountRemaining);
-        console.log("takerAssetAmountRemaining before parse",response.bids.records[i].metaData.remainingTakerAssetAmount);
+        //console.log("takerAssetAmountRemaining",takerAssetAmountRemaining);
+        //console.log("takerAssetAmountRemaining before parse",response.bids.records[i].metaData.remainingTakerAssetAmount);
         
         //console.log("takerAmount", takerAmount);
         //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
@@ -464,7 +590,7 @@ export class ZeroExService{
         bids: this.bids
       }
       this.state.orders = {buys:[], sells:[]};
-      console.log("SI ASKS Y BIDS NULL ORDERBOOK",this.orderbook);
+      //console.log("SI ASKS Y BIDS NULL ORDERBOOK",this.orderbook);
 
       if(this.loadingD != null){
         this.loadingD.close();
@@ -573,6 +699,7 @@ export class ZeroExService{
       this.interval = null;
     }
   }
+  /*
   async getAssetPairs(pageNumber){
     if(this.interval != null){
       this.clearBalancesInterval();
@@ -666,6 +793,7 @@ export class ZeroExService{
       }
     }
   }
+  */
   async getSymbol(token){
     let result;
     let abi;
@@ -940,7 +1068,7 @@ export class ZeroExService{
   getAbi() {
     return require('../../libs/0x/weth-abi.json');
   }
-  
+  /*
   setContract() {
     let ADDRESSES = {
       1:"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -950,7 +1078,7 @@ export class ZeroExService{
     let address = ADDRESSES[this._web3.network.chain]
     this.contract = this._contract.contractInstance(this.getAbi(), address);
   }
-  /*
+  
   async getWethBalance(){
     let balance;
     try {
@@ -979,6 +1107,7 @@ export class ZeroExService{
   }
 
   async setToken(token?) {
+    console.log(token);
     
     if(this.loadingD == null){
       this.activateLoading();
@@ -1126,8 +1255,8 @@ export class ZeroExService{
 		this.token.assetDataA.balance = await this.getBalance(this.token.assetDataA);
     this.token.assetDataB.balance = await this.getBalance(this.token.assetDataB);
     //console.log("log this tokens inside setBalances",this.token);
-    console.log("balance A", this.token.assetDataA.balance, this.token.assetDataA.name);
-    console.log("balance B", this.token.assetDataB.balance, this.token.assetDataB.name);
+    //console.log("balance A", this.token.assetDataA.balance, this.token.assetDataA.name);
+    //console.log("balance B", this.token.assetDataB.balance, this.token.assetDataB.name);
   
   }
 

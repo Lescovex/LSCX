@@ -33,7 +33,7 @@
     <div *ngIf="(action=='withdraw' && _market.display == 'weth') && token?.tokenAddress == _zeroEx.contractAddresses.etherToken">
         <div>
             <label class="black">Withdraw {{token?.name}}</label>
-            <input name="amount" id="amount" [funds]="wethAmount" type="number" [customMin]="0.001" placeholder="0.000" class="block" [ngClass]="{'error':submited && amount.errors != null}" ngModel required #amount="ngModel">
+            <input name="amount" id="amount" [funds]="token.balance" type="number" [customMin]="0.001" placeholder="0.000" class="block" [ngClass]="{'error':submited && amount.errors != null}" ngModel required #amount="ngModel">
             <p class="error" [ngClass]="{'hidden':!(submited && amount.errors != null)}">
                 <span *ngIf="amount.errors?.required">This field is required</span>
                 <span *ngIf="!amount.errors?.required && amount.errors?.customMin">Minimum required amount is 0.001</span>
