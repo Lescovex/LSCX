@@ -54,7 +54,7 @@
                 <span *ngIf="!eth.errors?.required && data.action == 'sell'">Total amount can't be higher than avaiable amount</span>
             </p>
         </div>
-        <div class="half right">
+        <div class="half right" *ngIf="data.display == 'eth'">
             <label class="title" for="expires">Expires</label>
             <div class="input-container" [ngClass]="{'error': expires.invalid && submited}">
                 <input type="number" [customMin]="1" placeholder="0.000" step="any" name="expires" [(ngModel)]="f.expires" required ngModel #expires="ngModel" />

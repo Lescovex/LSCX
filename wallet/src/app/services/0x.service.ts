@@ -74,7 +74,7 @@ export class ZeroExService{
 
   public NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
   public ZERO = new BigNumber(0);
-
+  public UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1)
   protected abiBytes = require("../../libs/0x/x.json");
 
   constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
@@ -206,7 +206,16 @@ export class ZeroExService{
 
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
-  
+
+  in_Array(responseObject, storedObject) {
+      //haystack debe ser this.assetPairs, se le pasa objeto assetPairGive de response, si no esta almacenado en this.assetPairs
+      //se hace push y decode de ese order.
+      var length = storedObject.length;
+      for(var i = 0; i < length; i++) {
+          if(storedObject[i] == responseObject) return storedObject[i];
+      }
+      return false;
+  }
   async fillOrder(order, value, taker, action, key){
     await this.setProvider(key)
     
@@ -237,7 +246,7 @@ export class ZeroExService{
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
 
-  async getOrderbook(makerAssetData, takerAssetData, pageNumber){    
+  async getOrderbook(makerAssetData, takerAssetData, pageNumber){
     this.orderbook = null;
     this.asks=[];
     this.bids=[];
@@ -245,23 +254,21 @@ export class ZeroExService{
     let orderbookRequest: OrderbookRequest = { baseAssetData: makerAssetData, quoteAssetData: takerAssetData };
     let response = await this.httpClient.getOrderbookAsync(orderbookRequest, { networkId: this._web3.network.chain, page: pageNumber});
     console.log("ORDERBOOK RESPONSE?",response);
-    let decodedMakerDataAsks:any;
-    let decodedMakerDataBids:any;
-    let decodedTakerDataAsks:any;
-    let decodedTakerDataBids:any;
-    let makerSymbol:any;
-    let takerSymbol:any;
-    let takerDecimals:any;
+    let decodedMakerDataAsks;
+    let decodedMakerDataBids;
+    let decodedTakerDataAsks;
+    let decodedTakerDataBids;
+    let makerSymbol;
+    let takerSymbol;
+    let takerDecimals;
 
     if (response.asks.total === 0){
         this.orderbook = {
           asks: this.asks
         }
     }else{
-      
       decodedMakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[0].order.makerAssetData);
       decodedTakerDataAsks = assetDataUtils.decodeERC20AssetData(response.asks.records[0].order.takerAssetData);
-      
       if(decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedTakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress){
         makerSymbol = this.token.assetDataA.name;
         takerSymbol = this.token.assetDataB.name;
@@ -413,6 +420,7 @@ export class ZeroExService{
         }
         this.state.orders = {buys:[], sells:[]};
 
+        /*
         //if not null decodedDataAsks and decodedDataBids
         if(decodedMakerDataAsks != null && decodedMakerDataBids != null){
           if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
@@ -451,6 +459,23 @@ export class ZeroExService{
             this.setSells(this.orderbook.asks);
             this.setShowOrders(this.orderbook.bids, this.orderbook.asks); 
           }
+        }
+        */
+        if(((decodedMakerDataAsks != null && decodedMakerDataBids != null) && 
+        (decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress)) 
+        || ((decodedMakerDataAsks == null && decodedMakerDataBids != null) && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress) 
+        || ((decodedMakerDataAsks != null && decodedMakerDataBids == null) && decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress)){
+            this.setBuys(this.orderbook.asks);
+            this.setSells(this.orderbook.bids);
+            this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
+        }
+        if(((decodedMakerDataAsks != null && decodedMakerDataBids != null) &&
+        (decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress)) 
+        || ((decodedMakerDataAsks == null && decodedMakerDataBids != null) && decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress) 
+        || ((decodedMakerDataAsks != null && decodedMakerDataBids == null) && decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress)){
+          this.setBuys(this.orderbook.bids);
+          this.setSells(this.orderbook.asks);
+          this.setShowOrders(this.orderbook.bids, this.orderbook.asks);  
         }
         //closing loading dialog
         if(this.loadingD != null){
@@ -542,7 +567,9 @@ export class ZeroExService{
     }
   }
   async getAssetPairs(pageNumber){
-    
+    if(this.interval != null){
+      this.clearBalancesInterval();
+    }
     let response = await this.httpClient.getAssetPairsAsync({ networkId: this._web3.network.chain, page: pageNumber});
     console.log("assetPairs 0x", response);
     if (response.total === 0) {
@@ -552,12 +579,13 @@ export class ZeroExService{
         //throw new Error('No pairs found on the SRA Endpoint');
     }else{
       for (let i = 0; i < response.records.length; i++) {
-        console.log("response.records[i]",response.records[i]);
+        console.log("i", i);
         
         let decodedA;
         let decodedB;
         try {
           decodedA = assetDataUtils.decodeERC20AssetData(response.records[i].assetDataA.assetData);
+          console.log("decoded A oK");
           
         } catch (error) {
           console.log("DECODE A ERROR", error);
@@ -565,10 +593,13 @@ export class ZeroExService{
         }
         try {
           decodedB = assetDataUtils.decodeERC20AssetData(response.records[i].assetDataB.assetData);
+          console.log("decoded B oK");
           
         } catch (error) {
           console.log("DECODE B ERROR", error);
         }
+        
+        console.log("before get Symbol");
         
         let symbolA = await this.getSymbol(decodedA.tokenAddress);
         let symbolB = await this.getSymbol(decodedB.tokenAddress);
@@ -598,6 +629,7 @@ export class ZeroExService{
           reverseName: symbolString,
           name: reverseSymbolString
         }
+        console.log("DECODED PAIR!!!!!!!?!?!?!",pairC);
         
         this.asset_pairs_mem.push(pairC);
       } 
@@ -606,9 +638,7 @@ export class ZeroExService{
       } else {
         this.asset_pairs = this.asset_pairs_mem;
         this.asset_pairs_mem = [];
-        if(this.interval != null){
-          this.clearBalancesInterval();
-        }
+        
         this.setToken();
         console.log("this.asset_pairs",this.asset_pairs);
         
@@ -627,18 +657,13 @@ export class ZeroExService{
     }else{
       abi = JSON.parse(result.result)
     }
-    
     let type;
     for (let i = 0; i < abi.length; i++) {
       if(abi[i].name == 'symbol'){
         type = abi[i].outputs[0].type;
-      }
-      
+      } 
     }
-    
-    
     let contract = this._contract.contractInstance(abi, token);
-    
     try {
       let symbol;
       let response = await this._contract.callFunction(contract, 'symbol',[]);
@@ -653,7 +678,6 @@ export class ZeroExService{
       }else{
         symbol = response;
       }
-      
       return symbol;  
     } catch (error) {
       let contract = this._contract.contractInstance(this.abiBytes, token);
@@ -677,11 +701,10 @@ export class ZeroExService{
         }else{
           symbol = response;
         }
-        
         return symbol; 
       } catch (error) {
         console.log("GET SYMBOL ERROR OF ERRROR!!!!!!!!!!!",error);
-        this.getSymbol(token)
+        return "Symbol error"
       }
     }
   }
@@ -739,25 +762,105 @@ export class ZeroExService{
   async setUnlimitedProxyAllowance(contractAddr, addr){
     console.log("contractAddr", contractAddr);
     console.log("addr", addr);
+    try {
+      let ApprovalTxHash = await this.contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
+        contractAddr,
+        addr,
+      );
+      console.log("approvalTxHash", ApprovalTxHash);
+      
+      let x = await this.web3Wrapper.awaitTransactionSuccessAsync(ApprovalTxHash);
+      console.log("after awaitTransactionSuccessAsync", x);
+      
+      return("done")  
+    } catch (error) {
+      console.log("ERROR SET UNLIMITED PROXY ALLOWANCE!!!!!!!!!!!!!!!!!!!");
+      
+    }
     
-    
-    console.log("CONTRACT WRAPPERS????",this.contractWrappers);
-    
-    let ApprovalTxHash = await this.contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-      contractAddr,
-      addr,
-    );
-    await this.web3Wrapper.awaitTransactionSuccessAsync(ApprovalTxHash);
-    return("done")
   }
 
   async getProxyAllowance(contractAddr, addr){
-    let ApprovalTxHash = await this.contractWrappers.erc20Token.getProxyAllowanceAsync(
-      contractAddr,
-      addr,
-    );
-    
-    return ApprovalTxHash.toNumber()
+    try {
+      let ApprovalTxHash = await this.contractWrappers.erc20Token.getProxyAllowanceAsync(
+        contractAddr,
+        addr,
+      );
+      //console.log("GET PROXY ALLOWANCE RESULT ERC20", ApprovalTxHash.toNumber());
+      
+      return ApprovalTxHash.toNumber()
+
+    } catch (error) {
+      let result;
+      let abi;
+      try {
+        result = await this._scan.getAbi(contractAddr);
+      } catch (error) { 
+      }
+      if(result.result == 'Contract source code not verified'){
+        abi = require('human-standard-token-abi');
+      }else{
+        abi = JSON.parse(result.result)
+      }
+      let type;
+      for (let i = 0; i < abi.length; i++) {
+        if(abi[i].name == 'allowance'){
+          type = abi[i].outputs[0].type;
+        } 
+      }
+      let contract = this._contract.contractInstance(abi, contractAddr);
+      try {
+        let allowance;
+        let response = await this._contract.callFunction(contract, 'allowance',[this._account.account.address, this.contractAddresses.erc20Proxy]);
+        //console.log("response ALLOWANCE del primer try",response);
+        
+        if(type == "bytes32"){
+          let toASCII = this._web3.web3.toAscii(response);
+          allowance = '';
+          for (var i = 0; i < toASCII.length; i++) {
+            if(toASCII.charCodeAt(i) != 0){
+              allowance = allowance + toASCII[i];
+            }
+          }
+        }else{
+          allowance = response;
+        }
+        //console.log("ALLOWANCE ANTES DEL RETURN", allowance.toNumber());
+        
+        return allowance.toNumber();  
+      } catch (error) {
+        let contract = this._contract.contractInstance(this.abiBytes, contractAddr);
+        let allowance; 
+        let type;
+        for (let i = 0; i < this.abiBytes.length; i++) {
+          if(this.abiBytes[i].name == 'allowance'){
+            type = this.abiBytes[i].outputs[0].type;
+          }
+        }
+        try {
+          let response = await this._contract.callFunction(contract, 'allowance', [this._account.account.address, this.contractAddresses.erc20Proxy]);
+          //console.log("response ALLOWANCE SEGUNDO TRY this.abiBytes", response);
+          
+          if(type == "bytes32"){
+            let toASCII = this._web3.web3.toAscii(response);
+            allowance = '';
+            for (var i = 0; i < toASCII.length; i++) {
+              if(toASCII.charCodeAt(i) != 0){
+                allowance = allowance + toASCII[i];
+              }
+            }
+          }else{
+            allowance = response;
+          }
+          //console.log("ALLOWANCE ANTES DEL RETURN", allowance.toNumber());
+          
+          return allowance.toNumber();
+        } catch (error) {
+          console.log("GET ALLOWANCE ERROR OF ERRROR!!!!!!!!!!!",error);
+          return "Allowance error"
+        }
+      }  
+    }
   }
 
 
@@ -814,8 +917,22 @@ export class ZeroExService{
   }
   
   async getWethBalance(){
-    let balance = await this.callFunction(this.contract, "balanceOf", [this._account.account.address]);
-    this.balance_weth = this._web3.web3.fromWei(balance, 'ether')
+    let balance;
+    try {
+      balance = await this.callFunction(this.contract, "balanceOf", [this._account.account.address]);  
+    } catch (error) {
+      console.log("error in getWethBalance() function ", error);
+       
+    }
+    
+    
+    try {
+      this.balance_weth = this._web3.web3.fromWei(balance, 'ether');  
+    } catch (error) {
+      console.log("error parse balance from wei", error);
+      
+    }
+    
     //console.log("balanceWeth",this.balance_weth.toNumber());
   }
 
@@ -827,6 +944,7 @@ export class ZeroExService{
   }
 
   async setToken(token?) {
+    
     if(this.loadingD == null){
       this.activateLoading();
     }
@@ -862,32 +980,55 @@ export class ZeroExService{
 		}
 		console.log("this.token", this.token);
     //after set token we need to get allowance and get decimals
-    this.token.assetDataA.decimals = await this.getDecimals(this.token.assetDataA.tokenAddress);
-    this.token.assetDataB.decimals = await this.getDecimals(this.token.assetDataB.tokenAddress);
+    console.log("WAITING TOKEN A DECIMALS");
+    try {
+      this.token.assetDataA.decimals = await this.getDecimals(this.token.assetDataA.tokenAddress);  
+    } catch (error) {
+      console.log("DECIMALS A ERROR", error);
+      
+    }
+    try {
+      this.token.assetDataB.decimals = await this.getDecimals(this.token.assetDataB.tokenAddress);  
+    } catch (error) {
+      console.log("DECIMALS B ERROR", error);
+      
+    }
+    //console.log("WAITING TOKEN B DECIMALS");
+    
     
     
     try {
+      console.log("CHECKING ALLOWANCE");
+      
       this.token.assetDataA.allowed = await this.getProxyAllowance(this.token.assetDataA.tokenAddress, this._account.account.address);
       
     } catch (error) {
       this.token.assetDataA.allowed = 0;
+      console.log("ALLOWANCE A ERROR");
+      
     }
 
     try {  
+      console.log("CHECKING ALLOWANCE");
+      
       this.token.assetDataB.allowed = await this.getProxyAllowance(this.token.assetDataB.tokenAddress, this._account.account.address);
     
     } catch (error) {
       this.token.assetDataB.allowed = 0; 
+      console.log("ALLOWANCE B ERROR");
+      
     }
   
-		this.saveLocalStorageToken();
-		//this.setTokenContract();
+		//this.saveLocalStorageToken(); // error when change network
+    
+    //this.setTokenContract();
 		//this.getTokenState();
 		this.resetTokenBalances();
-    this.setBalances();
+    //this.setBalances();
     this.startIntervalBalance();
     this.startIntervalPairs();
 
+    console.log("THIS TOKEN AFTER SET TOKEN!!!!!!!", this.token);
     
     this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
     
@@ -923,6 +1064,7 @@ export class ZeroExService{
     }
   }
   
+  /*
   saveLocalStorageToken(){
 		if(this.token != null){
 			localStorage.removeItem('0xToken');
@@ -931,10 +1073,8 @@ export class ZeroExService{
 		}else{
 			localStorage.removeItem('0xToken');	
 		}
-		let contenido = JSON.parse(localStorage.getItem('0xToken')); //don't do nothing
-		
   }
-
+*/
   resetTokenBalances() {
 		this.token.assetDataA.balance = null;
     this.token.assetDataB.balance = null;
@@ -950,8 +1090,20 @@ export class ZeroExService{
   }
 
   async updateAllowance(){
-    this.token.assetDataA.allowed = await this.getProxyAllowance(this.token.assetDataA.tokenAddress, this._account.account.address);;
-    this.token.assetDataB.allowed = await this.getProxyAllowance(this.token.assetDataB.tokenAddress, this._account.account.address);;
+    try {
+      this.token.assetDataA.allowed = await this.getProxyAllowance(this.token.assetDataA.tokenAddress, this._account.account.address);;  
+    } catch (error) {
+      console.log("UPDATE ALLOWANCE TOKEN A ERROR", error);
+      
+    }
+    
+    try {
+      this.token.assetDataB.allowed = await this.getProxyAllowance(this.token.assetDataB.tokenAddress, this._account.account.address);;  
+    } catch (error) {
+      console.log("UPDATE ALLOWANCE TOKEN B ERROR", error);
+      
+    }
+    
   }
 
   async getBalance(token) {
@@ -973,9 +1125,10 @@ export class ZeroExService{
       try {
         value = await this._contract.callFunction(contract, 'balanceOf', [this._account.account.address]);
       } catch (error) {
-        console.log(error);
+        console.log("error call balanceof",error);
         this.getBalance(token);
       }
+
       let x = value.toString();
       let resBig = new BigNumber(x);
       let y;

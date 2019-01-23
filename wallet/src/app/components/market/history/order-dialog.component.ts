@@ -144,7 +144,9 @@ export class OrderDialogComponent {
     }
 
     total() {
-        let total = this.f.amount * this.f.price;
+        let amount = this.f.amount * this.f.price;
+        let total = parseFloat(amount.toFixed(10));
+        console.log("total here", total);
         
         if(this.data.action == "sell"){
             if(total > this.data.available){
@@ -166,8 +168,10 @@ export class OrderDialogComponent {
                 this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price;
             }
         }
+        console.log("THIS F TOTAL???????!?!?!??!!?!",this.f.total);
+        
       }
-
+      
       async getCross(amount, price){
         let blockNumber = await this._web3.blockNumber();
         let ordersToCross =[];

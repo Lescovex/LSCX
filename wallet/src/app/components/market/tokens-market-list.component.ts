@@ -24,8 +24,6 @@ export class TokensMarketListComponent implements OnChanges {
 }
 
   search(input?){
-    console.log("Search function????");
-    
     if(this._market.display == 'eth'){
       let tokens = this._LSCXmarket.config.tokens.filter(x=> x.name!="ETH");
       let LSCX_tokens = this._LSCXmarket.marketState.tikers.filter(x=>x);
@@ -43,7 +41,6 @@ export class TokensMarketListComponent implements OnChanges {
     if(this._market.display == 'weth'){
       let tokens = this._zeroEx.asset_pairs;
       tokens.sort((a, b)=> (a.name).localeCompare(b.name));
-      console.log("weth tokens",tokens);
       if(typeof(input)!="undefined"){
         tokens = tokens.filter(token=> {
           if('name' in token && typeof(token.name)!="undefined" && token.name != ""){
