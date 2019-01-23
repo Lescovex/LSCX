@@ -1,8 +1,43 @@
 {
+    "network_name": "kovan",
+    "network_chain_id": 42,
+    "default_contract_addresses": {
+        "assetProxyOwner": "0x2c824d2882baa668e0d5202b1e7f2922278703f8",
+        "erc20Proxy": "0xf1ec01d6236d3cd881a0bf0130ea25fe4234003e",
+        "erc721Proxy": "0x2a9127c745688a165106c11cd4d647d2220af821",
+        "etherToken": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+        "exchange": "0x35dd2932454449b14cee11a94d3674a936d5d7b2",
+        "forwarder": "0x17992e4ffb22730138e4b62aaa6367fa9d3699a6",
+        "orderValidator": "0xb389da3d204b412df2f75c6afb3d0a7ce0bc283d",
+        "zrxToken": "0x2002d3812f58e35f0ea1ffbf80a75a38c32175fa"
 
-    "ethTestnet": "kovan",
-    "ethChainId": 42,
-    "defaultPair": { "token": "LSCX", "base": "ETH" },
+    },
+    "default_token": {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000002002d3812f58e35f0ea1ffbf80a75a38c32175fa",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x2002d3812f58e35f0ea1ffbf80a75a38c32175fa",
+            "decimals": "18",
+            "name": "ZRX",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "ZRX - WETH",
+        "name": "WETH - ZRX"
+    },
     "asset_pairs": [{
         "assetDataA": {
             "assetData": "0xf47261b00000000000000000000000006ff6c0ff1d68b964901f986d4c9fa3ac68346570",
@@ -38,8 +73,7 @@
             "tokenAddress": "0x8dc114d77e857558aefbe8e1a50b460ff9578f1a",
             "decimals": "18",
             "name": "KNC",
-            "allowed": 0,
-            "balance": null
+            "allowed": null
         },
         "assetDataB": {
             "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
@@ -50,8 +84,7 @@
             "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
             "decimals": "18",
             "name": "WETH",
-            "allowed": 1.157920892373162e+77,
-            "balance": null
+            "allowed": null
         },
         "reverseName": "KNC - WETH",
         "name": "WETH - KNC"

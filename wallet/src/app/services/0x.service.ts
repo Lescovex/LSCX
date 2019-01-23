@@ -38,7 +38,7 @@ export class ZeroExService{
   protected WETH_addr;
   protected WETH_abi;
   public contract;
-  public balance_weth;
+  //public balance_weth;
   public contractAddresses;
   protected contractWrappers;
   protected httpClient;
@@ -76,11 +76,77 @@ export class ZeroExService{
   public ZERO = new BigNumber(0);
   public UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1)
   protected abiBytes = require("../../libs/0x/x.json");
-
+  protected config;
+  
   constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
   }
   
+  async init(){
+    this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
+    console.log("this.config??????",this.config);
+    this.asset_pairs = this.config.asset_pairs;
+    this.token = this.config.default_token;
+    
+    this.activateLoading();
+    await this.setProvider();
+    this.loadingD.close();
+    //await this.getAssetPairs(1);
+    
+  }
+
+  setProvider(pass?){
+    let ZERO = new BigNumber(0);
+    let netNumber = this._web3.network.chain;
+    let net = this._web3.network.urlStarts;
+  if(pass != null){
+    let error = "";
+    let wallet;
+    let key;
+
+    try{
+      wallet = EthWallet.fromV3(this._account.account.v3, pass);
+    }catch(e){
+      error= e.message;
+    }
+    console.log("wallet", wallet);
+    
+    if(error==""){
+      key = wallet.getPrivateKeyString()
+      
+    }
+    console.log("key",key);
+    
+    let substr = key.substring(2, key.length)
+    
+    this.providerEngine = new Web3ProviderEngine();
+    
+    this.privateKeyWalletSubprovider =  new PrivateKeyWalletSubprovider(substr);
+    this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
+    
+  }else{
+    this.providerEngine = new Web3ProviderEngine();
+    console.log("this._web3.web3", this._web3.web3);
+    
+    this.privateKeyWalletSubprovider =  new RPCSubprovider(this._web3.web3.currentProvider.host);
+    this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
+    
+  }
+    this.subproviders = [new RPCSubprovider('https://'+net+'.infura.io')];
+    this.providerEngine.addProvider(new RedundantSubprovider(this.subproviders));
+    this.httpClient = new HttpClient(this.providerAddress);
+    this.providerEngine.start();
+
+    this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
+    console.log("ContractWrappers",this.contractWrappers);
+    this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
+    console.log("contractAddresses", this.contractAddresses);
+    
+    this.setContract();
+    this.httpClient = new HttpClient(this.providerAddress);
+    this.web3Wrapper = new Web3Wrapper(this.providerEngine);
+}
+
   async order(form, action, pass, randomExpiration){
     await this.setProvider(pass);
     let [maker, taker]= await this.web3Wrapper.getAvailableAddressesAsync();
@@ -486,69 +552,10 @@ export class ZeroExService{
     } 
   }
 
-  setProvider(pass?){
-      let ZERO = new BigNumber(0);
-      let netNumber = this._web3.network.chain;
-      let net = this._web3.network.urlStarts;
-    if(pass != null){
-      let error = "";
-      let wallet;
-      let key;
-  
-      try{
-        wallet = EthWallet.fromV3(this._account.account.v3, pass);
-      }catch(e){
-        error= e.message;
-      }
-      console.log("wallet", wallet);
-      
-      if(error==""){
-        key = wallet.getPrivateKeyString()
-        
-      }
-      console.log("key",key);
-      
-      let substr = key.substring(2, key.length)
-      
-      this.providerEngine = new Web3ProviderEngine();
-      
-      this.privateKeyWalletSubprovider =  new PrivateKeyWalletSubprovider(substr);
-      this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
-      
-    }else{
-      this.providerEngine = new Web3ProviderEngine();
-      console.log("this._web3.web3", this._web3.web3);
-      
-      this.privateKeyWalletSubprovider =  new RPCSubprovider(this._web3.web3.currentProvider.host);
-      this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
-      
-    }
-      this.subproviders = [new RPCSubprovider('https://'+net+'.infura.io')];
-      this.providerEngine.addProvider(new RedundantSubprovider(this.subproviders));
-      this.httpClient = new HttpClient(this.providerAddress);
-      this.providerEngine.start();
-  
-      this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
-      console.log("ContractWrappers",this.contractWrappers);
-      this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
-      console.log("contractAddresses", this.contractAddresses);
-      
-      this.setContract();
-      this.httpClient = new HttpClient(this.providerAddress);
-      this.web3Wrapper = new Web3Wrapper(this.providerEngine);
-  }
-
-  async init(){
-    this.activateLoading();
-    await this.setProvider();
-    await this.getAssetPairs(1);
-    
-  }
-
   async startIntervalBalance(){
-    await this.getWethBalance();
+    //await this.getWethBalance();
     this.interval = setInterval(async ()=>{
-      await this.getWethBalance();
+      //await this.getWethBalance();
       await this.setBalances();
       await this.updateAllowance();
     },5000);
@@ -943,7 +950,7 @@ export class ZeroExService{
     let address = ADDRESSES[this._web3.network.chain]
     this.contract = this._contract.contractInstance(this.getAbi(), address);
   }
-  
+  /*
   async getWethBalance(){
     let balance;
     try {
@@ -963,7 +970,7 @@ export class ZeroExService{
     
     //console.log("balanceWeth",this.balance_weth.toNumber());
   }
-
+  */
   async callFunction(contractInst, functionName:string, params){
 		return await this._contract.callFunction(contractInst, functionName, params);
 	}
@@ -1078,11 +1085,9 @@ export class ZeroExService{
     console.log("BUYS ZEROEX",buys);
     console.log("SELLS ZEROEX", sells);
     
-    
 		this.showBuys = buys;
 		this.showSells = sells;
 	}
-
 
   getLocalStorageToken(){
 		if(localStorage.getItem('0xToken')){
@@ -1091,18 +1096,27 @@ export class ZeroExService{
 			return null;
     }
   }
+
+  removeLocalStorageToken(){
+    if(localStorage.getItem('0xToken')){
+      localStorage.removeItem('0xToken');
+    }
+  }
   
-  /*
   saveLocalStorageToken(){
 		if(this.token != null){
-			localStorage.removeItem('0xToken');
-			localStorage.setItem('0xToken', JSON.stringify(this.token));
+      localStorage.removeItem('0xToken');
+      let obj ={
+        token :this.token,
+        network: this._web3.network
+      }
+			localStorage.setItem('0xToken', JSON.stringify(obj));
 			
 		}else{
 			localStorage.removeItem('0xToken');	
 		}
   }
-*/
+
   resetTokenBalances() {
 		this.token.assetDataA.balance = null;
     this.token.assetDataB.balance = null;
