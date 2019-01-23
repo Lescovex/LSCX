@@ -23,13 +23,16 @@ import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses/li
 
 import * as Web3L from 'web3';
 import * as EthWallet from 'ethereumjs-wallet';
+
 const fs = require('fs');
+const homedir = require('os').homedir();
+const lescovexPath = homedir+"/.lescovex";
 @Injectable()
 export class ZeroExService{
   protected providerEngine;
   protected providerAddress = "https://sra.bamboorelay.com/0x/v2/";
   protected webSocketProviderAddress = "wss://sra.bamboorelay.com/0x/v2/ws";
-  //protected providerAddress = "https://api.openrelay.xyz/v2/";
+  
   //protected providerAddress = "http://0x.lescovex.com/v2";
   protected web3;
   protected infuraKey = "d975dfec3852411890cd72311dd91184";
@@ -79,6 +82,8 @@ export class ZeroExService{
   protected config;
 
   public check_asset_pairs = [];
+  public updated_asset_pairs = [];
+  public localState;
   
   constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
@@ -86,20 +91,62 @@ export class ZeroExService{
   
   async init(){
     this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
-    this.asset_pairs = this.config.asset_pairs;
+    this.providerAddress = this.config.sra_http_endpoint;
+    this.webSocketProviderAddress = this.config.sra_ws_endpoint;
     
     this.activateLoading();
     await this.setProvider();
     console.log("defaultToken???",this.config.default_token);
     
-    
+    await this.getLocalInfo();
     this.loadingD.close();
-    //await this.getAssetPairs(1);
+    
     await this.checkAssetPairs(1);
     await this.setToken();
     
   }
+  async getLocalInfo(){
+		if(!fs.existsSync(lescovexPath)){
+		  fs.mkdirSync(lescovexPath);
+		}
+		
+		let filePath = lescovexPath+"/.0x"+this._web3.network.urlStarts+".json";
+		
+		if(!fs.existsSync(filePath)){
+			let objNet = {
+        network_name: this._web3.network.urlStarts,
+        network_chain_id: this._web3.network.chain,
+        sra_http_endpoint: this.config.sra_http_endpoint,
+        sra_ws_endpoint: this.config.sra_ws_endpoint,
+        default_contract_addresses: this.config.default_contract_addresses,
+        default_token: this.config.default_token,
+        asset_pairs: this.config.asset_pairs
+			}
 
+			fs.writeFileSync(filePath , JSON.stringify(objNet));
+		}
+    let data = fs.readFileSync(filePath);
+    
+		try {
+			this.localState =  JSON.parse(data);
+		} catch (error) {
+			console.log(error);
+			fs.unlink(filePath, (err) => {
+				if (err) throw err;
+				console.log('successfully deleted', filePath);
+			  });
+			this.getLocalInfo();
+    }
+
+      console.log("localState on init?????",this.localState);
+      
+      this.asset_pairs = this.localState.asset_pairs;
+			//await this.getTikers();
+			//this.updateMyStateShow("myFunds");
+			//this.updateMyStateShow("myOrders");
+			//this.updateMyStateShow("myTrades");
+  }
+  
   setProvider(pass?){
     let ZERO = new BigNumber(0);
     let netNumber = this._web3.network.chain;
@@ -174,6 +221,7 @@ export class ZeroExService{
         }else{
           decodedInfo = await this.decodeAssetPairInfo(response.records[i]);
           this.check_asset_pairs.push(decodedInfo);
+          this.updated_asset_pairs.push(decodedInfo);
         }
         
       }
@@ -186,8 +234,9 @@ export class ZeroExService{
         this.config.asset_pairs = this.asset_pairs;
         this.check_asset_pairs = [];
         console.log("All Asset Pairs", this.asset_pairs);
-        
-        this.saveConfigFile();    
+        if(this.updated_asset_pairs.length > 0){
+          this.saveConfigFile();  
+        }
       }
     }
     
@@ -267,16 +316,24 @@ export class ZeroExService{
   }
 
   async saveConfigFile(){
-    let filePath = "./src/libs/0x/config/"+this._web3.network.urlStarts+".json";
+    let filePath = lescovexPath+"/.0x"+this._web3.network.urlStarts+".json";
+    if(this.updated_asset_pairs.length > 0){
+      for (let i = 0; i < this.updated_asset_pairs.length; i++) {
+        this.localState.asset_pairs.push(this.updated_asset_pairs[i]);
+        
+      }
+    }
+    
     try {
-      JSON.stringify(this.config);      
+      JSON.stringify(this.localState);      
     }catch (e)  {
       console.log("JSON ERROR", e)
     }
     
     try{
-      fs.writeFileSync(filePath, JSON.stringify(this.config));
+      fs.writeFileSync(filePath, JSON.stringify(this.localState));
       console.log("FILE SAVED");
+      this.updated_asset_pairs = [];
       
     }catch(e) {
       console.log("FILESYNC ERROR",e);
@@ -717,25 +774,34 @@ export class ZeroExService{
   async getSymbol(token){
     let result;
     let abi;
+    let callName;
+    let type;
     try {
       result = await this._scan.getAbi(token);
-    } catch (error) { 
+    } catch (error) {
+      console.log(error);
+      
     }
-    if(result.result == 'Contract source code not verified'){
-      abi = require('human-standard-token-abi');
+    if(result.result != 'Contract source code not verified' || result != null){
+      let checkAbi = JSON.parse(result.result)
+      for (let i = 0; i < checkAbi.length; i++) {
+        if(checkAbi[i].name == 'symbol' || checkAbi[i].name == 'SYMBOL'){
+          callName = checkAbi[i].name;
+          type = checkAbi[i].outputs[0].type;
+          abi = JSON.parse(result.result);
+        }else{
+          return null;
+        }
+      }
     }else{
-      abi = JSON.parse(result.result)
+      abi = require('human-standard-token-abi');
+      callName = 'symbol'
     }
-    let type;
-    for (let i = 0; i < abi.length; i++) {
-      if(abi[i].name == 'symbol'){
-        type = abi[i].outputs[0].type;
-      } 
-    }
+    
     let contract = this._contract.contractInstance(abi, token);
     try {
       let symbol;
-      let response = await this._contract.callFunction(contract, 'symbol',[]);
+      let response = await this._contract.callFunction(contract, callName,[]);
       console.log("response primer try getSymbol",response);
       
       if(type == "bytes32"){
@@ -795,21 +861,31 @@ export class ZeroExService{
   async getDecimals(token){
     let result;
     let abi;
+    let callName;
     try {
       result = await this._scan.getAbi(token);
     } catch (error) {
       console.log(error);
       
     }
-    if(result.result == 'Contract source code not verified'){
-      abi = require('human-standard-token-abi');
+    if(result.result != 'Contract source code not verified' || result != null){
+      let checkAbi = JSON.parse(result.result)
+      for (let i = 0; i < checkAbi.length; i++) {
+        if(checkAbi[i].name == 'decimals' || checkAbi[i].name == 'DECIMALS'){
+          callName = checkAbi[i].name;
+          abi = JSON.parse(result.result);
+        }else{
+          return null;
+        }
+      }
     }else{
-      abi = JSON.parse(result.result)
+      abi = require('human-standard-token-abi');
+      callName = 'decimals'
     }
     let contract = this._contract.contractInstance(abi, token);
     try {
-      let decimals = await this._contract.callFunction(contract, 'decimals',[]);
-      return decimals;  
+      let decimals = await this._contract.callFunction(contract, callName,[]);
+      return decimals;
     } catch (error) {
       console.log(error);
       return null;
@@ -993,8 +1069,10 @@ export class ZeroExService{
   }
 
   async setToken(token?) {
-    console.log(token);
     
+    if(typeof(token)!="undefined"){
+      console.log("token?",token);
+    }
     if(this.loadingD == null){
       this.activateLoading();
     }
@@ -1158,21 +1236,18 @@ export class ZeroExService{
     } catch (error) {
        
     }
-    console.log("what's result of etherscan call?",result);
-    
     if(result.result != 'Contract source code not verified' || result != null){
       let checkAbi = JSON.parse(result.result)
       for (let i = 0; i < checkAbi.length; i++) {
         if(checkAbi[i].name == 'balanceOf'){
           abi = JSON.parse(result.result);
         }else{
-          abi = require('human-standard-token-abi');    
+          return balance;
         }
       }
     }else{
       abi = require('human-standard-token-abi');
     }
-    
     let contract = this._contract.contractInstance(abi, token.tokenAddress);
     if(contract != null){
       let value;

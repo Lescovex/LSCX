@@ -652,7 +652,6 @@ export class LSCXMarketService {
 			this.updateMyStateShow("myFunds");
 			this.updateMyStateShow("myOrders");
 			this.updateMyStateShow("myTrades");
-
 	}
 
 	async getTikers(){
