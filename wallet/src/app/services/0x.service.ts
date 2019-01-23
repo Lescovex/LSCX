@@ -23,7 +23,7 @@ import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses/li
 
 import * as Web3L from 'web3';
 import * as EthWallet from 'ethereumjs-wallet';
-
+const fs = require('fs');
 @Injectable()
 export class ZeroExService{
   protected providerEngine;
@@ -86,9 +86,6 @@ export class ZeroExService{
   
   async init(){
     this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
-    console.log("this.config??????",this.config);
-    console.log("this.config.default_token?",this.config.default_token);
-    
     this.asset_pairs = this.config.asset_pairs;
     
     this.activateLoading();
@@ -106,52 +103,54 @@ export class ZeroExService{
     let ZERO = new BigNumber(0);
     let netNumber = this._web3.network.chain;
     let net = this._web3.network.urlStarts;
-  if(pass != null){
-    let error = "";
-    let wallet;
-    let key;
+    if(pass != null){
+      let error = "";
+      let wallet;
+      let key;
 
-    try{
-      wallet = EthWallet.fromV3(this._account.account.v3, pass);
-    }catch(e){
-      error= e.message;
-    }
-    console.log("wallet", wallet);
-    
-    if(error==""){
-      key = wallet.getPrivateKeyString()
+      try{
+        wallet = EthWallet.fromV3(this._account.account.v3, pass);
+      }catch(e){
+        error= e.message;
+      }
+      console.log("wallet", wallet);
+      
+      if(error==""){
+        key = wallet.getPrivateKeyString()
+        
+      }
+      console.log("key",key);
+      
+      let substr = key.substring(2, key.length)
+      
+      this.providerEngine = new Web3ProviderEngine();
+      
+      this.privateKeyWalletSubprovider =  new PrivateKeyWalletSubprovider(substr);
+      this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
+      
+    }else{
+      this.providerEngine = new Web3ProviderEngine();
+      console.log("this._web3.web3", this._web3.web3);
+      
+      this.privateKeyWalletSubprovider =  new RPCSubprovider(this._web3.web3.currentProvider.host);
+      this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
       
     }
-    console.log("key",key);
-    
-    let substr = key.substring(2, key.length)
-    
-    this.providerEngine = new Web3ProviderEngine();
-    
-    this.privateKeyWalletSubprovider =  new PrivateKeyWalletSubprovider(substr);
-    this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
-    
-  }else{
-    this.providerEngine = new Web3ProviderEngine();
-    console.log("this._web3.web3", this._web3.web3);
-    
-    this.privateKeyWalletSubprovider =  new RPCSubprovider(this._web3.web3.currentProvider.host);
-    this.providerEngine.addProvider(this.privateKeyWalletSubprovider);
-    
-  }
-    this.subproviders = [new RPCSubprovider('https://'+net+'.infura.io')];
-    this.providerEngine.addProvider(new RedundantSubprovider(this.subproviders));
-    this.httpClient = new HttpClient(this.providerAddress);
-    this.providerEngine.start();
+      this.subproviders = [new RPCSubprovider('https://'+net+'.infura.io')];
+      this.providerEngine.addProvider(new RedundantSubprovider(this.subproviders));
+      this.httpClient = new HttpClient(this.providerAddress);
+      this.providerEngine.start();
 
-    this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
-    console.log("ContractWrappers",this.contractWrappers);
-    this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
-    console.log("contractAddresses", this.contractAddresses);
-    
-    //this.setContract();
-    this.httpClient = new HttpClient(this.providerAddress);
-    this.web3Wrapper = new Web3Wrapper(this.providerEngine);
+      this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
+      console.log("ContractWrappers",this.contractWrappers);
+      this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
+      this.config.default_contract_addresses = this.contractAddresses;
+
+      console.log("contractAddresses", this.contractAddresses);
+      
+      //this.setContract();
+      this.httpClient = new HttpClient(this.providerAddress);
+      this.web3Wrapper = new Web3Wrapper(this.providerEngine);
 }
 
   async checkAssetPairs(checkTime){
@@ -159,7 +158,8 @@ export class ZeroExService{
     console.log("CheckAssetPairs response???", response);
     if (response.total === 0) {
       console.log("ASSET PAIRS RESPONSE == 0");
-      
+      this.asset_pairs = [];
+      this.config.asset_pairs = [];
       //this.asset_pairs == response.response;
     }else{
       //do things
@@ -182,43 +182,43 @@ export class ZeroExService{
       } else {
         console.log("CHECK ASSET PAIRS DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         this.asset_pairs = this.check_asset_pairs;
+        this.config.asset_pairs = this.asset_pairs;
         this.check_asset_pairs = [];
         console.log("All Asset Pairs", this.asset_pairs);
         
-        //this.asset_pairs = this.check_asset_pairs;
-        //this.check_asset_pairs = [];
-        
-        //this.setToken();
-        //console.log("this.asset_pairs",this.asset_pairs);
         
       }
     }
+    this.saveConfigFile();
   }
+  
   async decodeAssetPairInfo(tokenToDecode){
-    //let decodedToken;
-    console.log("tokenToDecode",tokenToDecode);
     let decodedA;
     let decodedB;
     try {
       decodedA = assetDataUtils.decodeERC20AssetData(tokenToDecode.assetDataA.assetData);
-      console.log("decoded A oK");
-      
     } catch (error) {
       console.log("DECODE A ERROR", error);
-      
     }
     try {
       decodedB = assetDataUtils.decodeERC20AssetData(tokenToDecode.assetDataB.assetData);
-      console.log("decoded B oK");
-      
     } catch (error) {
       console.log("DECODE B ERROR", error);
     }
     
-    console.log("before get Symbol");
-    
-    let symbolA = await this.getSymbol(decodedA.tokenAddress);
-    let symbolB = await this.getSymbol(decodedB.tokenAddress);
+    let symbolA;
+    let symbolB;
+    try {
+      symbolA = await this.getSymbol(decodedA.tokenAddress);  
+    } catch (error) {
+      console.log("SYMBOL A ERROR", error);
+    }
+    try {
+      symbolB = await this.getSymbol(decodedB.tokenAddress);  
+    } catch (error) {
+     console.log("SYMBOL B ERROR", error);
+      
+    }
     console.log("symbol",symbolA, symbolB);
     
     let decimalsA;
@@ -227,6 +227,7 @@ export class ZeroExService{
     try {
       decimalsA = await this.getDecimals(decodedA.tokenAddress);  
     } catch (error) {
+      console.log("DECIMALS A ERROR",error);
       decimalsA = null
     }
     
@@ -234,6 +235,7 @@ export class ZeroExService{
       decimalsB = await this.getDecimals(decodedA.tokenAddress);
     } catch (error) {
       decimalsB = null
+      console.log("DECIMALS B ERROR", error);
     }
     let symbolString = symbolA + " - " + symbolB;
     let reverseSymbolString = symbolB + " - " + symbolA;
@@ -263,21 +265,30 @@ export class ZeroExService{
     return pairC;
   }
 
-  in_Array(responseObject, storedObject) {
-    //console.log("responseObject????", responseObject);
+  async saveConfigFile(){
+    let filePath = "./src/libs/0x/config/"+this._web3.network.urlStarts+".json";
+    try {
+      JSON.stringify(this.config);      
+    }catch (e)  {
+      console.log("JSON ERROR", e)
+    }
     
-    //haystack debe ser this.assetPairs, se le pasa objeto assetPairGive de response, si no esta almacenado en this.assetPairs
-    //se hace push y decode de ese order.
+    try{
+      fs.writeFileSync(filePath, JSON.stringify(this.config));
+    }catch(e) {
+      console.log("FILESYNC ERROR",e);
+    }
+          
+  }
+
+  in_Array(responseObject, storedObject) {
     var length = storedObject.length;
     for(var i = 0; i < length; i++) {
         if(storedObject[i].assetDataA.assetData == responseObject.assetDataA.assetData && storedObject[i].assetDataB.assetData == responseObject.assetDataB.assetData){
           return storedObject[i];
         }
-
-        //if(storedObject[i] == responseObject) return storedObject[i];
     }
-    console.log("false_?", responseObject);
-    
+    console.log("false?", responseObject);
     return false;
 }
 
@@ -699,101 +710,7 @@ export class ZeroExService{
       this.interval = null;
     }
   }
-  /*
-  async getAssetPairs(pageNumber){
-    if(this.interval != null){
-      this.clearBalancesInterval();
-    }
-    let response = await this.httpClient.getAssetPairsAsync({ networkId: this._web3.network.chain, page: pageNumber});
-    console.log("assetPairs 0x", response);
-    if (response.total === 0) {
-      this.asset_pairs == response.response;
 
-      this.loadingD.close();
-        //throw new Error('No pairs found on the SRA Endpoint');
-    }else{
-      for (let i = 0; i < response.records.length; i++) {
-        console.log("i", i);
-        
-        let decodedA;
-        let decodedB;
-        try {
-          decodedA = assetDataUtils.decodeERC20AssetData(response.records[i].assetDataA.assetData);
-          console.log("decoded A oK");
-          
-        } catch (error) {
-          console.log("DECODE A ERROR", error);
-          
-        }
-        try {
-          decodedB = assetDataUtils.decodeERC20AssetData(response.records[i].assetDataB.assetData);
-          console.log("decoded B oK");
-          
-        } catch (error) {
-          console.log("DECODE B ERROR", error);
-        }
-        
-        console.log("before get Symbol");
-        
-        let symbolA = await this.getSymbol(decodedA.tokenAddress);
-        let symbolB = await this.getSymbol(decodedB.tokenAddress);
-        console.log("symbol",symbolA, symbolB);
-        
-        let decimalsA;
-        let decimalsB;
-
-        try {
-          decimalsA = await this.getDecimals(decodedA.tokenAddress);  
-        } catch (error) {
-          decimalsA = null
-        }
-        
-        try {
-          decimalsB = await this.getDecimals(decodedA.tokenAddress);
-        } catch (error) {
-          decimalsB = null
-        }
-        let symbolString = symbolA + " - " + symbolB;
-        let reverseSymbolString = symbolB + " - " + symbolA;
-
-        let pairA = {
-          ...response.records[i].assetDataA,
-          ...decodedA,
-          decimals: decimalsA,
-          name: symbolA,
-          allowed: null
-        };
-        let pairB = {
-          ...response.records[i].assetDataB,
-          ...decodedB,
-          decimals: decimalsB,
-          name: symbolB,
-          allowed: null
-        }
-
-        let pairC = {
-          assetDataA: pairA,
-          assetDataB: pairB,
-          reverseName: symbolString,
-          name: reverseSymbolString
-        }
-        console.log("DECODED PAIR!!!!!!!?!?!?!",pairC);
-        
-        this.asset_pairs_mem.push(pairC);
-      } 
-      if(response.total > response.page * response.perPage){
-        await this.getAssetPairs(pageNumber+1);
-      } else {
-        this.asset_pairs = this.asset_pairs_mem;
-        this.asset_pairs_mem = [];
-        
-        this.setToken();
-        console.log("this.asset_pairs",this.asset_pairs);
-        
-      }
-    }
-  }
-  */
   async getSymbol(token){
     let result;
     let abi;
