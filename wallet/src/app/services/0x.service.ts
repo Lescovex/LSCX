@@ -92,10 +92,11 @@ export class ZeroExService{
     await this.setProvider();
     console.log("defaultToken???",this.config.default_token);
     
-    await this.setToken(this.config.default_token);
+    
     this.loadingD.close();
     //await this.getAssetPairs(1);
-    this.checkAssetPairs(1);
+    await this.checkAssetPairs(1);
+    await this.setToken();
     
   }
 
@@ -186,10 +187,10 @@ export class ZeroExService{
         this.check_asset_pairs = [];
         console.log("All Asset Pairs", this.asset_pairs);
         
-        
+        this.saveConfigFile();    
       }
     }
-    this.saveConfigFile();
+    
   }
   
   async decodeAssetPairInfo(tokenToDecode){
@@ -275,6 +276,8 @@ export class ZeroExService{
     
     try{
       fs.writeFileSync(filePath, JSON.stringify(this.config));
+      console.log("FILE SAVED");
+      
     }catch(e) {
       console.log("FILESYNC ERROR",e);
     }
@@ -982,40 +985,6 @@ export class ZeroExService{
     return new BigNumber(Date.now() + ONE_DAY_MS).div(ONE_SECOND_MS).ceil();
   };
   
-  getAbi() {
-    return require('../../libs/0x/weth-abi.json');
-  }
-  /*
-  setContract() {
-    let ADDRESSES = {
-      1:"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-      3:"0xc778417E063141139Fce010982780140Aa0cD5Ab",
-      42:"0xd0A1E359811322d97991E03f863a0C30C2cF029C"
-    }
-    let address = ADDRESSES[this._web3.network.chain]
-    this.contract = this._contract.contractInstance(this.getAbi(), address);
-  }
-  
-  async getWethBalance(){
-    let balance;
-    try {
-      balance = await this.callFunction(this.contract, "balanceOf", [this._account.account.address]);  
-    } catch (error) {
-      console.log("error in getWethBalance() function ", error);
-       
-    }
-    
-    
-    try {
-      this.balance_weth = this._web3.web3.fromWei(balance, 'ether');  
-    } catch (error) {
-      console.log("error parse balance from wei", error);
-      
-    }
-    
-    //console.log("balanceWeth",this.balance_weth.toNumber());
-  }
-  */
   async callFunction(contractInst, functionName:string, params){
 		return await this._contract.callFunction(contractInst, functionName, params);
 	}
@@ -1031,13 +1000,6 @@ export class ZeroExService{
     }
     console.log("SET TOKEN FUNCTION??????!?!?!?");
     
-    if(token!= null){
-      console.log("setTokenFunction 0x Service", token);
-      
-    }
-		//this.showBuys = null;
-		//this.showSells = null;
-		
 		if(this.state.orders != null){
 			this.state.orders.buys = null;
 			this.state.orders.sells = null;
@@ -1050,37 +1012,48 @@ export class ZeroExService{
 		
 		if(typeof(token) == "undefined"){
       let localToken = this.getLocalStorageToken();
-			if(localToken !=null && (this.asset_pairs.find(token=>token.assetDataA.tokenAddress == localToken.assetDataA.tokenAddress && token.assetDataB.tokenAddress == localToken.assetDataB.tokenAddress) != null)) {
+			if(localToken != null && (this.asset_pairs.find(token=>token.assetDataA == localToken.assetDataA && token.assetDataB == localToken.assetDataB) != null)) {
+        console.log("El token almacenado coincide con lo almacenado en asset_pairs");
+        
         this.token = localToken;
         this.updateAllowance();
 			} else {
-				this.token = this.asset_pairs[1]; 
+        console.log("default",this.config.default_token);
+        let default_config_inArray = this.in_Array(this.config.default_token, this.asset_pairs);
+        console.log("in_Array?????",default_config_inArray);
+        
+        if(default_config_inArray != false){
+          this.token = default_config_inArray;
+        }else{
+          if(this.asset_pairs.length > 0){
+            this.token = this.asset_pairs[0];
+          }else{
+            this.token = []
+          }
+        }
 			}
 		}else{
 			this.token = token;
 		}
 		console.log("this.token", this.token);
-    //after set token we need to get allowance and get decimals
-    console.log("WAITING TOKEN A DECIMALS");
-    try {
-      this.token.assetDataA.decimals = await this.getDecimals(this.token.assetDataA.tokenAddress);  
-    } catch (error) {
-      console.log("DECIMALS A ERROR", error);
-      
-    }
-    try {
-      this.token.assetDataB.decimals = await this.getDecimals(this.token.assetDataB.tokenAddress);  
-    } catch (error) {
-      console.log("DECIMALS B ERROR", error);
-      
-    }
-    //console.log("WAITING TOKEN B DECIMALS");
+    
+    await this.updateTokenInfo();
+		this.saveLocalStorageToken();
     
     
+		//this.getTokenState();
+		
+    this.startIntervalBalance();
+    this.startIntervalPairs();
+
+    console.log("THIS TOKEN AFTER SET TOKEN!!!!!!!", this.token);
     
+    this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
+    
+  }
+  async updateTokenInfo(){
     try {
-      console.log("CHECKING ALLOWANCE");
-      
+      console.log("CHECKING ALLOWANCE");  
       this.token.assetDataA.allowed = await this.getProxyAllowance(this.token.assetDataA.tokenAddress, this._account.account.address);
       
     } catch (error) {
@@ -1091,7 +1064,6 @@ export class ZeroExService{
 
     try {  
       console.log("CHECKING ALLOWANCE");
-      
       this.token.assetDataB.allowed = await this.getProxyAllowance(this.token.assetDataB.tokenAddress, this._account.account.address);
     
     } catch (error) {
@@ -1099,20 +1071,7 @@ export class ZeroExService{
       console.log("ALLOWANCE B ERROR");
       
     }
-  
-		//this.saveLocalStorageToken(); // error when change network
-    
-    //this.setTokenContract();
-		//this.getTokenState();
-		this.resetTokenBalances();
-    //this.setBalances();
-    this.startIntervalBalance();
-    this.startIntervalPairs();
-
-    console.log("THIS TOKEN AFTER SET TOKEN!!!!!!!", this.token);
-    
-    this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
-    
+    await this.setBalances();
   }
 
   setBuys(orders){
@@ -1152,11 +1111,7 @@ export class ZeroExService{
   saveLocalStorageToken(){
 		if(this.token != null){
       localStorage.removeItem('0xToken');
-      let obj ={
-        token :this.token,
-        network: this._web3.network
-      }
-			localStorage.setItem('0xToken', JSON.stringify(obj));
+			localStorage.setItem('0xToken', JSON.stringify(this.token));
 			
 		}else{
 			localStorage.removeItem('0xToken');	
@@ -1200,13 +1155,24 @@ export class ZeroExService{
     let abi;
     try {
       result = await this._scan.getAbi(token.tokenAddress);
-    } catch (error) { 
+    } catch (error) {
+       
     }
-    if(result.result == 'Contract source code not verified'){
-      abi = require('human-standard-token-abi');
+    console.log("what's result of etherscan call?",result);
+    
+    if(result.result != 'Contract source code not verified' || result != null){
+      let checkAbi = JSON.parse(result.result)
+      for (let i = 0; i < checkAbi.length; i++) {
+        if(checkAbi[i].name == 'balanceOf'){
+          abi = JSON.parse(result.result);
+        }else{
+          abi = require('human-standard-token-abi');    
+        }
+      }
     }else{
-      abi = JSON.parse(result.result)
+      abi = require('human-standard-token-abi');
     }
+    
     let contract = this._contract.contractInstance(abi, token.tokenAddress);
     if(contract != null){
       let value;

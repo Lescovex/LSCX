@@ -64,15 +64,15 @@ export class EtherscanService {
 		try {
 			historyResp = await this.getTx(address).toPromise();	
 		} catch (error) {
-			console.log(error);
-			
+			console.log("History tx response error");
+			this.getHistory(address)
 		}
 		
 		try {
 			internalResp = await this.getInternalTx(address).toPromise()	
 		} catch (error) {
-			console.log(error);
-			
+			console.log("Internal tx response error");
+			this.getHistory(address)
 		}
 		
 		

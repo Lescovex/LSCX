@@ -1,6 +1,8 @@
 {
     "network_name": "kovan",
     "network_chain_id": 42,
+    "sra_http_endpoint": "https://sra.bamboorelay.com/0x/v2/",
+    "sra_ws_endpoint": "wss://sra.bamboorelay.com/0x/v2/ws",
     "default_contract_addresses": {
         "assetProxyOwner": "0x2c824d2882baa668e0d5202b1e7f2922278703f8",
         "erc20Proxy": "0xf1ec01d6236d3cd881a0bf0130ea25fe4234003e",

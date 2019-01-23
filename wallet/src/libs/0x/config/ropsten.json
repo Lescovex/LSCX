@@ -1,6 +1,8 @@
 {
     "network_name": "ropsten",
     "network_chain_id": 3,
+    "sra_http_endpoint": "https://sra.bamboorelay.com/0x/v2/",
+    "sra_ws_endpoint": "wss://sra.bamboorelay.com/0x/v2/ws",
     "default_contract_addresses": {
         "assetProxyOwner": "0xf5fa5b5fed2727a0e44ac67f6772e97977aa358b",
         "erc20Proxy": "0xb1408f4c245a23c31b98d2c626777d4c0d766caa",
