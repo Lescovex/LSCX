@@ -2,11 +2,535 @@
 
     "ethTestnet": "kovan",
     "ethChainId": 42,
+    "defaultPair": { "token": "LSCX", "base": "ETH" },
+    "asset_pairs": [{
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000006ff6c0ff1d68b964901f986d4c9fa3ac68346570",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570",
+            "decimals": "18",
+            "name": "ZRX",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "ZRX - WETH",
+        "name": "WETH - ZRX"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000008dc114d77e857558aefbe8e1a50b460ff9578f1a",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x8dc114d77e857558aefbe8e1a50b460ff9578f1a",
+            "decimals": "18",
+            "name": "KNC",
+            "allowed": 0,
+            "balance": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": 1.157920892373162e+77,
+            "balance": null
+        },
+        "reverseName": "KNC - WETH",
+        "name": "WETH - KNC"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000007606bd550f467546212649a9c25623dfca88dcd7",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x7606bd550f467546212649a9c25623dfca88dcd7",
+            "decimals": "18",
+            "name": "OMG",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "OMG - WETH",
+        "name": "WETH - OMG"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b000000000000000000000000015fb2a9d7dadbb88f260f78dcbb574b3b76a8e06",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x15fb2a9d7dadbb88f260f78dcbb574b3b76a8e06",
+            "decimals": "18",
+            "name": "EOS",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "EOS - WETH",
+        "name": "WETH - EOS"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000676f650000f420485b99ef0377a2e1c96eb3e821",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x676f650000f420485b99ef0377a2e1c96eb3e821",
+            "decimals": "18",
+            "name": "STATUS",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "STATUS - WETH",
+        "name": "WETH - STATUS"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000cc112cd38362bf3c07d226768fd5869e65296083",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xcc112cd38362bf3c07d226768fd5869e65296083",
+            "decimals": "8",
+            "name": "SALT",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "8",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "SALT - WETH",
+        "name": "WETH - SALT"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000e77c61cd53301efb6d9361fa91f5fb6cd10d2253",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xe77c61cd53301efb6d9361fa91f5fb6cd10d2253",
+            "decimals": "18",
+            "name": "nUSD",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "nUSD - WETH",
+        "name": "WETH - nUSD"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000ef7fff64389b814a946f3e92105513705ca6b990",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xef7fff64389b814a946f3e92105513705ca6b990",
+            "decimals": "18",
+            "name": "GNT",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "GNT - WETH",
+        "name": "WETH - GNT"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000eee3870657e4716670f185df08652dd848fe8f7e",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xeee3870657e4716670f185df08652dd848fe8f7e",
+            "decimals": "18",
+            "name": "DGD",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "DGD - WETH",
+        "name": "WETH - DGD"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000001dad4783cf3fe3085c1426157ab175a6119a04ba",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x1dad4783cf3fe3085c1426157ab175a6119a04ba",
+            "decimals": "18",
+            "name": "MKR",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "MKR - WETH",
+        "name": "WETH - MKR"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000b18845c260f680d5b9d84649638813e342e4f8c9",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xb18845c260f680d5b9d84649638813e342e4f8c9",
+            "decimals": "18",
+            "name": "REP",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "REP - WETH",
+        "name": "WETH - REP"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000323b5d4c32345ced77393b3530b1eed0f346429d",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x323b5d4c32345ced77393b3530b1eed0f346429d",
+            "decimals": "18",
+            "name": "MLN",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "MLN - WETH",
+        "name": "WETH - MLN"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000ef630f892b69acb7fd80a908f9ea4e84de588e01",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xef630f892b69acb7fd80a908f9ea4e84de588e01",
+            "decimals": "18",
+            "name": "HAV",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "HAV - WETH",
+        "name": "WETH - HAV"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000c4375b7de8af5a38a93548eb8453a498222c4ff2",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xc4375b7de8af5a38a93548eb8453a498222c4ff2",
+            "decimals": "18",
+            "name": "DAI",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "DAI - WETH",
+        "name": "WETH - DAI"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000002002d3812f58e35f0ea1ffbf80a75a38c32175fa",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x2002d3812f58e35f0ea1ffbf80a75a38c32175fa",
+            "decimals": "18",
+            "name": "ZRX",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "ZRX - WETH",
+        "name": "WETH - ZRX"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000009e60c938dc6793c0f8b61febb8826e2c8c3559aa",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x9e60c938dc6793c0f8b61febb8826e2c8c3559aa",
+            "decimals": "18",
+            "name": "BAT",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "BAT - WETH",
+        "name": "WETH - BAT"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000008cb3971b8eb709c14616bd556ff6683019e90d9c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x8cb3971b8eb709c14616bd556ff6683019e90d9c",
+            "decimals": "18",
+            "name": "REP",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "REP - WETH",
+        "name": "WETH - REP"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b0000000000000000000000000cc6619ab866679f8a16e5b441348209158967525",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xcc6619ab866679f8a16e5b441348209158967525",
+            "decimals": "18",
+            "name": "OMG",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "OMG - WETH",
+        "name": "WETH - OMG"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b000000000000000000000000030abf9376d408dd687e6b8c05f61d8f0f618afd8",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x30abf9376d408dd687e6b8c05f61d8f0f618afd8",
+            "decimals": "18",
+            "name": "WUC",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "WUC - WETH",
+        "name": "WETH - WUC"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b00000000000000000000000007b6b10caa9e8e9552ba72638ea5b47c25afea1f3",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x7b6b10caa9e8e9552ba72638ea5b47c25afea1f3",
+            "decimals": "18",
+            "name": "MKR",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "MKR - WETH",
+        "name": "WETH - MKR"
+    }, {
+        "assetDataA": {
+            "assetData": "0xf47261b000000000000000000000000031fb614e223706f15d0d3c5f4b08bdf0d5c78623",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0x31fb614e223706f15d0d3c5f4b08bdf0d5c78623",
+            "decimals": "18",
+            "name": "GNT",
+            "allowed": null
+        },
+        "assetDataB": {
+            "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c",
+            "minAmount": "1",
+            "maxAmount": "999999999999999999999",
+            "precision": 8,
+            "assetProxyId": "0xf47261b0",
+            "tokenAddress": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+            "decimals": "18",
+            "name": "WETH",
+            "allowed": null
+        },
+        "reverseName": "GNT - WETH",
+        "name": "WETH - GNT"
+    }]
 
-    "asset_pairs": [
-        { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
-        { "addr": "0x4007625b68b57748b99d1418b1e17bfb3697c949", "name": "LSCX", "decimals": 8 }
-    ],
-    "defaultPair": { "token": "LSCX", "base": "ETH" }
 
 }
