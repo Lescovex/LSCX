@@ -20,6 +20,7 @@ import { RedundantSubprovider, RPCSubprovider, SignerSubprovider, Web3ProviderEn
 import { HttpClient, OrderbookRequest, OrderConfigRequest, OrderbookResponse, SignedOrder } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses/lib/src';
+import { OrderWatcher } from '@0x/order-watcher';
 
 import * as Web3L from 'web3';
 import * as EthWallet from 'ethereumjs-wallet';
@@ -84,6 +85,8 @@ export class ZeroExService{
   public check_asset_pairs = [];
   public updated_asset_pairs = [];
   public localState;
+
+  public orderWatcher;
   
   constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
@@ -96,6 +99,7 @@ export class ZeroExService{
     
     this.activateLoading();
     await this.setProvider();
+
     await this.getLocalInfo();
     this.loadingD.close();
     
@@ -103,6 +107,9 @@ export class ZeroExService{
     await this.setToken();
     
   }
+
+
+
   async getLocalInfo(){
 		if(!fs.existsSync(lescovexPath)){
 		  fs.mkdirSync(lescovexPath);
@@ -186,7 +193,22 @@ export class ZeroExService{
       this.providerEngine.addProvider(new RedundantSubprovider(this.subproviders));
       this.httpClient = new HttpClient(this.providerAddress);
       this.providerEngine.start();
+      
+      
+      this.orderWatcher = new OrderWatcher(this.providerEngine, netNumber);
+      let x = this.orderWatcher.getStats();
+        //this.orderWatcher.start();
+        console.log("orderWatcher??????",this.orderWatcher);
+        console.log("orderWatcher get stats", x);
+        
+      
 
+      /*
+      
+      TESTING ORDERWATCHER HERE!!!!
+      
+      
+      */
       this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
       console.log("ContractWrappers",this.contractWrappers);
       this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
@@ -218,6 +240,8 @@ export class ZeroExService{
           this.check_asset_pairs.push(storedInfo);
         }else{
           decodedInfo = await this.decodeAssetPairInfo(response.records[i]);
+          console.log("decoded INFO????", decodedInfo);
+          
           this.check_asset_pairs.push(decodedInfo);
           this.updated_asset_pairs.push(decodedInfo);
         }
@@ -274,6 +298,8 @@ export class ZeroExService{
 
     try {
       decimalsA = await this.getDecimals(decodedA.tokenAddress);  
+      console.log("DECIMALS A TO NUMBER",decimalsA.toNumber());
+      
     } catch (error) {
       console.log("DECIMALS A ERROR",error);
       decimalsA = null
@@ -281,6 +307,7 @@ export class ZeroExService{
     
     try {
       decimalsB = await this.getDecimals(decodedA.tokenAddress);
+      console.log("DECIMALS B TO NUMBER",decimalsB.toNumber());
     } catch (error) {
       decimalsB = null
       console.log("DECIMALS B ERROR", error);
@@ -659,7 +686,7 @@ export class ZeroExService{
         bids: this.bids
       }
       this.state.orders = {buys:[], sells:[]};
-      //console.log("SI ASKS Y BIDS NULL ORDERBOOK",this.orderbook);
+      //console.log("IF ASKS AND BIDS NULL ORDERBOOK",this.orderbook);
 
       if(this.loadingD != null){
         this.loadingD.close();
@@ -770,8 +797,6 @@ export class ZeroExService{
   }
 
   async getSymbol(token){
-    console.log("GETSYMBOL Q ES TOKEN",token);
-    
     let result;
     let abi;
     let callName;
@@ -781,8 +806,9 @@ export class ZeroExService{
     } catch (error) {
       console.log(error); 
     }
+    console.log("getSymbol response _scan",result);
     
-    if(result.status != 0){
+    if(result.status != "0"){
       let checkAbi = JSON.parse(result.result)
       for (let i = 0; i < checkAbi.length; i++) {
         if(checkAbi[i].name == 'symbol' || checkAbi[i].name == 'SYMBOL'){
@@ -803,7 +829,7 @@ export class ZeroExService{
     try {
       let symbol;
       let response = await this._contract.callFunction(contract, callName,[]);
-      console.log("response primer try getSymbol",response);
+      console.log("response first try getSymbol",response);
       
       if(type == "bytes32"){
         let toASCII = this._web3.web3.toAscii(response);
@@ -869,6 +895,8 @@ export class ZeroExService{
       console.log(error);
       
     }
+    console.log("getDecimals _scan result", result);
+    
     if(result.status != "0"){
       let checkAbi = JSON.parse(result.result)
       for (let i = 0; i < checkAbi.length; i++) {
@@ -905,6 +933,10 @@ export class ZeroExService{
     );
     await this.web3Wrapper.awaitTransactionSuccessAsync(WETHDepositTxHash);
     this.setBalances();
+    console.log(this.token);
+    console.log(contractAddr.etherToken);
+    
+    
   }
 
   async withdrawWETH(amount){
@@ -972,7 +1004,7 @@ export class ZeroExService{
       try {
         let allowance;
         let response = await this._contract.callFunction(contract, 'allowance',[this._account.account.address, this.contractAddresses.erc20Proxy]);
-        //console.log("response ALLOWANCE del primer try",response);
+        //console.log("response ALLOWANCE del first try",response);
         
         if(type == "bytes32"){
           let toASCII = this._web3.web3.toAscii(response);
@@ -985,7 +1017,7 @@ export class ZeroExService{
         }else{
           allowance = response;
         }
-        //console.log("ALLOWANCE ANTES DEL RETURN", allowance.toNumber());
+        //console.log("ALLOWANCE before RETURN", allowance.toNumber());
         
         return allowance.toNumber();  
       } catch (error) {
@@ -999,7 +1031,7 @@ export class ZeroExService{
         }
         try {
           let response = await this._contract.callFunction(contract, 'allowance', [this._account.account.address, this.contractAddresses.erc20Proxy]);
-          //console.log("response ALLOWANCE SEGUNDO TRY this.abiBytes", response);
+          //console.log("response ALLOWANCE second TRY this.abiBytes", response);
           
           if(type == "bytes32"){
             let toASCII = this._web3.web3.toAscii(response);
@@ -1012,7 +1044,7 @@ export class ZeroExService{
           }else{
             allowance = response;
           }
-          //console.log("ALLOWANCE ANTES DEL RETURN", allowance.toNumber());
+          //console.log("ALLOWANCE before RETURN", allowance.toNumber());
           
           return allowance.toNumber();
         } catch (error) {
@@ -1203,8 +1235,8 @@ export class ZeroExService{
 		this.token.assetDataA.balance = await this.getBalance(this.token.assetDataA);
     this.token.assetDataB.balance = await this.getBalance(this.token.assetDataB);
     //console.log("log this tokens inside setBalances",this.token);
-    //console.log("balance A", this.token.assetDataA.balance, this.token.assetDataA.name);
-    //console.log("balance B", this.token.assetDataB.balance, this.token.assetDataB.name);
+    console.log("balance A", this.token.assetDataA.balance, this.token.assetDataA.name);
+    console.log("balance B", this.token.assetDataB.balance, this.token.assetDataB.name);
   
   }
 
@@ -1229,18 +1261,20 @@ export class ZeroExService{
     let balance:number = 0;
     let result;
     let abi;
+    
+    
     try {
       result = await this._scan.getAbi(token.tokenAddress);
     } catch (error) {
        
     }
-    if(result.result != 'Contract source code not verified' || result != null){
+    if(result.status != "0"){
       let checkAbi = JSON.parse(result.result)
       for (let i = 0; i < checkAbi.length; i++) {
         if(checkAbi[i].name == 'balanceOf'){
           abi = JSON.parse(result.result);
         }else{
-          return balance;
+          abi = require('human-standard-token-abi');
         }
       }
     }else{
