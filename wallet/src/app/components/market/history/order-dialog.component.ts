@@ -100,7 +100,7 @@ export class OrderDialogComponent {
             }
         }
         if(this.data.display == 'weth'){
-            console.log("Que es this data obj?",this.data);
+            console.log("Que es this data",this.data);
             
             this.submited = true;
             if(form.invalid) return false;
@@ -116,7 +116,6 @@ export class OrderDialogComponent {
                     return false;
                 }
             }
-            
             let is_Valid = await this._zeroEx.validateFillOrder(this.data ,this.f.amount,this._account.account.address);
             console.log("IS VALID?!?!?!??!!?!?!!",is_Valid);
             

@@ -1,4 +1,4 @@
-import { Component, DoCheck } from '@angular/core'
+import { Component, DoCheck, OnInit } from '@angular/core'
 
 import { AccountService } from '../../../services/account.service';
 import { ContractService } from '../../../services/contract.service';
@@ -26,6 +26,7 @@ export class MarketHistoryPage implements DoCheck {
     if(this._market.display == 'eth'){
       this._LSCXmarket.activateLoading();
     }
+    
     this._LSCXmarket.getTokenState();
     this.action = "myOrders";
     this.intervalLoops = 0;
@@ -36,7 +37,13 @@ export class MarketHistoryPage implements DoCheck {
     this._LSCXmarket.setBalances()
   }
 
+  ngOnInit(){
+    console.log("Market history page on init??");
+    
+  }
   async ngDoCheck() {
+    //console.log(this._market.display);
+    
     if(this.lastAction != this.action){
       this.lastAction = this.action;
     }

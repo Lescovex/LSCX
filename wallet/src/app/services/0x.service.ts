@@ -583,23 +583,16 @@ export class ZeroExService{
         let orderPrice = response.asks.records[i].order.takerAssetAmount.div(response.asks.records[i].order.makerAssetAmount).toNumber();
         let takerAmount = response.asks.records[i].order.takerAssetAmount.toNumber();
         let makerAmount = response.asks.records[i].order.makerAssetAmount.toNumber();
-        let remainingAmount = parseInt(response.asks.records[i].metaData.remainingTakerAssetAmount);
-                                                                        
-        let availableAmount = takerAmount - remainingAmount;
-        //console.log("availableAmount asks",availableAmount);
+        
+        let remainingAmount;
+        let filledAmount;
+
         let x = takerDecimals.toString();
         let exp = 10 ** parseInt(x)
         let readableTakerAmount = takerAmount / exp;
-        let filledAmount = availableAmount / exp;
-
-        let takerAssetAmountRemaining = response.asks.records[i].metaData.remainingTakerAssetAmount / exp;
-        //console.log("takerAssetAmountRemaining",takerAssetAmountRemaining);
-        //console.log("takerAssetAmountRemaining before parse",response.asks.records[i].metaData.remainingTakerAssetAmount);
-        
-        //console.log("takerAmount", takerAmount);
-        //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
+      
         if(response.asks.records[i].metaData.remainingTakerAssetAmount != null){
-          console.log("Remaining Taker Amount", response.asks.records[i].metaData.remainingTakerAssetAmount);
+          //console.log("Remaining Taker Amount", response.asks.records[i].metaData.remainingTakerAssetAmount);
           let obj = {
             exchangeAddress : response.asks.records[i].order.exchangeAddress,
             expirationTimeSeconds : response.asks.records[i].order.expirationTimeSeconds,
@@ -617,12 +610,16 @@ export class ZeroExService{
           }
 
           let orderhash = await this.getOrderHash(obj);
-          //console.log("orderHash?",orderhash);
-          let responsefilled = await  this.contractWrappers.exchange.getFilledTakerAssetAmountAsync(orderhash);
-          console.log("responseFilled", responsefilled.toNumber());
-          
+          let responsed = await  this.contractWrappers.exchange.getFilledTakerAssetAmountAsync(orderhash);
+          filledAmount = responsed/exp;
+          remainingAmount = readableTakerAmount - filledAmount;
+          console.log("filledAmount", filledAmount);
+          console.log("remainingAmount", remainingAmount);
+        }else{
+          filledAmount = 0;
+          remainingAmount = readableTakerAmount;
         }
-
+       
         let makerData = {
           ...decodedMakerDataAsks,
           symbol: makerSymbol
@@ -637,10 +634,10 @@ export class ZeroExService{
           takerData: takerData,
           price: orderPrice,
           makerAmount: makerAmount,
-          //filledAmount: filledAmount,
           expirationTimeSeconds: response.asks.records[i].order.expirationTimeSeconds.toNumber(),
           takerAmount: readableTakerAmount,
-          //amountRemaining: takerAssetAmountRemaining
+          filledAmount: filledAmount,
+          remainingAmount: remainingAmount
         }
         this.asks.push(obj);
       }
@@ -670,21 +667,14 @@ export class ZeroExService{
         let orderPrice = response.bids.records[i].order.makerAssetAmount.div(response.bids.records[i].order.takerAssetAmount).toNumber();
         let takerAmount = response.bids.records[i].order.takerAssetAmount.toNumber();
         let makerAmount = response.bids.records[i].order.makerAssetAmount.toNumber();
-        let remainingAmount = parseInt(response.bids.records[i].metaData.remainingTakerAssetAmount);
-        let availableAmount = takerAmount - remainingAmount;
-        //console.log("availableAmount bids",availableAmount);
         
+        let remainingAmount;
+        let filledAmount;
+
         let x = takerDecimals.toString();
         let exp = 10 ** parseInt(x)
         let readableTakerAmount = takerAmount / exp;
-        let filledAmount = availableAmount / exp;
-        //console.log("takerAssetAmountRemaining",response.bids.records[i].metaData.takerAssetAmountRemaining);
-        let takerAssetAmountRemaining = response.bids.records[i].metaData.remainingTakerAssetAmount / exp;
-        //console.log("takerAssetAmountRemaining",takerAssetAmountRemaining);
-        //console.log("takerAssetAmountRemaining before parse",response.bids.records[i].metaData.remainingTakerAssetAmount);
-        
-        //console.log("takerAmount", takerAmount);
-        //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
+
         if(response.bids.records[i].metaData.remainingTakerAssetAmount != null){
           console.log("Remaining Taker Amount", response.bids.records[i].metaData.remainingTakerAssetAmount);
           let obj = {
@@ -704,10 +694,14 @@ export class ZeroExService{
           }
 
           let orderhash = await this.getOrderHash(obj);
-          //console.log("orderHash?",orderhash);
-          let responsefilled = await  this.contractWrappers.exchange.getFilledTakerAssetAmountAsync(orderhash);
-          console.log("responseFilled", responsefilled.toNumber());
-          
+          let responsed = await  this.contractWrappers.exchange.getFilledTakerAssetAmountAsync(orderhash);
+          filledAmount = responsed/exp;
+          remainingAmount = readableTakerAmount - filledAmount;
+          console.log("filledAmount", filledAmount);
+          console.log("remainingAmount", remainingAmount);
+        }else{
+          filledAmount = 0;
+          remainingAmount = readableTakerAmount;
         }
         
         let makerData = {
@@ -724,10 +718,10 @@ export class ZeroExService{
           takerData: takerData,
           price: orderPrice,
           makerAmount: makerAmount,
-          //filledAmount: filledAmount,
           expirationTimeSeconds: response.bids.records[i].order.expirationTimeSeconds.toNumber(),
           takerAmount: readableTakerAmount,
-          //amountRemaining: takerAssetAmountRemaining
+          filledAmount: filledAmount,
+          remainingAmount: remainingAmount
         }
         this.bids.push(obj);
       }

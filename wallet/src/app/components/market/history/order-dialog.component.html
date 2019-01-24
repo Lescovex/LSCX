@@ -1,5 +1,5 @@
 <div>
-    <h1 class="text-center">Trade order<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+    <h1 class="text-center">Trade order<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
 </div>
 <div class=" dist block" *ngIf="data.action == 'sell' && data.display == 'eth'">
     <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenGive}}</span></p>

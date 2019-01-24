@@ -1,5 +1,5 @@
 <nav class="flex-row">
-    <a routerLink="market-wallet" routerLinkActive="active" #market="routerLinkActive">
+    <a routerLink="market-wallet" routerLinkActive="active" #market="routerLinkActive" (click)="print('market-wallet')">
         <div>
             <span>
                 <img class="top-nav-img" *ngIf="market.isActive" src='~icons/send_icon.svg'>
@@ -8,7 +8,7 @@
             <p class="title-button-navbar">Market Wallet</p>
         </div>
     </a>
-    <a routerLink="buy-sell" routerLinkActive="active" #buySell="routerLinkActive">
+    <a routerLink="buy-sell" routerLinkActive="active" #buySell="routerLinkActive" (click)="print('buy-sell')">
         <div>
             <span>
                 <img class="top-nav-img" *ngIf="buySell.isActive" src='~icons/newcontract_icon.svg'>
@@ -17,7 +17,7 @@
             <p class="title-button-navbar">Buy/Sell</p>
         </div>
     </a>
-    <a routerLink="history" routerLinkActive="active" #hist="routerLinkActive">
+    <a routerLink="history" routerLinkActive="active" #hist="routerLinkActive" (click)="print('history')">
         <div>
             <span>
                 <img class="top-nav-img" *ngIf="hist.isActive" src='~icons/history_icon.svg'>

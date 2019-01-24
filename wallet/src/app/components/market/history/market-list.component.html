@@ -123,7 +123,7 @@
                 </td>
                 <td (click)="openOrderDialog('sell', order)">
                     <p>
-                        {{order.takerAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}}
+                        {{order.filledAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}} / {{order.takerAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}}
                     </p>
                 </td>
                 <td *ngIf="blockNumber != null" (click)="openOrderDialog('sell', order)">
@@ -161,7 +161,7 @@
                 </td>
                 <td (click)="openOrderDialog('buy', order)">
                     <p>
-                        {{order.takerAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}}
+                        {{order.filledAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}} / {{order.takerAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}}
                     </p>
                 </td>
                 <td *ngIf="blockNumber != null" (click)="openOrderDialog('buy', order)">

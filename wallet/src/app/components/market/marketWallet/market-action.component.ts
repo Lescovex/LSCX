@@ -40,6 +40,11 @@ export class MarketActionComponent implements OnChanges{
         
         
     }
+
+    ngOnInit(){
+        console.log("market action component on init???");
+        
+    }
     ngOnChanges(): void{
         if(this.lastAction != this.action){
             this.submited = false;

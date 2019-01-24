@@ -16,6 +16,10 @@ export class TokensMarketListComponent implements OnChanges {
     this.search()
   }
 
+  ngOnInit(){
+    console.log("Tokens market list component on init?");
+    
+  }
   ngOnChanges(): void{
     if(this.display != this._market.display){
         this.display = this._market.display;

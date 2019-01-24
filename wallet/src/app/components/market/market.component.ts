@@ -26,6 +26,14 @@ export class MarketComponent implements DoCheck, OnDestroy{
     //this._0x.provider();
   }
 
+
+  ngOnInit(){
+    console.log("market component on init???");
+    
+  }
+  print(text){
+    console.log("where i click?", text)
+  }
   ngDoCheck(){
      if(this._LSCXmarket.updated = true && this._LSCXmarket.tikersInterval == null){
        this._LSCXmarket.setTikersInterval();

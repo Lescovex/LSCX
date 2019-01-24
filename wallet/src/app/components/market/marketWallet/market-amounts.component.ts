@@ -24,6 +24,11 @@ export class MarketAmountsComponent {
     
     
   }
+
+  ngOnInit(){
+    console.log("market amounts component on init?");
+    
+  }
   amount(amount){
     return amount/Math.pow(10,this.token.decimals)
   }
