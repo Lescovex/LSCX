@@ -51,6 +51,8 @@ export class SendMarketDialogComponent{
    
 
   async sendTx(pass){
+    console.log("sendtx?????");
+    
     if (typeof(pass)=='undefined' || pass==""|| this.submited){
       return false
     }
@@ -69,7 +71,7 @@ export class SendMarketDialogComponent{
       if(sendResult instanceof Error){
         this.openDialogWhenError(sendResult.message);
         return false;
-      }else{      
+      }else{
         this.data.functionObj.txHash = sendResult;
         let pending: any = null;
         let j = 0;

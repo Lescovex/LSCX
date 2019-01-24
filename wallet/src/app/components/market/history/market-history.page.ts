@@ -4,6 +4,7 @@ import { AccountService } from '../../../services/account.service';
 import { ContractService } from '../../../services/contract.service';
 import { DialogService } from '../../../services/dialog.service';
 import { Web3 } from '../../../services/web3.service';
+import { MarketComponent } from "../market.component";
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { Order } from '../../../models/order';
 
@@ -21,8 +22,10 @@ export class MarketHistoryPage implements DoCheck {
   loadingDialog;
   intervalLoops:number;
 
-  constructor(protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
-    this._LSCXmarket.activateLoading();
+  constructor(protected _market : MarketComponent,protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
+    if(this._market.display == 'eth'){
+      this._LSCXmarket.activateLoading();
+    }
     this._LSCXmarket.getTokenState();
     this.action = "myOrders";
     this.intervalLoops = 0;

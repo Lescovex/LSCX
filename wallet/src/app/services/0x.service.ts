@@ -1,16 +1,13 @@
 import { Injectable} from '@angular/core';
 import { Router } from '@angular/router'
 import { MdDialog } from '@angular/material';
-import { Http, Headers, RequestOptions } from "@angular/http";
 
 //services
 import { WalletService } from './wallet.service';
 import { AccountService } from "./account.service";
-import { TokenService } from './token.service';
 import { Web3 } from "./web3.service";
 import { ContractService } from './contract.service';
 import { EtherscanService } from './etherscan.service';
-
 
 import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
 
@@ -22,50 +19,46 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { getContractAddressesForNetworkOrThrow } from '@0x/contract-addresses/lib/src';
 import { OrderWatcher } from '@0x/order-watcher';
 
-import * as Web3L from 'web3';
 import * as EthWallet from 'ethereumjs-wallet';
 
 const fs = require('fs');
 const homedir = require('os').homedir();
 const lescovexPath = homedir+"/.lescovex";
+
 @Injectable()
 export class ZeroExService{
-  protected providerEngine;
-  protected providerAddress;
-  protected webSocketProviderAddress;
   
-  //protected providerAddress = "http://0x.lescovex.com/v2";
-  protected web3;
-  protected infuraKey = "d975dfec3852411890cd72311dd91184";
-
-  //WETH Config
-  protected WETH_addr;
-  protected WETH_abi;
-  public contract;
-  //public balance_weth;
+  
+  //0x Config
   public contractAddresses;
   protected contractWrappers;
   protected httpClient;
-  protected signerSubprovider;
   protected subproviders;
-  
   protected privateKeyWalletSubprovider;
   protected web3Wrapper;
+  public orderWatcher;
+  protected providerEngine;
+  protected providerAddress;
+  //protected providerAddress = "http://0x.lescovex.com/v2";
+  protected webSocketProviderAddress;
+  
 
   protected DECIMALS = 18;
-  
+  public NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+  //public ZERO = new BigNumber(0);
+  //public UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1)
+
   public interval;
   public interval2;
-
   public loadingD;
 
   public orderbook;
   public asks=[];
   public bids = [];
-  public selectedPair = [];
   public asset_pairs = [];
-  public asset_pairs_mem = [];
-  public contractToken;
+  public check_asset_pairs = [];
+  public updated_asset_pairs = [];
+  public localState;
   public token: any;
   public state:any={
 		orders : undefined,
@@ -75,20 +68,11 @@ export class ZeroExService{
   };
   public showBuys;
   public showSells;
-
-  public NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
-  public ZERO = new BigNumber(0);
-  public UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1)
-  protected abiBytes = require("../../libs/0x/x.json");
+  
+  protected abiBytes = require("../../libs/0x/abiBytes.json");
   protected config;
 
-  public check_asset_pairs = [];
-  public updated_asset_pairs = [];
-  public localState;
-
-  public orderWatcher;
-  
-  constructor(private http: Http, public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService, private _web3: Web3, private router: Router, private _scan: EtherscanService, private _contract: ContractService){
+  constructor(public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _web3: Web3, protected router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
   }
   
@@ -428,19 +412,19 @@ export class ZeroExService{
       );
       await this.web3Wrapper.awaitTransactionSuccessAsync(ApprovalTxHash);
     }
-    
+    /*
     let x = "18";
     let exp = 10 ** parseInt(x)
     let redeableMakerAssetAmount:any = makerAssetAmount.div(exp).toNumber();
     let redeableTakerAssetAmount:any = takerAssetAmount.div(exp).toNumber();
     console.log("REDEABLE MakerAssetAmount", redeableMakerAssetAmount);
     console.log("REDEABLE TakerAssetAmount", redeableTakerAssetAmount);
-   
+   */
     console.log("EXPIRATION BEFORE",randomExpiration.toNumber());
     var duration:any = 60*60*24;
     randomExpiration = this.getRandomFutureDateInSeconds();
     
-    let orderConfigRequest = {
+    let orderConfigRequest : OrderConfigRequest= {
       makerAddress: maker,
       takerAddress: taker,
       makerAssetAmount,
@@ -465,9 +449,10 @@ export class ZeroExService{
     console.log("order",order);
     
     console.log(order.makerFee.toNumber());
+    /*
     let redeableMakerFee:any = makerAssetAmount.div(exp).toNumber();
     console.log("REDEABLE MAKER FEE", redeableMakerFee );
-    
+    */
     let orderHashHex = await orderHashUtils.getOrderHashHex(order);
     console.log("orderHashHex",orderHashHex)
     let signature = await signatureUtils.ecSignHashAsync(this.providerEngine, orderHashHex, maker);
@@ -500,7 +485,7 @@ export class ZeroExService{
       //openErrorDialog
       return false;
     }
-
+    
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
 
@@ -509,29 +494,47 @@ export class ZeroExService{
     return orderHashHex;
   }
   
-  async fillOrder(order, value, taker, action, key){
-    await this.setProvider(key)
-    
-    //setUnlimitedAllowance
-    let x = await this.setUnlimitedProxyAllowance(order.decodedTakerData.tokenAddress, taker);
-    console.log(x);
-    
-    let TX_DEFAULTS = { gas: 400000 };
+  async validateFillOrder(order, value, taker){
     let decimals;
-    if(order.decodedTakerData.tokenAddress == this.token.assetDataA.tokenAddress){
+    if(order.takerData.tokenAddress == this.token.assetDataA.tokenAddress){
       decimals = this.token.assetDataA.decimals;
     }
-    if(order.decodedTakerData.tokenAddress == this.token.assetDataB.tokenAddress){
+    if(order.takerData.tokenAddress == this.token.assetDataB.tokenAddress){
       decimals = this.token.assetDataB.decimals;
     }
     let takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(value), parseInt(decimals));
     try {
-      await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.orderResponse.order, takerAssetAmount, taker);  
+      let x = await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.order, takerAssetAmount, taker); 
+      console.log("que es x??",x);
+       
+    } catch (error) {
+      return error;
+      //console.log("error of validateFillOrder", error); 
+    }
+  }
+  async fillOrder(order, value, taker, key){
+    await this.setProvider(key)
+    
+    //setUnlimitedAllowance
+    let x = await this.setUnlimitedProxyAllowance(order.takerData.tokenAddress, taker);
+    console.log(x);
+    
+    let TX_DEFAULTS = { gas: 400000 };
+    let decimals;
+    if(order.takerData.tokenAddress == this.token.assetDataA.tokenAddress){
+      decimals = this.token.assetDataA.decimals;
+    }
+    if(order.takerData.tokenAddress == this.token.assetDataB.tokenAddress){
+      decimals = this.token.assetDataB.decimals;
+    }
+    let takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(value), parseInt(decimals));
+    try {
+      await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.order, takerAssetAmount, taker);  
     } catch (error) {
       throw new Error(error);
       //console.log("error of validateFillOrder", error); 
     }
-    let txHash = await this.contractWrappers.exchange.fillOrderAsync(order.orderResponse.order, takerAssetAmount, taker, {
+    let txHash = await this.contractWrappers.exchange.fillOrderAsync(order.order, takerAssetAmount, taker, {
         gasLimit: TX_DEFAULTS.gas,
     });
     await this.web3Wrapper.awaitTransactionSuccessAsync(txHash);
@@ -595,7 +598,30 @@ export class ZeroExService{
         
         //console.log("takerAmount", takerAmount);
         //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
-        
+        if(response.asks.records[i].metaData.remainingTakerAssetAmount != null){
+          console.log("Remaining Taker Amount", response.asks.records[i].metaData.remainingTakerAssetAmount);
+          let obj = {
+            exchangeAddress : response.asks.records[i].order.exchangeAddress,
+            expirationTimeSeconds : response.asks.records[i].order.expirationTimeSeconds,
+            feeRecipientAddress : response.asks.records[i].order.feeRecipientAddress,
+            makerAddress : response.asks.records[i].order.makerAddress,
+            makerAssetAmount : response.asks.records[i].order.makerAssetAmount,
+            makerAssetData : response.asks.records[i].order.makerAssetData,
+            makerFee : response.asks.records[i].order.makerFee,
+            salt : response.asks.records[i].order.salt,
+            senderAddress : response.asks.records[i].order.senderAddress,
+            takerAddress : response.asks.records[i].order.takerAddress,
+            takerAssetAmount : response.asks.records[i].order.takerAssetAmount,
+            takerAssetData : response.asks.records[i].order.takerAssetData,
+            takerFee : response.asks.records[i].order.takerFee
+          }
+
+          let orderhash = await this.getOrderHash(obj);
+          //console.log("orderHash?",orderhash);
+          let responsefilled = await  this.contractWrappers.exchange.getFilledTakerAssetAmountAsync(orderhash);
+          console.log("responseFilled", responsefilled.toNumber());
+          
+        }
 
         let makerData = {
           ...decodedMakerDataAsks,
@@ -606,15 +632,15 @@ export class ZeroExService{
           symbol: takerSymbol
         }
         let obj = {
-          orderResponse: response.asks.records[i],
-          decodedMakerData: makerData,
-          decodedTakerData: takerData,
+          ...response.asks.records[i],
+          makerData: makerData,
+          takerData: takerData,
           price: orderPrice,
           makerAmount: makerAmount,
-          filledAmount: filledAmount,
+          //filledAmount: filledAmount,
           expirationTimeSeconds: response.asks.records[i].order.expirationTimeSeconds.toNumber(),
           takerAmount: readableTakerAmount,
-          amountRemaining: takerAssetAmountRemaining
+          //amountRemaining: takerAssetAmountRemaining
         }
         this.asks.push(obj);
       }
@@ -659,7 +685,30 @@ export class ZeroExService{
         
         //console.log("takerAmount", takerAmount);
         //console.log("takerAmount div exp decimals", readableTakerAmount ) ;
-        
+        if(response.bids.records[i].metaData.remainingTakerAssetAmount != null){
+          console.log("Remaining Taker Amount", response.bids.records[i].metaData.remainingTakerAssetAmount);
+          let obj = {
+            exchangeAddress : response.bids.records[i].order.exchangeAddress,
+            expirationTimeSeconds : response.bids.records[i].order.expirationTimeSeconds,
+            feeRecipientAddress : response.bids.records[i].order.feeRecipientAddress,
+            makerAddress : response.bids.records[i].order.makerAddress,
+            makerAssetAmount : response.bids.records[i].order.makerAssetAmount,
+            makerAssetData : response.bids.records[i].order.makerAssetData,
+            makerFee : response.bids.records[i].order.makerFee,
+            salt : response.bids.records[i].order.salt,
+            senderAddress : response.bids.records[i].order.senderAddress,
+            takerAddress : response.bids.records[i].order.takerAddress,
+            takerAssetAmount : response.bids.records[i].order.takerAssetAmount,
+            takerAssetData : response.bids.records[i].order.takerAssetData,
+            takerFee : response.bids.records[i].order.takerFee
+          }
+
+          let orderhash = await this.getOrderHash(obj);
+          //console.log("orderHash?",orderhash);
+          let responsefilled = await  this.contractWrappers.exchange.getFilledTakerAssetAmountAsync(orderhash);
+          console.log("responseFilled", responsefilled.toNumber());
+          
+        }
         
         let makerData = {
           ...decodedMakerDataBids,
@@ -670,15 +719,15 @@ export class ZeroExService{
           symbol: takerSymbol
         }
         let obj = {
-          orderResponse: response.bids.records[i],
-          decodedMakerData: makerData,
-          decodedTakerData: takerData,
+          ...response.bids.records[i],
+          makerData: makerData,
+          takerData: takerData,
           price: orderPrice,
           makerAmount: makerAmount,
-          filledAmount: filledAmount,
+          //filledAmount: filledAmount,
           expirationTimeSeconds: response.bids.records[i].order.expirationTimeSeconds.toNumber(),
           takerAmount: readableTakerAmount,
-          amountRemaining: takerAssetAmountRemaining
+          //amountRemaining: takerAssetAmountRemaining
         }
         this.bids.push(obj);
       }
@@ -760,7 +809,7 @@ export class ZeroExService{
         || ((decodedMakerDataAsks != null && decodedMakerDataBids == null) && decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress)){
             this.setBuys(this.orderbook.asks);
             this.setSells(this.orderbook.bids);
-            this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
+            this.setShowOrders(this.orderbook.asks, this.orderbook.bids); //buys, sells
         }
         if(((decodedMakerDataAsks != null && decodedMakerDataBids != null) &&
         (decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress)) 
@@ -768,7 +817,7 @@ export class ZeroExService{
         || ((decodedMakerDataAsks != null && decodedMakerDataBids == null) && decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress)){
           this.setBuys(this.orderbook.bids);
           this.setSells(this.orderbook.asks);
-          this.setShowOrders(this.orderbook.bids, this.orderbook.asks);  
+          this.setShowOrders(this.orderbook.bids, this.orderbook.asks);  //buys, sells
         }
         //closing loading dialog
         if(this.loadingD != null){
@@ -780,19 +829,43 @@ export class ZeroExService{
     } 
   }
 
+  setBuys(orders){
+    console.log("BUYS orders",orders);
+    
+    this.state.orders.buys = orders;
+    console.log("this.state.orders.buys.length",this.state.orders.buys.length);
+    
+  }
+
+  setSells(orders){
+    console.log("SELLS orders",orders);
+    
+    this.state.orders.sells = orders;
+    console.log("this.state.orders.sells.length",this.state.orders.sells.length);
+    
+  }
+
+  async setShowOrders(buys, sells){
+    console.log("BUYS ZEROEX",buys);
+    console.log("SELLS ZEROEX", sells);
+    
+		this.showBuys = buys;
+		this.showSells = sells;
+	}
+
   async addOrdersToOrderWatcher(orderbook){
     console.log("orderbook received!!!", orderbook);
     
     for (let i = 0; i < orderbook.asks.length; i++) {
       console.log("ASKS FOR");
       
-      await this.orderWatcher.addOrderAsync(orderbook.asks[i].orderResponse.order);
+      await this.orderWatcher.addOrderAsync(orderbook.asks[i].order);
       
     }
     for (let j = 0; j < orderbook.bids.length; j++) {
       console.log("BIDS FOR");
       
-      await this.orderWatcher.addOrderAsync(orderbook.bids[j].orderResponse.order);
+      await this.orderWatcher.addOrderAsync(orderbook.bids[j].order);
       
     }
     console.log("ORDER ASYNC ADDED????");
@@ -1219,25 +1292,6 @@ export class ZeroExService{
     await this.setBalances();
   }
 
-  setBuys(orders){
-    this.state.orders.buys = orders;
-    console.log("this.state.orders.buys.length",this.state.orders.buys.length);
-    
-  }
-
-  setSells(orders){
-    this.state.orders.sells = orders;
-    console.log("this.state.orders.sells.length",this.state.orders.sells.length);
-    
-  }
-
-  async setShowOrders(buys, sells){
-    console.log("BUYS ZEROEX",buys);
-    console.log("SELLS ZEROEX", sells);
-    
-		this.showBuys = buys;
-		this.showSells = sells;
-	}
 
   getLocalStorageToken(){
 		if(localStorage.getItem('0xToken')){

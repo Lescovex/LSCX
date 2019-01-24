@@ -1,5 +1,5 @@
 <div>
-    <h1 class="text-center">Trade order<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+    <h1 class="text-center">Trade order<img class="right pointer" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
 </div>
 <div class=" dist block" *ngIf="data.action == 'sell' && data.display == 'eth'">
     <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenGive}}</span></p>
@@ -9,14 +9,11 @@
     <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenGet}}</span></p>
     <p class="title">Available amount: <span>{{data.available | number:"1.8-8":"en"}} {{data.tokenName}}</span></p>
 </div>
-<div class=" dist block" *ngIf="data.action == 'buy' && data.display == 'weth'">
+<div class=" dist block" *ngIf="data.display == 'weth'">
     <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenAddr}}</span></p>
-    <p class="title">Available amount: <span>{{data.amountRemaining | number:"1.8-8":"en"}} {{data.displayToken}}</span></p>
+    <!--<p class="title">Available amount: <span>{{data.amountRemaining | number:"1.8-8":"en"}} {{data.displayToken}}</span></p>-->
 </div>
-<div class=" dist block" *ngIf="data.action == 'sell' && data.display == 'weth'">
-    <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenAddr}}</span></p>
-    <p class="title">Available amount: <span>{{data.amountRemaining | number:"1.8-8":"en"}} {{data.displayToken}}</span></p>
-</div>
+
 <form (ngSubmit)="confirm(form)" #form="ngForm" class="clear dist">
     <div class="dist">
         <div class="half left">
@@ -80,6 +77,11 @@
                 <button class="btn-black half left" (click)="closeDialog()">Cancel</button>
                 <button *ngIf="data.action == 'buy'" type="submit" class="btn-inverse half right">Sell</button>
                 <button *ngIf="data.action == 'sell'" type="submit" class="btn-inverse half right">Buy</button>
+            </div>
+        </div>
+        <div *ngIf="insufficient">
+            <div class="buttons">
+                <button class="btn-black half left" (click)="closeDialog()">Back</button>
             </div>
         </div>
     </div>

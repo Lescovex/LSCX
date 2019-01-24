@@ -9,11 +9,6 @@ import { SendDialogService } from '../../../services/send-dialog.service';
 import { ContractService } from '../../../services/contract.service';
 import { ZeroExService } from "../../../services/0x.service";
 
-import { SendMarketDialogComponent } from '../../dialogs/send-market-dialog.component';
-import { GasDialogComponent } from '../../dialogs/gas-dialog.component';
-import { LoadingDialogComponent } from '../../dialogs/loading-dialog.component';
-import { ErrorDialogComponent } from '../../dialogs/error-dialog.component';
-
 import { RawTx } from '../../../models/rawtx';
 import BigNumber from 'bignumber.js';
 import { Trade } from '../../../models/trade';
@@ -94,6 +89,8 @@ export class OrderDialogComponent {
                 order = this.data;
                 let testParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  this.f.amount, this._account.account.address];
                 let testTradeResp = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
+                console.log("testTradeResp??",testTradeResp);
+                
                 testTrade = (testTradeResp.toString() == "true")? true: false;
                 if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, this.amount];
                 if(params.length > 0){
@@ -103,20 +100,25 @@ export class OrderDialogComponent {
             }
         }
         if(this.data.display == 'weth'){
+            console.log("Que es this data obj?",this.data);
+            
             this.submited = true;
             if(form.invalid) return false;
-            if(this.data.decodedTakerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress){
+            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress){
                 if(this.f.amount >= this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.amountRemaining){
                     //must display error message
                     return false;
                 }
             }
-            if(this.data.decodedTakerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress){
+            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress){
                 if(this.f.amount >= this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.amountRemaining){
                     //must display error message
                     return false;
                 }
             }
+            
+            let is_Valid = await this._zeroEx.validateFillOrder(this.data ,this.f.amount,this._account.account.address);
+            console.log("IS VALID?!?!?!??!!?!?!!",is_Valid);
             
             this.dialogRef.close(this.f.pass);
             console.log("form!!!!??!?!!",this.f);
@@ -126,7 +128,7 @@ export class OrderDialogComponent {
                 if(result != null){
                     this.loadingDialog = this._dialog.openLoadingDialog();
                     try {
-                        await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, this.data.action, result);    
+                        await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, result);    
                     } catch (error) {
                         console.log(error);
                         
@@ -184,6 +186,8 @@ export class OrderDialogComponent {
       }
 
       async trade(params, order){
+          console.log("into trade function");
+          
           let data = await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'trade',params);  
           this.loadingDialog.close();
           let gasLimit;

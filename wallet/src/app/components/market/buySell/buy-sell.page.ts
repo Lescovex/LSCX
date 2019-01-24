@@ -1,5 +1,6 @@
 import { Component, OnInit, DoCheck } from '@angular/core'
 import { MdDialog} from '@angular/material';
+import { Router } from '@angular/router';
 
 import { AccountService } from '../../../services/account.service';
 
@@ -43,7 +44,7 @@ export class BuySellPage implements OnInit, DoCheck {
     protected bestBuyWeth;
     protected expiresBigNumber;
     lastDisplay;
-    constructor(public dialog: MdDialog, public _zeroEx: ZeroExService, public _market: MarketComponent, public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
+    constructor(private router: Router, public dialog: MdDialog, public _zeroEx: ZeroExService, public _market: MarketComponent, public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
     }
 
@@ -191,6 +192,7 @@ export class BuySellPage implements OnInit, DoCheck {
             if(error==""){
               await this._zeroEx.order(form.controls, this.action, pass, this.expiresBigNumber);
               loading.close();
+              this.router.navigate(['/market/history']);
             }else{
               loading.close();
               let title = 'Unable to export account';

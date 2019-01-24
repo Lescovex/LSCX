@@ -1,5 +1,5 @@
 <div class="dist">
-    <div *ngIf="_LSCXmarket.token.balance != 0" class="half">
+    <div *ngIf="_LSCXmarket.token.balance != 0 && _market.display == 'eth'" class="half">
         <span class="title">Token Balance </span>
         <span>{{_LSCXmarket.token.balance}}</span>
     </div>
@@ -8,7 +8,7 @@
     <div class="half left">
         <button [ngClass]="(action == 'buy') ? 'btn-solid':'btn-inverse'" (click)="activeButton('buy')">Buy order</button>
         <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
-        <button class="extra btn-solid" (click)="_zeroEx.getOrderbook(_zeroEx.token.assetDataA.assetData, _zeroEx.token.assetDataB.assetData, 1)">Get orderbook</button>
+        <!--<button class="extra btn-solid" (click)="_zeroEx.getOrderbook(_zeroEx.token.assetDataA.assetData, _zeroEx.token.assetDataB.assetData, 1)">Get orderbook</button>-->
     </div>
     <div class="half right best-prices" *ngIf="_market.display == 'eth'">
         <p class="half left">
