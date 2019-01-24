@@ -82,7 +82,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         return object;
       }
 
-    openOrderDialog(action, order){
+    async openOrderDialog(action, order){
         if(this._market.display == 'eth'){
             order.tokenName = this._LSCXmarket.token.name;
             order.action = action;
@@ -101,6 +101,26 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         }
         if(this._market.display == 'weth'){
             console.log("order!!!!",order);
+            let obj = {
+                exchangeAddress:order.orderResponse.order.exchangeAddress,
+                expirationTimeSeconds:order.orderResponse.order.expirationTimeSeconds,
+                feeRecipientAddress:order.orderResponse.order.feeRecipientAddress,
+                makerAddress:order.orderResponse.order.makerAddress,
+                makerAssetAmount:order.orderResponse.order.makerAssetAmount,
+                makerAssetData:order.orderResponse.order.makerAssetData,
+                makerFee:order.orderResponse.order.makerFee,
+                salt:order.orderResponse.order.salt,
+                senderAddress:order.orderResponse.order.senderAddress,
+                takerAddress:order.orderResponse.order.takerAddress,
+                takerAssetAmount:order.orderResponse.order.takerAssetAmount,
+                takerAssetData:order.orderResponse.order.takerAssetData,
+                takerFee:order.orderResponse.order.takerFee
+            }
+            let x = await this._zeroEx.getOrderHash(obj)
+            let y = await this._zeroEx.getOrder(x);
+            console.log("return of getOrder!?!?!!???!",y);
+            let z = await this._zeroEx.getOrders();
+            console.log("response de getOrders",z);
             
             order.action = action;
             order.taker = this._account.account.address;

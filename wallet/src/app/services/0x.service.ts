@@ -492,6 +492,7 @@ export class ZeroExService{
 
     try {
       await this.httpClient.submitOrderAsync(signedOrder, { networkId: this._web3.network.chain});
+      
       console.log("submit OK!");
       
     } catch (error) {
@@ -503,6 +504,10 @@ export class ZeroExService{
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
 
+  async getOrderHash(order){
+    let orderHashHex = await orderHashUtils.getOrderHashHex(order);
+    return orderHashHex;
+  }
   
   async fillOrder(order, value, taker, action, key){
     await this.setProvider(key)
@@ -770,10 +775,38 @@ export class ZeroExService{
           this.loadingD.close();
           this.loadingD = null;
         }
+        this.addOrdersToOrderWatcher(this.orderbook)
       }
     } 
   }
 
+  async addOrdersToOrderWatcher(orderbook){
+    console.log("orderbook received!!!", orderbook);
+    
+    for (let i = 0; i < orderbook.asks.length; i++) {
+      console.log("ASKS FOR");
+      
+      await this.orderWatcher.addOrderAsync(orderbook.asks[i].orderResponse.order);
+      
+    }
+    for (let j = 0; j < orderbook.bids.length; j++) {
+      console.log("BIDS FOR");
+      
+      await this.orderWatcher.addOrderAsync(orderbook.bids[j].orderResponse.order);
+      
+    }
+    console.log("ORDER ASYNC ADDED????");
+    //this.orderWatcher.subscribe();
+    //this.orderWatcherInterval();
+  }
+
+  async orderWatcherInterval(){
+    this.interval2 = setInterval(async()=>{
+      let stats = this.orderWatcher.getStats();
+      console.log(stats);
+      
+    }, 3000)
+  }
   async startIntervalBalance(){
     //await this.getWethBalance();
     this.interval = setInterval(async ()=>{
@@ -1060,6 +1093,8 @@ export class ZeroExService{
     return await this.httpClient.getFeeRecipientsAsync();
   }
   async getOrder(hash){
+    console.log("hash sended to getORder?",hash);
+    
     //String hash needed to get order
     return await this.httpClient.getOrderAsync(hash);
   }
@@ -1069,6 +1104,8 @@ export class ZeroExService{
   }
   
   async getOrders(){
+    console.log("this.httpsClient on getOrders Function",this.httpClient.getOrdersAsync({network: this._web3.network.chain}));
+    
     return await this.httpClient.getOrdersAsync({network: this._web3.network.chain});
   }
   async submitOrder(SignedOrderObject){

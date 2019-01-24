@@ -68,6 +68,9 @@ export class BitcoinAccountService{
     }else{
       acc = {};
     }
+    if(localStorage.getItem('accBTC') == 'undefined'){
+      localStorage.removeItem('accBTC');
+    }
     return acc;
   }
 
@@ -233,13 +236,19 @@ export class BitcoinAccountService{
   async getAccountData(){
    
     this.account = this.getAccount();
-    await this.setAccount(this.account);
-    this.getAccountsBalances();
-    if(Object.keys(this.account).length != 0){
-      this.getPendingTx();
-      await this.setData();
-     // await this.setTokens();
+    console.log("this.account",this.account);
+    if(localStorage.getItem('accBTC')){
+      console.log("entras en getAccountData getItem?");
+      
+      await this.setAccount(this.account);
+      this.getAccountsBalances();
+      if(Object.keys(this.account).length != 0){
+        this.getPendingTx();
+        await this.setData();
+      // await this.setTokens();
+      }
     }
+    
   }
 
   getPendingTx(){
