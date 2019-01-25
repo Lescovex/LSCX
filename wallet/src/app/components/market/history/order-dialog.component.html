@@ -11,7 +11,7 @@
 </div>
 <div class=" dist block" *ngIf="data.display == 'weth'">
     <p class="title">Token: <span>{{data.tokenName}} - {{data.tokenAddr}}</span></p>
-    <!--<p class="title">Available amount: <span>{{data.amountRemaining | number:"1.8-8":"en"}} {{data.displayToken}}</span></p>-->
+    <p class="title">Available amount: <span>{{data.remainingAmount | number:"1.8-8":"en"}} {{data.displayToken}}</span></p>
 </div>
 
 <form (ngSubmit)="confirm(form)" #form="ngForm" class="clear dist">
@@ -26,7 +26,7 @@
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
                 <span *ngIf="amount.errors?.required">This field is required</span>
-                <span *ngIf="!amount.errors?.required && eth.errors?.customMin">The minimum order is 0.001</span>
+                <span *ngIf="!amount.errors?.required && eth.errors?.customMin ">The minimum order is 0.001</span>
             </p>
         </div>
         <div class="half right">
@@ -44,11 +44,12 @@
         </div>
         <div class="clear half left">
             <label class="title" for="total">Total</label>
-            <p class="input lightGrey">{{f.total | number:'1.3-3':'en'}}</p>
-            <input type="hidden" name="total" [customMin]="0.001" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
+            <p class="input lightGrey">{{f.total | number:'1.3-18':'en'}}</p>
+            <input type="hidden" name="total" [customMin]="minAmount" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
             <p class="error" [ngClass]="{'hidden':!(submited &&(eth.invalid || eth.invalid))}">
-                <span *ngIf="!eth.errors?.required && data.action == 'buy'">Amount can't be higher than avaiable amount</span>
-                <span *ngIf="!eth.errors?.required && data.action == 'sell'">Total amount can't be higher than avaiable amount</span>
+                <span *ngIf="!eth.errors?.required && data.action == 'buy' && data.display == 'eth'">Amount can't be higher than avaiable amount</span>
+                <span *ngIf="!eth.errors?.required && data.action == 'sell' && data.display == 'eth'">Total amount can't be higher than avaiable amount</span>
+                <span *ngIf="!eth.errors?.required && data.display == 'weth'">Amount can't be higher than avaiable amount</span>
             </p>
         </div>
         <div class="half right" *ngIf="data.display == 'eth'">

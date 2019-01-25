@@ -619,14 +619,30 @@ export class ZeroExService{
           filledAmount = 0;
           remainingAmount = readableTakerAmount;
         }
-       
+        
+        let takerMinAmount;
+        if(decodedTakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress){
+          let val = this.token.assetDataA.minAmount;
+          console.log("val", val);
+          
+          takerMinAmount = val/exp;
+        }
+        if(decodedTakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress){
+          let val = this.token.assetDataB.minAmount;
+          console.log("val", val);
+          
+          takerMinAmount = val/exp;
+        }
+        console.log("takerminamount?",takerMinAmount);
+        
         let makerData = {
           ...decodedMakerDataAsks,
           symbol: makerSymbol
         }
         let takerData = {
           ...decodedTakerDataAsks,
-          symbol: takerSymbol
+          symbol: takerSymbol,
+          decimals: takerDecimals
         }
         let obj = {
           ...response.asks.records[i],
@@ -637,7 +653,8 @@ export class ZeroExService{
           expirationTimeSeconds: response.asks.records[i].order.expirationTimeSeconds.toNumber(),
           takerAmount: readableTakerAmount,
           filledAmount: filledAmount,
-          remainingAmount: remainingAmount
+          remainingAmount: remainingAmount,
+          minAmount : takerMinAmount
         }
         this.asks.push(obj);
       }
@@ -703,14 +720,28 @@ export class ZeroExService{
           filledAmount = 0;
           remainingAmount = readableTakerAmount;
         }
-        
+        let takerMinAmount;
+        if(decodedTakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
+          let val = this.token.assetDataA.minAmount;
+          console.log("val", val);
+          
+          takerMinAmount = val/exp;
+        }
+        if(decodedTakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress){
+          let val = this.token.assetDataB.minAmount;
+          console.log("val???", val);
+          
+          takerMinAmount = val/exp;
+        }
+        console.log("takerminamount?",takerMinAmount);
         let makerData = {
           ...decodedMakerDataBids,
           symbol: makerSymbol
         }
         let takerData = {
           ...decodedTakerDataBids,
-          symbol: takerSymbol
+          symbol: takerSymbol,
+          decimals: takerDecimals
         }
         let obj = {
           ...response.bids.records[i],
@@ -721,7 +752,8 @@ export class ZeroExService{
           expirationTimeSeconds: response.bids.records[i].order.expirationTimeSeconds.toNumber(),
           takerAmount: readableTakerAmount,
           filledAmount: filledAmount,
-          remainingAmount: remainingAmount
+          remainingAmount: remainingAmount,
+          minAmount: takerMinAmount
         }
         this.bids.push(obj);
       }

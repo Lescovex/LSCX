@@ -14,6 +14,7 @@ import BigNumber from 'bignumber.js';
 import { Trade } from '../../../models/trade';
 import { Order } from '../../../models/order';
 
+import * as EthWallet from 'ethereumjs-wallet';
 @Component({
     selector: 'order-dialog',
     templateUrl: './order-dialog.component.html'
@@ -39,8 +40,14 @@ export class OrderDialogComponent {
     protected bestBuy;
     pass;
     
-
+    minAmount;
     constructor(@Inject(MD_DIALOG_DATA) public data: any,protected _zeroEx:ZeroExService,private _contract: ContractService, private dialog: MdDialog, private _account: AccountService, private _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<OrderDialogComponent>, private _web3: Web3, private _dialog: DialogService, private sendDialogService: SendDialogService){
+        if(this.data.display == 'eth'){
+            this.minAmount = 0.001;
+        }
+        if(this.data.display == 'weth'){
+            this.minAmount = data.minAmount;
+        }
         this.f.price = data.price;        
         if(this.data.action == "buy"){
             this.action = "sell";
@@ -104,14 +111,15 @@ export class OrderDialogComponent {
             
             this.submited = true;
             if(form.invalid) return false;
+           
             if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress){
-                if(this.f.amount >= this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.amountRemaining){
+                if(this.f.amount >= this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.remainingAmount){
                     //must display error message
                     return false;
                 }
             }
             if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress){
-                if(this.f.amount >= this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.amountRemaining){
+                if(this.f.amount >= this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount){
                     //must display error message
                     return false;
                 }
@@ -124,17 +132,35 @@ export class OrderDialogComponent {
             
             this.dialogRef.afterClosed().subscribe(async result=>{
                 console.log("result AfterClosed",result);
+                let wallet;
+                let error= "";
                 if(result != null){
-                    this.loadingDialog = this._dialog.openLoadingDialog();
-                    try {
-                        await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, result);    
-                    } catch (error) {
-                        console.log(error);
+
+                    try{
+                        wallet = EthWallet.fromV3(this._account.account.v3, result);
+                      }catch(e){
+                        error= e.message;
+                      }
+                      console.log("wallet", wallet);
+                      
+                      if(error==""){
+                        this.loadingDialog = this._dialog.openLoadingDialog();
+                        try {
+                            await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, result);    
+                        } catch (error) {
+                            console.log(error);
+                            
+                            this.loadingDialog.close();    
+                        }
                         
-                        this.loadingDialog.close();    
-                    }
-                    
-                    this.loadingDialog.close();        
+                        this.loadingDialog.close();
+                        
+                      }else{
+                        let dialogRef = this._dialog.openErrorDialog('Unable to fill this order', error, " ");
+                      }
+
+
+                            
                 }else{
                     console.log("DIALOG CLOSED!!!!!!");
                     
@@ -145,29 +171,50 @@ export class OrderDialogComponent {
     }
 
     total() {
-        let amount = this.f.amount * this.f.price;
-        let total = parseFloat(amount.toFixed(10));
-        console.log("total here", total);
-        
-        if(this.data.action == "sell"){
-            if(total > this.data.available){
-                this.totalSumbit = true;
-                this.submited = true;
-                this.f.total = 0;
-                return false;
-            }else{
-                this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price;
+        let total;
+        let amount;
+        if(this.data.display == 'eth'){
+            amount = this.f.amount * this.f.price;
+            total = parseFloat(amount.toFixed(10));
+        }
+        if(this.data.display == 'weth'){
+            amount = this.f.amount * this.f.price;
+            console.log(this.data.takerData.decimals);
+            let decimals = parseInt(this.data.takerData.decimals) +1
+            total = parseFloat(amount.toFixed(decimals));
+        }
+        if(this.data.display == 'eth'){
+            if(this.data.action == "sell"){
+                if(total > this.data.available){
+                    this.totalSumbit = true;
+                    this.submited = true;
+                    this.f.total = 0;
+                    return false;
+                }else{
+                    this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price;
+                }
+            }
+            if(this.data.action == "buy"){
+                if(this.f.amount > this.data.available){
+                    this.totalSumbit = true;
+                    this.submited = true;
+                    this.f.total = 0;
+                    return false
+                }else{                    
+                    this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price;
+                }
             }
         }
-        if(this.data.action == "buy"){
-            if(this.f.amount > this.data.available){
-                this.totalSumbit = true;
-                this.submited = true;
-                this.f.total = 0;
-                return false
-            }else{
-                this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price;
-            }
+        if(this.data.display == 'weth'){
+                if(this.f.amount > this.data.remainingAmount || this.f.amount < this.data.minAmount){
+                    this.totalSumbit = true;
+                    this.submited = true;
+                    this.f.total = 0;
+                    return false
+                }else{
+                    this.f.total = (isNaN(total))? 0 : total;
+                }
+            
         }
         console.log("THIS F TOTAL???????!?!?!??!!?!",this.f.total);
         
