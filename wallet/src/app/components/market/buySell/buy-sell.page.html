@@ -1,14 +1,24 @@
-<div class="dist">
+<div class="dist" *ngIf="_market.display == 'eth'">
     <div *ngIf="_LSCXmarket.token.balance != 0" class="half">
         <span class="title">Token Balance </span>
         <span>{{_LSCXmarket.token.balance}}</span>
+    </div>
+</div>
+<div class="dist" *ngIf="_market.display == 'weth'">
+    <div class="half" *ngIf="action == 'buy'">
+        <span class="title">Token Balance </span>
+        <span>{{_zeroEx.token.assetDataB.balance | number:'1.3-3':'en'}} {{_zeroEx.token.assetDataB.name}}</span>
+    </div>
+    <div class="half" *ngIf="action == 'sell'">
+        <span class="title">Token Balance </span>
+        <span>{{_zeroEx.token.assetDataA.balance | number:'1.3-3':'en'}} {{_zeroEx.token.assetDataA.name}}</span>
     </div>
 </div>
 <div class="dist">
     <div class="half left">
         <button [ngClass]="(action == 'buy') ? 'btn-solid':'btn-inverse'" (click)="activeButton('buy')">Buy order</button>
         <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
-        <button class="extra btn-solid" (click)="_zeroEx.getOrderbook(_zeroEx.token.assetDataA.assetData, _zeroEx.token.assetDataB.assetData, 1)">Get orderbook</button>
+        <!--<button class="extra btn-solid" (click)="_zeroEx.getOrderbook(_zeroEx.token.assetDataA.assetData, _zeroEx.token.assetDataB.assetData, 1)">Get orderbook</button>-->
     </div>
     <div class="half right best-prices" *ngIf="_market.display == 'eth'">
         <p class="half left">
@@ -90,7 +100,9 @@
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
                 <span *ngIf="amount.errors?.required">This field is required</span>
-                <span *ngIf="!amount.errors?.required && eth.errors?.customMin">The minimum order is 0.001</span>
+                <span *ngIf="!amount.errors?.required && eth.errors?.customMin">The minimum order is {{minAmount | number:"1.18-18":"en"}}</span>
+                <span *ngIf="balanceError != ''" class="block">{{balanceError}}</span>
+
             </p>
         </div>
         <div class="half right">
@@ -107,7 +119,7 @@
         <div class="clear half left">
             <label class="title" for="total">Total</label>
             <p class="input">{{f.total | number:'1.3-3':'en'}}</p>
-            <input type="hidden" name="total" [customMin]="0.001" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
+            <input type="hidden" name="total" [customMin]="minAmount" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
         </div>
         <div class="half right">
             <label class="title" for="expires">Expires</label>

@@ -44,6 +44,9 @@ export class BuySellPage implements OnInit, DoCheck {
     protected bestBuyWeth;
     protected expiresBigNumber;
     lastDisplay;
+    minAmount;
+    pairBalance;
+    balanceError = '';
     constructor(private router: Router, public dialog: MdDialog, public _zeroEx: ZeroExService, public _market: MarketComponent, public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
     }
@@ -96,13 +99,54 @@ export class BuySellPage implements OnInit, DoCheck {
         this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
         this.f.expires = this.expiresBigNumber.toNumber();
       }
+      if(this._market.display == 'eth'){
+          this.minAmount = 0.001;
+      }
+      if(this._market.display == 'weth'){
+        if(this.action == 'buy'){
+          let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
+          let exp = 10 ** parseInt(decimalsString);
+          this.minAmount = this._zeroEx.token.assetDataB.minAmount/exp;
+          this.pairBalance = this._zeroEx.token.assetDataB.balance;
+        }
+        if(this.action == 'sell'){
+          let decimalsString = this._zeroEx.token.assetDataA.decimals.toString();
+          let exp = 10 ** parseInt(decimalsString);
+          this.minAmount = this._zeroEx.token.assetDataA.minAmount/exp;
+          this.pairBalance = this._zeroEx.token.assetDataA.balance;
+        }
+      }
     }
 
     ngDoCheck() {
       if(this.lastDisplay != this._market.display){
+        console.log("NGDOCHECK???????");
+        
+        if(this._market.display == 'eth'){
+            this.minAmount = 0.001;
+        }
         if(this._market.display == 'weth'){
+          console.log("NGDOCHECK WETH?¿?");
+          
           this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
           this.f.expires = this.expiresBigNumber.toNumber();
+          if(this.action == 'buy'){
+            console.log("NGDOCHECK BUY?¿?");
+            let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
+            let exp = 10 ** parseInt(decimalsString);
+            this.minAmount = this._zeroEx.token.assetDataB.minAmount/exp;
+            this.pairBalance = this._zeroEx.token.assetDataB.balance;
+            console.log("THIS PAIR BALANCE?",this.pairBalance);
+          }
+          if(this.action == 'sell'){
+            console.log("NGDOCHECK SELL?¿?");
+            let decimalsString = this._zeroEx.token.assetDataA.decimals.toString();
+            let exp = 10 ** parseInt(decimalsString);
+            this.minAmount = this._zeroEx.token.assetDataA.minAmount/exp;
+            this.pairBalance = this._zeroEx.token.assetDataA.balance;
+            console.log("THIS PAIR BALANCE?",this.pairBalance);
+            
+          }
         }
       } 
     }
@@ -208,15 +252,98 @@ export class BuySellPage implements OnInit, DoCheck {
 
     activeButton(action){
       this.action = action;
+      
+        if(this.action == 'buy'){
+          console.log("NGDOCHECK BUY?¿?");
+          let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
+          let exp = 10 ** parseInt(decimalsString);
+          this.minAmount = this._zeroEx.token.assetDataB.minAmount/exp;
+          this.pairBalance = this._zeroEx.token.assetDataB.balance;
+          console.log("THIS PAIR BALANCE?",this.pairBalance);
+        }
+        if(this.action == 'sell'){
+          console.log("NGDOCHECK SELL?¿?");
+          let decimalsString = this._zeroEx.token.assetDataA.decimals.toString();
+          let exp = 10 ** parseInt(decimalsString);
+          this.minAmount = this._zeroEx.token.assetDataA.minAmount/exp;
+          this.pairBalance = this._zeroEx.token.assetDataA.balance;
+          console.log("THIS PAIR BALANCE?",this.pairBalance);
+          
+        }
+      
     }
 
     total() {
-      let amount = this.f.amount * this.f.price;
-      let total =parseFloat(amount.toFixed(10));
-      this.f.total = (isNaN(total))? 0 : total;
-      /*let digits = 3
-      let fact= Math.pow(10,digits);
-      this.f.total = (isNaN(total))? 0 : Math.floor(total*fact)/fact;*/
+      if(this._market.display == 'eth'){
+        let amount = this.f.amount * this.f.price;
+        let total =parseFloat(amount.toFixed(10));
+        this.f.total = (isNaN(total))? 0 : total;
+      }else{
+        let total;
+      let amount;
+      if(this._market.display == 'weth'){
+        console.log("dentro de total weth?");
+        
+          amount = this.f.amount * this.f.price;
+          console.log();
+          let decimals = parseInt(this._zeroEx.token.assetDataA.decimals) +1
+          total = parseFloat(amount.toFixed(decimals));
+          if(this.action == 'buy'){
+            console.log("action buy?");
+            if(total > this.pairBalance){
+              this.balanceError = "The amount to pay is higher than your balance";
+              this.submited = true;
+                this.f.total = 0;
+                return false
+            }
+            if(total < this.minAmount){
+              console.log("pairbalance?",this.pairBalance);
+              
+                //this.totalSumbit = true;
+                this.submited = true;
+                this.f.total = 0;
+                return false
+            }else{
+                this.balanceError = '';
+                this.f.total = (isNaN(total))? 0 : total;
+            }
+          }
+          if(this.action == 'sell'){
+            if(this.f.amount > this.pairBalance){
+              this.balanceError = "The amount to pay is higher than your balance";
+              this.submited = true;
+                this.f.total = 0;
+                return false
+            }
+            if(this.f.amount < this.minAmount){
+
+              console.log("pairbalance?",this.pairBalance);
+              
+
+                //this.totalSumbit = true;
+                this.submited = true;
+                this.f.total = 0;
+                return false
+            }else{
+                this.balanceError = '';
+                this.f.total = (isNaN(total))? 0 : total;
+            }
+          }
+          
+        }
+      }
+
+      /*
+         if(action == 'buy'){
+            makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataB.decimals));
+          }
+          if(action == 'sell'){
+            makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataA.decimals));
+          }
+      */
+      
+      
+      
     }
 
     async getCross(amount, price){
