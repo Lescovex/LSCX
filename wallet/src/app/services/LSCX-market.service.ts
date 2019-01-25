@@ -290,6 +290,8 @@ export class LSCXMarketService {
 
 
 	async getTokenState(){
+		
+		
 		if(this._account.account.address in this.marketState.myFunds){
 			this.state.myFunds = this.marketState.myFunds[this._account.account.address].filter(x=>x.tokenAddr == this.token.addr || x.tokenAddr == this.config.tokens[0].addr);
 		} else {
@@ -318,6 +320,10 @@ export class LSCXMarketService {
 		if(this.loadingD != null){
 			this.loadingD.close();
 		}
+		console.log("myFunds",this.state.myFunds);
+		console.log("myOrders",this.state.myOrders);
+		console.log("myTrades",this.state.myTrades);
+
 	}
 
 	async setBuys() {
@@ -627,12 +633,12 @@ export class LSCXMarketService {
 		
 		if(!fs.existsSync(filePath)){
 			let objNet = {
-			tikers:[],
-			tikersId: null,
-			tikersTolist:[],
-			myOrders: {},
-			myTrades: {},
-			myFunds: {}
+				tikers:[],
+				tikersId: null,
+				tikersTolist:[],
+				myOrders: {},
+				myTrades: {},
+				myFunds: {}
 			}
 
 			fs.writeFileSync(filePath , JSON.stringify(objNet));
@@ -650,6 +656,7 @@ export class LSCXMarketService {
 		}
 			await this.getTikers();
 			this.updateMyStateShow("myFunds");
+
 			this.updateMyStateShow("myOrders");
 			this.updateMyStateShow("myTrades");
 	}

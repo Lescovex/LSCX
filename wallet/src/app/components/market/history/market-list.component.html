@@ -200,6 +200,35 @@
             </tr>
         </tbody>
     </table>
+    <table *ngIf="action=='myFunds' && _zeroEx.display == 'weth'" class="history-table">
+        <thead>
+            <tr>
+                <th>Transaction</th>
+                <th>Type</th>
+                <th>WETH</th>
+                <th>ETH</th>
+            </tr>
+        </thead>
+        <tr *ngIf="_zeroEx.funds.length == 0">
+            <td colspan="4" class="collapse">There are no funds</td>
+        </tr>
+        <tbody *ngFor="let fund of _zeroEx.funds, index as i">
+            <tr>
+                <td class="pointer" (click)="openExternal(fund.hash)">{{fund.hash}}</td>
+                <td>
+                    <p *ngIf="fund.from == _zeroEx.contractAddresses.etherToken">Withdraw</p>
+                    <p *ngIf="fund.to == _zeroEx.contractAddresses.etherToken">Deposit</p>
+                </td>
+                <td>
+                    <p *ngIf="fund.to == _zeroEx.contractAddresses.etherToken">{{(fund.value | converter:'fromWei':'ether') | number:'1.2-5':'en'}}</p>
+                </td>
+                <td>
+                    <p *ngIf="fund.from == _zeroEx.contractAddresses.etherToken">{{(fund.value | converter:'fromWei':'ether') | number:'1.2-5':'en'}}</p>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <app-paginator *ngIf="page>1" (goPage)="goToPage($event)" [currentPage]="page" [perPage]="limit" [count]="totalPages"></app-paginator>

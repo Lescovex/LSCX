@@ -73,7 +73,7 @@ export class ZeroExService{
   protected config;
 
   public display = '';
-
+  public funds = [];
   constructor(public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _web3: Web3, protected router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
   }
@@ -92,8 +92,31 @@ export class ZeroExService{
     await this.checkAssetPairs(1);
     await this.setToken();
     
+    await this.checkMyFunds();
   }
 
+  async checkMyFunds(){
+    
+    let mem = [];
+    let control= false;
+    while(control == false){
+      let hist = this._account.account.history;
+      if(hist != null){
+        for (let i = 0; i < hist.length; i++) {
+          if(hist[i].from == this.contractAddresses.etherToken || (hist[i].to == this.contractAddresses.etherToken && hist[i].value != '0')){
+            mem.push(hist[i])
+          }
+        }
+        this.funds = mem;
+        control = true;
+      }
+    }
+    
+    
+    
+    
+    
+  }
 
 
   async getLocalInfo(){
