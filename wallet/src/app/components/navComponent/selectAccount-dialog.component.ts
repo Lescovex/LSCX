@@ -12,7 +12,7 @@ import { BitcoinWalletService } from "../../services/wallet-bitcoin.service";
 import { LSCXContractService } from '../../services/LSCX-contract.service';
 import { ContractStorageService } from '../../services/contractStorage.service';
 import { CustomContractService } from '../../services/custom-contract.service';
-
+import { ZeroExService } from "../../services/0x.service";
 
 @Component({
   selector: 'selectAccount-dialog',
@@ -24,7 +24,7 @@ export class SelectAccountDialogComponent implements OnInit{
   selectedAcc;
   selectedBTCAcc;
   filts;
-  constructor(private router: Router, public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, private _contracStorage: ContractStorageService, private _wallet: WalletService, private _LSCXcontract: LSCXContractService,private _customContract: CustomContractService, private _btcWallet : BitcoinWalletService, private _btcAccount : BitcoinAccountService) {
+  constructor(public _zeroEx: ZeroExService,private router: Router, public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, private _contracStorage: ContractStorageService, private _wallet: WalletService, private _LSCXcontract: LSCXContractService,private _customContract: CustomContractService, private _btcWallet : BitcoinWalletService, private _btcAccount : BitcoinAccountService) {
     
   }
   ngOnInit(){
@@ -45,6 +45,7 @@ export class SelectAccountDialogComponent implements OnInit{
       this._account.updated = false;
       this._account.setAccount(this.selectedAcc);
       this._contracStorage.setAccContracts();
+      this._zeroEx.init();
       this._LSCXcontract.reset();
       this._customContract.reset();
       this.dialogRef.close('loading');
