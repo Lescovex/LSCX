@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
 import { RawTx, RawTxIncrementedNonce } from '../../../models/rawtx';
 import { Fund } from '../../../models/fund';
 import { AccountService } from '../../../services/account.service';
-import { MarketComponent } from "../market.component";
+
 import { EtherscanService } from '../../../services/etherscan.service';
 import { ContractService } from '../../../services/contract.service';
 import { MdDialog } from '@angular/material';
@@ -32,7 +32,7 @@ export class MarketActionComponent implements OnChanges{
     gasLimit:number;
     dialogRef;
     loadingD;
-    constructor(protected _zeroEx: ZeroExService,private _market : MarketComponent, private _LSCXmarket: LSCXMarketService, private _account: AccountService, private sendDialogService: SendDialogService, private _web3: Web3, private _dialog: DialogService,  private _scan: EtherscanService, private _contract: ContractService, public dialog: MdDialog) {
+    constructor(public _zeroEx: ZeroExService, public _LSCXmarket: LSCXMarketService, private _account: AccountService, private sendDialogService: SendDialogService, private _web3: Web3, private _dialog: DialogService,  private _scan: EtherscanService, private _contract: ContractService, public dialog: MdDialog) {
         this.lastAction = this.action;
     }
 
@@ -50,7 +50,7 @@ export class MarketActionComponent implements OnChanges{
         if(form.invalid){
             return false
         }
-        if(this._market.display == "eth"){
+        if(this._zeroEx.display == "eth"){
             this.dialogRef = this._dialog.openLoadingDialog(); 
             let params = [];
             let tx;
@@ -97,7 +97,7 @@ export class MarketActionComponent implements OnChanges{
             }
         }
 
-        if(this.action == "deposit" && this._market.display == "weth" && this.actionName == 'deposit'){
+        if(this.action == "deposit" && this._zeroEx.display == "weth" && this.actionName == 'deposit'){
             this.dialogRef = this._dialog.openWethDialog(form.controls.amount.value, "wrap");
             this.dialogRef.afterClosed().subscribe(async result=>{
                 let res = JSON.parse(result);
@@ -110,7 +110,7 @@ export class MarketActionComponent implements OnChanges{
                 }
             });
         }
-        if(this.action == "deposit" && this._market.display == "weth" && this.actionName == 'override allowance'){
+        if(this.action == "deposit" && this._zeroEx.display == "weth" && this.actionName == 'override allowance'){
             this.loadingD = this.dialog.open(LoadingDialogComponent, {
                 width: '660px',
                 height: '150px',
@@ -154,7 +154,7 @@ export class MarketActionComponent implements OnChanges{
             }
         }
         
-        if(this.action == "deposit" && this._market.display == "weth" && this.actionName == 'allow'){
+        if(this.action == "deposit" && this._zeroEx.display == "weth" && this.actionName == 'allow'){
             //
             let confirmDialog = this.dialog.open(ConfirmDialogComponent, {
                 width: '660px',
@@ -172,7 +172,7 @@ export class MarketActionComponent implements OnChanges{
             });
             
         }
-        if(this.action == "withdraw" && this._market.display == "weth"){
+        if(this.action == "withdraw" && this._zeroEx.display == "weth"){
             this.dialogRef = this._dialog.openWethDialog(form.controls.amount.value, "unwrap");
             this.dialogRef.afterClosed().subscribe(async result=>{
                 let res = JSON.parse(result)

@@ -7,7 +7,7 @@ import { Web3 } from '../../../services/web3.service';
 import { MarketComponent } from "../market.component";
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { Order } from '../../../models/order';
-
+import { ZeroExService } from "../../../services/0x.service";
 
 @Component({
   selector: 'market-history-page',
@@ -22,8 +22,8 @@ export class MarketHistoryPage implements DoCheck {
   loadingDialog;
   intervalLoops:number;
 
-  constructor(protected _market : MarketComponent,protected _account: AccountService, private _contract: ContractService, private _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
-    if(this._market.display == 'eth'){
+  constructor(public _zeroEx:ZeroExService,protected _account: AccountService, private _contract: ContractService, public _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _web3: Web3) {
+    if(this._zeroEx.display == 'eth'){
       this._LSCXmarket.activateLoading();
     }
     

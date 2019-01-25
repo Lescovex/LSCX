@@ -3,17 +3,17 @@
     <button class="extra" [ngClass]="(action == 'withdraw') ? 'btn-solid':'btn-inverse'" (click)="activeButton('withdraw')">Withdraw</button>
 
 </div>
-<div *ngIf="_market.display == 'eth'">
+<div *ngIf="_zeroEx.display == 'eth'">
     <app-market-amounts [token]="_LSCXmarket.token" [walletAmount]="_LSCXmarket.token?.balance" [deltaAmount]="_LSCXmarket.marketBalances.token" class="clear dist block"></app-market-amounts>
     <app-action-amounts [action]="action" [actionName]="actionNameA" [token]="_LSCXmarket.token" [walletAmount]="_LSCXmarket.token?.balance" [deltaAmount]="_LSCXmarket.marketBalances.token" class="clear block"></app-action-amounts>
     <app-market-amounts [token]="_LSCXmarket.config.tokens[0]" [walletAmount]="_account.account.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-market-amounts>
     <app-action-amounts [action]="action" [actionName]="actionNameB" [token]="_LSCXmarket.config.tokens[0]" [walletAmount]="_account.account.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-action-amounts>
 </div>
-<div *ngIf="_market.display == 'weth'">
+<div *ngIf="_zeroEx.display == 'weth'">
     <app-market-amounts [token]="_zeroEx.token.assetDataA" [accountAmount]="_account.account.balance" [walletAmount]="_zeroEx.token.assetDataA.balance" [deltaAmount]="_LSCXmarket.marketBalances.token" class="clear dist block"></app-market-amounts>
     <app-action-amounts [action]="action" [actionName]="actionNameA" [token]="_zeroEx.token.assetDataA" [walletAmount]="_LSCXmarket.token?.balance" [deltaAmount]="_LSCXmarket.marketBalances.token" class="clear block"></app-action-amounts>
     <app-market-amounts [token]="_zeroEx.token.assetDataB" [accountAmount]="_account.account.balance" [walletAmount]="_zeroEx.token.assetDataB.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-market-amounts>
     <app-action-amounts [action]="action" [actionName]="actionNameB" [token]="_zeroEx.token.assetDataB" [walletAmount]="_account.account.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-action-amounts>
 </div>
-<p *ngIf="_market.display == 'eth'">Make sure <a class="pointer" (click)="openExternal()">{{_LSCXmarket.token?.name}}</a> is the token you actually want to trade. Multiple tokens can share the same name.</p>
-<p *ngIf="_market.display == 'weth'">Make sure <a class="pointer" (click)="openExternal()">{{_zeroEx.token?.name}}</a> is the pair you actually want to trade. Multiple pairs can share the same name.</p>
+<p *ngIf="_zeroEx.display == 'eth'">Make sure <a class="pointer" (click)="openExternal()">{{_LSCXmarket.token?.name}}</a> is the token you actually want to trade. Multiple tokens can share the same name.</p>
+<p *ngIf="_zeroEx.display == 'weth'">Make sure <a class="pointer" (click)="openExternal()">{{_zeroEx.token?.name}}</a> is the pair you actually want to trade. Multiple pairs can share the same name.</p>

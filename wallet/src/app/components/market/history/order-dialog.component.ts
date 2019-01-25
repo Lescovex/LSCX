@@ -41,7 +41,7 @@ export class OrderDialogComponent {
     pass;
     balanceError = '';
     minAmount;
-    constructor(@Inject(MD_DIALOG_DATA) public data: any,protected _zeroEx:ZeroExService,private _contract: ContractService, private dialog: MdDialog, private _account: AccountService, private _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<OrderDialogComponent>, private _web3: Web3, private _dialog: DialogService, private sendDialogService: SendDialogService){
+    constructor(@Inject(MD_DIALOG_DATA) public data: any,public _zeroEx:ZeroExService,private _contract: ContractService, private dialog: MdDialog, private _account: AccountService, public _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<OrderDialogComponent>, private _web3: Web3, private _dialog: DialogService, private sendDialogService: SendDialogService){
         if(this.data.display == 'eth'){
             this.minAmount = 0.001;
         }

@@ -12,7 +12,6 @@ import { BigNumber } from 'bignumber.js';
 import { ContractService } from '../../../services/contract.service';
 import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { ZeroExService } from "../../../services/0x.service";
-import { MarketComponent } from "../market.component";
 
 import { ZeroExConfirmDialogComponent } from "../../dialogs/zeroExConfirm-dialog.component";
 
@@ -47,7 +46,7 @@ export class BuySellPage implements OnInit, DoCheck {
     minAmount;
     pairBalance;
     balanceError = '';
-    constructor(private router: Router, public dialog: MdDialog, public _zeroEx: ZeroExService, public _market: MarketComponent, public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
+    constructor(private router: Router, public dialog: MdDialog, public _zeroEx: ZeroExService,  public _account:AccountService, public _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
         this.action = "buy";
     }
 
@@ -76,15 +75,15 @@ export class BuySellPage implements OnInit, DoCheck {
       }
     
       
-      this.lastDisplay = this._market.display;
-      if(this._market.display == 'weth'){
+      this.lastDisplay = this._zeroEx.display;
+      if(this._zeroEx.display == 'weth'){
         this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
         this.f.expires = this.expiresBigNumber.toNumber();
       }
-      if(this._market.display == 'eth'){
+      if(this._zeroEx.display == 'eth'){
           this.minAmount = 0.001;
       }
-      if(this._market.display == 'weth'){
+      if(this._zeroEx.display == 'weth'){
         if(this.action == 'buy'){
           let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
           let exp = 10 ** parseInt(decimalsString);
@@ -101,12 +100,12 @@ export class BuySellPage implements OnInit, DoCheck {
     }
 
     ngDoCheck() {
-      if(this.lastDisplay != this._market.display){
+      if(this.lastDisplay != this._zeroEx.display){
         
-        if(this._market.display == 'eth'){
+        if(this._zeroEx.display == 'eth'){
             this.minAmount = 0.001;
         }
-        if(this._market.display == 'weth'){  
+        if(this._zeroEx.display == 'weth'){  
           this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
           this.f.expires = this.expiresBigNumber.toNumber();
         }
@@ -121,7 +120,7 @@ export class BuySellPage implements OnInit, DoCheck {
     async onSubmit(form){
       this.submited = true;
       if(form.invalid) return false;
-      if(this._market.display == "eth"){
+      if(this._zeroEx.display == "eth"){
         this.loadingDialog = this._dialog.openLoadingDialog();
         let price =new BigNumber(this.f.price);
         this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
@@ -163,7 +162,7 @@ export class BuySellPage implements OnInit, DoCheck {
             this.order();
         }
       }
-      if(this._market.display == 'weth'){
+      if(this._zeroEx.display == 'weth'){
         let obj ={
           form:form.controls,
           token:this._zeroEx.token
@@ -224,14 +223,14 @@ export class BuySellPage implements OnInit, DoCheck {
     }
 
     total() {
-      if(this._market.display == 'eth'){
+      if(this._zeroEx.display == 'eth'){
         let amount = this.f.amount * this.f.price;
         let total =parseFloat(amount.toFixed(10));
         this.f.total = (isNaN(total))? 0 : total;
       }else{
         let total;
       let amount;
-      if(this._market.display == 'weth'){
+      if(this._zeroEx.display == 'weth'){
           amount = this.f.amount * this.f.price;
           let decimals = parseInt(this._zeroEx.token.assetDataA.decimals) +1
           total = parseFloat(amount.toFixed(decimals));

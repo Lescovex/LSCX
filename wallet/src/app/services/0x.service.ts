@@ -72,6 +72,8 @@ export class ZeroExService{
   protected abiBytes = require("../../libs/0x/abiBytes.json");
   protected config;
 
+  public display = '';
+
   constructor(public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _web3: Web3, protected router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
   }

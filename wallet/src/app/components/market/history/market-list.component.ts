@@ -8,7 +8,7 @@ import { RawTx } from '../../../models/rawtx';
 import BigNumber from 'bignumber.js';
 import { AccountService } from '../../../services/account.service';
 import { OrderDialogComponent } from "./order-dialog.component";
-import { MarketComponent } from "../market.component";
+
 import { ZeroExService } from "../../../services/0x.service";
 @Component({
   selector: 'app-market-list',
@@ -30,7 +30,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     orderDialog;
     loadingD= null;
     
-    constructor(protected _zeroEx:ZeroExService,public _market: MarketComponent,private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
+    constructor(public _zeroEx:ZeroExService, private _web3: Web3, public _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
         Promise.resolve().then(() => { this.loadingD = this._dialog.openLoadingDialog();});
     }
 
@@ -87,10 +87,10 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         console.log("action", action);
         
         
-        if(this._market.display == 'eth'){
+        if(this._zeroEx.display == 'eth'){
             order.tokenName = this._LSCXmarket.token.name;
             order.action = action;
-            order.display = this._market.display;
+            order.display = this._zeroEx.display;
             if(order.action == "sell"){
                 order.totalAmount = order.amountBase;
             }else{
@@ -103,10 +103,10 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
                 data: order
             });
         }
-        if(this._market.display == 'weth'){
+        if(this._zeroEx.display == 'weth'){
             order.action = action;
             order.taker = this._account.account.address;
-            order.display = this._market.display;
+            order.display = this._zeroEx.display;
 
             order.tokenName = this._zeroEx.token.assetDataB.name;
             order.tokenAddr = this._zeroEx.token.assetDataB.tokenAddress;

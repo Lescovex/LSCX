@@ -1,6 +1,6 @@
 <div id="hist-market" class="scroll scrollbar auto-h">
 
-    <table *ngIf="action=='myTrades' && _market.display == 'eth'" class="history-table">
+    <table *ngIf="action=='myTrades' && _zeroEx.display == 'eth'" class="history-table">
         <thead>
             <tr>
                 <th>Transaction</th>
@@ -29,7 +29,7 @@
         </tbody>
     </table>
 
-    <table *ngIf="action=='myOrders' && _market.display == 'eth'" class="history-table inline">
+    <table *ngIf="action=='myOrders' && _zeroEx.display == 'eth'" class="history-table inline">
         <thead>
             <tr>
                 <td class="red bold">SELL ORDERS</td>
@@ -63,9 +63,9 @@
 
         </tbody>
     </table>
-    <div class="extra inline" *ngIf="action=='myOrders' && _market.display == 'eth'">
+    <div class="extra inline" *ngIf="action=='myOrders' && _zeroEx.display == 'eth'">
     </div>
-    <table *ngIf="action=='myOrders' && _market.display == 'eth'" class="history-table inline">
+    <table *ngIf="action=='myOrders' && _zeroEx.display == 'eth'" class="history-table inline">
         <thead>
             <tr>
                 <td class="green bold">BUY ORDERS</td>
@@ -102,7 +102,7 @@
         </tbody>
     </table>
 
-    <table *ngIf="action=='myOrders' && _market.display == 'weth'" class="history-table inline">
+    <table *ngIf="action=='myOrders' && _zeroEx.display == 'weth'" class="history-table inline">
         <thead>
             <tr>
                 <td class="red bold">SELL ORDERS</td>
@@ -135,9 +135,9 @@
 
         </tbody>
     </table>
-    <div class="extra inline" *ngIf="action=='myOrders' && _market.display == 'weth'">
+    <div class="extra inline" *ngIf="action=='myOrders' && _zeroEx.display == 'weth'">
     </div>
-    <table *ngIf="action=='myOrders' && _market.display == 'weth'" class="history-table inline">
+    <table *ngIf="action=='myOrders' && _zeroEx.display == 'weth'" class="history-table inline">
         <thead>
             <tr>
                 <td class="green bold">BUY ORDERS</td>
@@ -173,7 +173,7 @@
             </tr>
         </tbody>
     </table>
-    <table *ngIf="action=='myFunds' && _market.display == 'eth'" class="history-table">
+    <table *ngIf="action=='myFunds' && _zeroEx.display == 'eth'" class="history-table">
         <thead>
             <tr>
                 <th>Transaction</th>

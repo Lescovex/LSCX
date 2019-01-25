@@ -1,10 +1,10 @@
-<div class="dist" *ngIf="_market.display == 'eth'">
+<div class="dist" *ngIf="_zeroEx.display == 'eth'">
     <div *ngIf="_LSCXmarket.token.balance != 0" class="half">
         <span class="title">Token Balance </span>
         <span>{{_LSCXmarket.token.balance}}</span>
     </div>
 </div>
-<div class="dist" *ngIf="_market.display == 'weth'">
+<div class="dist" *ngIf="_zeroEx.display == 'weth'">
     <div class="half" *ngIf="action == 'buy'">
         <span class="title">Token Balance </span>
         <span>{{_zeroEx.token.assetDataB.balance | number:'1.3-3':'en'}} {{_zeroEx.token.assetDataB.name}}</span>
@@ -20,7 +20,7 @@
         <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
         <!--<button class="extra btn-solid" (click)="_zeroEx.getOrderbook(_zeroEx.token.assetDataA.assetData, _zeroEx.token.assetDataB.assetData, 1)">Get orderbook</button>-->
     </div>
-    <div class="half right best-prices" *ngIf="_market.display == 'eth'">
+    <div class="half right best-prices" *ngIf="_zeroEx.display == 'eth'">
         <p class="half left">
             <span class="title">Best Sell: </span>
             <span *ngIf="_LSCXmarket.state.orders.sells.length>0" class="red">{{bestSell | number:'1.3-3':'en'}}</span>
@@ -32,7 +32,7 @@
             <span *ngIf="_LSCXmarket.state.orders.buys.length==0">----</span>
         </p>
     </div>
-    <div class="half right best-prices" *ngIf="_market.display == 'weth'">
+    <div class="half right best-prices" *ngIf="_zeroEx.display == 'weth'">
         <p class="half left">
             <span class="title">Best Sell: </span>
             <span *ngIf="_zeroEx.state.orders.sells.length>0" class="red">{{bestSellWeth | number:'1.3-3':'en'}}</span>
@@ -47,7 +47,7 @@
 </div>
 <div class="clear"></div>
 
-<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist" *ngIf="_market.display == 'eth'">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist" *ngIf="_zeroEx.display == 'eth'">
     <div class="dist">
         <div class="half left">
             <label class="title" for="amount">Amount to {{action}}</label>
@@ -90,7 +90,7 @@
         <button type="submit" class="dist block" [ngClass]="(action=='buy')? 'btn-inverse' : 'btn warning'">{{action | titlecase}} order</button>
     </div>
 </form>
-<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist" *ngIf="_market.display == 'weth'">
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="clear dist" *ngIf="_zeroEx.display == 'weth'">
     <div class="dist">
         <div class="half left">
             <label class="title" for="amount">Amount to {{action}}</label>

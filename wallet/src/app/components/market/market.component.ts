@@ -16,8 +16,9 @@ export class MarketComponent implements DoCheck, OnDestroy{
   protected net;
   public display;
 
-  constructor(public _account:AccountService, protected _LSCXmarket: LSCXMarketService, private _web3: Web3, private _zeroEx: ZeroExService) {
+  constructor(public _account:AccountService, public _LSCXmarket: LSCXMarketService, private _web3: Web3, public _zeroEx: ZeroExService) {
     this.display = "eth";
+    this._zeroEx.display = this.display;
     this._LSCXmarket.updateMyStateShow("myFunds");
     this._LSCXmarket.updateMyStateShow("myOrders");
     this._LSCXmarket.updateMyStateShow("myTrades");
@@ -35,6 +36,8 @@ export class MarketComponent implements DoCheck, OnDestroy{
     console.log("where i click?", text)
   }
   ngDoCheck(){
+    this._zeroEx.display = this.display;
+    
      if(this._LSCXmarket.updated = true && this._LSCXmarket.tikersInterval == null){
        this._LSCXmarket.setTikersInterval();
      }
@@ -70,11 +73,10 @@ export class MarketComponent implements DoCheck, OnDestroy{
   changeDisplay(){
     if(this.display == "eth"){
       this.display = "weth";
-      //this._zeroEx.activateLoading();
-      console.log("zeroEx token?",this._zeroEx.token);
-      
+      this._zeroEx.display = this.display;
     }else{
       this.display = "eth";
+      this._zeroEx.display = this.display;
     }
   }
 }

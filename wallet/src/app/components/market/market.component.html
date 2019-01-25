@@ -37,17 +37,14 @@
     <p *ngIf="!_account.account.hasOwnProperty('address'); else content" class="text-center">Select an ETH account</p>
 
     <ng-template #content>
-        <div *ngIf="display == 'eth'">
-            <div class="half left" class="market-token">
+        <div>
+            <div class="half left" class="market-token" *ngIf="display == 'eth'">
                 <p class="title inlineBlock" for="contract">Token <a (click)="toggleList()">{{_LSCXmarket.token?.name}} <img src="~icons/select_icon.svg"></a> </p>
                 <p class="title inline extra">Address <a>{{_LSCXmarket.token?.addr}}</a></p>
                 <app-tokens-market-list *ngIf="showList" (show)="onSelect($event)" id="token-list" class="select-list scrollbar"></app-tokens-market-list>
                 <div *ngIf="showList" class="overlay" (click)="toggleShow()"></div>
             </div>
-            <router-outlet></router-outlet>
-        </div>
-        <div *ngIf="display == 'weth' && _zeroEx.asset_pairs.length > 0">
-            <div class="half left" class="market-token">
+            <div class="half left" class="market-token" *ngIf="display == 'weth' && _zeroEx.asset_pairs.length > 0">
                 <p class="title inlineBlock" for="contract">Pair <a (click)="toggleList()">{{_zeroEx.token?.name}} <img src="~icons/select_icon.svg"></a> </p>
                 <app-tokens-market-list *ngIf="showList" (show)="onSelect($event)" id="token-list" class="select-list scrollbar"></app-tokens-market-list>
                 <div *ngIf="showList" class="overlay" (click)="toggleShow()"></div>

@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { MarketComponent } from "../market.component";
 import { ZeroExService } from "../../../services/0x.service";
 
 
@@ -12,7 +11,7 @@ export class MarketAmountsComponent {
   @Input() walletAmount: number;
   @Input() deltaAmount: number;
   @Input() accountAmount: number;
-  constructor(protected _market:MarketComponent, public _zeroEx: ZeroExService) {
+  constructor(public _zeroEx: ZeroExService) {
     
   }
 
