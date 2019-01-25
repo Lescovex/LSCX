@@ -506,9 +506,9 @@ export class ZeroExService{
     try {
       let x = await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.order, takerAssetAmount, taker); 
       console.log("que es x??",x);
-       
+       return true;
     } catch (error) {
-      return error;
+      return false;
       //console.log("error of validateFillOrder", error); 
     }
   }

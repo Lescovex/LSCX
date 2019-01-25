@@ -39,7 +39,7 @@ export class OrderDialogComponent {
     protected bestSell;
     protected bestBuy;
     pass;
-    
+    balanceError = '';
     minAmount;
     constructor(@Inject(MD_DIALOG_DATA) public data: any,protected _zeroEx:ZeroExService,private _contract: ContractService, private dialog: MdDialog, private _account: AccountService, private _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<OrderDialogComponent>, private _web3: Web3, private _dialog: DialogService, private sendDialogService: SendDialogService){
         if(this.data.display == 'eth'){
@@ -47,8 +47,6 @@ export class OrderDialogComponent {
         }
         if(this.data.display == 'weth'){
             this.minAmount = data.minAmount;
-            console.log("this.minAmount", this.minAmount);
-            
         }
         this.f.price = data.price;        
         if(this.data.action == "buy"){
@@ -88,7 +86,6 @@ export class OrderDialogComponent {
             }
             
             let amountCross = (this.action == 'buy')? this.f.total : this.f.amount;
-            
             let matchs = await this.getCross(amountCross, this.f.price);
             
             if(matchs.length > 0){
@@ -98,7 +95,6 @@ export class OrderDialogComponent {
                 order = this.data;
                 let testParams = [order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user,  this.f.amount, this._account.account.address];
                 let testTradeResp = await this._contract.callFunction(this._LSCXmarket.contractMarket,'testTrade',testParams);
-                console.log("testTradeResp??",testTradeResp);
                 
                 testTrade = (testTradeResp.toString() == "true")? true: false;
                 if(testTrade) params = [order.tokenGet,order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce, order.user, this.amount];
@@ -109,66 +105,38 @@ export class OrderDialogComponent {
             }
         }
         if(this.data.display == 'weth'){
-            console.log("Que es this data",this.data);
-            
             this.submited = true;
             if(form.invalid) return false;
-           
-            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress){
-                if(this.f.amount >= this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.remainingAmount){
-                    //must display error message
-                    return false;
-                }
-            }
-            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress){
-                if(this.f.amount >= this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount){
-                    //must display error message
-                    return false;
-                }
-            }
             let is_Valid = await this._zeroEx.validateFillOrder(this.data ,this.f.amount,this._account.account.address);
-            console.log("IS VALID?!?!?!??!!?!?!!",is_Valid);
-            
-            this.dialogRef.close(this.f.pass);
-            console.log("form!!!!??!?!!",this.f);
-            
-            this.dialogRef.afterClosed().subscribe(async result=>{
-                console.log("result AfterClosed",result);
-                let wallet;
-                let error= "";
-                if(result != null){
-
-                    try{
-                        wallet = EthWallet.fromV3(this._account.account.v3, result);
-                      }catch(e){
-                        error= e.message;
-                      }
-                      console.log("wallet", wallet);
-                      
-                      if(error==""){
-                        this.loadingDialog = this._dialog.openLoadingDialog();
-                        try {
-                            await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, result);    
-                        } catch (error) {
-                            console.log(error);
-                            
-                            this.loadingDialog.close();    
+            if(is_Valid == true){
+                this.dialogRef.close(this.f.pass);
+                this.dialogRef.afterClosed().subscribe(async result=>{
+                    let wallet;
+                    let error= "";
+                    if(result != null){
+                        try{
+                            wallet = EthWallet.fromV3(this._account.account.v3, result);
+                        }catch(e){
+                            error= e.message;
                         }
-                        
-                        this.loadingDialog.close();
-                        
-                      }else{
-                        let dialogRef = this._dialog.openErrorDialog('Unable to fill this order', error, " ");
-                      }
-
-
-                            
-                }else{
-                    console.log("DIALOG CLOSED!!!!!!");
-                    
-                }
-            });
-            
+                        if(error==""){
+                            this.loadingDialog = this._dialog.openLoadingDialog();
+                            try {
+                                await this._zeroEx.fillOrder(this.data ,this.f.amount,this._account.account.address, result);    
+                            } catch (error) {
+                                console.log(error);
+                                this.loadingDialog.close();    
+                            }
+                            this.loadingDialog.close();
+                        }else{
+                            let dialogRef = this._dialog.openErrorDialog('Unable to fill this order', error, " ");
+                        }           
+                    }
+                });
+            }else{
+                this.dialogRef.close();
+                let dialogRef = this._dialog.openErrorDialog('Unable to fill this order', "Validate fill order error, please check token allowance", " ");
+            }
         }
     }
 
@@ -181,7 +149,6 @@ export class OrderDialogComponent {
         }
         if(this.data.display == 'weth'){
             amount = this.f.amount * this.f.price;
-            console.log(this.data.takerData.decimals);
             let decimals = parseInt(this.data.takerData.decimals) +1
             total = parseFloat(amount.toFixed(decimals));
         }
@@ -208,18 +175,41 @@ export class OrderDialogComponent {
             }
         }
         if(this.data.display == 'weth'){
-                if(this.f.amount > this.data.remainingAmount || this.f.amount < this.data.minAmount){
-                    this.totalSumbit = true;
-                    this.submited = true;
-                    this.f.total = 0;
-                    return false
-                }else{
-                    this.f.total = (isNaN(total))? 0 : total;
+            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress){
+                if(this.f.amount > this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.remainingAmount){
+                    if(this.f.amount > this._zeroEx.token.assetDataA.balance){
+                        this.balanceError = "The amount to pay is higher than your balance";
+                        this.submited = true;
+                        this.f.total = 0;
+                        return false
+                      }else{
+                          this.balanceError = '';
+                      }
+                    //must display error message
+                    
                 }
-            
+            }
+            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress){
+                if(this.f.amount > this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount){
+                    if(this.f.amount > this._zeroEx.token.assetDataA.balance){
+                        this.balanceError = "The amount to pay is higher than your balance";
+                        this.submited = true;
+                        this.f.total = 0;
+                        return false
+                      }else{
+                          this.balanceError = '';
+                      }
+                }
+            }
+            if(this.f.amount > this.data.remainingAmount || this.f.amount < this.data.minAmount){
+                this.totalSumbit = true;
+                this.submited = true;
+                this.f.total = 0;
+                return false
+            }else{
+                this.f.total = (isNaN(total))? 0 : total;
+            }   
         }
-        console.log("THIS F TOTAL???????!?!?!??!!?!",this.f.total);
-        
       }
       
       async getCross(amount, price){
@@ -234,8 +224,6 @@ export class OrderDialogComponent {
       }
 
       async trade(params, order){
-          console.log("into trade function");
-          
           let data = await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'trade',params);  
           this.loadingDialog.close();
           let gasLimit;

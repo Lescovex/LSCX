@@ -29,7 +29,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     items: any[];
     orderDialog;
     loadingD= null;
-
+    
     constructor(protected _zeroEx:ZeroExService,public _market: MarketComponent,private _web3: Web3, protected _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
         Promise.resolve().then(() => { this.loadingD = this._dialog.openLoadingDialog();});
     }

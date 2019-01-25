@@ -26,7 +26,9 @@
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && (amount.invalid || eth.invalid))}">
                 <span *ngIf="amount.errors?.required">This field is required</span>
-                <span *ngIf="!amount.errors?.required && eth.errors?.customMin ">The minimum order is 0.001</span>
+                <span *ngIf="!amount.errors?.required && eth.errors?.customMin && data.display == 'eth' ">The minimum order is 0.001</span>
+                <span *ngIf="!amount.errors?.required && eth.errors?.customMin && data.display == 'weth'">The minimum order is {{minAmount | number:"1.18-18":"en"}}</span>
+                <span *ngIf="balanceError != '' && data.display == 'weth'" class="block">{{balanceError}}</span>
             </p>
         </div>
         <div class="half right">
@@ -39,7 +41,8 @@
             </div>
             <p class="error" [ngClass]="{'hidden':!(submited && (price.invalid || eth.invalid))}">
                 <span *ngIf="price.errors?.required">This field is required</span>
-                <span *ngIf="!price.errors?.required">The minimum order is 0.001</span>
+                <span *ngIf="!price.errors?.required && data.display == 'eth'">The minimum order is 0.001</span>
+                <span *ngIf="!price.errors?.required  && data.display == 'weth'">The minimum order is {{minAmount | number:"1.18-18":"en"}}</span>
             </p>
         </div>
         <div class="clear half left">
