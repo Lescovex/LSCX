@@ -43,7 +43,14 @@
 
 
     </div>
-    <button *ngIf="action =='deposit' && _market.display == 'weth'" type="submit" class="btn-solid left">{{actionName | titlecase}}</button>
+    <div *ngIf="(action=='withdraw' && _market.display == 'weth')&& token?.tokenAddress != _zeroEx.contractAddresses.etherToken">
+        <label class="black">Allowance {{token?.name}}</label>
+
+    </div>
+    <!--
+        <button *ngIf="action =='deposit' && _market.display == 'weth'" type="submit" class="btn-solid left">{{actionName | titlecase}}</button>
     <button *ngIf="(action=='withdraw' && _market.display == 'weth') && token?.tokenAddress == _zeroEx.contractAddresses.etherToken" type="submit" class="btn-solid">{{actionName | titlecase}}</button>
-    <button *ngIf="_market.display == 'eth'" type="submit" class="btn-solid">{{actionName | titlecase}}</button>
+    -->
+
+    <button type="submit" class="btn-solid">{{actionName | titlecase}}</button>
 </form>

@@ -65,19 +65,19 @@ export class MarketWalletPage implements OnInit, OnDestroy, DoCheck {
   
   activeButton(action){   
     this.action = action;
-    if(this.action == 'deposit' && this._market.display=='weth' && this._zeroEx.token.assetDataA.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataA.allowed == 0){
+    if(this._market.display=='weth' && this._zeroEx.token.assetDataA.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataA.allowed == 0){
       this.actionNameA = 'allow';
     }else{
       this.actionNameA = this.action;
-      if(this.action == 'deposit' && this._market.display =='weth' && this._zeroEx.token.assetDataA.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataA.allowed > 0){
+      if(this._market.display =='weth' && this._zeroEx.token.assetDataA.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataA.allowed > 0){
         this.actionNameA = 'override allowance';
       }
     }
-    if(this.action == 'deposit' && this._market.display=='weth' && this._zeroEx.token.assetDataB.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataB.allowed == 0){
+    if(this._market.display=='weth' && this._zeroEx.token.assetDataB.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataB.allowed == 0){
       this.actionNameB = 'allow';
     }else{
       this.actionNameB = this.action;
-      if(this.action == 'deposit' && this._market.display=='weth' && this._zeroEx.token.assetDataB.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataB.allowed > 0){
+      if(this._market.display=='weth' && this._zeroEx.token.assetDataB.tokenAddress != this._zeroEx.contractAddresses.etherToken && this._zeroEx.token.assetDataB.allowed > 0){
         this.actionNameB = 'override allowance';
       }
 
