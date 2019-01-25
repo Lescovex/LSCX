@@ -58,39 +58,21 @@ export class BuySellPage implements OnInit, DoCheck {
       if(this._LSCXmarket.state.orders.sells.length != 0){
         let sellLength = this._LSCXmarket.state.orders.sells.length;          
         this.bestSell = this._LSCXmarket.state.orders.sells[sellLength -1].price;
-        console.log("sells", this._LSCXmarket.state.orders.sells);
-        
-        console.log("bestSell", this.bestSell);
-        
-        //lowerPrice
       }
       
       if(this._LSCXmarket.state.orders.buys.length != 0){
         let buyLength = this._LSCXmarket.state.orders.buys.length;
         this.bestBuy = this._LSCXmarket.state.orders.buys[0].price;
-        console.log("buys", this._LSCXmarket.state.orders.buys);
-        
-        console.log("bestBuy", this.bestBuy);
-        
-        //higherPrice
       }
       
       
       if(this._zeroEx.state.orders.sells.length != 0){
         let sellLength = this._zeroEx.state.orders.sells.length;
-        console.log("sells Len", sellLength);
         this.bestSellWeth = this._zeroEx.state.orders.sells[0].price;
-        console.log("WETH BEST SELL PRICE",this.bestSellWeth);
-        
-        //lowerPrice
       }
       if(this._zeroEx.state.orders.buys.length != 0){
         let buyLength = this._zeroEx.state.orders.buys.length;
-        console.log("buys len", buyLength);
         this.bestBuyWeth = this._zeroEx.state.orders.buys[0].price;
-        console.log("WETH BEST BUY PRICE",this.bestBuyWeth);
-        
-        //higherPrice
       }
     
       
@@ -120,33 +102,13 @@ export class BuySellPage implements OnInit, DoCheck {
 
     ngDoCheck() {
       if(this.lastDisplay != this._market.display){
-        console.log("NGDOCHECK???????");
         
         if(this._market.display == 'eth'){
             this.minAmount = 0.001;
         }
-        if(this._market.display == 'weth'){
-          console.log("NGDOCHECK WETH?¿?");
-          
+        if(this._market.display == 'weth'){  
           this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
           this.f.expires = this.expiresBigNumber.toNumber();
-          if(this.action == 'buy'){
-            console.log("NGDOCHECK BUY?¿?");
-            let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
-            let exp = 10 ** parseInt(decimalsString);
-            this.minAmount = this._zeroEx.token.assetDataB.minAmount/exp;
-            this.pairBalance = this._zeroEx.token.assetDataB.balance;
-            console.log("THIS PAIR BALANCE?",this.pairBalance);
-          }
-          if(this.action == 'sell'){
-            console.log("NGDOCHECK SELL?¿?");
-            let decimalsString = this._zeroEx.token.assetDataA.decimals.toString();
-            let exp = 10 ** parseInt(decimalsString);
-            this.minAmount = this._zeroEx.token.assetDataA.minAmount/exp;
-            this.pairBalance = this._zeroEx.token.assetDataA.balance;
-            console.log("THIS PAIR BALANCE?",this.pairBalance);
-            
-          }
         }
       } 
     }
@@ -158,7 +120,6 @@ export class BuySellPage implements OnInit, DoCheck {
 
     async onSubmit(form){
       this.submited = true;
-      console.log("THIS MARKET DISPLAY",this._market.display);
       if(form.invalid) return false;
       if(this._market.display == "eth"){
         this.loadingDialog = this._dialog.openLoadingDialog();
@@ -203,11 +164,6 @@ export class BuySellPage implements OnInit, DoCheck {
         }
       }
       if(this._market.display == 'weth'){
-        console.log("into weth if");
-        console.log(form.controls);
-        //check weth balance
-        //check token balance if false return error
-        console.log("selectedToken?",this._LSCXmarket.token.addr);
         let obj ={
           form:form.controls,
           token:this._zeroEx.token
@@ -222,7 +178,6 @@ export class BuySellPage implements OnInit, DoCheck {
           }
         });
         confirm.afterClosed().subscribe(async result=>{
-          console.log("result AfterClosed",result);
           if(result != null){
             let loading = this._dialog.openLoadingDialog();
             let error = "";
@@ -254,21 +209,16 @@ export class BuySellPage implements OnInit, DoCheck {
       this.action = action;
       
         if(this.action == 'buy'){
-          console.log("NGDOCHECK BUY?¿?");
           let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
           let exp = 10 ** parseInt(decimalsString);
           this.minAmount = this._zeroEx.token.assetDataB.minAmount/exp;
           this.pairBalance = this._zeroEx.token.assetDataB.balance;
-          console.log("THIS PAIR BALANCE?",this.pairBalance);
         }
         if(this.action == 'sell'){
-          console.log("NGDOCHECK SELL?¿?");
           let decimalsString = this._zeroEx.token.assetDataA.decimals.toString();
           let exp = 10 ** parseInt(decimalsString);
           this.minAmount = this._zeroEx.token.assetDataA.minAmount/exp;
           this.pairBalance = this._zeroEx.token.assetDataA.balance;
-          console.log("THIS PAIR BALANCE?",this.pairBalance);
-          
         }
       
     }
@@ -282,14 +232,10 @@ export class BuySellPage implements OnInit, DoCheck {
         let total;
       let amount;
       if(this._market.display == 'weth'){
-        console.log("dentro de total weth?");
-        
           amount = this.f.amount * this.f.price;
-          console.log();
           let decimals = parseInt(this._zeroEx.token.assetDataA.decimals) +1
           total = parseFloat(amount.toFixed(decimals));
           if(this.action == 'buy'){
-            console.log("action buy?");
             if(total > this.pairBalance){
               this.balanceError = "The amount to pay is higher than your balance";
               this.submited = true;
@@ -297,9 +243,6 @@ export class BuySellPage implements OnInit, DoCheck {
                 return false
             }
             if(total < this.minAmount){
-              console.log("pairbalance?",this.pairBalance);
-              
-                //this.totalSumbit = true;
                 this.submited = true;
                 this.f.total = 0;
                 return false
@@ -316,11 +259,6 @@ export class BuySellPage implements OnInit, DoCheck {
                 return false
             }
             if(this.f.amount < this.minAmount){
-
-              console.log("pairbalance?",this.pairBalance);
-              
-
-                //this.totalSumbit = true;
                 this.submited = true;
                 this.f.total = 0;
                 return false
@@ -332,18 +270,6 @@ export class BuySellPage implements OnInit, DoCheck {
           
         }
       }
-
-      /*
-         if(action == 'buy'){
-            makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataB.decimals));
-          }
-          if(action == 'sell'){
-            makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataA.decimals));
-          }
-      */
-      
-      
-      
     }
 
     async getCross(amount, price){

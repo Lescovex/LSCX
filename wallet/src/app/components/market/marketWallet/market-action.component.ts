@@ -34,16 +34,9 @@ export class MarketActionComponent implements OnChanges{
     loadingD;
     constructor(protected _zeroEx: ZeroExService,private _market : MarketComponent, private _LSCXmarket: LSCXMarketService, private _account: AccountService, private sendDialogService: SendDialogService, private _web3: Web3, private _dialog: DialogService,  private _scan: EtherscanService, private _contract: ContractService, public dialog: MdDialog) {
         this.lastAction = this.action;
-        console.log("_zeroEx token", this._zeroEx.token);
-        console.log("_zeroEx contracts", this._zeroEx.contractAddresses);
-        
-        
-        
     }
 
     ngOnInit(){
-        console.log("market action component on init???");
-        
     }
     ngOnChanges(): void{
         if(this.lastAction != this.action){
@@ -53,7 +46,6 @@ export class MarketActionComponent implements OnChanges{
     }
 
     async onSubmit(form){
-        console.log(this._market.display);
         this.submited = true;
         if(form.invalid){
             return false
@@ -108,10 +100,7 @@ export class MarketActionComponent implements OnChanges{
         if(this.action == "deposit" && this._market.display == "weth" && this.actionName == 'deposit'){
             this.dialogRef = this._dialog.openWethDialog(form.controls.amount.value, "wrap");
             this.dialogRef.afterClosed().subscribe(async result=>{
-                console.log("result AfterClosed",result);
-                console.log("JSONPARSE",JSON.parse(result));
-                let res = JSON.parse(result)
-                
+                let res = JSON.parse(result);
                 if(result != null){
                     this.dialogRef = this._dialog.openLoadingDialog();
                     await this._zeroEx.setProvider(res.key)
@@ -122,7 +111,6 @@ export class MarketActionComponent implements OnChanges{
             });
         }
         if(this.action == "deposit" && this._market.display == "weth" && this.actionName == 'override allowance'){
-            console.log("actionName overrideAllowance?",this.actionName);
             this.loadingD = this.dialog.open(LoadingDialogComponent, {
                 width: '660px',
                 height: '150px',
@@ -174,7 +162,6 @@ export class MarketActionComponent implements OnChanges{
                 disableClose: true,
               });
             confirmDialog.afterClosed().subscribe(async result=>{
-                console.log("result AfterClosed",result);
                 if(result != null){
                     this.dialogRef = this._dialog.openLoadingDialog();
                     await this._zeroEx.setProvider(result)
@@ -188,7 +175,6 @@ export class MarketActionComponent implements OnChanges{
         if(this.action == "withdraw" && this._market.display == "weth"){
             this.dialogRef = this._dialog.openWethDialog(form.controls.amount.value, "unwrap");
             this.dialogRef.afterClosed().subscribe(async result=>{
-                console.log("result AfterClosed",result);
                 let res = JSON.parse(result)
                 if(result != null){
                     this.dialogRef = this._dialog.openLoadingDialog();

@@ -38,11 +38,9 @@ export class MarketHistoryPage implements DoCheck {
   }
 
   ngOnInit(){
-    console.log("Market history page on init??");
     
   }
   async ngDoCheck() {
-    //console.log(this._market.display);
     
     if(this.lastAction != this.action){
       this.lastAction = this.action;

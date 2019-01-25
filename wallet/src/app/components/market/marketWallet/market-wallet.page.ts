@@ -45,12 +45,8 @@ export class MarketWalletPage implements OnInit, OnDestroy, DoCheck {
       }
 
     }
-    console.log("acc balance", _account.account.balance);
-    //console.log("0x balance", _zeroEx.balance_weth);
   }
   async ngOnInit() {
-    console.log("Market wallet page on init?????");
-    
     await this._LSCXmarket.setBalancesInterval();
   }
 
@@ -58,9 +54,7 @@ export class MarketWalletPage implements OnInit, OnDestroy, DoCheck {
     this._LSCXmarket.clearBalancesInterval();
   }
   ngDoCheck(){
-    this.activeButton(this.action)  
-    //console.log(this._market.display);
-    
+    this.activeButton(this.action);
   }
   
   activeButton(action){   
