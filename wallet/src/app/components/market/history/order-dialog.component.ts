@@ -48,7 +48,7 @@ export class OrderDialogComponent {
         if(this.data.display == 'weth'){
             this.minAmount = data.minAmount;
         }
-        this.f.price = data.price;        
+        this.f.price = data.priceTokenB;        
         if(this.data.action == "buy"){
             this.action = "sell";
         }

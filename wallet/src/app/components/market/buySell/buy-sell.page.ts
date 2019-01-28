@@ -223,17 +223,23 @@ export class BuySellPage implements OnInit, DoCheck {
     }
 
     total() {
+      console.log("TOTAL FUNCION");
+      
       if(this._zeroEx.display == 'eth'){
         let amount = this.f.amount * this.f.price;
         let total =parseFloat(amount.toFixed(10));
         this.f.total = (isNaN(total))? 0 : total;
       }else{
         let total;
-      let amount;
+        let amount;
       if(this._zeroEx.display == 'weth'){
           amount = this.f.amount * this.f.price;
+          console.log("amount???",amount);
+          
           let decimals = parseInt(this._zeroEx.token.assetDataA.decimals) +1
           total = parseFloat(amount.toFixed(decimals));
+          console.log("total????",total);
+          
           if(this.action == 'buy'){
             if(total > this.pairBalance){
               this.balanceError = "The amount to pay is higher than your balance";

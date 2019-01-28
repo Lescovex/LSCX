@@ -34,7 +34,7 @@
         <div class="half right">
             <label class="title" for="price">Price</label>
             <div class="input-container" [ngClass]="{'error': submited && (price.invalid || eth.invalid) }">
-                <input class="lightGrey" type="number" [placeholder]="data.price" [value]="data.price" step="any" name="price" (input)="total()" [(ngModel)]="f.price" ngModel disabled required #price="ngModel" />
+                <input class="lightGrey" type="number" [placeholder]="data.priceTokenB" [value]="data.priceTokenB" step="any" name="price" (input)="total()" [(ngModel)]="f.price" ngModel disabled required #price="ngModel" />
 
                 <span class="right" *ngIf="data.display == 'eth'">ETH</span>
                 <span class="right" *ngIf="data.display == 'weth'">{{data.priceSymbol}}</span>

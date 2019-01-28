@@ -28,6 +28,39 @@
             </tr>
         </tbody>
     </table>
+    <table *ngIf="action=='myTrades' && _zeroEx.display == 'weth'" class="history-table">
+        <thead>
+            <tr>
+                <th>Transaction</th>
+                <th>Type</th>
+                <th>{{_zeroEx.token.assetDataA.name}}</th>
+                <th>{{_zeroEx.token.assetDataB.name}}</th>
+                <th>{{_zeroEx.token.assetDataA.name}}/{{_zeroEx.token.assetDataB.name}}</th>
+            </tr>
+        </thead>
+        <tr *ngIf="history.length == 0">
+            <td colspan="5" class="collapse">There are no trades here</td>
+        </tr>
+        <tbody *ngFor="let trade of _zeroEx.localState.allOrders, index as i">
+            <tr>
+                <td class="pointer" (click)="openExternal(trade.txHash)">{{trade.date.fullDate}}</td>
+                <td *ngIf="trade.action == 'buy'">
+                    <p class="green">Buy Order</p>
+                </td>
+                <td *ngIf="trade.action == 'sell'">
+                    <p class="red">Sell Order</p>
+                </td>
+                <td *ngIf="trade.action == 'buy'">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'sell'">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'buy'">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'sell'">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
+                <td>
+                    <p>{{trade.priceTokenA | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataA.name}}</p>
+                    <p>{{trade.priceTokenB | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataB.name}}</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <table *ngIf="action=='myOrders' && _zeroEx.display == 'eth'" class="history-table inline">
         <thead>
@@ -110,7 +143,7 @@
             <tr>
                 <th>{{_zeroEx.token.name}}</th>
                 <th>Available volume</th>
-                <th class="history-expireSize-weth">Expires in</th>
+                <th class="history-expireSize-weth">Expires</th>
             </tr>
         </thead>
         <tr *ngIf="_zeroEx.showSells == 0">
@@ -119,15 +152,20 @@
         <tbody *ngIf="_zeroEx.showSells != 0">
             <tr class="pointer" *ngFor="let order of _zeroEx.showSells, index as i">
                 <td (click)="openOrderDialog('sell', order)">
-                    <p class="red">{{order.price | number:"1.4-8":"en"}}</p>
+                    <p class="red">{{order.priceTokenB | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p class="red">{{order.priceTokenA | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataA.name}}</p>
                 </td>
                 <td (click)="openOrderDialog('sell', order)">
                     <p>
                         {{order.filledAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}} / {{order.takerAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}}
                     </p>
+                    <p>
+                        {{order.filledAmountOtherToken | number:"1.8-8":"en"}} {{order.makerData.symbol}} / {{order.makerAmount | number:"1.8-8":"en"}} {{order.makerData.symbol}}
+                    </p>
+
                 </td>
                 <td *ngIf="blockNumber != null" (click)="openOrderDialog('sell', order)">
-                    <p class="history-expireSize-weth">{{order.expirationTimeSeconds}}</p>
+                    <p class="history-expireSize-weth">{{order.date.countdown}}</p>
                 </td>
                 <td *ngIf="blockNumber == null" class="red">Not available</td>
 
@@ -145,7 +183,7 @@
             <tr>
                 <th>{{_zeroEx.token.name}}</th>
                 <th>Available volume</th>
-                <th class="history-expireSize-weth">Expires in</th>
+                <th class="history-expireSize-weth">Expires</th>
             </tr>
         </thead>
         <tbody *ngIf="_zeroEx.showBuys == 0">
@@ -157,16 +195,21 @@
         <tbody *ngIf="_zeroEx.showBuys != 0">
             <tr class="pointer" *ngFor="let order of _zeroEx.showBuys, index as i">
                 <td (click)="openOrderDialog('buy', order)">
-                    <p class="green">{{order.price | number:"1.4-8":"en"}}</p>
+                    <p class="green">{{order.priceTokenB | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p class="green">{{order.priceTokenA | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataA.name}}</p>
+
                 </td>
                 <td (click)="openOrderDialog('buy', order)">
+                    <p>
+                        {{order.filledAmountOtherToken | number:"1.8-8":"en"}} {{order.makerData.symbol}} / {{order.makerAmount | number:"1.8-8":"en"}} {{order.makerData.symbol}}
+                    </p>
                     <p>
                         {{order.filledAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}} / {{order.takerAmount | number:"1.8-8":"en"}} {{order.takerData.symbol}}
                     </p>
                 </td>
                 <td *ngIf="blockNumber != null" (click)="openOrderDialog('buy', order)">
                     <p class="history-expireSize-weth">
-                        {{order.expirationTimeSeconds}}
+                        {{order.date.countdown}}
                     </p>
                 </td>
                 <td *ngIf="blockNumber == null" class="red">Not available</td>

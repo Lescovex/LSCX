@@ -567,6 +567,7 @@ export class LSCXMarketService {
 			}
 			
 			myOrders = await this.orderByPrice(buys);
+			
 			if(myOrders != null){
 				for (let i = 0; i < myOrders.length; i++) {
 					//const element = array[i];
