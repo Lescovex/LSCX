@@ -31,25 +31,39 @@
     <table *ngIf="action=='myTrades' && _zeroEx.display == 'weth'" class="history-table">
         <thead>
             <tr>
-                <th>Transaction</th>
+                <th>Amount filled</th>
                 <th>Type</th>
+                <!--<th>Date</th>-->
                 <th>{{_zeroEx.token.assetDataA.name}}</th>
                 <th>{{_zeroEx.token.assetDataB.name}}</th>
-                <th>{{_zeroEx.token.assetDataA.name}}/{{_zeroEx.token.assetDataB.name}}</th>
+                <th>Price</th>
             </tr>
         </thead>
         <tr *ngIf="history.length == 0">
             <td colspan="5" class="collapse">There are no trades here</td>
         </tr>
-        <tbody *ngFor="let trade of _zeroEx.localState.allOrders, index as i">
+        <tbody *ngFor="let trade of _zeroEx.allOrders, index as i">
             <tr>
-                <td class="pointer" (click)="openExternal(trade.txHash)">{{trade.date.fullDate}}</td>
+                <td *ngIf="trade.action == 'buy'">
+                    <p class="green">{{trade.orderTakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
+                    <p class="red">-{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataB.name}}</p>
+                </td>
+                <td *ngIf="trade.action == 'sell'">
+                    <p class="red">-{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
+                    <p class="green">{{trade.orderTakerAssetFilledAmount}} {{_zeroEx.token.assetDataB.name}}</p>
+                </td>
                 <td *ngIf="trade.action == 'buy'">
                     <p class="green">Buy Order</p>
                 </td>
                 <td *ngIf="trade.action == 'sell'">
                     <p class="red">Sell Order</p>
                 </td>
+                <!--
+                <td>
+                    {{trade.date.fullDate}}
+                </td>    
+                -->
+
                 <td *ngIf="trade.action == 'buy'">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
                 <td *ngIf="trade.action == 'sell'">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
                 <td *ngIf="trade.action == 'buy'">{{trade.makerAmount | number:"1.8-8":"en"}}</td>

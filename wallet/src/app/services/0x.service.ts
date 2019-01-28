@@ -74,7 +74,7 @@ export class ZeroExService{
 
   public display = '';
   public funds = [];
-  //public allOrders = [];
+  public allOrders = [];
   public doneOrders = [];
   public moment = require('moment');
   constructor(public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _web3: Web3, protected router: Router, private _scan: EtherscanService, private _contract: ContractService){
@@ -118,23 +118,42 @@ export class ZeroExService{
   }
 
   async checkMyDoneOrders(){
-    let mem = [];
+    
     let control = false;
+    let date = new BigNumber(Date.now()).div(1000).ceil();
+    let dateToNumber = date.toNumber();
+  
+    while(control == false){
+      let mem = [];
+      if(this.localState.allOrders != null){
+        for (let i = 0; i < this.localState.allOrders.length; i++) {
+          if(dateToNumber >= parseInt(this.localState.allOrders[i].signedOrder.expirationTimeSeconds) && this._account.account.address == this.localState.allOrders[i].account && this.token.assetDataA.assetData == this.localState.allOrders[i].assetDataA.assetData && this.token.assetDataB.assetData == this.localState.allOrders[i].assetDataB.assetData){
+            let orderInfo = await this.contractWrappers.exchange.getOrderInfoAsync(this.localState.allOrders[i].signedOrder);
+            let decimals = this.token.assetDataA.decimals;
+            let x = decimals.toString();
+            let exp = 10 ** parseInt(x);
 
-   console.log("this.localState.allOrders", this.localState.allOrders);
-   console.log("this.localState.allOrders.length", this.localState.allOrders.length);
-   while(control == false){
-     if(this.localState.allOrders != null){
-      for (let i = 0; i < this.localState.allOrders.length; i++) {
-        if(this._account.account.address == this.localState.allOrders[i].address && this.token.assetDataA.assetData == this.localState.allOrders[i].assetDataA.assetData && this.token.assetDataB.assetData == this.localState.allOrders[i].assetDataB.assetData){
-          console.log("obj of allOrders",this.localState.allOrders[i]);
+            this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
+            if(this.localState.allOrders[i].action == 'buy'){
+              this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
+            }
+            if(this.localState.allOrders[i].action == 'sell'){
+              this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
+            }
+
+            mem.push(this.localState.allOrders[i]);
+
+          }
           
         }
+        this.allOrders = mem;
+        console.log("QUE ES MEM?",mem);
         
+        console.log("QUE ES ALL ORDERS?",this.allOrders);
+        
+        control = true;
       }
-      control = true;
-     }
-   }
+    }
    
   }
 
@@ -177,10 +196,6 @@ export class ZeroExService{
       console.log("localState on init?????",this.localState);
       
       this.asset_pairs = this.localState.asset_pairs;
-			//await this.getTikers();
-			//this.updateMyStateShow("myFunds");
-			//this.updateMyStateShow("myOrders");
-			//this.updateMyStateShow("myTrades");
   }
   
   setProvider(pass?){
@@ -542,18 +557,8 @@ export class ZeroExService{
     await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
   async saveOrder(orderHash, signedOrder, action){
-    console.log("INSIDE SAVE ORDER!!!!!");
-    console.log("assetA", this.token.assetDataA);
-    console.log("assetB", this.token.assetDataB);
-    console.log("hash", orderHash);
-    console.log("signedOrder", signedOrder);
-    console.log("action", action);
-    console.log("account", this._account.account.address);
     let date = this.timestampFormats(signedOrder.expirationTimeSeconds);
-    console.log("",date);
-    /*
-    
-    */
+   
     let decimals = this.token.assetDataA.decimals;
     let x = decimals.toString();
     let exp = 10 ** parseInt(x)
@@ -574,7 +579,7 @@ export class ZeroExService{
 
       
     }
-
+    let empty = 0;
     let obj = {
       assetDataA: this.token.assetDataA,
       assetDataB: this.token.assetDataB,
@@ -586,7 +591,9 @@ export class ZeroExService{
       takerAmount: redeableTakerAmount,
       makerAmount: redeableMakerAmount,
       priceTokenA: priceA.toNumber(),
-      priceTokenB: priceB.toNumber()
+      priceTokenB: priceB.toNumber(),
+      orderTakerAssetFilledAmount: empty,
+      orderMakerAssetFilledAmount: empty
     }
     console.log("que es obj?",obj);
     //let orderOrders = 
@@ -973,47 +980,6 @@ export class ZeroExService{
         }
         this.state.orders = {buys:[], sells:[]};
 
-        /*
-        //if not null decodedDataAsks and decodedDataBids
-        if(decodedMakerDataAsks != null && decodedMakerDataBids != null){
-          if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
-            this.setBuys(this.orderbook.asks);
-            this.setSells(this.orderbook.bids);
-            this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
-          }
-          if(decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress){
-            this.setBuys(this.orderbook.bids);
-            this.setSells(this.orderbook.asks);
-            this.setShowOrders(this.orderbook.bids, this.orderbook.asks); 
-          }  
-        }
-        //if decodedDataAsks == null && decodedDataBids != null
-        if(decodedMakerDataAsks == null && decodedMakerDataBids != null){
-          if(decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress){
-            this.setBuys(this.orderbook.asks);
-            this.setSells(this.orderbook.bids);
-            this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
-          }
-          if(decodedMakerDataBids.tokenAddress == this.token.assetDataB.tokenAddress){
-            this.setBuys(this.orderbook.bids);
-            this.setSells(this.orderbook.asks);
-            this.setShowOrders(this.orderbook.bids, this.orderbook.asks);
-          }
-        }
-        //if decodedDataBids == nul && decodedDataAsks != null;
-        if(decodedMakerDataAsks != null && decodedMakerDataBids == null){
-          if(decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress){
-            this.setBuys(this.orderbook.asks);
-            this.setSells(this.orderbook.bids);
-            this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
-          }
-          if(decodedMakerDataAsks.tokenAddress == this.token.assetDataA.tokenAddress){
-            this.setBuys(this.orderbook.bids);
-            this.setSells(this.orderbook.asks);
-            this.setShowOrders(this.orderbook.bids, this.orderbook.asks); 
-          }
-        }
-        */
         if(((decodedMakerDataAsks != null && decodedMakerDataBids != null) && 
         (decodedMakerDataAsks.tokenAddress == this.token.assetDataB.tokenAddress && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress)) 
         || ((decodedMakerDataAsks == null && decodedMakerDataBids != null) && decodedMakerDataBids.tokenAddress == this.token.assetDataA.tokenAddress) 
