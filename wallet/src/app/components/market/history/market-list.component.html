@@ -44,13 +44,27 @@
         </tr>
         <tbody *ngFor="let trade of _zeroEx.allOrders, index as i">
             <tr>
-                <td *ngIf="trade.action == 'buy'">
-                    <p class="green">{{trade.orderTakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
-                    <p class="red">-{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataB.name}}</p>
+                <td *ngIf="trade.action == 'buy' && trade.filled != 0">
+                    <p class="red">-{{trade.orderTakerAssetFilledAmount}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p class="green">{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
+
                 </td>
-                <td *ngIf="trade.action == 'sell'">
-                    <p class="red">-{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
+                <td *ngIf="trade.action == 'sell' && trade.filled != 0">
+                    <p class="green">{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p class="red">-{{trade.orderTakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
+
+                </td>
+
+
+                <td *ngIf="trade.action == 'buy' && trade.filled == 0">
+                    <p class="red">-{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p class="green">{{trade.orderTakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
+
+                </td>
+                <td *ngIf="trade.action == 'sell' && trade.filled == 0">
                     <p class="green">{{trade.orderTakerAssetFilledAmount}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p class="red">-{{trade.orderMakerAssetFilledAmount}} {{_zeroEx.token.assetDataA.name}}</p>
+
                 </td>
                 <td *ngIf="trade.action == 'buy'">
                     <p class="green">Buy Order</p>
@@ -64,13 +78,24 @@
                 </td>    
                 -->
 
-                <td *ngIf="trade.action == 'buy'">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
-                <td *ngIf="trade.action == 'sell'">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
-                <td *ngIf="trade.action == 'buy'">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
-                <td *ngIf="trade.action == 'sell'">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
-                <td>
-                    <p>{{trade.priceTokenA | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataA.name}}</p>
+                <td *ngIf="trade.action == 'buy' && trade.filled == 0">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'sell' && trade.filled == 0">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'buy' && trade.filled != 0">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'sell' && trade.filled != 0">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
+
+                <td *ngIf="trade.action == 'buy' && trade.filled == 0">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'sell' && trade.filled == 0">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'buy' && trade.filled != 0">{{trade.takerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.action == 'sell' && trade.filled != 0">{{trade.makerAmount | number:"1.8-8":"en"}}</td>
+                <td *ngIf="trade.filled == 0">
                     <p>{{trade.priceTokenB | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p>{{trade.priceTokenA | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataA.name}}</p>
+
+                </td>
+                <td *ngIf="trade.filled != 0">
+                    <p>{{trade.priceTokenA | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataB.name}}</p>
+                    <p>{{trade.priceTokenB | number:"1.4-8":"en"}} {{_zeroEx.token.assetDataA.name}}</p>
+
                 </td>
             </tr>
         </tbody>
