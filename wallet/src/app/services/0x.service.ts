@@ -38,6 +38,7 @@ export class ZeroExService{
   protected web3Wrapper;
   public orderWatcher;
   public orderCount;
+  public orderSubscribe = false;
   protected providerEngine;
   protected providerAddress;
   //protected providerAddress = "http://0x.lescovex.com/v2";
@@ -46,8 +47,6 @@ export class ZeroExService{
 
   protected DECIMALS = 18;
   public NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
-  //public ZERO = new BigNumber(0);
-  //public UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1)
 
   public interval;
   public interval2;
@@ -137,8 +136,6 @@ export class ZeroExService{
             let x = decimals.toString();
             let exp = 10 ** parseInt(x);
 
-            
-            
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled == 0){
               this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
               this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
@@ -148,7 +145,6 @@ export class ZeroExService{
               this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
             }
 
-            //esto dará error a la segunda vuelta
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled != 0){
               console.log("filled?",this.localState.allOrders[i].filled);
               
@@ -1050,9 +1046,8 @@ export class ZeroExService{
       console.log("THIS ORDERWATCHER", this.orderWatcher);
       console.log("this ordercount?", this.orderCount);
       
-      if(this.orderCount.orderCount == 0){
-        console.log("entras en orderCount 0?");
-        
+      if(this.orderCount.orderCount == 0 && this.orderSubscribe == false){
+        this.orderSubscribe = true;
         this.subscribeOrderWatcher();
         this.orderWatcherInterval();
       }
@@ -1111,25 +1106,13 @@ export class ZeroExService{
         console.log("REMOVE INFOOOOOOOOOOOOO!!!!");
         this.orderWatcher.removeOrder(data.orderHash);
         for (let i = 0; i < this.showBuys.length; i++) {
-          
-          
           if(this.showBuys[i].orderHash == data.orderHash){
-            //console.log(this.showBuys[i]);
-            console.log("DELETE SHOWBUYS");
-            console.log(this.showBuys.length);
-            
-            this.showBuys.splice(i, 1)
-            console.log(this.showBuys.length);
-            
+            this.showBuys.splice(i, 1);
           }
         }
         for (let j = 0; j < this.showSells.length; j++) {
           if(this.showSells[j].orderHash == data.orderHash){
-            console.log("DELETE SHOWSELLS");
-            console.log(this.showSells.length);
-            
-            this.showSells.splice(j, 1)
-            console.log(this.showSells.length);
+            this.showSells.splice(j, 1);
           }  
         }
         //await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
