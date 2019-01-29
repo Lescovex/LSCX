@@ -121,7 +121,6 @@ export class ZeroExService{
   }
 
   async checkMyDoneOrders(){
-    
     let control = false;
     let date = new BigNumber(Date.now()).div(1000).ceil();
     let dateToNumber = date.toNumber();
@@ -144,38 +143,21 @@ export class ZeroExService{
               this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
               this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
             }
-
-            if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled != 0){
-              console.log("filled?",this.localState.allOrders[i].filled);
-              
-              this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;
-              console.log("orderTakerAssetFilledAmount",this.localState.allOrders[i].orderTakerAssetFilledAmount);
-              
+            if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled != 0){        
+              this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;              
               this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
-              console.log("orderMakerAssetFilledAmount",this.localState.allOrders[i].orderMakerAssetFilledAmount);
             }
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled != 0){
-              console.log("filled?",this.localState.allOrders[i].filled);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;
-              console.log("orderTakerAssetFilledAmount",this.localState.allOrders[i].orderTakerAssetFilledAmount);
               this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
-              console.log("orderMakerAssetFilledAmount",this.localState.allOrders[i].orderMakerAssetFilledAmount);
             }
-
             mem.push(this.localState.allOrders[i]);
-
           }
-          
         }
-        this.allOrders = mem;
-        console.log("QUE ES MEM?",mem);
-        
-        console.log("QUE ES ALL ORDERS?",this.allOrders);
-        
+        this.allOrders = mem; 
         control = true;
       }
     }
-   
   }
 
   
@@ -857,7 +839,9 @@ export class ZeroExService{
           remainingAmount: remainingAmount,
           minAmount : takerMinAmount,
           date: date,
-          orderHash: orderhash
+          orderHash: orderhash,
+          takerAmountNotParsed: takerAmount,
+          makerAmountNotParsed: makerAmount
         }
         this.asks.push(obj);
       }
@@ -961,7 +945,9 @@ export class ZeroExService{
           remainingAmount: remainingAmount,
           minAmount: takerMinAmount,
           date: date,
-          orderHash: orderhash
+          orderHash: orderhash,
+          takerAmountNotParsed: takerAmount,
+          makerAmountNotParsed: makerAmount
         }
         this.bids.push(obj);
       }
@@ -1077,19 +1063,34 @@ export class ZeroExService{
     console.log("UPDATE ORDER INFO?!?!?!??!?!?!!");
     console.log("hash",hash);
     console.log("orderRelevantState", orderRelevantState);
+    let decimals = this.token.assetDataA.decimals;
+    let x = decimals.toString();
+    let exp = 10 ** parseInt(x)
+    let remainingTaker;
+    let remainingMaker;
+    //loqsea /exp
     for (let i = 0; i < this.showBuys.length; i++) {
       if(this.showBuys[i].orderHash == hash){
-        console.log(this.showBuys[i]);
+        remainingTaker = this.showBuys[i].takerAmountNotParsed - orderRelevantState.remainingFillableTakerAssetAmount.toNumber();
+        remainingMaker = this.showBuys[i].makerAmountNotParsed - orderRelevantState.remainingFillableMakerAssetAmount.toNumber();
+        this.showBuys[i].filledAmountOtherToken = remainingMaker/exp;
+        this.showBuys[i].filledAmount = remainingTaker/exp;
+        //console.log("filledAmountOtherToken", this.showBuys[i].filledAmountOtherToken);
+        //console.log("filledAmount",this.showBuys[i].filledAmount);
+
+        //console.log("remainingFillableMakerAssetAmount",orderRelevantState.remainingFillableMakerAssetAmount.toNumber());
+        //console.log("remainingFillableTakerAssetAmount",orderRelevantState.remainingFillableTakerAssetAmount.toNumber());
       }
     }
     for (let j = 0; j < this.showSells.length; j++) {
       if(this.showSells[j].orderHash == hash){
-        console.log(this.showSells[j]);
-        console.log("filledTakerAssetAmount",orderRelevantState.filledTakerAssetAmount.toNumber());
-        console.log("makerBalance",orderRelevantState.makerBalance.toNumber());
-        console.log("makerFeeBalance",orderRelevantState.makerFeeBalance.toNumber());
-        console.log("makerFeeProxyAllowance",orderRelevantState.makerFeeProxyAllowance.toNumber());
-        console.log("makerProxyAllowance",orderRelevantState.makerProxyAllowance.toNumber());
+        remainingTaker = this.showSells[j].takerAmountNotParsed - orderRelevantState.remainingFillableTakerAssetAmount.toNumber();
+        remainingMaker = this.showSells[j].makerAmountNotParsed - orderRelevantState.remainingFillableMakerAssetAmount.toNumber();
+        this.showSells[j].filledAmountOtherToken = remainingMaker/exp;
+        this.showSells[j].filledAmount = remainingTaker/exp;
+        console.log("filledAmountOtherToken", this.showSells[j].filledAmountOtherToken);
+        console.log("filledAmount",this.showSells[j].filledAmount);
+        
         console.log("remainingFillableMakerAssetAmount",orderRelevantState.remainingFillableMakerAssetAmount.toNumber());
         console.log("remainingFillableTakerAssetAmount",orderRelevantState.remainingFillableTakerAssetAmount.toNumber());
       }
@@ -1115,8 +1116,6 @@ export class ZeroExService{
             this.showSells.splice(j, 1);
           }  
         }
-        //await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
-        
       }
       if(data.isValid == true){
         console.log("IS VALIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
