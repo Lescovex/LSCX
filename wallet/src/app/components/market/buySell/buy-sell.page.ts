@@ -30,7 +30,8 @@ export class BuySellPage implements OnInit, DoCheck {
       amount : undefined,
       price : undefined,
       total: 0,
-      expires : 10000
+      expires : 10000,
+      type: 'minutes'
     }
     private tokenAmount:number;
     private ethAmount: number;
@@ -77,8 +78,8 @@ export class BuySellPage implements OnInit, DoCheck {
       
       this.lastDisplay = this._zeroEx.display;
       if(this._zeroEx.display == 'weth'){
-        this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
-        this.f.expires = this.expiresBigNumber.toNumber();
+        //this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
+        this.f.expires = 0;
       }
       if(this._zeroEx.display == 'eth'){
           this.minAmount = 0.001;
@@ -104,11 +105,12 @@ export class BuySellPage implements OnInit, DoCheck {
         
         if(this._zeroEx.display == 'eth'){
             this.minAmount = 0.001;
+            this.f.expires = 10000;
         }
         if(this._zeroEx.display == 'weth'){  
-          this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
-          this.f.expires = this.expiresBigNumber.toNumber();
+            this.f.expires = 0;
         }
+        this.lastDisplay = this._zeroEx.display;
       } 
     }
 
@@ -118,6 +120,10 @@ export class BuySellPage implements OnInit, DoCheck {
     }
 
     async onSubmit(form){
+      console.log("form",form);
+      console.log("this.f",this.f);
+      
+      
       this.submited = true;
       if(form.invalid) return false;
       if(this._zeroEx.display == "eth"){
@@ -188,7 +194,7 @@ export class BuySellPage implements OnInit, DoCheck {
               error= e.message;
             }
             if(error==""){
-              await this._zeroEx.order(form.controls, this.action, pass, this.expiresBigNumber);
+              await this._zeroEx.order(form.controls, this.action, pass);
               loading.close();
               this.router.navigate(['/market/history']);
             }else{

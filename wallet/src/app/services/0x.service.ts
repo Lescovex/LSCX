@@ -448,7 +448,9 @@ export class ZeroExService{
     return false;
 }
 
-  async order(form, action, pass, randomExpiration){
+  async order(form, action, pass){
+    console.log("FORRRRRMM?!??!?!!??!",form);
+    
     await this.setProvider(pass);
     let [maker, taker]= await this.web3Wrapper.getAvailableAddressesAsync();
     console.log("maker", maker);
@@ -500,9 +502,9 @@ export class ZeroExService{
       await this.web3Wrapper.awaitTransactionSuccessAsync(ApprovalTxHash);
     }
  
-    console.log("EXPIRATION BEFORE",randomExpiration.toNumber());
-    var duration:any = 60*60*24;
-    randomExpiration = this.getRandomFutureDateInSeconds();
+    //console.log("EXPIRATION BEFORE",randomExpiration.toNumber());
+    //var duration:any = 60*60*24;
+    let randomExpiration = this.getRandomFutureDateInSeconds(form.expires.value, form.type.value);
     
     let orderConfigRequest : OrderConfigRequest= {
       makerAddress: maker,
@@ -1424,14 +1426,23 @@ export class ZeroExService{
     console.log("blockNumber?",blockNumber);
   }
 
-  getRandomFutureDateInSeconds = (): BigNumber => {
+  getRandomFutureDateInSeconds = (num,type): BigNumber => {
+    let value;
     let ONE_SECOND_MS = 1000;
     let ONE_MINUTE_MS = ONE_SECOND_MS * 60;
-    let FIVE_MINUTES_MS = ONE_MINUTE_MS * 5;
-    let TEN_MINUTES_MS = ONE_MINUTE_MS * 10;
     let ONE_HOUR_MS = ONE_MINUTE_MS * 60;
     let ONE_DAY_MS = ONE_HOUR_MS * 24;
-    return new BigNumber(Date.now() + FIVE_MINUTES_MS).div(ONE_SECOND_MS).ceil();
+    
+    if(type == 'minutes'){
+      value = ONE_MINUTE_MS * num;
+    }
+    if(type == 'hours'){
+      value = ONE_HOUR_MS * num;
+    }
+    if(type == 'days'){
+      value = ONE_DAY_MS * num;
+    }
+    return new BigNumber(Date.now() + value).div(ONE_SECOND_MS).ceil();
   };
   
   async callFunction(contractInst, functionName:string, params){

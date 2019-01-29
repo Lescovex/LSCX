@@ -554,6 +554,13 @@ div.input-container {
     position: relative;
 }
 
+.select-container {
+    padding: 10px 12px;
+    border: none;
+    background-color: #fff;
+    margin: 0;
+}
+
 .input-container input {
     flex-grow: 1;
     margin: 0;

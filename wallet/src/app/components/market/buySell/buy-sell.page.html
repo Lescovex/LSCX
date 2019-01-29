@@ -125,8 +125,13 @@
             <label class="title" for="expires">Expires</label>
             <div class="input-container" [ngClass]="{'error': expires.invalid && submited}">
                 <input type="number" [customMin]="1" placeholder="0.000" step="any" name="expires" [(ngModel)]="f.expires" required ngModel #expires="ngModel" />
-                <span class="right">seconds</span>
+                <select class="inline select-container" name="type" [(ngModel)]="f.type" required ngModel #type="ngModel">
+                        <option value="minutes" selected>Minutes</option>
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                </select>
             </div>
+
             <p class="error" [ngClass]="{'hidden':!(submited && expires.invalid)}">
                 <span *ngIf="expires.errors?.required">This field is required</span>
             </p>
