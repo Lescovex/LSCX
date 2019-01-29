@@ -139,19 +139,12 @@ export class OrderDialogComponent {
             }
         }
     }
-
+   
     total() {
-        let total;
-        let amount;
-        if(this.data.display == 'eth'){
-            amount = this.f.amount * this.f.price;
-            total = parseFloat(amount.toFixed(10));
-        }
-        if(this.data.display == 'weth'){
-            amount = this.f.amount * this.f.price;
-            let decimals = parseInt(this.data.takerData.decimals) +1
-            total = parseFloat(amount.toFixed(decimals));
-        }
+        let amount = new BigNumber(this.f.amount)
+        let price = new BigNumber(this.f.price);
+        let totalBN = amount.multipliedBy(price)
+        let total = totalBN.toNumber()
         if(this.data.display == 'eth'){
             if(this.data.action == "sell"){
                 if(total > this.data.available){
@@ -160,7 +153,7 @@ export class OrderDialogComponent {
                     this.f.total = 0;
                     return false;
                 }else{
-                    this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price;
+                    this.f.total = (isNaN(total))? 0 : total;
                 }
             }
             if(this.data.action == "buy"){
@@ -170,38 +163,15 @@ export class OrderDialogComponent {
                     this.f.total = 0;
                     return false
                 }else{                    
-                    this.f.total = (isNaN(total))? 0 : this.f.amount * this.f.price;
+                    this.f.total = (isNaN(total))? 0 : total;
                 }
             }
         }
         if(this.data.display == 'weth'){
-            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress){
-                if(this.f.amount > this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.remainingAmount){
-                    if(this.f.amount > this._zeroEx.token.assetDataA.balance){
-                        this.balanceError = "The amount to pay is higher than your balance";
-                        this.submited = true;
-                        this.f.total = 0;
-                        return false
-                      }else{
-                          this.balanceError = '';
-                      }
-                    //must display error message
-                    
+            if(this.f.amount > this.data.remainingAmount || this.f.amount < this.data.minAmount || (this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress && (this.f.amount > this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount)) || (this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress && (this.f.amount > this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount))){
+                if(this.f.amount > this._zeroEx.token.assetDataA.balance){
+                    this.balanceError = "The amount to pay is higher than your balance";
                 }
-            }
-            if(this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress){
-                if(this.f.amount > this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount){
-                    if(this.f.amount > this._zeroEx.token.assetDataA.balance){
-                        this.balanceError = "The amount to pay is higher than your balance";
-                        this.submited = true;
-                        this.f.total = 0;
-                        return false
-                      }else{
-                          this.balanceError = '';
-                      }
-                }
-            }
-            if(this.f.amount > this.data.remainingAmount || this.f.amount < this.data.minAmount){
                 this.totalSumbit = true;
                 this.submited = true;
                 this.f.total = 0;
