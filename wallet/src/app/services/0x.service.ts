@@ -68,7 +68,7 @@ export class ZeroExService{
   };
   public showBuys;
   public showSells;
-  
+  public loaded;
   protected abiBytes = require("../../libs/0x/abiBytes.json");
   protected config;
 

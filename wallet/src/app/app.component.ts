@@ -25,11 +25,13 @@ export class MyApp implements OnInit {
     if(this._scan.apikey==""){
       this.router.navigate(['/general-settings']);
     }else{
+      
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
         height: '150px',
         disableClose: true,
       });
+      
     }  
   }
   async ngOnInit() {
@@ -37,13 +39,24 @@ export class MyApp implements OnInit {
     if(this._scan.apikey!=""){
       this.interval = setInterval(async() => {
         if('address'in this._account.account){
+          //console.log("ENTRAS EN ADDRESS??");
+          
+          if(this._zeroEx.token != null && this._zeroEx.showBuys != null && this._zeroEx.showSells != null && this._zeroEx.loaded == null){
+            this._zeroEx.loaded = true;
+            this.loadingD.close();
+            this.router.navigate(['/market/history']);
+          }
           if('balance' in this._account.account && this._LSCXmarket.updated){
             this.loadingD.close();
+            
             clearInterval(this.interval);
           }
         }else{
+          //console.log("ENTRAS EN ELSE?");
+          
           if(this._LSCXmarket.updated){
             clearInterval(this.interval);
+            
             this.loadingD.close();
           } 
         } 

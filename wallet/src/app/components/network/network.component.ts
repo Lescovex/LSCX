@@ -55,6 +55,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
             this.show = !this.show;
             return false
         }
+        this._zeroEx.loaded = null;
         this._account.updated = false;
         this.loading = true;
         this.dialog = this._dialog.openLoadingDialog();

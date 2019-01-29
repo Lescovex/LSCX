@@ -42,6 +42,7 @@ export class SelectAccountDialogComponent implements OnInit{
   }
   selectAccount(){
     if(this._account.account.address != this.selectedAcc.address){
+      this._zeroEx.loaded = null;
       this._account.updated = false;
       this._account.setAccount(this.selectedAcc);
       this._contracStorage.setAccContracts();

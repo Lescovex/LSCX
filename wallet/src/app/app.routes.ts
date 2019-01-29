@@ -83,8 +83,8 @@ const routes: Routes = [
     ]
   },
   { path: 'general-settings', component: SettingsComponent },
-  { path: '', redirectTo: '/wallet/global', pathMatch: 'full' },
-  { path: '**', redirectTo: '/wallet/global', pathMatch: 'full' },
+  { path: '', redirectTo: '/market', pathMatch: 'full' },
+  { path: '**', redirectTo: '/market', pathMatch: 'full' },
 ];
 
 @NgModule({
