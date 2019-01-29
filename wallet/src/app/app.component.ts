@@ -39,8 +39,6 @@ export class MyApp implements OnInit {
     if(this._scan.apikey!=""){
       this.interval = setInterval(async() => {
         if('address'in this._account.account){
-          //console.log("ENTRAS EN ADDRESS??");
-          
           if(this._zeroEx.token != null && this._zeroEx.showBuys != null && this._zeroEx.showSells != null && this._zeroEx.loaded == null){
             this._zeroEx.loaded = true;
             this.loadingD.close();
@@ -52,8 +50,6 @@ export class MyApp implements OnInit {
             clearInterval(this.interval);
           }
         }else{
-          //console.log("ENTRAS EN ELSE?");
-          
           if(this._LSCXmarket.updated){
             clearInterval(this.interval);
             

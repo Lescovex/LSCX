@@ -60,7 +60,6 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this.loading = true;
         this.dialog = this._dialog.openLoadingDialog();
         this.net = network;
-        console.log("what's network sended to web3 service???");
         
         this._web3.setNetwork(network);
         this._zeroEx.init();

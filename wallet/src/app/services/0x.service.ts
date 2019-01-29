@@ -192,9 +192,6 @@ export class ZeroExService{
 			  });
 			this.getLocalInfo();
     }
-
-      console.log("localState on init?????",this.localState);
-      
       this.asset_pairs = this.localState.asset_pairs;
   }
   
@@ -235,65 +232,46 @@ export class ZeroExService{
       
       
       this.orderWatcher = new OrderWatcher(this.providerEngine, netNumber);
-      console.log("THIS ORDERWATCHER PROVIDER!!!", this.orderWatcher);
       this.orderCount = this.orderWatcher.getStats();
-      //this.orderWatcher.start();
-      console.log("orderWatcher??????",this.orderWatcher);
-      console.log("orderWatcher get stats", this.orderCount);
       
       this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
-      console.log("ContractWrappers",this.contractWrappers);
       this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
       this.config.default_contract_addresses = this.contractAddresses;
 
-      console.log("contractAddresses", this.contractAddresses);
-      
-      //this.setContract();
       this.httpClient = new HttpClient(this.providerAddress);
       this.web3Wrapper = new Web3Wrapper(this.providerEngine);
 }
 
   async checkAssetPairs(checkTime){
     let response = await this.httpClient.getAssetPairsAsync({ networkId: this._web3.network.chain, page: checkTime});
-    console.log("CheckAssetPairs response???", response);
     if (response.total === 0) {
-      console.log("ASSET PAIRS RESPONSE == 0");
       this.asset_pairs = [];
       this.config.asset_pairs = [];
-      //this.asset_pairs == response.response;
     }else{
-      //do things
       let storedInfo;
       let decodedInfo;
       for (let i = 0; i < response.records.length; i++) {
-        storedInfo = this.in_Array(response.records[i], this.asset_pairs)
-        //console.log("CHECKPOINT VALUE",storedInfo);
+        storedInfo = this.in_Array(response.records[i], this.asset_pairs);
         if(storedInfo != false){
           this.check_asset_pairs.push(storedInfo);
         }else{
           decodedInfo = await this.decodeAssetPairInfo(response.records[i]);
-          console.log("decoded INFO????", decodedInfo);
-          
           this.check_asset_pairs.push(decodedInfo);
           this.updated_asset_pairs.push(decodedInfo);
         }
-        
       }
 
       if(response.total > response.page * response.perPage){
         await this.checkAssetPairs(checkTime+1);
       } else {
-        console.log("CHECK ASSET PAIRS DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         this.asset_pairs = this.check_asset_pairs;
         this.config.asset_pairs = this.asset_pairs;
         this.check_asset_pairs = [];
-        console.log("All Asset Pairs", this.asset_pairs);
         if(this.updated_asset_pairs.length > 0){
           this.saveConfigFile();  
         }
       }
     }
-    
   }
   
   async decodeAssetPairInfo(tokenToDecode){
@@ -302,47 +280,41 @@ export class ZeroExService{
     try {
       decodedA = assetDataUtils.decodeERC20AssetData(tokenToDecode.assetDataA.assetData);
     } catch (error) {
-      console.log("DECODE A ERROR", error);
+      console.log(error);
     }
     try {
       decodedB = assetDataUtils.decodeERC20AssetData(tokenToDecode.assetDataB.assetData);
     } catch (error) {
-      console.log("DECODE B ERROR", error);
+      console.log(error);
     }
-    
     let symbolA;
     let symbolB;
     try {
       symbolA = await this.getSymbol(decodedA.tokenAddress);  
     } catch (error) {
-      console.log("SYMBOL A ERROR", error);
+      console.log(error);
     }
     try {
       symbolB = await this.getSymbol(decodedB.tokenAddress);  
     } catch (error) {
-     console.log("SYMBOL B ERROR", error);
+     console.log(error);
       
     }
-    console.log("symbol",symbolA, symbolB);
-    
     let decimalsA;
     let decimalsB;
 
     try {
-      decimalsA = await this.getDecimals(decodedA.tokenAddress);  
-      console.log("DECIMALS A TO NUMBER",decimalsA.toNumber());
-      
+      decimalsA = await this.getDecimals(decodedA.tokenAddress);
     } catch (error) {
-      console.log("DECIMALS A ERROR",error);
+      console.log(error);
       decimalsA = null
     }
     
     try {
       decimalsB = await this.getDecimals(decodedA.tokenAddress);
-      console.log("DECIMALS B TO NUMBER",decimalsB.toNumber());
     } catch (error) {
       decimalsB = null
-      console.log("DECIMALS B ERROR", error);
+      console.log(error);
     }
     let symbolString = symbolA + " - " + symbolB;
     let reverseSymbolString = symbolB + " - " + symbolA;
@@ -373,19 +345,14 @@ export class ZeroExService{
   }
 
   async saveConfigFile(){
-    console.log("saveConfigFile?");
-    
     let filePath = lescovexPath+"/.0x-"+this._web3.network.urlStarts+".json";
     if(this.updated_asset_pairs.length > 0){
       for (let i = 0; i < this.updated_asset_pairs.length; i++) {
         this.localState.asset_pairs.push(this.updated_asset_pairs[i]);
-        
       }
     }
     
     try {
-      console.log("localstate try???");
-      
       JSON.stringify(this.localState);      
     }catch (e)  {
       console.log("JSON ERROR", e)
@@ -393,9 +360,7 @@ export class ZeroExService{
     
     try{
       fs.writeFileSync(filePath, JSON.stringify(this.localState));
-      console.log("FILE SAVED");
       this.updated_asset_pairs = [];
-      
     }catch(e) {
       console.log("FILESYNC ERROR",e);
     }
@@ -409,24 +374,19 @@ export class ZeroExService{
           return storedObject[i];
         }
     }
-    console.log("false?", responseObject);
     return false;
 }
 
   async order(form, action, pass){
-    console.log("FORRRRRMM?!??!?!!??!",form);
-    
     await this.setProvider(pass);
     let [maker, taker]= await this.web3Wrapper.getAvailableAddressesAsync();
     
     taker = this.NULL_ADDRESS;
     let exchangeAddress = this.contractAddresses.exchange;
-    
     let makerAssetData;
     let makerAssetAmount;
     let takerAssetData;
     let takerAssetAmount;
-    
     let makerTokenAddress;
     if(action == 'buy'){
       makerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataB.tokenAddress);
@@ -467,11 +427,8 @@ export class ZeroExService{
       exchangeAddress,
       expirationTimeSeconds: randomExpiration ,
     }
-    console.log("EXPIRATION AFTER", randomExpiration.toNumber());
-    console.log("orderConfigRequest",orderConfigRequest);
     
     let orderConfig = await this.getOrderConfig(orderConfigRequest);
-    console.log("orderConfig",orderConfig);
     
     let order: Order = {
         salt: generatePseudoRandomSalt(),
@@ -479,10 +436,7 @@ export class ZeroExService{
         ...orderConfig,
     };
     
-    console.log("order",order);
-    
     let orderHashHex = await orderHashUtils.getOrderHashHex(order);
-    console.log("orderHashHex",orderHashHex)
     let signature = await signatureUtils.ecSignHashAsync(this.providerEngine, orderHashHex, maker);
     
     let signedOrder : SignedOrder = {
@@ -491,22 +445,16 @@ export class ZeroExService{
     };
 
     try {
-      await this.contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);
-      console.log("validateOrder OK!");
-      
+      await this.contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);  
     } catch (error) {
-      console.log("validateOrderFillable error",error);
+      console.log(error);
       return false;
     }
 
     try {
       await this.httpClient.submitOrderAsync(signedOrder, { networkId: this._web3.network.chain});
-      
-      console.log("submit OK!");
-      
     } catch (error) {
-      console.log("submitOrder error",error);
-      //openErrorDialog
+      console.log(error);
       return false;
     }
     
@@ -565,30 +513,19 @@ export class ZeroExService{
       orderMakerAssetFilledAmount: empty,
       filled: fills
     }
-    console.log("que es obj?",obj);
-    //let orderOrders = 
-    //console.log("ordered orders?", orderOrders);
     let orderOrders = this.localState.allOrders;
     try {
-      console.log("try save order");
-      
       orderOrders.push(obj);
     } catch (error) {
-      console.log("catch save order");
-      
-      //this.localState.allOrders = [];
       orderOrders.push(obj);
     }
     this.localState.allOrders = this.orderByTimestamp(orderOrders);;
-    //this.localState.allOrders.push(obj);
-    console.log("All orders saved?",this.localState.allOrders);
     
     await this.checkMyDoneOrders();
     await this.saveConfigFile();
   }
 
-  orderByTimestamp(object){
-        
+  orderByTimestamp(object){    
 		object.sort(function (a, b) {
 		  if ( parseInt(a.timestamp) > parseInt(b.timestamp))
 			return -1;
@@ -647,22 +584,17 @@ export class ZeroExService{
     }
     let takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(value), parseInt(decimals));
     try {
-      let x = await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.order, takerAssetAmount, taker); 
-      console.log("que es x??",x);
+      let x = await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.order, takerAssetAmount, taker);
        return true;
     } catch (error) {
       return false;
-      //console.log("error of validateFillOrder", error); 
     }
   }
   async fillOrder(order, value, taker, key){
    
     await this.setProvider(key)
     
-    //setUnlimitedAllowance
     let x = await this.setUnlimitedProxyAllowance(order.takerData.tokenAddress, taker);
-    console.log(x);
-    
     let TX_DEFAULTS = { gas: 400000 };
     let decimals;
     if(order.takerData.tokenAddress == this.token.assetDataA.tokenAddress){
@@ -676,7 +608,6 @@ export class ZeroExService{
       await this.contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(order.order, takerAssetAmount, taker);  
     } catch (error) {
       throw new Error(error);
-      //console.log("error of validateFillOrder", error); 
     }
     let txHash = await this.contractWrappers.exchange.fillOrderAsync(order.order, takerAssetAmount, taker, {
         gasLimit: TX_DEFAULTS.gas,
@@ -943,13 +874,11 @@ export class ZeroExService{
     }
 
     if(response.asks.total === 0 && response.bids.total === 0){
-      //If null in both parts
       this.orderbook = {
         asks: this.asks,
         bids: this.bids
       }
       this.state.orders = {buys:[], sells:[]};
-      //console.log("IF ASKS AND BIDS NULL ORDERBOOK",this.orderbook);
 
       if(this.loadingD != null){
         this.loadingD.close();
@@ -959,12 +888,9 @@ export class ZeroExService{
       this.setSells(this.orderbook.bids);
       this.setShowOrders(this.orderbook.asks, this.orderbook.bids);
     }else{
-      //checks if needs other call
       if(response.asks.total > (response.asks.page * response.asks.perPage) || response.bids.total > (response.bids.page * response.bids.perPage)){
         await this.getOrderbook(makerAssetData, takerAssetData, pageNumber+1);
       }else{
-        //if don't needs do more calls
-        //it must assign data correctly
         this.orderbook = {
           asks: this.asks,
           bids: this.bids
@@ -998,29 +924,20 @@ export class ZeroExService{
   }
 
   setBuys(orders){
-    console.log("BUYS orders",orders);
     this.state.orders.buys = orders;
-    console.log("this.state.orders.buys.length",this.state.orders.buys.length);
   }
 
   setSells(orders){
-    console.log("SELLS orders",orders);
     this.state.orders.sells = orders;
-    console.log("this.state.orders.sells.length",this.state.orders.sells.length);
   }
 
   async setShowOrders(buys, sells){
-    console.log("BUYS ZEROEX",buys);
-    console.log("SELLS ZEROEX", sells);
 		this.showBuys = buys;
 		this.showSells = sells;
 	}
 
   async addOrdersToOrderWatcher(orderbook){
-    try {
-      console.log("THIS ORDERWATCHER", this.orderWatcher);
-      console.log("this ordercount?", this.orderCount);
-      
+    try {      
       if(this.orderCount.orderCount == 0 && this.orderSubscribe == false){
         this.orderSubscribe = true;
         this.subscribeOrderWatcher();
@@ -1034,9 +951,7 @@ export class ZeroExService{
         await this.orderWatcher.addOrderAsync(orderbook.bids[j].order);
       }
       this.orderCount = this.orderWatcher.getStats();
-      console.log("stats???", this.orderCount);  
     } catch (error) {
-      console.log("SUBSCRIBE ERROR??????????", error);
       for (let i = 0; i < orderbook.asks.length; i++) {
         await this.orderWatcher.addOrderAsync(orderbook.asks[i].order);
       }
@@ -1044,7 +959,6 @@ export class ZeroExService{
         await this.orderWatcher.addOrderAsync(orderbook.bids[j].order);
       }
       let x = this.orderWatcher.getStats();
-      console.log("stats???", x);  
     }
   }
   
@@ -1054,7 +968,6 @@ export class ZeroExService{
     let exp = 10 ** parseInt(x)
     let remainingTaker;
     let remainingMaker;
-    //loqsea /exp
     for (let i = 0; i < this.showBuys.length; i++) {
       if(this.showBuys[i].orderHash == hash){
         remainingTaker = this.showBuys[i].takerAmountNotParsed - orderRelevantState.remainingFillableTakerAssetAmount.toNumber();
@@ -1105,22 +1018,12 @@ export class ZeroExService{
     }, 60000)
   }
   async startIntervalBalance(){
-    //await this.getWethBalance();
     this.interval = setInterval(async ()=>{
-      //await this.getWethBalance();
       await this.setBalances();
       await this.updateAllowance();
     },5000);
   }
 
-  /*
-  async startIntervalPairs(){
-    
-    this.interval2 = setInterval(async ()=>{
-      //await this.getAssetPairs(1);
-    },10000);
-  }
-  */
   clearBalancesInterval(){
     if(this.interval != null){
       clearInterval(this.interval);
@@ -1138,7 +1041,6 @@ export class ZeroExService{
     } catch (error) {
       console.log(error); 
     }
-    console.log("getSymbol response _scan",result);
     
     if(result.status != "0"){
       let checkAbi = JSON.parse(result.result)
@@ -1161,11 +1063,9 @@ export class ZeroExService{
     try {
       let symbol;
       let response = await this._contract.callFunction(contract, callName,[]);
-      console.log("response first try getSymbol",response);
       
       if(type == "bytes32"){
         let toASCII = this._web3.web3.toAscii(response);
-        console.log("inside bytes32, toASCII", toASCII);
         
         symbol = '';
         for (var i = 0; i < toASCII.length; i++) {
@@ -1176,11 +1076,9 @@ export class ZeroExService{
       }else{
         symbol = response;
       }
-      console.log("returned Symbol?????", symbol);
       
       return symbol;
     } catch (error) {
-      console.log("SYMBOL CATCH!!!!!!");
       
       let contract = this._contract.contractInstance(this.abiBytes, token);
       let symbol; 
@@ -1192,11 +1090,9 @@ export class ZeroExService{
       }
       try {
         let response = await this._contract.callFunction(contract, 'symbol', []);
-        console.log("response del catch!!!!!", response);
         
         if(type == "bytes32"){
           let toASCII = this._web3.web3.toAscii(response);
-          console.log("SYMBOL catch toASCII"), toASCII;
           
           symbol = '';
           for (var i = 0; i < toASCII.length; i++) {
@@ -1207,11 +1103,10 @@ export class ZeroExService{
         }else{
           symbol = response;
         }
-        console.log("Symbol response CATCH", symbol);
         
         return symbol; 
       } catch (error) {
-        console.log("GET SYMBOL ERROR OF ERRROR!!!!!!!!!!!",error);
+        console.log(error);
         return "SymbolError"
       }
     }
@@ -1227,7 +1122,6 @@ export class ZeroExService{
       console.log(error);
       
     }
-    console.log("getDecimals _scan result", result);
     
     if(result.status != "0"){
       let checkAbi = JSON.parse(result.result)
@@ -1265,10 +1159,6 @@ export class ZeroExService{
     );
     await this.web3Wrapper.awaitTransactionSuccessAsync(WETHDepositTxHash);
     this.setBalances();
-    console.log(this.token);
-    console.log(contractAddr.etherToken);
-    
-    
   }
 
   async withdrawWETH(amount){
@@ -1284,21 +1174,17 @@ export class ZeroExService{
   }
   
   async setUnlimitedProxyAllowance(contractAddr, addr){
-    console.log("contractAddr", contractAddr);
-    console.log("addr", addr);
     try {
       let ApprovalTxHash = await this.contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
         contractAddr,
         addr,
       );
-      console.log("approvalTxHash", ApprovalTxHash);
       
       let x = await this.web3Wrapper.awaitTransactionSuccessAsync(ApprovalTxHash);
-      console.log("after awaitTransactionSuccessAsync", x);
       
       return("done")  
     } catch (error) {
-      console.log("ERROR SET UNLIMITED PROXY ALLOWANCE!!!!!!!!!!!!!!!!!!!");
+      console.log(error);
       
     }
     
@@ -1310,7 +1196,6 @@ export class ZeroExService{
         contractAddr,
         addr,
       );
-      //console.log("GET PROXY ALLOWANCE RESULT ERC20", ApprovalTxHash.toNumber());
       
       return ApprovalTxHash.toNumber()
 
@@ -1336,7 +1221,6 @@ export class ZeroExService{
       try {
         let allowance;
         let response = await this._contract.callFunction(contract, 'allowance',[this._account.account.address, this.contractAddresses.erc20Proxy]);
-        //console.log("response ALLOWANCE del first try",response);
         
         if(type == "bytes32"){
           let toASCII = this._web3.web3.toAscii(response);
@@ -1349,7 +1233,6 @@ export class ZeroExService{
         }else{
           allowance = response;
         }
-        //console.log("ALLOWANCE before RETURN", allowance.toNumber());
         
         return allowance.toNumber();  
       } catch (error) {
@@ -1363,7 +1246,6 @@ export class ZeroExService{
         }
         try {
           let response = await this._contract.callFunction(contract, 'allowance', [this._account.account.address, this.contractAddresses.erc20Proxy]);
-          //console.log("response ALLOWANCE second TRY this.abiBytes", response);
           
           if(type == "bytes32"){
             let toASCII = this._web3.web3.toAscii(response);
@@ -1376,11 +1258,10 @@ export class ZeroExService{
           }else{
             allowance = response;
           }
-          //console.log("ALLOWANCE before RETURN", allowance.toNumber());
           
           return allowance.toNumber();
         } catch (error) {
-          console.log("GET ALLOWANCE ERROR OF ERRROR!!!!!!!!!!!",error);
+          console.log(error);
           return "Allowance error"
         }
       }  
@@ -1392,35 +1273,19 @@ export class ZeroExService{
     return await this.httpClient.getFeeRecipientsAsync();
   }
   async getOrder(hash){
-    console.log("hash sended to getORder?",hash);
-    
-    //String hash needed to get order
     return await this.httpClient.getOrderAsync(hash);
   }
   async getOrderConfig(orderConfigRequestObject){
-    //OrderConfigRequest object needed to get orderConfig
     return await this.httpClient.getOrderConfigAsync(orderConfigRequestObject);
   }
   
   async getOrders(){
-    console.log("this.httpsClient on getOrders Function",this.httpClient.getOrdersAsync({network: this._web3.network.chain}));
-    
     return await this.httpClient.getOrdersAsync({network: this._web3.network.chain});
   }
   async submitOrder(SignedOrderObject){
-    console.log("submitOrder",SignedOrderObject);
-    
-    //SignedOrder object needed to submit an order
     return await this.httpClient.submitOrderAsync(SignedOrderObject, { networkId: this._web3.network.chain});
   }
-  async getAccounts(){
-    //let web3Wrapper = new Web3Wrapper(this.providerEngine);
-    let blockNumber = await this.web3Wrapper.getBlockNumberAsync();
-    let accounts = await this.web3Wrapper.getAvailableAddressesAsync();
-    console.log("accounts",accounts);
-    console.log("blockNumber?",blockNumber);
-  }
-
+  
   getRandomFutureDateInSeconds = (num,type): BigNumber => {
     let value;
     let ONE_SECOND_MS = 1000;
@@ -1449,13 +1314,9 @@ export class ZeroExService{
 
   async setToken(token?) {
     
-    if(typeof(token)!="undefined"){
-      console.log("token?",token);
-    }
     if(this.loadingD == null){
       this.activateLoading();
     }
-    console.log("SET TOKEN FUNCTION??????!?!?!?");
     
 		if(this.state.orders != null){
 			this.state.orders.buys = null;
@@ -1463,10 +1324,6 @@ export class ZeroExService{
       this.state.orders = null;
     }
     
-		//if(this.activeOrdersInterval != null){
-			//await this.clearActiveOrdersInterval();
-		//}
-		
 		if(typeof(token) == "undefined"){
       let localToken = this.getLocalStorageToken();
       let localToken_inArray = this.in_Array(localToken, this.asset_pairs)
@@ -1493,9 +1350,6 @@ export class ZeroExService{
     
     await this.updateTokenInfo();
 		this.saveLocalStorageToken();
-    
-    
-		//this.getTokenState();
 		
     this.startIntervalBalance();
     //this.startIntervalPairs();
@@ -1507,22 +1361,20 @@ export class ZeroExService{
   }
   async updateTokenInfo(){
     try {
-      console.log("CHECKING ALLOWANCE");  
       this.token.assetDataA.allowed = await this.getProxyAllowance(this.token.assetDataA.tokenAddress, this._account.account.address);
       
     } catch (error) {
       this.token.assetDataA.allowed = 0;
-      console.log("ALLOWANCE A ERROR");
+      console.log(error);
       
     }
 
-    try {  
-      console.log("CHECKING ALLOWANCE");
+    try {
       this.token.assetDataB.allowed = await this.getProxyAllowance(this.token.assetDataB.tokenAddress, this._account.account.address);
     
     } catch (error) {
       this.token.assetDataB.allowed = 0; 
-      console.log("ALLOWANCE B ERROR");
+      console.log(error);
       
     }
     await this.setBalances();
@@ -1560,11 +1412,7 @@ export class ZeroExService{
   
   async setBalances() {
 		this.token.assetDataA.balance = await this.getBalance(this.token.assetDataA);
-    this.token.assetDataB.balance = await this.getBalance(this.token.assetDataB);
-    //console.log("log this tokens inside setBalances",this.token);
-    console.log("balance A", this.token.assetDataA.balance, this.token.assetDataA.name);
-    console.log("balance B", this.token.assetDataB.balance, this.token.assetDataB.name);
-  
+    this.token.assetDataB.balance = await this.getBalance(this.token.assetDataB);  
   }
 
   async updateAllowance(){
@@ -1572,7 +1420,6 @@ export class ZeroExService{
       this.token.assetDataA.allowed = await this.getProxyAllowance(this.token.assetDataA.tokenAddress, this._account.account.address);;  
     } catch (error) {
       console.log("UPDATE ALLOWANCE TOKEN A ERROR", error);
-      
     }
     
     try {
