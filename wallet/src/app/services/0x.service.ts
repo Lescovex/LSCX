@@ -82,9 +82,6 @@ export class ZeroExService{
   }
   
   async init(){
-    if(this.orderWatcher != null){
-      this.unsubscribeOrderWatcher()
-    }
     this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
     this.providerAddress = this.config.sra_http_endpoint;
     this.webSocketProviderAddress = this.config.sra_ws_endpoint;
@@ -240,18 +237,10 @@ export class ZeroExService{
       this.orderWatcher = new OrderWatcher(this.providerEngine, netNumber);
       console.log("THIS ORDERWATCHER PROVIDER!!!", this.orderWatcher);
       this.orderCount = this.orderWatcher.getStats();
-        //this.orderWatcher.start();
-        console.log("orderWatcher??????",this.orderWatcher);
-        console.log("orderWatcher get stats", this.orderCount);
-        
+      //this.orderWatcher.start();
+      console.log("orderWatcher??????",this.orderWatcher);
+      console.log("orderWatcher get stats", this.orderCount);
       
-
-      /*
-      
-      TESTING ORDERWATCHER HERE!!!!
-      
-      
-      */
       this.contractWrappers = new ContractWrappers(this.providerEngine, {networkId: netNumber});
       console.log("ContractWrappers",this.contractWrappers);
       this.contractAddresses = getContractAddressesForNetworkOrThrow(this._web3.network.chain);
@@ -1627,8 +1616,15 @@ export class ZeroExService{
         console.log("error call balanceof",error);
         this.getBalance(token);
       }
-
-      let x = value.toString();
+      let x;
+      try {
+        x = value.toString();  
+      } catch (error) {
+        console.log("error STRING?",error);
+        console.log("valye of value",value);
+        x = value
+      }
+      
       let resBig = new BigNumber(x);
       let y;
       if(token.decimals != null){

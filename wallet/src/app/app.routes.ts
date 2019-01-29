@@ -67,7 +67,7 @@ const routes: Routes = [
   },
   { path: 'market', component: MarketComponent,
     children: [
-      { path: '', redirectTo: 'market-wallet', pathMatch: 'full' },
+      { path: '', redirectTo: 'history', pathMatch: 'full' },
       { path: 'buy-sell', component: BuySellPage },
       { path: 'market-wallet', component: MarketWalletPage },
       { path: 'history', component: MarketHistoryPage }

@@ -1522,7 +1522,8 @@ input.mat-input-element:-webkit-autofill+.mat-input-placeholder .mat-placeholder
 }
 
 .mat-slide-toggle:not(.mat-checked) .mat-ripple-element {
-    background-color: rgba(0, 0, 0, 0.06);
+    /*background-color: rgba(0, 0, 0, 0.06);*/
+    background-color: rgba(48, 214, 127, 0.12);
 }
 
 .mat-slide-toggle .mat-ripple-element {
@@ -1571,11 +1572,13 @@ input.mat-input-element:-webkit-autofill+.mat-input-placeholder .mat-placeholder
 }
 
 .mat-slide-toggle-thumb {
-    background-color: #fafafa;
+    background-color: #30D67F;
+    /*background-color: #fafafa;*/
 }
 
 .mat-slide-toggle-bar {
-    background-color: rgba(0, 0, 0, 0.38);
+    background-color: #c0f2d8;
+    /*background-color: rgba(0, 0, 0, 0.38);*/
 }
 
 .mat-slider-track-background {

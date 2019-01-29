@@ -257,6 +257,7 @@ export class BuySellPage implements OnInit, DoCheck {
       console.log("total to number", totalBN.toNumber());
       
       if(this._zeroEx.display == 'eth'){
+
         this.f.total = (isNaN(total))? 0 : total;
       }else{
         if(this._zeroEx.display == 'weth'){

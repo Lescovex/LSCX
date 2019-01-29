@@ -17,7 +17,7 @@ export class MarketComponent implements DoCheck, OnDestroy{
   public display;
 
   constructor(public _account:AccountService, public _LSCXmarket: LSCXMarketService, private _web3: Web3, public _zeroEx: ZeroExService) {
-    this.display = "eth";
+    this.display = "weth";
     this._zeroEx.display = this.display;
     this._LSCXmarket.updateMyStateShow("myFunds");
     this._LSCXmarket.updateMyStateShow("myOrders");
@@ -29,12 +29,9 @@ export class MarketComponent implements DoCheck, OnDestroy{
 
 
   ngOnInit(){
-    console.log("market component on init???");
     
   }
-  print(text){
-    console.log("where i click?", text)
-  }
+
   ngDoCheck(){
     this._zeroEx.display = this.display;
     

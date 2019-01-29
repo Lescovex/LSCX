@@ -1,11 +1,10 @@
-<!--
-    <div id="account">
-    <div *ngIf="_account?.account" mdTooltip="{{_account.account.name}}" mdTooltipPosition="right">
-        <p>{{_account.account.name}}</p>
+<button class="link" routerLink="/market" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #market="routerLinkActive">
+    <div>
+        <img *ngIf="market.isActive" src="~icons/market_icon.svg" alt="settings_icon">
+        <img *ngIf="!market.isActive" src="~icons/market_inactive_icon.svg" alt="settings_icon">
     </div>
-</div>
--->
-
+    <span class="title-button-left">Market</span>
+</button>
 <button class="link" routerLink="/wallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #wallet="routerLinkActive">
     <div>
         <img *ngIf="wallet.isActive == true" src="~icons/wallet_icon.svg" alt="wallet_icon">
@@ -33,13 +32,6 @@
         <img *ngIf="!contracts.isActive" src="~icons/contracts_inactive_icon.svg" alt="contracts_icon">
     </div>
     <span class="title-button-left">Contracts</span>
-</button>
-<button class="link" routerLink="/market" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #market="routerLinkActive">
-    <div>
-        <img *ngIf="market.isActive" src="~icons/market_icon.svg" alt="settings_icon">
-        <img *ngIf="!market.isActive" src="~icons/market_inactive_icon.svg" alt="settings_icon">
-    </div>
-    <span class="title-button-left">Market</span>
 </button>
 <button class="link" routerLink="/btcwallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #btcwallet="routerLinkActive">
     <div>
