@@ -79,7 +79,7 @@ export class BuySellPage implements OnInit, DoCheck {
       this.lastDisplay = this._zeroEx.display;
       if(this._zeroEx.display == 'weth'){
         //this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
-        this.f.expires = 0;
+        this.f.expires = 1;
       }
       if(this._zeroEx.display == 'eth'){
           this.minAmount = 0.001;
@@ -108,7 +108,19 @@ export class BuySellPage implements OnInit, DoCheck {
             this.f.expires = 10000;
         }
         if(this._zeroEx.display == 'weth'){  
-            this.f.expires = 0;
+            this.f.expires = 1;
+            if(this.action == 'buy'){
+              let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
+              let exp = 10 ** parseInt(decimalsString);
+              this.minAmount = this._zeroEx.token.assetDataB.minAmount/exp;
+              this.pairBalance = this._zeroEx.token.assetDataB.balance;
+            }
+            if(this.action == 'sell'){
+              let decimalsString = this._zeroEx.token.assetDataA.decimals.toString();
+              let exp = 10 ** parseInt(decimalsString);
+              this.minAmount = this._zeroEx.token.assetDataA.minAmount/exp;
+              this.pairBalance = this._zeroEx.token.assetDataA.balance;
+            }
         }
         this.lastDisplay = this._zeroEx.display;
       } 
@@ -212,7 +224,7 @@ export class BuySellPage implements OnInit, DoCheck {
 
     activeButton(action){
       this.action = action;
-      
+      if(this._zeroEx.display == 'weth'){
         if(this.action == 'buy'){
           let decimalsString = this._zeroEx.token.assetDataB.decimals.toString();
           let exp = 10 ** parseInt(decimalsString);
@@ -225,61 +237,58 @@ export class BuySellPage implements OnInit, DoCheck {
           this.minAmount = this._zeroEx.token.assetDataA.minAmount/exp;
           this.pairBalance = this._zeroEx.token.assetDataA.balance;
         }
+      }
+      if(this._zeroEx.display == 'eth'){
+        this.minAmount = 0.001;
+        this.f.expires = 10000;
+      }
+        
       
     }
 
     total() {
       console.log("TOTAL FUNCION");
+      let amount = new BigNumber(this.f.amount)
+      let price = new BigNumber(this.f.price);
+      let totalBN = amount.multipliedBy(price)
+      let total = totalBN.toNumber()
+      console.log("amount to num", amount.toNumber());
+      console.log("price to number",price.toNumber());
+      console.log("total to number", totalBN.toNumber());
       
       if(this._zeroEx.display == 'eth'){
-        let amount = this.f.amount * this.f.price;
-        let total =parseFloat(amount.toFixed(10));
+        ///let amount = this.f.amount * this.f.price;
+        //let total =parseFloat(amount.toFixed(10));
         this.f.total = (isNaN(total))? 0 : total;
       }else{
-        let total;
-        let amount;
-      if(this._zeroEx.display == 'weth'){
-          amount = this.f.amount * this.f.price;
-          console.log("amount???",amount);
-          
-          let decimals = parseInt(this._zeroEx.token.assetDataA.decimals) +1
-          total = parseFloat(amount.toFixed(decimals));
-          console.log("total????",total);
-          
-          if(this.action == 'buy'){
-            if(total > this.pairBalance){
-              this.balanceError = "The amount to pay is higher than your balance";
-              this.submited = true;
-                this.f.total = 0;
-                return false
+        if(this._zeroEx.display == 'weth'){
+            if(this.action == 'buy'){
+              if(total < this.minAmount || total > this.pairBalance){ 
+                if(total > this.pairBalance){
+                  this.balanceError = "The amount to pay is higher than your balance";
+                }
+                  this.submited = true;
+                  this.f.total = 0;
+                  return false
+              }else{
+                this.balanceError = '';
+                this.f.total = (isNaN(total))? 0 : total;  
+              }
             }
-            if(total < this.minAmount){
-                this.submited = true;
-                this.f.total = 0;
-                return false
-            }else{
+            if(this.action == 'sell'){
+              if(this.f.amount < this.minAmount || this.f.amount > this.pairBalance){
+                if(this.f.amount > this.pairBalance){
+                  this.balanceError = "The amount to pay is higher than your balance";
+                }
+                  this.submited = true;
+                  this.f.total = 0;
+                  return false
+              }else{
                 this.balanceError = '';
                 this.f.total = (isNaN(total))? 0 : total;
+              }
             }
           }
-          if(this.action == 'sell'){
-            if(this.f.amount > this.pairBalance){
-              this.balanceError = "The amount to pay is higher than your balance";
-              this.submited = true;
-                this.f.total = 0;
-                return false
-            }
-            if(this.f.amount < this.minAmount){
-                this.submited = true;
-                this.f.total = 0;
-                return false
-            }else{
-                this.balanceError = '';
-                this.f.total = (isNaN(total))? 0 : total;
-            }
-          }
-          
-        }
       }
     }
 

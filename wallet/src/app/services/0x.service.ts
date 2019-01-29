@@ -1060,9 +1060,6 @@ export class ZeroExService{
   }
   
   async updateOrderInfo(hash, orderRelevantState){
-    console.log("UPDATE ORDER INFO?!?!?!??!?!?!!");
-    console.log("hash",hash);
-    console.log("orderRelevantState", orderRelevantState);
     let decimals = this.token.assetDataA.decimals;
     let x = decimals.toString();
     let exp = 10 ** parseInt(x)
@@ -1075,11 +1072,6 @@ export class ZeroExService{
         remainingMaker = this.showBuys[i].makerAmountNotParsed - orderRelevantState.remainingFillableMakerAssetAmount.toNumber();
         this.showBuys[i].filledAmountOtherToken = remainingMaker/exp;
         this.showBuys[i].filledAmount = remainingTaker/exp;
-        //console.log("filledAmountOtherToken", this.showBuys[i].filledAmountOtherToken);
-        //console.log("filledAmount",this.showBuys[i].filledAmount);
-
-        //console.log("remainingFillableMakerAssetAmount",orderRelevantState.remainingFillableMakerAssetAmount.toNumber());
-        //console.log("remainingFillableTakerAssetAmount",orderRelevantState.remainingFillableTakerAssetAmount.toNumber());
       }
     }
     for (let j = 0; j < this.showSells.length; j++) {
@@ -1088,23 +1080,13 @@ export class ZeroExService{
         remainingMaker = this.showSells[j].makerAmountNotParsed - orderRelevantState.remainingFillableMakerAssetAmount.toNumber();
         this.showSells[j].filledAmountOtherToken = remainingMaker/exp;
         this.showSells[j].filledAmount = remainingTaker/exp;
-        console.log("filledAmountOtherToken", this.showSells[j].filledAmountOtherToken);
-        console.log("filledAmount",this.showSells[j].filledAmount);
-        
-        console.log("remainingFillableMakerAssetAmount",orderRelevantState.remainingFillableMakerAssetAmount.toNumber());
-        console.log("remainingFillableTakerAssetAmount",orderRelevantState.remainingFillableTakerAssetAmount.toNumber());
       }
     }
-    
   }
   async subscribeOrderWatcher(){
-    console.log("INSIDE SUBSCRIBE FUNCTION");
     this.orderWatcher.subscribe(async (error, data) => {
-      console.log("orderWatcher.event", data);
       this.orderCount = this.orderWatcher.getStats();
-      console.log("stats???", this.orderCount);
       if(data.isValid == false){
-        console.log("REMOVE INFOOOOOOOOOOOOO!!!!");
         this.orderWatcher.removeOrder(data.orderHash);
         for (let i = 0; i < this.showBuys.length; i++) {
           if(this.showBuys[i].orderHash == data.orderHash){
@@ -1118,7 +1100,6 @@ export class ZeroExService{
         }
       }
       if(data.isValid == true){
-        console.log("IS VALIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
         this.updateOrderInfo(data.orderHash, data.orderRelevantState)
       }
     });

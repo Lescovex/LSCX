@@ -118,7 +118,7 @@
         </div>
         <div class="clear half left">
             <label class="title" for="total">Total</label>
-            <p class="input">{{f.total | number:'1.3-3':'en'}}</p>
+            <p class="input">{{f.total | number:'1.3-20':'en'}}</p>
             <input type="hidden" name="total" [customMin]="minAmount" [(ngModel)]="f.total" required ngModel #eth="ngModel" />
         </div>
         <div class="half right">
