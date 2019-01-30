@@ -134,13 +134,7 @@ export class ZeroExService{
             let decimals = this.token.assetDataA.decimals;
             let x = decimals.toString();
             let exp = 10 ** parseInt(x);
-            //change num for bigNumber
-            console.log("ORDER DE I",this.localState.allOrders[i]);
-            console.log("ORDER INFO!?!?!!?!??!?!??!?!",orderInfo);
             
-            console.log("TAKER FILLED AMOUNT",this.localState.allOrders[i].orderTakerAssetFilledAmount);
-              console.log("PRICE TOKEN B", this.localState.allOrders[i].priceTokenB);
-              
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled == 0){
               let orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
               let expo = new BigNumber(exp)
@@ -149,8 +143,7 @@ export class ZeroExService{
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
               this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();
-              //this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
-              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
+             
             }
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled == 0){
               let orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
@@ -160,8 +153,7 @@ export class ZeroExService{
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
               this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();
-              //this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
-              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
+             
             }
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled != 0){
               let orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)
@@ -171,8 +163,7 @@ export class ZeroExService{
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
               this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();      
-              //this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;              
-              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
+             
             }
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled != 0){
               let orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)
@@ -182,8 +173,7 @@ export class ZeroExService{
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
               this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();   
-              //this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;
-              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
+             
             }
             mem.push(this.localState.allOrders[i]);
           }
@@ -282,7 +272,6 @@ export class ZeroExService{
 }
 
   async checkAssetPairs(checkTime){
-    console.log("CHECK ASSET PAIRS!");
     
     let response = await this.httpClient.getAssetPairsAsync({ networkId: this._web3.network.chain, page: checkTime});
     if (response.total === 0) {
@@ -1047,15 +1036,13 @@ export class ZeroExService{
       }
     });
   }
-
-  async unsubscribeOrderWatcher(){
-    this.orderWatcher.unsubscribe();
-  }
   
   async orderWatcherInterval(){
     this.interval2 = setInterval(async()=>{
       await this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
-      
+      await this.checkMyFunds();
+      await this.checkMyDoneOrders();
+      await this.saveConfigFile();
     }, 60000)
   }
   async startIntervalBalance(){

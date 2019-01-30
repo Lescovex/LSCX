@@ -39,7 +39,7 @@
                 <th>Price</th>
             </tr>
         </thead>
-        <tr *ngIf="history.length == 0">
+        <tr *ngIf="_zeroEx.allOrders.length == 0">
             <td colspan="5" class="collapse">There are no trades here</td>
         </tr>
         <tbody *ngFor="let trade of _zeroEx.allOrders, index as i">

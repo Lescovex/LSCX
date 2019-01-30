@@ -68,17 +68,16 @@ export class BuySellPage implements OnInit, DoCheck {
       
       if(this._zeroEx.state.orders.sells.length != 0){
         let sellLength = this._zeroEx.state.orders.sells.length;
-        this.bestSellWeth = this._zeroEx.state.orders.sells[0].price;
+        this.bestSellWeth = this._zeroEx.state.orders.sells[0].priceTokenB;
       }
       if(this._zeroEx.state.orders.buys.length != 0){
         let buyLength = this._zeroEx.state.orders.buys.length;
-        this.bestBuyWeth = this._zeroEx.state.orders.buys[0].price;
+        this.bestBuyWeth = this._zeroEx.state.orders.buys[0].priceTokenB;
       }
     
       
       this.lastDisplay = this._zeroEx.display;
       if(this._zeroEx.display == 'weth'){
-        //this.expiresBigNumber = this._zeroEx.getRandomFutureDateInSeconds();
         this.f.expires = 1;
       }
       if(this._zeroEx.display == 'eth'){
