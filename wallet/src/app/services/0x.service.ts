@@ -134,27 +134,63 @@ export class ZeroExService{
             let decimals = this.token.assetDataA.decimals;
             let x = decimals.toString();
             let exp = 10 ** parseInt(x);
-
+            //change num for bigNumber
+            console.log("ORDER DE I",this.localState.allOrders[i]);
+            console.log("ORDER INFO!?!?!!?!??!?!??!?!",orderInfo);
+            
+            console.log("TAKER FILLED AMOUNT",this.localState.allOrders[i].orderTakerAssetFilledAmount);
+              console.log("PRICE TOKEN B", this.localState.allOrders[i].priceTokenB);
+              
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled == 0){
-              this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
-              this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
+              let orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
+              let expo = new BigNumber(exp)
+              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)
+              let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
+              let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
+              this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
+              this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();
+              //this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
+              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
             }
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled == 0){
-              this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
-              this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
+              let orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
+              let expo = new BigNumber(exp)
+              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA)
+              let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
+              let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
+              this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
+              this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();
+              //this.localState.allOrders[i].orderTakerAssetFilledAmount = orderInfo.orderTakerAssetFilledAmount / exp;
+              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
             }
-            if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled != 0){        
-              this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;              
-              this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
+            if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled != 0){
+              let orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)
+              let expo = new BigNumber(exp)
+              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)
+              let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
+              let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
+              this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
+              this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();      
+              //this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;              
+              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenB;
             }
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled != 0){
-              this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;
-              this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
+              let orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)
+              let expo = new BigNumber(exp)
+              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA)
+              let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
+              let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
+              this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
+              this.localState.allOrders[i].orderMakerAssetFilledAmount = makerFilledAmount.toNumber();   
+              //this.localState.allOrders[i].orderTakerAssetFilledAmount = this.localState.allOrders[i].filled / exp;
+              //this.localState.allOrders[i].orderMakerAssetFilledAmount = this.localState.allOrders[i].orderTakerAssetFilledAmount * this.localState.allOrders[i].priceTokenA;
             }
             mem.push(this.localState.allOrders[i]);
           }
         }
-        this.allOrders = mem; 
+        this.allOrders = mem;
+        console.log("all orders", this.allOrders);
+        
         control = true;
       }
     }
