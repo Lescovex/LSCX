@@ -82,21 +82,24 @@ export class ZeroExService{
   }
   
   async init(){
-    this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
-    this.providerAddress = this.config.sra_http_endpoint;
-    this.webSocketProviderAddress = this.config.sra_ws_endpoint;
-    
-    this.activateLoading();
-    await this.setProvider();
+    if('address' in this._account.account && typeof(this._account.account.address)!= "undefined"){
+      this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
+      this.providerAddress = this.config.sra_http_endpoint;
+      this.webSocketProviderAddress = this.config.sra_ws_endpoint;
+      
+      this.activateLoading();
+      await this.setProvider();
 
-    await this.getLocalInfo();
-    this.loadingD.close();
+      await this.getLocalInfo();
+      this.loadingD.close();
+      
+      await this.checkAssetPairs(1);
+      await this.setToken();
+      
+      await this.checkMyFunds();
+      await this.checkMyDoneOrders();
+    }
     
-    await this.checkAssetPairs(1);
-    await this.setToken();
-    
-    await this.checkMyFunds();
-    await this.checkMyDoneOrders();
   }
 
   async checkMyFunds(){
@@ -243,6 +246,8 @@ export class ZeroExService{
 }
 
   async checkAssetPairs(checkTime){
+    console.log("CHECK ASSET PAIRS!");
+    
     let response = await this.httpClient.getAssetPairsAsync({ networkId: this._web3.network.chain, page: checkTime});
     if (response.total === 0) {
       this.asset_pairs = [];
@@ -1313,7 +1318,6 @@ export class ZeroExService{
   }
 
   async setToken(token?) {
-    
     if(this.loadingD == null){
       this.activateLoading();
     }
@@ -1326,11 +1330,13 @@ export class ZeroExService{
     
 		if(typeof(token) == "undefined"){
       let localToken = this.getLocalStorageToken();
-      let localToken_inArray = this.in_Array(localToken, this.asset_pairs)
-			if(localToken_inArray != false) {
-        this.token = localToken;
-        //this.updateAllowance();
-			} else {
+      
+      if(localToken != null){
+        let localToken_inArray = this.in_Array(localToken, this.asset_pairs)
+        if(localToken_inArray != false) {
+          this.token = localToken;
+        } 
+      } else {
         let default_config_inArray = this.in_Array(this.config.default_token, this.asset_pairs);
         
         if(default_config_inArray != false){
@@ -1346,36 +1352,29 @@ export class ZeroExService{
 		}else{
 			this.token = token;
 		}
-		console.log("this.token", this.token);
-    
+		
     await this.updateTokenInfo();
 		this.saveLocalStorageToken();
 		
     this.startIntervalBalance();
-    //this.startIntervalPairs();
-
-    console.log("THIS TOKEN AFTER SET TOKEN!!!!!!!", this.token);
     
     this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
     
   }
   async updateTokenInfo(){
+    
     try {
       this.token.assetDataA.allowed = await this.getProxyAllowance(this.token.assetDataA.tokenAddress, this._account.account.address);
-      
     } catch (error) {
       this.token.assetDataA.allowed = 0;
-      console.log(error);
-      
+      console.log("ERROR UPDATE TOKEN A INFO!?!??!!",error);  
     }
 
     try {
       this.token.assetDataB.allowed = await this.getProxyAllowance(this.token.assetDataB.tokenAddress, this._account.account.address);
-    
     } catch (error) {
       this.token.assetDataB.allowed = 0; 
-      console.log(error);
-      
+      console.log("ERROR UPDATE TOKEN B INFO!?!??!!",error);      
     }
     await this.setBalances();
   }
@@ -1412,7 +1411,8 @@ export class ZeroExService{
   
   async setBalances() {
 		this.token.assetDataA.balance = await this.getBalance(this.token.assetDataA);
-    this.token.assetDataB.balance = await this.getBalance(this.token.assetDataB);  
+    this.token.assetDataB.balance = await this.getBalance(this.token.assetDataB);
+    
   }
 
   async updateAllowance(){
@@ -1463,12 +1463,16 @@ export class ZeroExService{
         console.log("error call balanceof",error);
         this.getBalance(token);
       }
-      let x;
+      
+      let x;  
+      
       try {
-        x = value.toString();  
+         x = value.toString();
       } catch (error) {
         console.log("error STRING?",error);
         console.log("valye of value",value);
+        console.log("what's x????",x);
+        
         x = value
       }
       

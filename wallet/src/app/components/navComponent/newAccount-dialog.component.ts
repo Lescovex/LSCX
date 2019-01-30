@@ -1,10 +1,11 @@
-import { Component } from '@angular/core'
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 /*Services*/
 import { WalletService } from '../../services/wallet.service'
 import { AccountService } from '../../services/account.service'
 import { DialogService } from '../../services/dialog.service'
-
+import { ZeroExService } from "../../services/0x.service";
 /*Dialog*/
 import { MdDialog } from '@angular/material';
 import { MdDialogRef } from '@angular/material';
@@ -25,7 +26,7 @@ export class NewAccountDialogComponent {
   protected pass;
   protected pass2;
 
-  constructor(public dialogRef: MdDialogRef<NewAccountDialogComponent>, private _wallet: WalletService,
+  constructor(protected router : Router, public _zeroEx:ZeroExService ,public dialogRef: MdDialogRef<NewAccountDialogComponent>, private _wallet: WalletService,
               private _account: AccountService, public dialog: MdDialog,private dialogService: DialogService) {
       
     if(this._wallet.wallet == null ){
@@ -36,7 +37,7 @@ export class NewAccountDialogComponent {
   }
 
 
-  createAccount(name, pass, pass2){
+  async createAccount(name, pass, pass2){
     let error:string = "";
 
     if(this.checkPass(pass, pass2) == false){
@@ -58,11 +59,16 @@ export class NewAccountDialogComponent {
   
       return false;
     }
-
+    this.dialogRef.close();
+    let loadingD = this.dialogService.openLoadingDialog();
     try{
       this._wallet.newAccount(name, pass);
       if(!localStorage.getItem('acc')){
+        this.router.navigate(['/wallet/global']);
+      } 
+      if(!localStorage.getItem('acc')){
         this._account.getAccountData();
+        await this._zeroEx.init();
       }
     }catch(e){
       
@@ -72,10 +78,10 @@ export class NewAccountDialogComponent {
     }
     let title = (error=="")? 'Your account has been successfully created' : 'Unable to create account';
     let message = (error=="")? 'You can find it in the wallet list' : 'Something was wrong';
-
+    loadingD.close();
     let dialogRef = this.dialogService.openErrorDialog(title, message, error);
    
-    this.dialogRef.close();
+    
   }
   
   checkPass(pass, pass2){

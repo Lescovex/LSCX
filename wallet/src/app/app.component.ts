@@ -40,6 +40,8 @@ export class MyApp implements OnInit {
       this.interval = setInterval(async() => {
         if('address'in this._account.account){
           if(this._zeroEx.token != null && this._zeroEx.showBuys != null && this._zeroEx.showSells != null && this._zeroEx.loaded == null){
+            console.log("MARKET LOADED!?!?!?!");
+            
             this._zeroEx.loaded = true;
             this.loadingD.close();
             this.router.navigate(['/market/history']);
@@ -50,6 +52,13 @@ export class MyApp implements OnInit {
             clearInterval(this.interval);
           }
         }else{
+          if(typeof(this._account.account.address)== "undefined" && this._zeroEx.loaded == null){
+            console.log("CLOSE IF ACC UNDEFINED!");
+            
+            this._zeroEx.loaded = true;
+            this.loadingD.close();
+            this.router.navigate(['/market/history']);
+          }
           if(this._LSCXmarket.updated){
             clearInterval(this.interval);
             
