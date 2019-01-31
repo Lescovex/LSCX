@@ -33,8 +33,7 @@ export class ShowTxDialogComponent implements OnInit{
 
     openExternal(txHash){
         const shell = require('electron').shell;
-        //let net = (this._web3.network==1) ? "":"ropsten.";
-
+      
         let net = this._scan.urlStarts.replace("-", "");
 		if(net!=""){
 			net = net+".";

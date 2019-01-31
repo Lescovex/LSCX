@@ -26,8 +26,7 @@ export class SendWethDialogComponent implements OnInit{
     title = "";
     message = "";
     constructor(@Inject(MD_DIALOG_DATA) public data: any, private router: Router, private _contract : ContractService, public _zeroEx: ZeroExService, public _account: AccountService, public dialogRef: MdDialogRef<SendWethDialogComponent>, private _web3: Web3, public dialog: MdDialog){
-        console.log("injected data?",this.data);
-        
+    
     }
     
     ngOnInit(){
@@ -49,10 +48,9 @@ export class SendWethDialogComponent implements OnInit{
                 nonce = parseInt(historyNonce)+1;
             }
         }
-
         return nonce;
-        
     }
+
     async sendTx(pass){
         
         if (typeof(pass)=='undefined' || pass=="" || this.submited){

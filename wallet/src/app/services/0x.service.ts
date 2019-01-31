@@ -1354,46 +1354,33 @@ export class ZeroExService{
     }
     
 		if(typeof(token) == "undefined"){
-      console.log("TOKEN UNDEFINED?");
       
       let localToken = this.getLocalStorageToken();
       
       if(localToken != null){
-        
         let localToken_inArray = this.in_Array(localToken, this.asset_pairs)
-        
         if(localToken_inArray != false) {    
           this.token = localToken;
         }else{
           let default_config_inArray = this.in_Array(this.config.default_token, this.asset_pairs);
-          
           if(default_config_inArray != false){
             this.token = default_config_inArray;
           }else{
-            
             if(this.asset_pairs.length > 0){
-              
               this.token = this.asset_pairs[0];
             }else{
-              
               this.token = []
             }
           }
         }
       } else {
-        
         let default_config_inArray = this.in_Array(this.config.default_token, this.asset_pairs);
-        
         if(default_config_inArray != false){
-          
           this.token = default_config_inArray;
         }else{
-          
           if(this.asset_pairs.length > 0){
-            
             this.token = this.asset_pairs[0];
           }else{
-            
             this.token = []
           }
         }
@@ -1405,11 +1392,8 @@ export class ZeroExService{
     
     await this.updateTokenInfo();
 		this.saveLocalStorageToken();
-		
     this.startIntervalBalance();
-    
     this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
-    
   }
   async updateTokenInfo(){
     
@@ -1513,27 +1497,30 @@ export class ZeroExService{
         console.log("error call balanceof",error);
         this.getBalance(token);
       }
-      
-      let x;  
-      
-      try {
-         x = value.toString();
-      } catch (error) {
-        console.log("error STRING?",error);
-        console.log("valye of value",value);
-        console.log("what's x????",x);
+      if(value != null){
+        let x;
+        try {
+          x = value.toString();
+        } catch (error) {
+          console.log("error STRING?",error);
+          console.log("valye of value",value);
+          console.log("what's x????",x);
+          
+          x = value
+        }
         
-        x = value
+        let resBig = new BigNumber(x);
+        let y;
+        if(token.decimals != null){
+          y = resBig.div(Math.pow(10,token.decimals));
+        }else{
+          y = resBig.div(Math.pow(10,18));
+        }
+        balance = y.toNumber(); 
       }
+     
       
-      let resBig = new BigNumber(x);
-      let y;
-      if(token.decimals != null){
-        y = resBig.div(Math.pow(10,token.decimals));
-      }else{
-        y = resBig.div(Math.pow(10,18));
-      }
-      balance = y.toNumber(); 
+     
     }		
 		return balance;
   }

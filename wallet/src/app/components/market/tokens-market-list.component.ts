@@ -16,7 +16,6 @@ export class TokensMarketListComponent implements OnChanges {
   }
 
   ngOnInit(){
-    console.log("Tokens market list component on init?");
     
   }
   ngOnChanges(): void{
@@ -53,20 +52,16 @@ export class TokensMarketListComponent implements OnChanges {
       }
       this.tokens =  tokens;
     }
-    //console.log("this tokens",this.tokens);
     
   }
   
   async selectToken(token){
-    console.log("selectToken",token);
-    
     if(this._zeroEx.display == 'eth'){
       await this._LSCXmarket.activateLoading();
       await this._LSCXmarket.setToken(token);
       this.show.emit(false);
     }
     if(this._zeroEx.display == 'weth'){
-      //await this._zeroEx.activateLoading();
       await this._zeroEx.setToken(token);
       this.show.emit(false);
     }

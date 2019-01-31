@@ -42,8 +42,6 @@ export class WrapUnwrapDialogComponent implements OnInit{
         }
     }
     sendTx(amount, action){
-        console.log(amount);
-        console.log(action);
         this.dialogRef.close(JSON.stringify({amount: amount, action:action}));       
     }
 }

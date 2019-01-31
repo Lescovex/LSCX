@@ -130,11 +130,7 @@ export class BuySellPage implements OnInit, DoCheck {
       this._LSCXmarket.clearStateOrdersInterval();
     }
 
-    async onSubmit(form){
-      console.log("form",form);
-      console.log("this.f",this.f);
-      
-      
+    async onSubmit(form){ 
       this.submited = true;
       if(form.invalid) return false;
       if(this._zeroEx.display == "eth"){
@@ -246,14 +242,10 @@ export class BuySellPage implements OnInit, DoCheck {
     }
 
     total() {
-      console.log("TOTAL FUNCION");
       let amount = new BigNumber(this.f.amount)
       let price = new BigNumber(this.f.price);
       let totalBN = amount.multipliedBy(price)
-      let total = totalBN.toNumber()
-      console.log("amount to num", amount.toNumber());
-      console.log("price to number",price.toNumber());
-      console.log("total to number", totalBN.toNumber());
+      let total = totalBN.toNumber();
       
       if(this._zeroEx.display == 'eth'){
 

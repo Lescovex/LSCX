@@ -51,7 +51,7 @@ export class SendDialogComponent{
     if('seedOptions' in this.data) {
       let seedOptions = this.data.seedOptions
       let alternativeSending = new AlternativeSending(seedOptions.seed, seedOptions.to, this._account.account.address, "hash", this.data.amount.toString(), this._web3.network);
-      console.log("alternativeSending",alternativeSending);
+      
       return false
     }
     
@@ -85,7 +85,6 @@ export class SendDialogComponent{
         if(j==60){
           //Create pending object
           pending = this.createPendingObject(sendResult, i);
-          console.log("pending obj",pending);
           
           this._account.addPendingTx(pending);
           if(i==this.txs.length-1){

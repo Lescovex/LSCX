@@ -11,7 +11,6 @@ import { MdDialogRef, MD_DIALOG_DATA} from '@angular/material';
 export class ZeroExConfirmDialogComponent{
   pass;
   constructor(@Inject(MD_DIALOG_DATA) public data: string, private dialogRef: MdDialogRef<ZeroExConfirmDialogComponent>) {
-    console.log("injected DATA",data);
     
   }
 

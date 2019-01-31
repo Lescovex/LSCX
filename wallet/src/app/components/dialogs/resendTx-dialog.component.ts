@@ -60,31 +60,22 @@ export class ResendTxDialogComponent implements OnInit{
         let gasPrice = await this._web3.getGasPrice();
         
         gasPrice = parseInt(this._web3.web3.toWei(parseFloat(this._web3.web3.fromWei(gasPrice, 'Gwei')).toFixed(1), "Gwei"));
-        console.log(gasPrice,parseInt(this.data.gasPrice), gasPrice <= parseInt(this.data.gasPrice))
+        
         if(gasPrice <= parseInt(this.data.gasPrice)){
             gasPrice = this.data.gasPrice;
         }
-        console.log(gasPrice*2)
+        
         this.cancelTx.gasPrice = gasPrice*2;
         this.newTx.gasPrice = gasPrice*2;
     }
 
     async sendTx(){
  
-        /*let x = await this._web3.getNonce(this._account.account.address);
-        if(this.tx.nonce >= x){
-            x = this.tx.nonce
-        }
-        let options: any = {
-            gasLimit: this.tx.gas,
-            gasPrice: this.tx.gasPrice,
-            nonce: this.tx.nonce
-        }*/
         let data = "";
         if(this.tx.input != "0x") {
            data  = this.tx.input;
         }
-        //let rawTx = await this._rawTx.createRaw(this.tx.to, this._web3.web3.fromWei(this.tx.value,'ether'),options);
+       
         let rawTx = new ResendTx(this._account, this.tx.to, new BigNumber(this.tx.value),this.tx.gas, this.tx.gasPrice,this._web3.network, data, this.tx.nonce)
         this.dialogRef.close();
         this.dialog.open(SendDialogComponent, {

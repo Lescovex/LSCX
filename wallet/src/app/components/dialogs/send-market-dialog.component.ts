@@ -51,7 +51,6 @@ export class SendMarketDialogComponent{
    
 
   async sendTx(pass){
-    console.log("sendtx?????");
     
     if (typeof(pass)=='undefined' || pass==""|| this.submited){
       return false
@@ -89,9 +88,9 @@ export class SendMarketDialogComponent{
           pending = new PendingTx(sendResult.toString(),this.txs[i], this.data.to, this.data.amount, this._account.account.address);
           this._account.addPendingTx(pending);
           if(i==this.txs.length-1){
-            console.log("antes de añadir State");
+            
             this.addToMarket();
-            console.log("despues de añadir State");
+            
             this.setErroParamsWhenNotConfiramtion();
             loadingDialog.close();
             let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);

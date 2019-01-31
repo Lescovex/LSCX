@@ -83,10 +83,6 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
       }
 
     async openOrderDialog(action, order){
-        console.log("order", order);
-        console.log("action", action);
-        
-        
         if(this._zeroEx.display == 'eth'){
             order.tokenName = this._LSCXmarket.token.name;
             order.action = action;
