@@ -61,7 +61,7 @@ export class NetWorkComponent implements OnInit, DoCheck{
         this.dialog = this._dialog.openLoadingDialog();
         this.net = network;
         
-        this._web3.setNetwork(network);
+        await this._web3.setNetwork(network);
         this._zeroEx.init();
         this._LSCXmarket.showBuys = null;
         this._LSCXmarket.showSells = null;

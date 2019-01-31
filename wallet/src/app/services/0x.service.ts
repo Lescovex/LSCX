@@ -83,6 +83,8 @@ export class ZeroExService{
   
   async init(){
     if('address' in this._account.account && typeof(this._account.account.address)!= "undefined"){
+      console.log("THIS NET STARTS?????", this._web3.network.urlStarts);
+      
       this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
       this.providerAddress = this.config.sra_http_endpoint;
       this.webSocketProviderAddress = this.config.sra_ws_endpoint;
@@ -1352,22 +1354,46 @@ export class ZeroExService{
     }
     
 		if(typeof(token) == "undefined"){
+      console.log("TOKEN UNDEFINED?");
+      
       let localToken = this.getLocalStorageToken();
       
       if(localToken != null){
+        
         let localToken_inArray = this.in_Array(localToken, this.asset_pairs)
-        if(localToken_inArray != false) {
+        
+        if(localToken_inArray != false) {    
           this.token = localToken;
-        } 
+        }else{
+          let default_config_inArray = this.in_Array(this.config.default_token, this.asset_pairs);
+          
+          if(default_config_inArray != false){
+            this.token = default_config_inArray;
+          }else{
+            
+            if(this.asset_pairs.length > 0){
+              
+              this.token = this.asset_pairs[0];
+            }else{
+              
+              this.token = []
+            }
+          }
+        }
       } else {
+        
         let default_config_inArray = this.in_Array(this.config.default_token, this.asset_pairs);
         
         if(default_config_inArray != false){
+          
           this.token = default_config_inArray;
         }else{
+          
           if(this.asset_pairs.length > 0){
+            
             this.token = this.asset_pairs[0];
           }else{
+            
             this.token = []
           }
         }
@@ -1375,7 +1401,8 @@ export class ZeroExService{
 		}else{
 			this.token = token;
 		}
-		
+		console.log("THIS TOKEN!!!!!!?",this.token);
+    
     await this.updateTokenInfo();
 		this.saveLocalStorageToken();
 		
