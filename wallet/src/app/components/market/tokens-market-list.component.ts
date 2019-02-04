@@ -42,11 +42,11 @@ export class TokensMarketListComponent implements OnChanges {
     }
     if(this._zeroEx.display == 'weth'){
       let tokens = this._zeroEx.asset_pairs;
-      tokens.sort((a, b)=> (a.name).localeCompare(b.name));
+      tokens.sort((a, b)=> (a.reverseName).localeCompare(b.reverseName));
       if(typeof(input)!="undefined"){
         tokens = tokens.filter(token=> {
-          if('name' in token && typeof(token.name)!="undefined" && token.name != ""){
-            return token.name.toUpperCase().startsWith(input.toUpperCase())
+          if('name' in token && typeof(token.reverseName)!="undefined" && token.reverseName != ""){
+            return token.reverseName.toUpperCase().startsWith(input.toUpperCase())
           }
         });
       }

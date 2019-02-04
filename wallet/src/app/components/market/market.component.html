@@ -45,7 +45,7 @@
                 <div *ngIf="showList" class="overlay" (click)="toggleShow()"></div>
             </div>
             <div class="half left" class="market-token" *ngIf="display == 'weth' && _zeroEx.asset_pairs.length > 0">
-                <p class="title inlineBlock" for="contract">Pair <a (click)="toggleList()">{{_zeroEx.token?.name}} <img src="~icons/select_icon.svg"></a> </p>
+                <p class="title inlineBlock" for="contract">Pair <a (click)="toggleList()">{{_zeroEx.token?.reverseName}} <img src="~icons/select_icon.svg"></a> </p>
                 <app-tokens-market-list *ngIf="showList" (show)="onSelect($event)" id="token-list" class="select-list scrollbar"></app-tokens-market-list>
                 <div *ngIf="showList" class="overlay" (click)="toggleShow()"></div>
             </div>

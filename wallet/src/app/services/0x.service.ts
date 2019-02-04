@@ -385,7 +385,7 @@ export class ZeroExService{
       assetDataA: pairA,
       assetDataB: pairB,
       reverseName: symbolString,
-      name: reverseSymbolString
+      name: reverseSymbolString 
     }
     
     return pairC;
