@@ -9,6 +9,7 @@ import { Web3 } from "./web3.service";
 import { ContractService } from './contract.service';
 import { EtherscanService } from './etherscan.service';
 
+import { ErrorDialogComponent } from '../components/dialogs/error-dialog.component';
 import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
 
 //0x imports
@@ -693,7 +694,27 @@ export class ZeroExService{
     this.bids=[];
 
     let orderbookRequest: OrderbookRequest = { baseAssetData: makerAssetData, quoteAssetData: takerAssetData };
-    let response = await this.httpClient.getOrderbookAsync(orderbookRequest, { networkId: this._web3.network.chain, page: pageNumber});
+    let response;
+    try {
+      response = await this.httpClient.getOrderbookAsync(orderbookRequest, { networkId: this._web3.network.chain, page: pageNumber});  
+    } catch (error) {
+      
+      let title = 'Unable to get '+this.token.name+' pair';
+      let message = 'Something was wrong';
+      let err = "This pair is not available";
+      let dialogRef =this.dialog.open(ErrorDialogComponent, {
+            width: '660px',
+            height: '210px',
+            data: {
+              title: title,
+              message: message,
+              error: err
+            }
+          });
+      this.setToken(this.config.default_token);
+      
+    }
+    
     console.log("ORDERBOOK RESPONSE?",response);
     let decodedMakerDataAsks;
     let decodedMakerDataBids;
