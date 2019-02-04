@@ -979,7 +979,7 @@ export class ZeroExService{
 
   async setShowOrders(buys, sells){
 		this.showBuys = buys;
-		this.showSells = sells;
+		this.showSells = sells.reverse();
 	}
 
   async addOrdersToOrderWatcher(orderbook){
