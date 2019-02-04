@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 
-import { BitcoinAccountService } from '../../services/account-bitcoin.service'
+import { BitcoinAccountService } from '../../services/account-bitcoin.service';
 import { Web3 } from '../../services/web3.service';
 @Component({
   selector: 'bitcoin-app-wallet',
@@ -13,6 +13,8 @@ export class BitcoinWalletComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    this._account.checkServer();
   }
 
   maxHeight(){

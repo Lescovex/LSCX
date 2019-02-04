@@ -7,6 +7,8 @@ import { MdDialog } from '@angular/material';
 import { LoadingDialogComponent } from '../components/dialogs/loading-dialog.component';
 
 import { BitcoinWalletService } from './wallet-bitcoin.service';
+import { DialogService } from "./dialog.service";
+import { ERROR_LOGGER } from '../../../node_modules/@angular/core/src/errors';
 
 const classify = require('bitcoinjs-lib/src/classify')
 
@@ -24,7 +26,9 @@ export class BitcoinAccountService{
   loadingD;
   block;
   public moment = require('moment');
-  constructor(private dialog: MdDialog, private http: Http, private _wallet : BitcoinWalletService, private router: Router){
+
+  serverError;
+  constructor(private dialog: MdDialog, private http: Http, private _wallet : BitcoinWalletService, private router: Router, public _dialog : DialogService){
  
     this.getAccountData();
   }
@@ -84,9 +88,15 @@ export class BitcoinAccountService{
     let scripthash  = reversedHash.toString('hex');
 
     try {
-        //connection Electrum wallet 50002, '62.210.170.57', 'tls'
-      const ecl = new ElectrumCli(50001, 'electrum-server.ninja', 'tcp');
-      await ecl.connect();
+
+      const ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+
+      try {
+        await ecl.connect();  
+      } catch (error) {
+        console.log("setData error", error);
+        
+      }
       const ver = await ecl.server_version("1.8.12","1.4");
 
       
@@ -233,19 +243,54 @@ export class BitcoinAccountService{
     
   }
 
+  async checkServer(){
+    let load;
+    Promise.resolve().then(() => { 
+      load = this._dialog.openLoadingDialog();  
+    });
+    
+    try {
+      const ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+      await ecl.connect();
+      await load.close();
+      if(this.serverError != null){
+        this.serverError = null;
+        this.getAccountData();
+      }
+      } catch (error) {
+        let title = 'Unable to connect to BTC server';
+        let message = 'Something was wrong';
+        load.close();
+        let dialogRef = this._dialog.openErrorDialog(title, message, error);
+        clearInterval(this.interval);
+        this.serverError = "Unable to connect to BTC server";
+        throw new Error(error);
+      }
+  }
   async getAccountData(){
-   
+    try {
+    const ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+    await ecl.connect(); 
+    this.serverError = null;
+    } catch (error) {
+      let title = 'Unable to connect to BTC server';
+      let message = 'Something was wrong';
+      let dialogRef = this._dialog.openErrorDialog(title, message, error);
+      clearInterval(this.interval);
+      this.serverError = "Unable to connect to BTC server";
+      throw new Error(error);
+    }
+
     this.account = this.getAccount();
     console.log("this.account",this.account);
     if(localStorage.getItem('accBTC')){
-      console.log("entras en getAccountData getItem?");
       
       await this.setAccount(this.account);
-      this.getAccountsBalances();
+      await this.getAccountsBalances();
+
       if(Object.keys(this.account).length != 0){
         this.getPendingTx();
         await this.setData();
-      // await this.setTokens();
       }
     }
     
@@ -279,10 +324,17 @@ export class BitcoinAccountService{
         hash = bitcoin.crypto.sha256(script)
         reversedHash = new Buffer(hash.reverse())
         scripthash  = reversedHash.toString('hex');
-    
-        ecl = new ElectrumCli(50001, 'electrum-server.ninja', 'tcp');
-        await ecl.connect();
-        ver = await ecl.server_version("1.8.12","1.4")      
+        
+        ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+        
+        try {
+          await ecl.connect();  
+        } catch (error) {
+          console.log("getAccountBalancesError",error);
+          
+        }
+        
+        ver = await ecl.server_version("1.8.12","1.4");
         prevBalance = await ecl.blockchainScripthash_getBalance(scripthash);
         
         if(prevBalance == null){

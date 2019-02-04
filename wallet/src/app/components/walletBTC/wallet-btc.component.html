@@ -38,15 +38,10 @@
     </a>
 
 </nav>
-<!--
-    <div class="content flex-inside">
-    <router-outlet></router-outlet>
-</div>
--->
-
 
 <div class="content scrollable-content flex-inside" [ngStyle]="{'max-height.px': maxHeight()}">
-    <p *ngIf="!_account.account?.address; else content" class="text-center">Import or create a bitcoin account</p>
+    <p *ngIf="!_account.account?.address; else content" class="text-center">Select a bitcoin account</p>
+    <p *ngIf="_account.serverError" class="text-center red">{{_account.serverError}}</p>
     <ng-template #content>
         <router-outlet></router-outlet>
     </ng-template>
