@@ -191,6 +191,8 @@ export class ZeroExService{
   
 
   async getLocalInfo(){
+    console.log("GET LOCAL INFO");
+    
 		if(!fs.existsSync(lescovexPath)){
 		  fs.mkdirSync(lescovexPath);
 		}
@@ -214,16 +216,28 @@ export class ZeroExService{
     let data = fs.readFileSync(filePath);
     
 		try {
-			this.localState =  JSON.parse(data);
+      this.localState = JSON.parse(data);
+      if(typeof(this.localState.network_name) == "undefined" || typeof(this.localState.network_chain_id) == "undefined" || 
+        typeof(this.localState.sra_http_endpoint) == "undefined" || typeof(this.localState.sra_ws_endpoint) == "undefined" ||
+        typeof(this.localState.default_contract_addresses) == "undefined" || typeof(this.localState.default_token) == "undefined" ||
+        typeof(this.localState.asset_pairs) == "undefined" || typeof(this.localState.allOrders) == "undefined"){
+          console.log("SOME FIELD UNDEFINED");
+          
+        fs.unlink(filePath, (err) => {
+          if (err) throw err;
+          console.log('successfully deleted', filePath);
+        });
+        this.getLocalInfo();  
+      }
 		} catch (error) {
 			console.log(error);
 			fs.unlink(filePath, (err) => {
 				if (err) throw err;
 				console.log('successfully deleted', filePath);
-			  });
+			});
 			this.getLocalInfo();
     }
-      this.asset_pairs = this.localState.asset_pairs;
+    this.asset_pairs = this.localState.asset_pairs;
   }
   
   setProvider(pass?){
