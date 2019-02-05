@@ -84,7 +84,6 @@ export class ZeroExService{
   
   async init(){
     if('address' in this._account.account && typeof(this._account.account.address)!= "undefined"){
-      console.log("THIS NET STARTS?????", this._web3.network.urlStarts);
       
       this.config = require("../../libs/0x/config/"+this._web3.network.urlStarts+".json");
       this.providerAddress = this.config.sra_http_endpoint;
@@ -192,7 +191,6 @@ export class ZeroExService{
   
 
   async getLocalInfo(){
-    console.log("GET LOCAL INFO");
     
 		if(!fs.existsSync(lescovexPath)){
 		  fs.mkdirSync(lescovexPath);
@@ -222,8 +220,7 @@ export class ZeroExService{
         typeof(this.localState.sra_http_endpoint) == "undefined" || typeof(this.localState.sra_ws_endpoint) == "undefined" ||
         typeof(this.localState.default_contract_addresses) == "undefined" || typeof(this.localState.default_token) == "undefined" ||
         typeof(this.localState.asset_pairs) == "undefined" || typeof(this.localState.allOrders) == "undefined"){
-          console.log("SOME FIELD UNDEFINED");
-          
+         
         fs.unlink(filePath, (err) => {
           if (err) throw err;
           console.log('successfully deleted', filePath);
@@ -623,8 +620,6 @@ export class ZeroExService{
   
   async validateFillOrder(order, value, taker){
     let decimals;
-    let fee = order.order.takerFee.toNumber();
-    console.log("Fee?????",fee);
     
     if(order.takerData.tokenAddress == this.token.assetDataA.tokenAddress){
       decimals = this.token.assetDataA.decimals;
@@ -1541,8 +1536,8 @@ export class ZeroExService{
           x = value.toString();
         } catch (error) {
           console.log("error STRING?",error);
-          console.log("valye of value",value);
-          console.log("what's x????",x);
+          console.log("value",value);
+          console.log("x",x);
           
           x = value
         }
