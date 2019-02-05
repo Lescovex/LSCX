@@ -105,7 +105,8 @@ export class MarketActionComponent implements OnChanges{
                     this.dialogRef = this._dialog.openLoadingDialog();
                     await this._zeroEx.setProvider(res.key)
                     await this._zeroEx.depositWETH(form.controls.amount.value);
-                    
+                    await this._zeroEx.setUnlimitedProxyAllowance(this.token.tokenAddress, this._account.account.address);
+                    await this._zeroEx.updateAllowance();
                     this.dialogRef.close();
                 }
             });

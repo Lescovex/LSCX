@@ -623,6 +623,9 @@ export class ZeroExService{
   
   async validateFillOrder(order, value, taker){
     let decimals;
+    let fee = order.order.takerFee.toNumber();
+    console.log("Fee?????",fee);
+    
     if(order.takerData.tokenAddress == this.token.assetDataA.tokenAddress){
       decimals = this.token.assetDataA.decimals;
     }
