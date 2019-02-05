@@ -9,9 +9,9 @@ const ENV = 'prod';
 
 // WINDOW OPTIONS
 const WINDOW_OPTS = {
-    width: 1280,
+    width: 1310,
     height: 720,
-    minWidth: 1280,
+    minWidth: 1310,
     minHeight: 720,
     'use-content-size': false,
     icon: path.join(__dirname, '../lescovex.png'),
