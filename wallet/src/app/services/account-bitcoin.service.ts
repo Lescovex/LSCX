@@ -89,7 +89,7 @@ export class BitcoinAccountService{
 
     try {
 
-      const ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+      const ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
 
       try {
         await ecl.connect();  
@@ -250,7 +250,7 @@ export class BitcoinAccountService{
     });
     
     try {
-      const ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+      const ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
       await ecl.connect();
       await load.close();
       if(this.serverError != null){
@@ -269,7 +269,7 @@ export class BitcoinAccountService{
   }
   async getAccountData(){
     try {
-    const ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+    const ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
     await ecl.connect(); 
     this.serverError = null;
     } catch (error) {
@@ -325,7 +325,7 @@ export class BitcoinAccountService{
         reversedHash = new Buffer(hash.reverse())
         scripthash  = reversedHash.toString('hex');
         
-        ecl = new ElectrumCli(50001, 'b.ooze.cc', 'tcp');
+        ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
         
         try {
           await ecl.connect();  

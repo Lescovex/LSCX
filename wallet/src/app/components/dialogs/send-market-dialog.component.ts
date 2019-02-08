@@ -96,7 +96,7 @@ export class SendMarketDialogComponent{
             let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);
             dialogRef.afterClosed().subscribe(result=>{
                 if(typeof(result)!= 'undefined' || result != ''){
-                  this.router.navigate(['/wallet/history']);
+                  this.router.navigate(['/wallet/global']);
                 }
             })
           }
@@ -115,7 +115,7 @@ export class SendMarketDialogComponent{
             let dialogRef = this.dialogService.openErrorDialog(this.title, this.message, this.error, this.data.action);
             dialogRef.afterClosed().subscribe(result=>{
                 if(typeof(result)!= 'undefined' || result != ''){
-                  this.router.navigate(['/wallet/history']);
+                  this.router.navigate(['/wallet/global']);
                 }
             })
           }

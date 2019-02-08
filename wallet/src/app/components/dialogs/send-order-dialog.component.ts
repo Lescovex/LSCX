@@ -76,7 +76,7 @@ export class SendOrderDialogComponent{
         let dialogRef = this.dialogService.openErrorDialog(this.title,this.message,this.error);
         dialogRef.afterClosed().subscribe(result=>{
           if(typeof(result)!= 'undefined' || result != ''){
-            this.router.navigate(['/wallet/history']);
+            this.router.navigate(['/wallet/global']);
           }
         })  
       }else{
@@ -92,7 +92,7 @@ export class SendOrderDialogComponent{
         let dialogRef = this.dialogService.openErrorDialog(this.title, this.message, this.error, this.data.action);
         dialogRef.afterClosed().subscribe(result=>{
           if(typeof(result)!= 'undefined' || result != ''){
-            this.router.navigate(['/wallet/history']);
+            this.router.navigate(['/wallet/global']);
           }
         })
       }
