@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core'
 import { BitcoinAccountService } from '../../../services/account-bitcoin.service';
 import { BitcoinWalletService } from '../../../services/wallet-bitcoin.service';
 import { SendDialogService } from '../../../services/send-dialog.service';
-//import { HomeComponent } from '../../home/home.component';
+
 
 import { DialogService } from '../../../services/dialog.service';
 
@@ -39,7 +39,7 @@ export class BitcoinSendPage implements OnInit {
   
   err;
   constructor(public dialogService: DialogService, private _wallet : BitcoinWalletService, private _account: BitcoinAccountService, private sendDialogService: SendDialogService) {
-    //this.home.ngOnInit();
+ 
     this.senderAddr = this._account.account.address;
   }
 
@@ -87,9 +87,9 @@ export class BitcoinSendPage implements OnInit {
     if (!match) { return 0; }
     return Math.max(
          0,
-         // Number of digits right of decimal point.
+        
          (match[1] ? match[1].length : 0)
-         // Adjust for scientific notation.
+        
          - (match[2] ? +match[2] : 0));
   }
 

@@ -100,7 +100,7 @@ export class TikerDialogComponent {
 
     async getNonce(){
         let nonce = await this._web3.getNonce(this._account.account.address);
-        //para ver ultimo nonce real
+        
         let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
         let historyNonce = history[0].nonce;
         if(historyNonce>= nonce){

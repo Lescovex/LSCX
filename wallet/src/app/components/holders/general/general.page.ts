@@ -111,7 +111,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
 
     let totalSupply = await this.getTotalSupply();
 
-    //this function start hold interval
+    
     await this.getTime();
     
     this.expected =  (holded * contractBalance)/totalSupply;

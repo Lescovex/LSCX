@@ -3,9 +3,7 @@
 <div *ngIf="_account.account.history?.length == 0">
     <p class="whiteBox text-center">There are not transactions</p>
 </div>
-<!--
-    [address]="_account.account.address"
--->
+
 <btcapp-list *ngIf="_account.account.history?.length > 0" [history]="_account.account.history" [address]="_account.account.address">
 
 </btcapp-list>

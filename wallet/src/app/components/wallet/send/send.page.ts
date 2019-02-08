@@ -115,11 +115,11 @@ export class SendPage implements OnInit {
   async getBip39(form){
     const bip39 = require('bip39');
     const hdkey = require('hdkey');
-    const strength: number = 128;//number words 12
-    const wordName = "english";//library words name
+    const strength: number = 128;
+    const wordName = "english";
     
-    const rng = null;  // Let module randombytes create this for us.
-    const wordList = eval('bip39.wordlists.'+wordName);//o require del json
+    const rng = null;
+    const wordList = eval('bip39.wordlists.'+wordName);
     
     const mnemonic = bip39.generateMnemonic(strength, rng, wordList);
     

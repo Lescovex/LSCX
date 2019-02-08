@@ -35,7 +35,7 @@ export class FormsService {
     }
 
     removeControls(inputs, form): FormGroup{
-        //this._contract.getConstructor();
+    
         inputs.forEach(input=>{
            form.removeControl(input.name);
         })

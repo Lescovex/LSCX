@@ -41,8 +41,8 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         let blockNum = await this._web3.blockNumber();
         this.blockNumber = (typeof(blockNum)== "number")? blockNum : null;
         this._LSCXmarket.checkMyOrdersDeleted(this.blockNumber, this._web3.network.chain)
-        this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
-        this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
+        this._LSCXmarket.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain);
+        this._LSCXmarket.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain); 
         
         if(this.action == "myOrders"){
             if(this.loadingD != null){

@@ -35,7 +35,6 @@ export class BitcoinWsettingsPage implements OnInit {
   err;
 
   constructor(private router: Router, protected _account: BitcoinAccountService, protected _wallet : BitcoinWalletService, public dialog: MdDialog, private dialogService: DialogService) {
-    //this.home.ngOnInit();
     
     this.name = this._account.account.name;
     this.selectedAcc = this._account.account;

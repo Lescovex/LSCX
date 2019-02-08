@@ -24,7 +24,7 @@ export class MarketComponent implements DoCheck, OnDestroy{
     this._LSCXmarket.updateMyStateShow("myTrades");
     this._LSCXmarket.setTikersInterval();
     this.net = this._web3.network.chain;
-    //this._0x.provider();
+
   }
 
 
@@ -39,7 +39,7 @@ export class MarketComponent implements DoCheck, OnDestroy{
        this._LSCXmarket.setTikersInterval();
      }
      if(this.net != this._web3.network.chain){
-        //this._0x.provider();
+     
         this.net = this._web3.network.chain;
      }
      

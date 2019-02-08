@@ -9,8 +9,6 @@ import { DialogService } from "../../../services/dialog.service";
 import { Web3 } from "../../../services/web3.service";
 import { ContractService } from "../../../services/contract.service";
 
-//import { MarketComponent } from "../market.component";
-
 @Component({
   selector: 'app-market-wallet',
   templateUrl: './market-wallet.page.html',

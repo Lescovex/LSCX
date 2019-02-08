@@ -83,7 +83,7 @@ export class SendDialogComponent{
           j++;
         }
         if(j==60){
-          //Create pending object
+          
           pending = this.createPendingObject(sendResult, i);
           
           this._account.addPendingTx(pending);
@@ -112,7 +112,7 @@ export class SendDialogComponent{
           if(i==this.txs.length-1 && this.data.action != 'approve'){
             this.title = "Your transaction has been sent";
             this.message = "You can see the progress in the global tab"
-            //self.dialogRef.close();
+            
             let dialogRef = this.dialogService.openErrorDialog(this.title, this.message, this.error, this.data.action);
             dialogRef.afterClosed().subscribe(result=>{
                 if(typeof(result)!= 'undefined' || result != ''){

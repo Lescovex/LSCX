@@ -139,7 +139,7 @@ export class BuySellPage implements OnInit, DoCheck {
         this.tokenAmount = this.f.amount*Math.pow(10,this._LSCXmarket.token.decimals);
         this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
         this.amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
-        //change to > to get total
+        
         if(this.action == "buy" && this.f.total > this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount > this._LSCXmarket.marketBalances.token){
           this.loadingDialog.close();
           //calculate market fee, if buy you'll need f.total + feeMarket
@@ -316,9 +316,9 @@ export class BuySellPage implements OnInit, DoCheck {
       let orderObj = new Order(order, this._LSCXmarket.token.decimals);
       let orderString = JSON.stringify(order);
       orderString = orderString.replace(/"/g,"'");
-      //add _string
+      
       params.push(orderString);
-      //add _price
+      
       params.push(this._web3.web3.toWei(orderObj.price, 'ether'));
       let data =  await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'order',params);
       
@@ -374,7 +374,7 @@ export class BuySellPage implements OnInit, DoCheck {
 
   async getNonce(){
     let nonce = await this._web3.getNonce(this._account.account.address);
-    //para ver ultimo nonce real
+    
     let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
     let historyNonce = history[0].nonce;
     

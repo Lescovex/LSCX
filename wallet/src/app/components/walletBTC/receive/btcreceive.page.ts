@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { BitcoinAccountService } from '../../../services/account-bitcoin.service';
-//import { HomeComponent } from '../../home/home.component';
-// import * as devp2p from 'ethereumjs-devp2p'
-//declare var require: any;
+
 import { MdSnackBar } from '@angular/material';
 import * as QRcode from 'qrcode';
 

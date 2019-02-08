@@ -22,6 +22,6 @@ export class BitcoinWalletComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy(){
-    //this._account.clearIntervalTokens();
+   
   }
 }

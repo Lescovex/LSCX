@@ -18,7 +18,7 @@
     <div class="half left">
         <button [ngClass]="(action == 'buy') ? 'btn-solid':'btn-inverse'" (click)="activeButton('buy')">Buy order</button>
         <button class="extra" [ngClass]="(action == 'sell') ? 'btn-solid':'btn-inverse'" (click)="activeButton('sell')">Sell order</button>
-        <!--<button class="extra btn-solid" (click)="_zeroEx.getOrderbook(_zeroEx.token.assetDataA.assetData, _zeroEx.token.assetDataB.assetData, 1)">Get orderbook</button>-->
+
     </div>
     <div class="half right best-prices" *ngIf="_zeroEx.display == 'eth'">
         <p class="half left">

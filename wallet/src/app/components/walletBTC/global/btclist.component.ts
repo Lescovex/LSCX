@@ -21,11 +21,11 @@ export class BitcoinListComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        /*
+        
         this.totalPages = Math.ceil(this.history.length/this.limit);
         this.getItmes();
-        console.log("items?",this.items);
-        */
+        
+        
     }
     ngOnChanges(): void {        
         this.totalPages = Math.ceil(this.history.length/this.limit);

@@ -1,12 +1,3 @@
-<!--
-    <div>
-        <label class="title" for="senderAddr">Select account</label>
-        <select id="senderAddr" class="block" [(ngModel)]="senderAddr" name="senderAddr" (change)="changeSelected($event.target.value)" #sender="ngModel">
-            <option class="pointer" *ngFor="let fils of _wallet.wallet" value="{{fils.address}}" >{{fils.name}} - {{fils.address}}</option>
-        </select>
-    </div>    
--->
-
 <div>
     <label class="title" for="name">Account name</label> <span class="pointer darkBlue bold underline right" (click)="changeAccountName()">Change account name</span>
     <div class="input-container" [ngClass]="{'error': nam.invalid && (nam.dirty ||  submited )}">

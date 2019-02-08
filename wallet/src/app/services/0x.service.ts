@@ -582,7 +582,7 @@ export class ZeroExService{
   }
 
   timestampFormats(unix_tm){
-    let dt = new Date(parseInt(unix_tm)*1000); // Devuelve más 2 horas
+    let dt = new Date(parseInt(unix_tm)*1000);
     let date = dt.getDate()+"-"+(dt.getMonth()+1)+"-"+dt.getFullYear();
     let options = { month: 'short' };
     let month = dt.toLocaleDateString("i-default", options);
@@ -680,9 +680,11 @@ export class ZeroExService{
     let orderhash = await this.getOrderHash(obj);
     if(order.action == 'buy'){
       await this.saveOrder(orderhash, order.order ,'sell', takerAssetAmount);
+      await this.setBalances();
     }
     if(order.action == 'sell'){
       await this.saveOrder(orderhash, order.order ,'buy', takerAssetAmount);
+      await this.setBalances();
     }
   }
 
@@ -758,7 +760,7 @@ export class ZeroExService{
         let exp = 10 ** parseInt(x)
         let readableTakerAmount = takerAmount / exp;
         let redeableMakerAmount = makerAmount / exp;
-        //let date = this.timestampFormats(response.asks.records[i].order.expirationTimeSeconds);
+        
         let orderObj = {
           exchangeAddress : response.asks.records[i].order.exchangeAddress,
           expirationTimeSeconds : response.asks.records[i].order.expirationTimeSeconds,
@@ -1081,10 +1083,11 @@ export class ZeroExService{
     }, 60000)
   }
   async startIntervalBalance(){
+    await this.setBalances();
     this.interval = setInterval(async ()=>{
       await this.setBalances();
       await this.updateAllowance();
-    },5000);
+    },60000);
   }
 
   clearBalancesInterval(){
@@ -1509,18 +1512,23 @@ export class ZeroExService{
     } catch (error) {
        
     }
-    if(result.status != "0"){
-      let checkAbi = JSON.parse(result.result)
-      for (let i = 0; i < checkAbi.length; i++) {
-        if(checkAbi[i].name == 'balanceOf'){
-          abi = JSON.parse(result.result);
-        }else{
-          abi = require('human-standard-token-abi');
+    if(result != null){
+      if(result.status != "0"){
+        let checkAbi = JSON.parse(result.result)
+        for (let i = 0; i < checkAbi.length; i++) {
+          if(checkAbi[i].name == 'balanceOf'){
+            abi = JSON.parse(result.result);
+          }else{
+            abi = require('human-standard-token-abi');
+          }
         }
+      }else{
+        abi = require('human-standard-token-abi');
       }
     }else{
       abi = require('human-standard-token-abi');
     }
+   
     let contract = this._contract.contractInstance(abi, token.tokenAddress);
     if(contract != null){
       let value;

@@ -139,8 +139,6 @@ export class ContractStorageService {
                 let headers = new Headers();
                 headers.append('Content-Type', 'text/html');
                 setTimeout(function(){
-                    //do what you need here 
-                
                     self.http.get(url,  {headers: headers}).subscribe((res:any) =>{
                         let x = res._body;
                         let len = x.length                        

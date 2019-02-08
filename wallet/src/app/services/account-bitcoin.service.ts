@@ -31,8 +31,6 @@ export class BitcoinAccountService{
   serverError;
   constructor(private dialog: MdDialog, private http: Http, private _wallet : BitcoinWalletService, private router: Router, public _dialog : DialogService){
     this.configFile = require("../../libs/btc/config.json");
-    console.log("thisconfigfile btc", this.configFile.servers);
-    
     this.checkServer();
   }
 
@@ -49,8 +47,7 @@ export class BitcoinAccountService{
       localStorage.setItem('accBTC',JSON.stringify(account.address));
       //await this.getPendingTx();
       await this.startIntervalData();
-
-      
+  
     
   }
 
@@ -60,7 +57,6 @@ export class BitcoinAccountService{
     if(typeof(this.account.address) == "undefined"){
       clearInterval(this.interval)
     }
-    //CANVIAR RUTA
     //this.router.navigate(['/btcwallet/btcglobal']);
   }
 
@@ -261,17 +257,10 @@ export class BitcoinAccountService{
         if(this.serverError != null){
           this.serverError = null;
         }
-        console.log("try index?",index);
-        console.log("try", this.config);
-        
         this.getAccountData();
         index = this.configFile.servers.length +1;
       } catch (error) {
         index = index + 1;
-        console.log("BTC Server connection error");
-        console.log("index?", index);
-        
-        
         if(index == this.configFile.servers.length){
           let title = 'Unable to connect to BTC server';
           let message = 'Something was wrong';
@@ -448,7 +437,7 @@ export class BitcoinAccountService{
   }
 
   timestampFormats(unix_tm){
-    let dt = new Date(parseInt(unix_tm)*1000); // Devuelve más 2 horas
+    let dt = new Date(parseInt(unix_tm)*1000);
     let date = dt.getDate()+"-"+(dt.getMonth()+1)+"-"+dt.getFullYear();
     let options = { month: 'short' };
     let month = dt.toLocaleDateString("i-default", options);

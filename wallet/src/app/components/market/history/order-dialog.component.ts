@@ -73,7 +73,7 @@ export class OrderDialogComponent {
             this.ethAmount = Math.floor(this.f.total*Math.pow(10,18));
             
             this.amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
-                //change to > to get total
+                
             if(this.action == "buy" && this.f.total > this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount > this._LSCXmarket.marketBalances.token){
                 this.loadingDialog.close();
                 //calculate market fee, if buy you'll need f.total + feeMarket
@@ -236,7 +236,7 @@ export class OrderDialogComponent {
   
     async getNonce(){
       let nonce = await this._web3.getNonce(this._account.account.address);
-      //para ver ultimo nonce real
+      
       let history = this._account.account.history.filter(x=> x.from.toLowerCase() ==this._account.account.address);
       let historyNonce = history[0].nonce;
       

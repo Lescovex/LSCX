@@ -67,7 +67,7 @@ export class SendOrderDialogComponent{
         j++;
       }
       if(j==60){
-        //Create pending object
+        
         pending = new PendingTx(sendResult.toString(),tx.tx, this._LSCXmarket.contractMarket.address, 0, this._account.account.address);
         this._account.addPendingTx(pending);
 
@@ -142,9 +142,9 @@ export class SendOrderDialogComponent{
     let orderObj = new Order(order, this._LSCXmarket.token.decimals)
     let orderString = JSON.stringify(order);
     orderString = orderString.replace(/"/g,"'");
-    //add _string
+    
     this.data.params.push(orderString);
-    //add _price
+    
     this.data.params.push(this._web3.web3.toWei(orderObj.price, 'ether'));
     return orderObj;
   }

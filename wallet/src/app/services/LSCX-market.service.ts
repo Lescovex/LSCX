@@ -49,7 +49,7 @@ export class LSCXMarketService {
 	balancesInterval = null;
 	stateOrdersInteval = null;
 	tikersInterval = null;
-	//reverseBuys;
+	
 	showBuys;
 	showSells;
 
@@ -315,8 +315,8 @@ export class LSCXMarketService {
 		
 		let blockNum = await this._web3.blockNumber();
         let blockNumber = (typeof(blockNum)== "number")? blockNum : null;
-        await this.checkShowSellsDeleted(blockNumber, this._web3.network.chain); //updateShowBuys
-		await this.checkShowBuysDeleted(blockNumber, this._web3.network.chain);  //updateShowSells
+        await this.checkShowSellsDeleted(blockNumber, this._web3.network.chain);
+		await this.checkShowBuysDeleted(blockNumber, this._web3.network.chain);
 		if(this.loadingD != null){
 			this.loadingD.close();
 		}
@@ -333,9 +333,6 @@ export class LSCXMarketService {
 			console.log(error);
 			this.setBuys();
 		}
-		
-		//console.log("BUYS",this.state.orders.buys)
-
 	}
 
 	async setSells() {
@@ -346,7 +343,6 @@ export class LSCXMarketService {
 			this.setSells();
 		}
 		
-		//console.log("SELLS",this.state.orders.sells)
 	}
 
 	async setShowOrders(){
@@ -367,7 +363,7 @@ export class LSCXMarketService {
 	  return object;
 	}	
 	
-	addMyState(obj: any, stateName: string){ //revisarFuncion
+	addMyState(obj: any, stateName: string){ 
 		if(this.marketState[stateName].hasOwnProperty(this._account.account.address)){
 			this.marketState[stateName][this._account.account.address].push(obj);
 		}else{
@@ -379,7 +375,7 @@ export class LSCXMarketService {
 		this.updateMyStateShow(stateName);
 	}
 
-	updateMyStateShow(stateName: string) { // revisar funcion
+	updateMyStateShow(stateName: string) { 
 		let interval = null;
 		interval = setInterval(()=>{
 			let myObjs = [];
@@ -464,7 +460,7 @@ export class LSCXMarketService {
 							let trade = new Trade(side, order.tokenGet, order.tokenGive, amount, amountBase, order.price, this._account.account.address, order.user, order.nonce);
 							trade.txHash = order.txHash;
 							myOrdersAddress.splice(i,1);
-							//add to myTrades and remove from myOrders
+							
 							if(this._web3.network.chain == network) {
 								if(this._account.account.address in this.marketState.myTrades){
 									this.marketState.myTrades[this._account.account.address].push(trade);
@@ -585,7 +581,7 @@ export class LSCXMarketService {
 						this.checkShowBuysDeleted(blockNumber, network)
 					}
 					
-					order.setFilled(amountFilled); //Order Model
+					order.setFilled(amountFilled);
 					if(order.deleted && order.amountFilled == 0 ){
 						//myOrders.splice(i,1);
 					} else if (order.deleted && order.amountFilled > 0 || order.available == 0) {
@@ -663,8 +659,7 @@ export class LSCXMarketService {
 	}
 
 	async getTikers(){
-		//REVISAR TIKERS!!!!!
-		
+	
 		let tikersResult;
 		try {
 			tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);	
@@ -787,8 +782,8 @@ export class LSCXMarketService {
 		this.activeOrdersInterval = setInterval(async()=>{
 			let blockNum = await this._web3.blockNumber();
 			this.blockNumber = (typeof(blockNum)== "number")? blockNum : null;
-			this.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain); //updateShowBuys
-			this.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);  //updateShowSells
+			this.checkShowSellsDeleted(this.blockNumber, this._web3.network.chain);
+			this.checkShowBuysDeleted(this.blockNumber, this._web3.network.chain);
 			
 		},5000);
 	}

@@ -10,8 +10,8 @@ export class Order {
     expires: number;
     nonce: number;s
     deleted: boolean;  
-    amount: number;//token
-    amountBase: number;//Eth
+    amount: number;//token amount
+    amountBase: number;//Eth amount
     price: number;
     amountFilled: number;
     available: number;

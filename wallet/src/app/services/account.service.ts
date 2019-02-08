@@ -364,7 +364,7 @@ export class AccountService{
   }
 
   tm(unix_tm) {
-    let dt = new Date(parseInt(unix_tm)*1000); // Devuelve más 2 horas
+    let dt = new Date(parseInt(unix_tm)*1000);
     let  strDate = dt.getUTCDate()+"-"+(dt.getUTCMonth()+1)+"-"+dt.getUTCFullYear();
     return strDate;
   }

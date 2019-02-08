@@ -47,7 +47,7 @@ export class BitcoinWalletService {
   
   
   importAccountWIF(name, wif, pass){
-    //DONE!
+ 
     let btc = bitcoin.networks.bitcoin;
     let acc:any = {}
     let error = false;

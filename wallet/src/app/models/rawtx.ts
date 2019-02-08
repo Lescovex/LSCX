@@ -28,7 +28,7 @@ export class BaseRawTx {
         let _web3 = new Web3();
         let nonce = await _web3.getNonce(account.account.address);
         console.log("web3 nonce", nonce) 
-        //para ver ultimo nonce real
+
         let history = account.account.history.filter(x=> x.from.toLowerCase() == account.account.address);
         if(history.length > 0) {
             let historyNonce =history[0].nonce;

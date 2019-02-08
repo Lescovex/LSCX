@@ -67,12 +67,11 @@ export class BitcoinSendDialogComponent{
 
     let keyPair = bitcoin.ECPair.fromWIF(wif)
     
-    //scriptHash needed to get unspent
+
     let script = bitcoin.address.toOutputScript(sender)
     let hash = bitcoin.crypto.sha256(script)
     let reversedHash = new Buffer(hash.reverse())
     let scripthash  = reversedHash.toString('hex');
-    //Note that -for some reason- Electrum uses the reverse scripthash
 
     let prevBalance = await ecl.blockchainScripthash_getBalance(scripthash)
     

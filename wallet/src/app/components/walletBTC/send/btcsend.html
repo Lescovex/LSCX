@@ -1,13 +1,5 @@
 <h1 style="text-align: right; font-weight: normal">Balance: BTC {{_account.account.balance/100000000 | number:'1.2-8':'en'}} </h1>
 <div *ngIf="this._account.account.address.length > 0">
-    <!--
-        <div>
-        <label class="title" for="senderAddr">From</label>
-        <select id="senderAddr" class="block" [(ngModel)]="senderAddr" name="senderAddr" (change)="changeSelected($event.target.value)" #sender="ngModel">
-            <option class="pointer" *ngFor="let fils of _wallet.wallet" value="{{fils.address}}" >{{fils.address}}</option>
-        </select>
-    </div>
-    -->
 
     <div>
         <label class="title" for="receiverAddr">Receiver address:</label>

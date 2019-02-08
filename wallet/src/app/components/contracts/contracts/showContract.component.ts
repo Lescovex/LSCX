@@ -76,7 +76,7 @@ export class ShowContract implements OnInit{
     if(funct != this.funct){
       this.submited = false;
       this.response = null;
-      //Remove prev controls
+      
       if(this.funct != null){
         this.functionForm = this._forms.removeControls(this.funct.inputs, this.functionForm);
         if(this.funct.payable){
@@ -177,7 +177,7 @@ export class ShowContract implements OnInit{
           let tx = new RawTx(this._account,this.contractInfo.address,new BigNumber(amount),options.gasLimit, options.gasPrice, this._web3.network, data);
 
           dialogRef.close();
-          //tx, to, amount, fees, total, action, token?
+          
           this.sendDialogService.openConfirmSend(tx.tx, this.contractInfo.address, tx.amount,tx.gas, tx.cost, "send");
         }
       });

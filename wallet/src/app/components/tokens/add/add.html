@@ -1,19 +1,19 @@
 <div>
     <label class="title" for="contractAddr">Token Contract Address</label>
-    <input class="block" required id="contractAddr" type="text" value=""  name="contractAddress" [(ngModel)]="token.contractAddress" #contract="ngModel" (change)="setTokenInfo()"/>
-    <!--<p *ngIf="errors.receiver !== ''" class="error">{{errors.receiver}}</p>-->
+    <input class="block" required id="contractAddr" type="text" value="" name="contractAddress" [(ngModel)]="token.contractAddress" #contract="ngModel" (change)="setTokenInfo()" />
+
 </div>
 <div class="clear">
     <label class="title block" for="symbol">Token symbol</label>
-    <input class="half" required id="symbol" type="text" placeholder="TOKEN" name="symbol" [(ngModel)]="token.tokenSymbol"/>
-    <!--<p *ngIf="errors.symbol !== ''" class="error">{{errors.symbol}}</p>-->
+    <input class="half" required id="symbol" type="text" placeholder="TOKEN" name="symbol" [(ngModel)]="token.tokenSymbol" />
+
 </div>
 <div class="clear">
     <label class="title block" for="decimal">Decimals precision</label>
-    <input class="half" required id="decimal" type="number" min="0" max="18" placeholder="18" name="decimal" [(ngModel)]="token.tokenDecimal"/>
-        <!--<p *ngIf="errors.symbol !== ''" class="error">{{errors.symbol}}</p>-->
+    <input class="half" required id="decimal" type="number" min="0" max="18" placeholder="18" name="decimal" [(ngModel)]="token.tokenDecimal" />
+
 </div>
 <div class="inline right">
-    <button type="button" class="btn-black" (click)="reset()" > Reset </button>
-    <button type="button" class="btn-inverse extra" (click)="addToken()" > Add </button>
+    <button type="button" class="btn-black" (click)="reset()"> Reset </button>
+    <button type="button" class="btn-inverse extra" (click)="addToken()"> Add </button>
 </div>

@@ -18,7 +18,7 @@ export class BitcoinDeleteComponent{
   deleteWallet(){
     this._wallet.delete(this._account.account.address);
     this._account.refreshAccount();
-    //open dialog
+    
     this.dialogRef.close();
 
   }

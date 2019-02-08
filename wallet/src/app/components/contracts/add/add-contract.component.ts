@@ -59,7 +59,7 @@ export class AddContractPage {
     if(contract != this.contract){
       this.submited = false;
       let inputs = [];
-      //Remove prev controls
+      
       if(this.contract != null){
       
         inputs = this._LSCXcontract.getConstructor(this.abi);
@@ -108,7 +108,7 @@ export class AddContractPage {
     
     
     try {
-      //gasLimit = await this._web3.estimateGas(this._account.account.address, form.controls.token.value.contractAddress, txData, 0);
+      
       gasLimit = await this._web3.estimateGas(this._account.account.address, "", "0x"+data, 0);
       
     }catch(e){

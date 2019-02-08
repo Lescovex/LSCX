@@ -20,7 +20,6 @@ export class DeleteComponent{
     this._contractStorage.removeAccContracts(this._account.account.address)
     this._account.refreshAccount();
 
-    //open dialog
     this.dialogRef.close();
 
   }
