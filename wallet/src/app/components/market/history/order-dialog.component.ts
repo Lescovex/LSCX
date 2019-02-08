@@ -42,8 +42,6 @@ export class OrderDialogComponent {
     balanceError = '';
     minAmount;
     constructor(@Inject(MD_DIALOG_DATA) public data: any,public _zeroEx:ZeroExService,private _contract: ContractService, private dialog: MdDialog, private _account: AccountService, public _LSCXmarket: LSCXMarketService,  public dialogRef: MdDialogRef<OrderDialogComponent>, private _web3: Web3, private _dialog: DialogService, private sendDialogService: SendDialogService){
-        console.log("What's data????", data);
-        
         if(this.data.display == 'eth'){
             this.minAmount = 0.001;
             this.f.price = data.price;
@@ -64,9 +62,7 @@ export class OrderDialogComponent {
         this.dialogRef.close();
     }
 
-    async confirm(form){
-        console.log("sumbited form",form);
-        
+    async confirm(form){        
         if(this.data.display == 'eth'){
             this.submited = true;
             if(form.invalid) return false;
@@ -79,8 +75,6 @@ export class OrderDialogComponent {
             this.amount = (this.action == 'buy')? this.ethAmount : this.tokenAmount;
                 //change to > to get total
             if(this.action == "buy" && this.f.total > this._LSCXmarket.marketBalances.eth || this.action == "sell" && this.f.amount > this._LSCXmarket.marketBalances.token){
-                console.log("inside first if?");
-                
                 this.loadingDialog.close();
                 //calculate market fee, if buy you'll need f.total + feeMarket
                 if(this.action == "buy"){
@@ -95,11 +89,8 @@ export class OrderDialogComponent {
             
             let amountCross = (this.action == 'buy')? this.f.total : this.f.amount;
             let matchs = await this.getCross(amountCross, this.f.price);
-            console.log("matchs?",matchs);
             
             if(matchs.length > 0){
-                console.log("match???????");
-                
                 let testTrade = false;
                 let params = [];
                 let order: any;
@@ -114,7 +105,6 @@ export class OrderDialogComponent {
                 }
                 this.dialogRef.close();
             }else{
-                console.log("elseMatch???");
                 this.loadingDialog.close();
                 if(this.data.user == this._account.account.address){
                     let dialogRef = this._dialog.openErrorDialog('Unable to fill this order', "You can't fill your own order", " ");
@@ -211,7 +201,6 @@ export class OrderDialogComponent {
       }
 
       async trade(params, order){
-          console.log("inside Trade???? should close loading dialog");
           
           let data = await this._LSCXmarket.getFunctionData(this._LSCXmarket.contractMarket,'trade',params);  
           this.loadingDialog.close();

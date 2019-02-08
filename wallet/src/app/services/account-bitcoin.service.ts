@@ -26,11 +26,14 @@ export class BitcoinAccountService{
   loadingD;
   block;
   public moment = require('moment');
-
+  public config;
+  public configFile;
   serverError;
   constructor(private dialog: MdDialog, private http: Http, private _wallet : BitcoinWalletService, private router: Router, public _dialog : DialogService){
- 
-    this.getAccountData();
+    this.configFile = require("../../libs/btc/config.json");
+    console.log("thisconfigfile btc", this.configFile.servers);
+    
+    this.checkServer();
   }
 
   async setAccount(account){
@@ -89,7 +92,7 @@ export class BitcoinAccountService{
 
     try {
 
-      const ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
+      const ecl = new ElectrumCli(this.config.port, this.config.url, 'tcp');
 
       try {
         await ecl.connect();  
@@ -245,32 +248,47 @@ export class BitcoinAccountService{
 
   async checkServer(){
     let load;
+    let index = 0;
     Promise.resolve().then(() => { 
       load = this._dialog.openLoadingDialog();  
     });
-    
-    try {
-      const ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
-      await ecl.connect();
-      await load.close();
-      if(this.serverError != null){
-        this.serverError = null;
+    while (index < this.configFile.servers.length) {
+      try {
+        const ecl = new ElectrumCli(this.configFile.servers[index].port, this.configFile.servers[index].url, 'tcp');
+        await ecl.connect();
+        await load.close();
+        this.config = this.configFile.servers[index];
+        if(this.serverError != null){
+          this.serverError = null;
+        }
+        console.log("try index?",index);
+        console.log("try", this.config);
+        
         this.getAccountData();
-      }
+        index = this.configFile.servers.length +1;
       } catch (error) {
-        let title = 'Unable to connect to BTC server';
-        let message = 'Something was wrong';
-        load.close();
-        let dialogRef = this._dialog.openErrorDialog(title, message, error);
-        clearInterval(this.interval);
-        this.serverError = "Unable to connect to BTC server";
-        throw new Error(error);
+        index = index + 1;
+        console.log("BTC Server connection error");
+        console.log("index?", index);
+        
+        
+        if(index == this.configFile.servers.length){
+          let title = 'Unable to connect to BTC server';
+          let message = 'Something was wrong';
+          load.close();
+          let dialogRef = this._dialog.openErrorDialog(title, message, error);
+          clearInterval(this.interval);
+          this.serverError = "Unable to connect to BTC server";
+          throw new Error(error);
+        }
       }
+    }
   }
+
   async getAccountData(){
     try {
-    const ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
-    await ecl.connect(); 
+    const ecl = new ElectrumCli(this.config.port, this.config.url, 'tcp');
+    await ecl.connect();
     this.serverError = null;
     } catch (error) {
       let title = 'Unable to connect to BTC server';
@@ -325,7 +343,7 @@ export class BitcoinAccountService{
         reversedHash = new Buffer(hash.reverse())
         scripthash  = reversedHash.toString('hex');
         
-        ecl = new ElectrumCli(50001, 'dimon.trimon.de', 'tcp');
+        ecl = new ElectrumCli(this.config.port, this.config.url, 'tcp');
         
         try {
           await ecl.connect();  

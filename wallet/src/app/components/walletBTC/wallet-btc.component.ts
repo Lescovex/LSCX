@@ -13,7 +13,6 @@ export class BitcoinWalletComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this._account.checkServer();
   }
 
