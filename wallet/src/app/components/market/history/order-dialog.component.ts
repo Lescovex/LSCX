@@ -175,7 +175,14 @@ export class OrderDialogComponent {
             }
         }
         if(this.data.display == 'weth'){
-            if(this.f.amount > this.data.remainingAmount || this.f.amount < this.data.minAmount || (this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress && (this.f.amount > this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount)) || (this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress && (this.f.amount > this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount))){
+            if(
+                (this.f.amount > this.data.remainingAmount) || 
+                (this.f.amount < this.data.minAmount) || 
+                (this.data.takerData.tokenAddress == this._zeroEx.token.assetDataB.tokenAddress && 
+                        (this.f.amount > this._zeroEx.token.assetDataB.balance || this.f.amount > this.data.remainingAmount)) || 
+                (this.data.takerData.tokenAddress == this._zeroEx.token.assetDataA.tokenAddress && 
+                    (this.f.amount > this._zeroEx.token.assetDataA.balance || this.f.amount > this.data.remainingAmount))){
+                        
                 if(this.f.amount > this._zeroEx.token.assetDataA.balance){
                     this.balanceError = "The amount to pay is higher than your balance";
                 }
