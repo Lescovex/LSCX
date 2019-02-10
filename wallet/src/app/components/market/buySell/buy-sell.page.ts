@@ -201,9 +201,17 @@ export class BuySellPage implements OnInit, DoCheck {
               error= e.message;
             }
             if(error==""){
-              await this._zeroEx.order(form.controls, this.action, pass);
-              loading.close();
-              this.router.navigate(['/market/history']);
+              try {
+                await this._zeroEx.order(form.controls, this.action, pass);
+                loading.close();
+                this.router.navigate(['/market/history']);
+              } catch (error) {
+                loading.close();
+                let title = 'Unable to send order';
+                let message = 'Something was wrong';
+                let dialogRef = this._dialog.openErrorDialog(title, message, error);   
+              }
+              
             }else{
               loading.close();
               let title = 'Unable to export account';

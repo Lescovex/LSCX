@@ -105,6 +105,7 @@ export class ZeroExService{
   }
 
   async checkMyFunds(){
+    console.log("CHECK MY FUNDS FUNCTION");
     
     let mem = [];
     let control= false;
@@ -123,8 +124,16 @@ export class ZeroExService{
   }
 
   async checkMyDoneOrders(){
+    console.log("CHECK MY DONE ORDERS FUNCTION!");
+    
     let control = false;
-    let date = new BigNumber(Date.now()).div(1000).ceil();
+    let date;
+    try {
+      date = new BigNumber(Date.now()).div(1000).ceil();  
+    } catch (error) {
+      console.log("date BigNumberError?");
+    }
+    
     let dateToNumber = date.toNumber();
   
     while(control == false){
@@ -389,6 +398,8 @@ export class ZeroExService{
   }
 
   async saveConfigFile(){
+    console.log("SAVE CONFIG FILE FUNCTION");
+    
     let filePath = lescovexPath+"/.0x-"+this._web3.network.urlStarts+".json";
     if(this.updated_asset_pairs.length > 0){
       for (let i = 0; i < this.updated_asset_pairs.length; i++) {
