@@ -139,6 +139,8 @@ export class ZeroExService{
     while(control == false){
       let mem = [];
       if(this.localState.allOrders != null){
+        console.log("allorders?",this.localState.allOrders);
+        
         for (let i = 0; i < this.localState.allOrders.length; i++) {
           if(dateToNumber >= parseInt(this.localState.allOrders[i].timestamp) && this._account.account.address == this.localState.allOrders[i].account && this.token.assetDataA.assetData == this.localState.allOrders[i].assetDataA.assetData && this.token.assetDataB.assetData == this.localState.allOrders[i].assetDataB.assetData){
             let orderInfo = await this.contractWrappers.exchange.getOrderInfoAsync(this.localState.allOrders[i].signedOrder);
