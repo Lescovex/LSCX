@@ -37,7 +37,7 @@ export class MarketComponent implements DoCheck, OnDestroy{
      if(this._LSCXmarket.updated = true && this._LSCXmarket.tikersInterval == null){
        this._LSCXmarket.setTikersInterval();
      }
-     if(this._zeroEx.interval == null && this._zeroEx.interval2 == null){
+     if(this._zeroEx.interval == null && this._zeroEx.interval2 == null  && this._zeroEx.loaded != null){
       this._zeroEx.startIntervalBalance();
       this._zeroEx.orderWatcherInterval();
      }

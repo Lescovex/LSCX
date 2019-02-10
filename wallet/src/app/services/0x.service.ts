@@ -129,7 +129,7 @@ export class ZeroExService{
     let control = false;
     let date;
     try {
-      date = new BigNumber(Date.now()).div(1000).ceil();  
+      date = new BigNumber(Date.now()).div(1000).ceil();
     } catch (error) {
       console.log("date BigNumberError?");
     }
@@ -147,9 +147,28 @@ export class ZeroExService{
             let exp = 10 ** parseInt(x);
             
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled == 0){
-              let orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
-              let expo = new BigNumber(exp)
-              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)
+              let orderInfoTakerFilledAmount;
+              try {
+                orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
+              } catch (error) {
+                console.log("orderInfoTakerFilledAmount, action buy, filled == 0");
+                
+              }
+              let expo;
+              try {
+                expo = new BigNumber(exp)  
+              } catch (error) {
+                console.log("expo to bigNumber error, action buy, filled == 0");
+                
+              }
+              let provisionalPrice;
+              try {
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)  
+              } catch (error) {
+               console.log("provisionalPrice error, action buy, filled == 0");
+                
+              }
+              
               let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
@@ -157,9 +176,28 @@ export class ZeroExService{
              
             }
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled == 0){
-              let orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
-              let expo = new BigNumber(exp)
-              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA)
+              let orderInfoTakerFilledAmount;
+              try {
+                orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount);
+              } catch (error) {
+                console.log("orderInfoTakerFilledAmount, action sell, filled == 0");
+                
+              }
+              let expo;
+              try {
+                expo = new BigNumber(exp);  
+              } catch (error) {
+                console.log("expo to bigNumber error, action sell, filled == 0");
+                
+              }
+              let provisionalPrice;
+              try {
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA);  
+              } catch (error) {
+                console.log("provisionalPrice error, action sell, filled == 0");
+                
+              }
+              
               let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
@@ -167,9 +205,28 @@ export class ZeroExService{
              
             }
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled != 0){
-              let orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)
-              let expo = new BigNumber(exp)
-              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)
+              let orderInfoTakerFilledAmount;
+              let expo;
+              let provisionalPrice;
+              try {
+                orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)  
+              } catch (error) {
+                console.log("orderInfoTakerFilledAmount, action buy, filled != 0");
+                
+              }
+              try {
+                expo = new BigNumber(exp)  
+              } catch (error) {
+                console.log("expo to bigNumber error, action buy, filled != 0");
+                
+              }
+              try {
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)  
+              } catch (error) {
+                console.log("provisionalPrice error, action buy, filled != 0");
+                
+              }              
+              
               let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
@@ -177,9 +234,28 @@ export class ZeroExService{
              
             }
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled != 0){
-              let orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)
-              let expo = new BigNumber(exp)
-              let provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA)
+              let orderInfoTakerFilledAmount;
+              let expo;
+              let provisionalPrice;
+              try {
+                orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)  
+              } catch (error) {
+                console.log("orderInfoTakerFilledAmount, action sell, filled != 0");
+                
+              }
+              try {
+                expo = new BigNumber(exp)  
+              } catch (error) {
+                console.log("expo to bigNumber error, action sell, filled != 0");
+                
+              }
+              try {
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA)  
+              } catch (error) {
+                console.log("provisionalPrice error, action sell, filled != 0");
+                
+              }
+              
               let takerFilledAmount = orderInfoTakerFilledAmount.div(expo)
               let makerFilledAmount =  takerFilledAmount.mul(provisionalPrice);
               this.localState.allOrders[i].orderTakerAssetFilledAmount = takerFilledAmount.toNumber();
