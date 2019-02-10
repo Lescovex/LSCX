@@ -151,7 +151,7 @@ export class ZeroExService{
             if(this.localState.allOrders[i].action == 'buy' && this.localState.allOrders[i].filled == 0){
               let orderInfoTakerFilledAmount;
               try {
-                orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount)
+                orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount.toFixed(15))
               } catch (error) {
                 console.log("orderInfoTakerFilledAmount, action buy, filled == 0");
                 
@@ -180,7 +180,7 @@ export class ZeroExService{
             if(this.localState.allOrders[i].action == 'sell' && this.localState.allOrders[i].filled == 0){
               let orderInfoTakerFilledAmount;
               try {
-                orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount);
+                orderInfoTakerFilledAmount = new BigNumber(orderInfo.orderTakerAssetFilledAmount.toFixed(15));
               } catch (error) {
                 console.log("orderInfoTakerFilledAmount, action sell, filled == 0");
                 
@@ -211,7 +211,7 @@ export class ZeroExService{
               let expo;
               let provisionalPrice;
               try {
-                orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)  
+                orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled.toFixed(15))
               } catch (error) {
                 console.log("orderInfoTakerFilledAmount, action buy, filled != 0");
                 
@@ -240,7 +240,7 @@ export class ZeroExService{
               let expo;
               let provisionalPrice;
               try {
-                orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled)  
+                orderInfoTakerFilledAmount = new BigNumber(this.localState.allOrders[i].filled.toFixed(15))
               } catch (error) {
                 console.log("orderInfoTakerFilledAmount, action sell, filled != 0");
                 
