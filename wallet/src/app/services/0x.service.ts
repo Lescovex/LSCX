@@ -436,8 +436,26 @@ export class ZeroExService{
       makerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataB.tokenAddress);
       takerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataA.tokenAddress);
       makerTokenAddress = this.token.assetDataB.tokenAddress;
-      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataB.decimals));
-      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataA.decimals));
+      let makerAmount;
+      try {
+        makerAmount = new BigNumber(form.total.value);  
+      } catch (error) {
+        console.log("makerAmount to BigNumber error");
+        
+      }
+      
+      let makerDecimals = parseInt(this.token.assetDataB.decimals)
+      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(makerAmount, makerDecimals);
+      let takerAmount
+      try {
+        takerAmount = new BigNumber(form.amount.value);  
+      } catch (error) {
+        console.log("takerAmount to bigNumber error");
+        
+      }
+      
+      let takerDecimals = parseInt(this.token.assetDataA.decimals);
+      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(takerAmount, takerDecimals);
       
       let ApprovalTxHash = await this.contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
         this.token.assetDataB.tokenAddress,
@@ -450,8 +468,27 @@ export class ZeroExService{
       makerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataA.tokenAddress);
       takerAssetData = assetDataUtils.encodeERC20AssetData(this.token.assetDataB.tokenAddress);
       makerTokenAddress = this.token.assetDataA.tokenAddress;
-      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.amount.value), parseInt(this.token.assetDataA.decimals));
-      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(form.total.value), parseInt(this.token.assetDataB.decimals));
+      let makerAmount
+      try {
+        makerAmount = new BigNumber(form.amount.value);  
+      } catch (error) {
+        console.log("makerAmount to BigNumber error");
+        
+      }
+      
+      let makerDecimals = parseInt(this.token.assetDataA.decimals)
+      makerAssetAmount = Web3Wrapper.toBaseUnitAmount(makerAmount, makerDecimals);
+      let takerAmount
+      
+      try {
+        takerAmount = new BigNumber(form.total.value);  
+      } catch (error) {
+        console.log("takerAmount to BigNumber error");
+        
+      }
+      
+      let takerDecimals = parseInt(this.token.assetDataB.decimals);
+      takerAssetAmount = Web3Wrapper.toBaseUnitAmount(takerAmount, takerDecimals);
       let ApprovalTxHash = await this.contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
         this.token.assetDataA.tokenAddress,
         maker,
