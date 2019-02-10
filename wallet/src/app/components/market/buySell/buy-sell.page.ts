@@ -202,9 +202,16 @@ export class BuySellPage implements OnInit, DoCheck {
             }
             if(error==""){
               try {
-                await this._zeroEx.order(form.controls, this.action, pass);
+                this._zeroEx.order(form.controls.amount.value, form.controls.expires.value, form.controls.price.value, form.controls.total.value, form.controls.type.value, this.action, pass);
+
+                let title = "Your order has been sent";
+                let message = "This action may take some time to appear in the orderbook"
                 loading.close();
-                this.router.navigate(['/market/history']);
+                let dialogRef = this._dialog.openErrorDialog(title, message, error);
+                dialogRef.afterClosed().subscribe(async result=>{
+                  this.router.navigate(['/market/history']);  
+                });
+                
               } catch (error) {
                 loading.close();
                 let title = 'Unable to send order';

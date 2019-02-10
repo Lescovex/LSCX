@@ -105,8 +105,6 @@ export class ZeroExService{
   }
 
   async checkMyFunds(){
-    console.log("CHECK MY FUNDS FUNCTION");
-    
     let mem = [];
     let control= false;
     while(control == false){
@@ -124,8 +122,6 @@ export class ZeroExService{
   }
 
   async checkMyDoneOrders(){
-    console.log("CHECK MY DONE ORDERS FUNCTION!");
-    
     let control = false;
     let date;
     try {
@@ -138,9 +134,7 @@ export class ZeroExService{
   
     while(control == false){
       let mem = [];
-      if(this.localState.allOrders != null){
-        console.log("allorders?",this.localState.allOrders);
-        
+      if(this.localState.allOrders != null){        
         for (let i = 0; i < this.localState.allOrders.length; i++) {
           if(dateToNumber >= parseInt(this.localState.allOrders[i].timestamp) && this._account.account.address == this.localState.allOrders[i].account && this.token.assetDataA.assetData == this.localState.allOrders[i].assetDataA.assetData && this.token.assetDataB.assetData == this.localState.allOrders[i].assetDataB.assetData){
             let orderInfo = await this.contractWrappers.exchange.getOrderInfoAsync(this.localState.allOrders[i].signedOrder);
@@ -268,8 +262,6 @@ export class ZeroExService{
           }
         }
         this.allOrders = mem;
-        console.log("all orders", this.allOrders);
-        
         control = true;
       }
     }
@@ -476,8 +468,6 @@ export class ZeroExService{
   }
 
   async saveConfigFile(){
-    console.log("SAVE CONFIG FILE FUNCTION");
-    
     let filePath = lescovexPath+"/.0x-"+this._web3.network.urlStarts+".json";
     if(this.updated_asset_pairs.length > 0){
       for (let i = 0; i < this.updated_asset_pairs.length; i++) {
@@ -510,7 +500,7 @@ export class ZeroExService{
     return false;
 }
 
-  async order(form, action, pass){
+  async order(amount,expires, price, total, type, action, pass){
     await this.setProvider(pass);
     let [maker, taker]= await this.web3Wrapper.getAvailableAddressesAsync();
     
@@ -527,7 +517,7 @@ export class ZeroExService{
       makerTokenAddress = this.token.assetDataB.tokenAddress;
       let makerAmount;
       try {
-        makerAmount = new BigNumber(form.total.value);  
+        makerAmount = new BigNumber(total);  
       } catch (error) {
         console.log("makerAmount to BigNumber error");
         
@@ -537,7 +527,7 @@ export class ZeroExService{
       makerAssetAmount = Web3Wrapper.toBaseUnitAmount(makerAmount, makerDecimals);
       let takerAmount
       try {
-        takerAmount = new BigNumber(form.amount.value);  
+        takerAmount = new BigNumber(amount);  
       } catch (error) {
         console.log("takerAmount to bigNumber error");
         
@@ -559,7 +549,7 @@ export class ZeroExService{
       makerTokenAddress = this.token.assetDataA.tokenAddress;
       let makerAmount
       try {
-        makerAmount = new BigNumber(form.amount.value);  
+        makerAmount = new BigNumber(amount);  
       } catch (error) {
         console.log("makerAmount to BigNumber error");
         
@@ -570,7 +560,7 @@ export class ZeroExService{
       let takerAmount
       
       try {
-        takerAmount = new BigNumber(form.total.value);  
+        takerAmount = new BigNumber(total);  
       } catch (error) {
         console.log("takerAmount to BigNumber error");
         
@@ -585,7 +575,7 @@ export class ZeroExService{
       await this.web3Wrapper.awaitTransactionSuccessAsync(ApprovalTxHash);
     }
  
-    let randomExpiration = this.getRandomFutureDateInSeconds(form.expires.value, form.type.value);
+    let randomExpiration = this.getRandomFutureDateInSeconds(expires, type);
     
     let orderConfigRequest : OrderConfigRequest= {
       makerAddress: maker,
@@ -618,14 +608,34 @@ export class ZeroExService{
       await this.contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);  
     } catch (error) {
       console.log(error);
-      return false;
+      let title = 'Unable to send order';
+      let message = 'Something was wrong';
+      let dialogRef = this.dialog.open(ErrorDialogComponent, {
+        width: '660px',
+        height: '210px',
+        data: {
+          title: title,
+          message: message,
+          error: error
+        }
+      });
     }
 
     try {
       await this.httpClient.submitOrderAsync(signedOrder, { networkId: this._web3.network.chain});
     } catch (error) {
       console.log(error);
-      return false;
+      let title = 'Unable to send order';
+      let message = 'Something was wrong';
+      let dialogRef = this.dialog.open(ErrorDialogComponent, {
+        width: '660px',
+        height: '210px',
+        data: {
+          title: title,
+          message: message,
+          error: error
+        }
+      });
     }
     
     await this.saveOrder(orderHashHex, signedOrder,action);
@@ -841,7 +851,6 @@ export class ZeroExService{
       
     }
     
-    console.log("ORDERBOOK RESPONSE?",response);
     let decodedMakerDataAsks;
     let decodedMakerDataBids;
     let decodedTakerDataAsks;
@@ -1556,7 +1565,6 @@ export class ZeroExService{
 		}else{
 			this.token = token;
 		}
-		console.log("THIS TOKEN!!!!!!?",this.token);
     
     await this.updateTokenInfo();
 		this.saveLocalStorageToken();

@@ -320,10 +320,6 @@ export class LSCXMarketService {
 		if(this.loadingD != null){
 			this.loadingD.close();
 		}
-		console.log("myFunds",this.state.myFunds);
-		console.log("myOrders",this.state.myOrders);
-		console.log("myTrades",this.state.myTrades);
-
 	}
 
 	async setBuys() {
@@ -662,8 +658,7 @@ export class LSCXMarketService {
 	
 		let tikersResult;
 		try {
-			tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);	
-			console.log("tikersResult",tikersResult);
+			tikersResult = await this._marketStorage.getTikers(this.marketState.tikersId);
 			
 		} catch (error) {
 			console.log(error);
