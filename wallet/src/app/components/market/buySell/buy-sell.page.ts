@@ -31,7 +31,7 @@ export class BuySellPage implements OnInit, DoCheck {
       price : undefined,
       total: 0,
       expires : 10000,
-      type: 'minutes'
+      type: 'hours'
     }
     private tokenAmount:number;
     private ethAmount: number;
