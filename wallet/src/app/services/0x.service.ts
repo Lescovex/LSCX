@@ -1096,6 +1096,12 @@ export class ZeroExService{
       this.interval = null;
     }
   }
+  clearInterval2(){
+    if(this.interval2 != null){
+      clearInterval(this.interval2);
+      this.interval2 = null;
+    }
+  }
 
   async getSymbol(token){
     let result;

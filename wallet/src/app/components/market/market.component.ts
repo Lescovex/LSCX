@@ -38,6 +38,10 @@ export class MarketComponent implements DoCheck, OnDestroy{
      if(this._LSCXmarket.updated = true && this._LSCXmarket.tikersInterval == null){
        this._LSCXmarket.setTikersInterval();
      }
+     if(this._zeroEx.interval == null && this._zeroEx.interval2 == null){
+      this._zeroEx.startIntervalBalance();
+      this._zeroEx.orderWatcherInterval();
+     }
      if(this.net != this._web3.network.chain){
      
         this.net = this._web3.network.chain;
@@ -47,6 +51,8 @@ export class MarketComponent implements DoCheck, OnDestroy{
   
   ngOnDestroy(){
     this._LSCXmarket.clearTikersInterval();
+    this._zeroEx.clearBalancesInterval();
+    this._zeroEx.clearInterval2();
   }
 
   maxHeight() {
