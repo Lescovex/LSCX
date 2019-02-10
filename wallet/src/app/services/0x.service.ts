@@ -165,7 +165,7 @@ export class ZeroExService{
               }
               let provisionalPrice;
               try {
-                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)  
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB.toFixed(15))  
               } catch (error) {
                console.log("provisionalPrice error, action buy, filled == 0");
                 
@@ -194,7 +194,7 @@ export class ZeroExService{
               }
               let provisionalPrice;
               try {
-                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA);  
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA.toFixed(15));  
               } catch (error) {
                 console.log("provisionalPrice error, action sell, filled == 0");
                 
@@ -223,7 +223,7 @@ export class ZeroExService{
                 
               }
               try {
-                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB)  
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenB.toFixed(15))  
               } catch (error) {
                 console.log("provisionalPrice error, action buy, filled != 0");
                 
@@ -252,7 +252,7 @@ export class ZeroExService{
                 
               }
               try {
-                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA)  
+                provisionalPrice = new BigNumber(this.localState.allOrders[i].priceTokenA.toFixed(15))  
               } catch (error) {
                 console.log("provisionalPrice error, action sell, filled != 0");
                 
