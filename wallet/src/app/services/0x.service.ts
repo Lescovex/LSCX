@@ -78,6 +78,7 @@ export class ZeroExService{
   public allOrders = [];
   public doneOrders = [];
   public moment = require('moment');
+  public orderBookError;
   constructor(public _account: AccountService, private _wallet : WalletService, protected dialog: MdDialog, private _web3: Web3, protected router: Router, private _scan: EtherscanService, private _contract: ContractService){
     this.init();    
   }
@@ -269,8 +270,7 @@ export class ZeroExService{
 
   
 
-  async getLocalInfo(){
-    
+  async getLocalInfo(){    
 		if(!fs.existsSync(lescovexPath)){
 		  fs.mkdirSync(lescovexPath);
 		}
@@ -834,19 +834,20 @@ export class ZeroExService{
     try {
       response = await this.httpClient.getOrderbookAsync(orderbookRequest, { networkId: this._web3.network.chain, page: pageNumber});  
     } catch (error) {
-      
-      let title = 'Unable to get '+this.token.name+' pair';
-      let message = 'Something was wrong';
-      let err = "This pair is not available";
-      let dialogRef =this.dialog.open(ErrorDialogComponent, {
-            width: '660px',
-            height: '210px',
-            data: {
-              title: title,
-              message: message,
-              error: err
-            }
-          });
+      if(this.orderBookError == null){
+        let title = 'Unable to get '+this.token.name+' pair';
+        let message = 'Something was wrong';
+        let err = "This pair is not available";
+        this.orderBookError = this.dialog.open(ErrorDialogComponent, {
+              width: '660px',
+              height: '210px',
+              data: {
+                title: title,
+                message: message,
+                error: err
+              }
+            });
+      }
       this.setToken(this.config.default_token);
       
     }
@@ -1563,7 +1564,12 @@ export class ZeroExService{
         }
 			}
 		}else{
-			this.token = token;
+      if(token != this.token){
+        this.orderBookError = null;
+      }
+      this.token = token;
+      await this.checkMyDoneOrders();
+      await this.checkMyFunds();
 		}
     
     await this.updateTokenInfo();
