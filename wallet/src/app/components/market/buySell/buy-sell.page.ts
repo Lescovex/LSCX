@@ -14,7 +14,7 @@ import { LSCXMarketService } from '../../../services/LSCX-market.service';
 import { ZeroExService } from "../../../services/0x.service";
 
 import { ZeroExConfirmDialogComponent } from "../../dialogs/zeroExConfirm-dialog.component";
-
+import { EtherscanService } from "../../../services/etherscan.service";
 import { Trade } from '../../../models/trade';
 import { Order } from '../../../models/order';
 
@@ -47,7 +47,7 @@ export class BuySellPage implements OnInit, DoCheck {
     minAmount;
     pairBalance;
     balanceError = '';
-    constructor(private router: Router, public dialog: MdDialog, public _zeroEx: ZeroExService,  public _account:AccountService, public _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3) {
+    constructor(private router: Router, public dialog: MdDialog, public _zeroEx: ZeroExService,  public _account:AccountService, public _LSCXmarket: LSCXMarketService, private _contract: ContractService, private _dialog: DialogService,private  sendDialogService: SendDialogService, private _web3: Web3, public _scan: EtherscanService) {
         this.action = "buy";
     }
 
@@ -415,5 +415,15 @@ export class BuySellPage implements OnInit, DoCheck {
       fees = fees/Math.pow(10,this._LSCXmarket.token.decimals);
     }
     return fees;
+  }
+
+  openExternal(){
+    if(this._zeroEx.display == 'eth'){
+      this._scan.openTokenUrl(this._LSCXmarket.token.addr)
+    }
+    if(this._zeroEx.display == 'weth'){
+      this._scan.openTokenUrl(this._zeroEx.token.assetDataA.tokenAddress)
+      this._scan.openTokenUrl(this._zeroEx.token.assetDataB.tokenAddress)
+    }
   }
 }

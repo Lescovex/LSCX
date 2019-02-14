@@ -1199,3 +1199,8 @@ topDist {
 .underline {
     text-decoration: underline;
 }
+
+.market-message {
+    position: absolute;
+    bottom: 15px;
+}

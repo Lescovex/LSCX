@@ -305,3 +305,7 @@
 </div>
 
 <app-paginator *ngIf="page>1" (goPage)="goToPage($event)" [currentPage]="page" [perPage]="limit" [count]="totalPages"></app-paginator>
+<div class="market-message">
+    <p *ngIf="_zeroEx.display == 'eth'">Make sure <a class="pointer" (click)="openExternalToken()">{{_LSCXmarket.token?.name}}</a> is the token you actually want to trade. Multiple tokens can share the same name.</p>
+    <p *ngIf="_zeroEx.display == 'weth'">Make sure <a class="pointer" (click)="openExternalToken()">{{_zeroEx.token?.name}}</a> is the pair you actually want to trade. Multiple pairs can share the same name.</p>
+</div>

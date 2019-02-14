@@ -140,3 +140,7 @@
         <button type="submit" class="dist block" [ngClass]="(action=='buy')? 'btn-inverse' : 'btn warning'">{{action | titlecase}} order</button>
     </div>
 </form>
+<div class="market-message">
+    <p *ngIf="_zeroEx.display == 'eth'">Make sure <a class="pointer" (click)="openExternal()">{{_LSCXmarket.token?.name}}</a> is the token you actually want to trade. Multiple tokens can share the same name.</p>
+    <p *ngIf="_zeroEx.display == 'weth'">Make sure <a class="pointer" (click)="openExternal()">{{_zeroEx.token?.name}}</a> is the pair you actually want to trade. Multiple pairs can share the same name.</p>
+</div>

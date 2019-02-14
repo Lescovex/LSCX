@@ -1571,12 +1571,14 @@ export class ZeroExService{
       await this.checkMyDoneOrders();
       await this.checkMyFunds();
 		}
-    
+    console.log("this.token", this.token);
+      
     await this.updateTokenInfo();
 		this.saveLocalStorageToken();
     this.startIntervalBalance();
     this.getOrderbook(this.token.assetDataA.assetData, this.token.assetDataB.assetData, 1);
   }
+
   async updateTokenInfo(){
     
     try {

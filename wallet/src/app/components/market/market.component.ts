@@ -4,6 +4,7 @@ import { LSCXMarketService } from '../../services/LSCX-market.service';
 import { Web3 } from '../../services/web3.service';
 
 import { ZeroExService } from "../../services/0x.service";
+import { EtherscanService } from "../../services/etherscan.service";
 
 @Component({
   selector: 'app-market',
@@ -16,7 +17,7 @@ export class MarketComponent implements DoCheck, OnDestroy{
   protected net;
   public display;
 
-  constructor(public _account:AccountService, public _LSCXmarket: LSCXMarketService, private _web3: Web3, public _zeroEx: ZeroExService) {
+  constructor(public _account:AccountService, public _LSCXmarket: LSCXMarketService, private _web3: Web3, public _zeroEx: ZeroExService, public _scan: EtherscanService) {
     this.display = "weth";
     this._zeroEx.display = this.display;
     this._LSCXmarket.updateMyStateShow("myFunds");
@@ -79,6 +80,15 @@ export class MarketComponent implements DoCheck, OnDestroy{
     }else{
       this.display = "eth";
       this._zeroEx.display = this.display;
+    }
+  }
+  openExternal(){
+    if(this._zeroEx.display == 'eth'){
+      this._scan.openTokenUrl(this._LSCXmarket.token.addr)
+    }
+    if(this._zeroEx.display == 'weth'){
+      this._scan.openTokenUrl(this._zeroEx.token.assetDataA.tokenAddress)
+      this._scan.openTokenUrl(this._zeroEx.token.assetDataB.tokenAddress)
     }
   }
 }

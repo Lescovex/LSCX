@@ -15,5 +15,7 @@
     <app-market-amounts [token]="_zeroEx.token.assetDataB" [accountAmount]="_account.account.balance" [walletAmount]="_zeroEx.token.assetDataB.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-market-amounts>
     <app-action-amounts [action]="action" [actionName]="actionNameB" [token]="_zeroEx.token.assetDataB" [walletAmount]="_account.account.balance" [deltaAmount]="_LSCXmarket.marketBalances.eth" class="clear block"></app-action-amounts>
 </div>
-<p *ngIf="_zeroEx.display == 'eth'">Make sure <a class="pointer" (click)="openExternal()">{{_LSCXmarket.token?.name}}</a> is the token you actually want to trade. Multiple tokens can share the same name.</p>
-<p *ngIf="_zeroEx.display == 'weth'">Make sure <a class="pointer" (click)="openExternal()">{{_zeroEx.token?.name}}</a> is the pair you actually want to trade. Multiple pairs can share the same name.</p>
+<div class="market-message">
+    <p *ngIf="_zeroEx.display == 'eth'">Make sure <a class="pointer" (click)="openExternal()">{{_LSCXmarket.token?.name}}</a> is the token you actually want to trade. Multiple tokens can share the same name.</p>
+    <p *ngIf="_zeroEx.display == 'weth'">Make sure <a class="pointer" (click)="openExternal()">{{_zeroEx.token?.name}}</a> is the pair you actually want to trade. Multiple pairs can share the same name.</p>
+</div>

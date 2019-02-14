@@ -10,6 +10,7 @@ import { AccountService } from '../../../services/account.service';
 import { OrderDialogComponent } from "./order-dialog.component";
 
 import { ZeroExService } from "../../../services/0x.service";
+import { EtherscanService } from "../../../services/etherscan.service";
 @Component({
   selector: 'app-market-list',
   templateUrl: './market-list.component.html',
@@ -30,7 +31,7 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
     orderDialog;
     loadingD= null;
     
-    constructor(public _zeroEx:ZeroExService, private _web3: Web3, public _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog ) {
+    constructor(public _zeroEx:ZeroExService, private _web3: Web3, public _LSCXmarket: LSCXMarketService, private _dialog: DialogService, private _sendDialogService: SendDialogService, private _account: AccountService, public dialog: MdDialog, public _scan: EtherscanService ) {
         Promise.resolve().then(() => { this.loadingD = this._dialog.openLoadingDialog();});
     }
 
@@ -164,4 +165,14 @@ export class MarketListComponent implements OnInit, OnChanges, OnDestroy {
         this.page = n;
         this.getItmes();
     }
+
+    openExternalToken(){
+        if(this._zeroEx.display == 'eth'){
+          this._scan.openTokenUrl(this._LSCXmarket.token.addr)
+        }
+        if(this._zeroEx.display == 'weth'){
+          this._scan.openTokenUrl(this._zeroEx.token.assetDataA.tokenAddress)
+          this._scan.openTokenUrl(this._zeroEx.token.assetDataB.tokenAddress)
+        }
+      }
 }
