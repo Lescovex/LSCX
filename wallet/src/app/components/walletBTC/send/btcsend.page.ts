@@ -79,6 +79,7 @@ export class BitcoinSendPage implements OnInit {
         this.amountErr = "Amount must be higher than 0.00000001 BTC";
         return false;
       }else{
+        console.log("before confirm send bitcoin dialog")
         this.sendDialogService.openConfirmSendBitcoin(sender, receiver, value);
       }
   }

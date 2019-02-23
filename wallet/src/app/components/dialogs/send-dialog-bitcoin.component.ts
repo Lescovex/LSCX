@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { DialogService } from '../../services/dialog.service';
 import { MdDialogRef } from '@angular/material';
 import { MD_DIALOG_DATA } from '@angular/material';
-
+import { BitcoinAccountService } from '../../services/account-bitcoin.service'
 
 var ElectrumCli = require('electrum-client');
 var CryptoJS = require("crypto-js");
@@ -17,8 +17,8 @@ var bitcoin = require("bitcoinjs-lib");
 export class BitcoinSendDialogComponent{
   submited : boolean = false;
   protected password;
-  constructor(private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<BitcoinSendDialogComponent>) {
-    
+  constructor(protected _account : BitcoinAccountService,private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<BitcoinSendDialogComponent>) {
+    console.log("BitcoinSendDialogComponent constructor");
    }
   async sendTx(pass, data){
     
@@ -61,7 +61,7 @@ export class BitcoinSendDialogComponent{
     
     txb.setVersion(1)
     
-    const ecl = new ElectrumCli(50001, 'electrum-server.ninja', 'tcp');
+    const ecl = new ElectrumCli(this._account.config.port, this._account.config.url, 'tcp');
     await ecl.connect();
     const ver = await ecl.server_version("1.8.12","1.4");
 
