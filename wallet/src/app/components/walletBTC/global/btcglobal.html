@@ -1,6 +1,6 @@
 <h1 style="text-align: right; font-weight: normal">Balance: BTC {{_account.account.balance/100000000 | number:'1.2-8':'en'}} </h1>
 
-<div *ngIf="_account.account.history?.length == 0">
+<div *ngIf="_account.account.history?.length == 0 || _account.account.history == null">
     <p class="whiteBox text-center">There are not transactions</p>
 </div>
 

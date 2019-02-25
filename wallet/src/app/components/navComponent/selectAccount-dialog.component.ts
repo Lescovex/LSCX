@@ -54,10 +54,11 @@ export class SelectAccountDialogComponent implements OnInit{
       this.dialogRef.close();
     } 
   }
-  selectBTCAccount(){
+  async selectBTCAccount(){
+    this.dialogRef.close('loading');
     if(this._btcAccount.account.address != this.selectedBTCAcc.address){
+      this._btcAccount.account.history = null;
       this._btcAccount.setAccount(this.selectedBTCAcc);
-      this.dialogRef.close('loading');
       this.dialogRef.afterClosed().subscribe(async result=>{
         this.router.navigate(['/btcwallet/btcglobal']);
       });

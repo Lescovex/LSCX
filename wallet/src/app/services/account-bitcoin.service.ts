@@ -43,9 +43,13 @@ export class BitcoinAccountService{
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
       await clearInterval(this.interval)
     }
+      if(typeof(this.account.address) != "undefined"){
+        await clearInterval(this.interval)
+      }
       this.account = account;
       localStorage.setItem('accBTC',JSON.stringify(account.address));
       //await this.getPendingTx();
+      this.account.history = null;
       await this.startIntervalData();
   
     
@@ -106,13 +110,11 @@ export class BitcoinAccountService{
       
       let x;
       let net = bitcoin.networks.bitcoin;
-      //data.reverse();
       
       let history = new Array();
       
       for (let index = 0; index < data.length; index++) {
         if(data[index].height != 0){
-           
           x = await ecl.blockchainTransaction_get(data[index].tx_hash, data[index].height);
           
           var tx = bitcoin.Transaction.fromHex(x);
@@ -140,95 +142,118 @@ export class BitcoinAccountService{
           
           let ref = index-1;
             if(ref >= 0){
+              try {
                 if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                    
-                    let y = await ecl.blockchainTransaction_get(data[index-1].tx_hash, data[index-1].height);
-                    let prevtx = bitcoin.Transaction.fromHex(y);
-                    let prevOut =  this.decodeOutput(prevtx, net);
-                    if(prevOut[1].scriptPubKey.addresses[0] == this.account.address){
-                        obj.balance = prevOut[1].satoshi - obj.outputs[0].satoshi;        
-                    }else{
-                        obj.balance = prevOut[0].satoshi - obj.outputs[0].satoshi;
-                    }
-                }else{
-                    if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
-                        obj.balance = obj.outputs[1].satoshi;
-                    }else{  
-                        if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                            obj.balance = obj.outputs[0].satoshi;
-                        }
-                    }
-                }
-            }else{
+                  
+                  let y = await ecl.blockchainTransaction_get(data[index-1].tx_hash, data[index-1].height);
+                  let prevtx = bitcoin.Transaction.fromHex(y);
+                  let prevOut =  this.decodeOutput(prevtx, net);
+                  if(prevOut[1].scriptPubKey.addresses[0] == this.account.address){
+                      obj.balance = prevOut[1].satoshi - obj.outputs[0].satoshi;        
+                  }else{
+                      obj.balance = prevOut[0].satoshi - obj.outputs[0].satoshi;
+                  }
+              }else{
                 if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
                     obj.balance = obj.outputs[1].satoshi;
-                }else{  
+                }else{
+                    if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
+                        obj.balance = obj.outputs[0].satoshi;
+                    }
+                }
+
+              }
+              } catch (error) {
+                this.account.history = null;
+                history = null;
+              }
+            }else{              
+                if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){  
+                    obj.balance = obj.outputs[1].satoshi;
+                }else{
                     if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
                         obj.balance = obj.outputs[0].satoshi;
                     }
                 }
             }
-
-
-        history.push(obj);
+        
+          history.push(obj);
           }else{
             x = await ecl.blockchainTransaction_get(data[index].tx_hash, data[index].height);
-          var tx = bitcoin.Transaction.fromHex(x);
-          
-          var currentBlock = await ecl.blockchainHeaders_subscribe()
-          
-          this.block = currentBlock.height;
-          var header = await ecl.blockchainBlock_getHeader(data[index].height);
-          
-          let obj ={
-            format : this.decodeFormat(tx),
-            inputs: this.decodeInput(tx),
-            outputs: this.decodeOutput(tx, net),
-            timestamp: "-",
-            date: "-",
-            month: "",
-            day: "-",
-            fullDate: "-",
-            countdown: "Pending...",
-            height: "-",
-            confirmations: "-",
-            balance: null
+            var tx = bitcoin.Transaction.fromHex(x);
+            
+            var currentBlock = await ecl.blockchainHeaders_subscribe()
+            
+            this.block = currentBlock.height;
+            var header = await ecl.blockchainBlock_getHeader(data[index].height);
+            
+            let obj ={
+              format : this.decodeFormat(tx),
+              inputs: this.decodeInput(tx),
+              outputs: this.decodeOutput(tx, net),
+              timestamp: "-",
+              date: "-",
+              month: "",
+              day: "-",
+              fullDate: "-",
+              countdown: "Pending...",
+              height: "-",
+              confirmations: "-",
+              balance: null
+            }
+            let ref = index-1;
+            if(ref >= 0){
+              if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
+                  let y = await ecl.blockchainTransaction_get(data[index-1].tx_hash, data[index-1].height);
+                  let prevtx = bitcoin.Transaction.fromHex(y);
+                  let prevOut =  this.decodeOutput(prevtx, net);
+                  if(prevOut[1].scriptPubKey.addresses[0] == this.account.address){
+                      obj.balance = prevOut[1].satoshi - obj.outputs[0].satoshi;        
+                  }else{
+                      if(prevOut[0].satoshi - obj.outputs[0].satoshi > 0){
+                        obj.balance = prevOut[0].satoshi - obj.outputs[0].satoshi;
+                      }else{
+                        let check = true;
+                        let pointer = 2;
+                        let z;
+                        let prev;
+                        let prevO;
+                        while(check == true){
+                          z = await ecl.blockchainTransaction_get(data[index-pointer].tx_hash, data[index-pointer].height);
+                          prev = bitcoin.Transaction.fromHex(z);
+                          prevO = this.decodeOutput(prev, net);
+                          if(prevO[0].satoshi - obj.outputs[0].satoshi > 0){
+                            obj.balance = prevO[0].satoshi - obj.outputs[0].satoshi;
+                            check = false;
+                          }else{
+                            pointer = pointer + 1;
+
+                          }
+                        }
+                      }
+                  }
+              }else{
+                  if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
+                      obj.balance = obj.outputs[1].satoshi;
+                  }else{  
+                      if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
+                          obj.balance = obj.outputs[0].satoshi;
+                      }
+                  }
+              }
+          }else{
+              if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
+                  obj.balance = obj.outputs[1].satoshi;
+              }else{  
+                  if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
+                      obj.balance = obj.outputs[0].satoshi;
+                  }
+              }
           }
-          let ref = index-1;
-          if(ref >= 0){
-            if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                
-                let y = await ecl.blockchainTransaction_get(data[index-1].tx_hash, data[index-1].height);
-                let prevtx = bitcoin.Transaction.fromHex(y);
-                let prevOut =  this.decodeOutput(prevtx, net);
-                if(prevOut[1].scriptPubKey.addresses[0] == this.account.address){
-                    obj.balance = prevOut[1].satoshi - obj.outputs[0].satoshi;        
-                }else{
-                    obj.balance = prevOut[0].satoshi - obj.outputs[0].satoshi;
-                }
-            }else{
-                if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
-                    obj.balance = obj.outputs[1].satoshi;
-                }else{  
-                    if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                        obj.balance = obj.outputs[0].satoshi;
-                    }
-                }
-            }
-        }else{
-            if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
-                obj.balance = obj.outputs[1].satoshi;
-            }else{  
-                if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                    obj.balance = obj.outputs[0].satoshi;
-                }
-            }
-        }
           history.push(obj);
           }
         
       }
-
       history = history.reverse();
       
       this.account.history = history;
@@ -466,5 +491,14 @@ export class BitcoinAccountService{
     }
     
     return obj;
+  }
+  activateLoading(){
+    Promise.resolve().then(() => {
+      this.loadingD = this.dialog.open(LoadingDialogComponent, {
+        width: '660px',
+        height: '150px',
+        disableClose: true,
+      });
+    });
   }
 }
