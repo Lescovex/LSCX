@@ -164,8 +164,10 @@ export class BitcoinAccountService{
 
               }
               } catch (error) {
-                this.account.history = null;
-                history = null;
+                //this.account.history = null;
+                //history = null;
+                console.log(error);
+                
               }
             }else{              
                 if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){  
