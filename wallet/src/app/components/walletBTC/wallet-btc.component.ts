@@ -13,7 +13,7 @@ export class BitcoinWalletComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._account.checkServer();
+    //this._account.checkServer();
   }
 
   maxHeight(){

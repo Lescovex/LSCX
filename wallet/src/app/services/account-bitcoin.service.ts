@@ -35,11 +35,13 @@ export class BitcoinAccountService{
   }
 
   async setAccount(account){
+    
     this.loadingD = this.dialog.open(LoadingDialogComponent, {
       width: '660px',
       height: '150px',
       disableClose: true,
     });
+    
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
       await clearInterval(this.interval)
     }
