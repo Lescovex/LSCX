@@ -1,6 +1,6 @@
 {
     "name": "lescovex",
-    "version": "1.0.15",
+    "version": "1.0.14",
     "description": "Lescovex decentralized exchange, wallet and contract issuer",
     "main": "main.js",
     "author": "Lescovex",
