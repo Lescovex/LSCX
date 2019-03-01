@@ -65,8 +65,19 @@ export class BitcoinSendDialogComponent{
     await ecl.connect();
     const ver = await ecl.server_version("1.8.12","1.4");
 
-    let keyPair = bitcoin.ECPair.fromWIF(wif)
-    
+    let keyPair;
+    try {
+      keyPair = bitcoin.ECPair.fromWIF(wif);  
+    } catch (error) {
+      console.log("KeyPair err???", error);
+      title = "Unable to complete transaction";
+        message = "Something went wrong"
+        error = "Invalid password";
+        self.dialogRef.close();
+        
+        let dialogRef = self.dialogService.openErrorDialog(title,message,error);
+        return false;
+    }
 
     let script = bitcoin.address.toOutputScript(sender)
     let hash = bitcoin.crypto.sha256(script)
