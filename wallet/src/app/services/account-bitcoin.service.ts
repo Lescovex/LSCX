@@ -35,13 +35,13 @@ export class BitcoinAccountService{
   }
 
   async setAccount(account){
-    
+
     this.loadingD = this.dialog.open(LoadingDialogComponent, {
       width: '660px',
       height: '150px',
       disableClose: true,
     });
-    
+
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
       await clearInterval(this.interval)
     }
@@ -53,8 +53,8 @@ export class BitcoinAccountService{
       //await this.getPendingTx();
       this.account.history = null;
       await this.startIntervalData();
-  
-    
+
+
   }
 
   refreshAccount(){
@@ -84,195 +84,142 @@ export class BitcoinAccountService{
   }
 
   async setData(){
-    
+
     let addr = this.account.address;
     let self= this;
     let script = bitcoin.address.toOutputScript(addr)
     let hash = bitcoin.crypto.sha256(script)
     let reversedHash = new Buffer(hash.reverse())
     let scripthash  = reversedHash.toString('hex');
+    let history = new Array()
 
     try {
 
       const ecl = new ElectrumCli(this.config.port, this.config.url, 'tcp');
 
       try {
-        await ecl.connect();  
+        await ecl.connect();
       } catch (error) {
-        console.log("setData error", error);
-        
+        //console.log("setData error", error);
+
       }
       const ver = await ecl.server_version("1.8.12","1.4");
-
-      
       let prevBalance = await ecl.blockchainScripthash_getBalance(scripthash);
-      
+
       self.account.balance = prevBalance.confirmed;
       let data = await ecl.blockchainScripthash_getHistory(scripthash);
-      
-      let x;
+      //console.log("history",data);
       let net = bitcoin.networks.bitcoin;
-      
-      let history = new Array();
-      
-      for (let index = 0; index < data.length; index++) {
-        if(data[index].height != 0){
-          x = await ecl.blockchainTransaction_get(data[index].tx_hash, data[index].height);
-          
-          var tx = bitcoin.Transaction.fromHex(x);
-          
-          var currentBlock = await ecl.blockchainHeaders_subscribe()
-          
-          this.block = currentBlock.height;
-          var header = await ecl.blockchainBlock_getHeader(data[index].height);
-          
-          let objTime = await this.timestampFormats(header.timestamp);
-          let obj ={
-            format : this.decodeFormat(tx),
-            inputs: this.decodeInput(tx),
-            outputs: this.decodeOutput(tx, net),
-            timestamp: header.timestamp,
-            date: objTime.date,
-            month: objTime.month,
-            day: objTime.day,
-            fullDate: objTime.fullDate,
-            countdown: objTime.countdown,
-            height: header.block_height,
-            confirmations: this.block - data[index].height,
-            balance:null
-          }
-          
-          let ref = index-1;
-            if(ref >= 0){
-              try {
-                if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                  
-                  let y = await ecl.blockchainTransaction_get(data[index-1].tx_hash, data[index-1].height);
-                  let prevtx = bitcoin.Transaction.fromHex(y);
-                  let prevOut =  this.decodeOutput(prevtx, net);
-                  if(prevOut[1].scriptPubKey.addresses[0] == this.account.address){
-                      obj.balance = prevOut[1].satoshi - obj.outputs[0].satoshi;        
-                  }else{
-                      obj.balance = prevOut[0].satoshi - obj.outputs[0].satoshi;
-                  }
-              }else{
-                if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
-                    obj.balance = obj.outputs[1].satoshi;
-                }else{
-                    if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                        obj.balance = obj.outputs[0].satoshi;
-                    }
-                }
+      var currentBlock = await ecl.blockchainHeaders_subscribe();
+      this.block = currentBlock.height;
+      let transactions = [];
+      let storeInfo
+      if(typeof data != 'undefined'){
+        console.log("si el historial no es undefined")
+        for (let index = 0; index < data.length; index++) {
+          console.log("index data", index)
+          let status;
+          let confirmations;
+          let action;
+          let amount = 0;
+          let balance = 0;
+          let transaction_hash = await ecl.blockchainTransaction_get(data[index].tx_hash, data[index].height)
+          //console.log(transaction_hash)
+          let tx = bitcoin.Transaction.fromHex(transaction_hash);
+          //console.log("decodedtx hash",tx)
+          let header = await ecl.blockchainBlock_getHeader(data[index].height);
+          console.log("transaction header", header)
 
-              }
-              } catch (error) {
-                console.log(error);
-              }
-            }else{              
-                if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){  
-                    obj.balance = obj.outputs[1].satoshi;
-                }else{
-                    if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                        obj.balance = obj.outputs[0].satoshi;
-                    }
-                }
-            }
-        
-          history.push(obj);
-          }else{
-            x = await ecl.blockchainTransaction_get(data[index].tx_hash, data[index].height);
-            var tx = bitcoin.Transaction.fromHex(x);
-            
-            var currentBlock = await ecl.blockchainHeaders_subscribe()
-            
-            this.block = currentBlock.height;
-            var header = await ecl.blockchainBlock_getHeader(data[index].height);
-            
-            let obj ={
-              format : this.decodeFormat(tx),
-              inputs: this.decodeInput(tx),
-              outputs: this.decodeOutput(tx, net),
-              timestamp: "-",
-              date: "-",
-              month: "",
-              day: "-",
-              fullDate: "-",
-              countdown: "Pending...",
-              height: "-",
-              confirmations: "-",
-              balance: null
-            }
-            let ref = index-1;
-            if(ref >= 0){
-              if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                  let y = await ecl.blockchainTransaction_get(data[index-1].tx_hash, data[index-1].height);
-                  let prevtx = bitcoin.Transaction.fromHex(y);
-                  let prevOut =  this.decodeOutput(prevtx, net);
-                  if(prevOut[1].scriptPubKey.addresses[0] == this.account.address){
-                      obj.balance = prevOut[1].satoshi - obj.outputs[0].satoshi;        
-                  }else{
-                      if(prevOut[0].satoshi - obj.outputs[0].satoshi > 0){
-                        obj.balance = prevOut[0].satoshi - obj.outputs[0].satoshi;
-                      }else{
-                        let check = true;
-                        let pointer = 2;
-                        let z;
-                        let prev;
-                        let prevO;
-                        while(check == true){
-                          z = await ecl.blockchainTransaction_get(data[index-pointer].tx_hash, data[index-pointer].height);
-                          prev = bitcoin.Transaction.fromHex(z);
-                          prevO = this.decodeOutput(prev, net);
-                          if(prevO[0].satoshi - obj.outputs[0].satoshi > 0){
-                            obj.balance = prevO[0].satoshi - obj.outputs[0].satoshi;
-                            check = false;
-                          }else{
-                            pointer = pointer + 1;
+          let format =  this.decodeFormat(tx);
+          var inputs = this.decodeInput(tx);
+          var outputs = this.decodeOutput(tx, net)
 
-                          }
-                        }
-                      }
-                  }
-              }else{
-                  if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
-                      obj.balance = obj.outputs[1].satoshi;
-                  }else{  
-                      if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                          obj.balance = obj.outputs[0].satoshi;
-                      }
-                  }
-              }
-          }else{
-              if(obj.outputs[1].scriptPubKey.addresses[0] == this.account.address){
-                  obj.balance = obj.outputs[1].satoshi;
-              }else{  
-                  if(obj.outputs[0].scriptPubKey.addresses[0] == this.account.address){
-                      obj.balance = obj.outputs[0].satoshi;
-                  }
+          if(header.block_height == 0){
+            status = 'Pending';
+            confirmations = 0;
+          } else {
+            status = 'Confirmed';
+            confirmations = this.block - header.block_height;
+          }
+
+          let val = this.account.address;
+          var indexIn = -1;
+          var indexOut = -1;
+          var indexOther = -1;
+
+          // Check if my address exists on inputs
+          for (let j = 0; j < inputs.length; j++) {
+              if(val == inputs[j].address){
+                indexIn = j;
               }
           }
-          history.push(obj);
+          // find if my account is in outputs
+          indexOut = outputs.findIndex(function(item){
+            return item.scriptPubKey.addresses[0] === val;
+          });
+          //have to check if other account that don't be mine exists in outputs
+          indexOther = outputs.findIndex(function(item){
+            return item.scriptPubKey.addresses[0] !== val;
+          });
+
+          if(indexIn != -1){
+            action = 'send';
+            amount = 0;
+            for (let k = 0; k < outputs.length; k++) {
+              if(outputs[k].scriptPubKey.addresses[0] != this.account.address){
+                amount = amount + outputs[k].satoshi
+                if(indexOut != -1){
+                  balance = outputs[indexOut].satoshi;
+                } else {
+                  balance = 0;
+                }
+              }
+            }
+
+            if(indexOut != -1 && indexOther == -1){
+              action = 'self';
+              if(index != 0){
+                let prevBalance = transactions[index-1].balance;
+                amount = prevBalance-outputs[indexOut].satoshi;
+                balance = outputs[indexOut].satoshi;
+              } else {
+                amount = outputs[indexOut].satoshi;
+              }
+            }
+        } else {
+          action = 'receive';
+          amount = outputs[indexOut].satoshi;
+          if(index != 0){
+            let prevBalance = transactions[index-1].balance;
+            balance = prevBalance+outputs[indexOut].satoshi;
+          } else {
+            balance = outputs[indexOut].satoshi;
           }
-        
+
+        }
+        storeInfo = {action: action, date: header.timestamp, state: status, amount: amount, balance: balance, confirmations: confirmations};
+        transactions.push(storeInfo);
+        console.log("storeInfo?",storeInfo)
+        console.log("transactions", transactions)
       }
-      history = history.reverse();
-      
+      history = transactions.reverse();
       this.account.history = history;
+      console.log("transactions?",transactions)
       if(this.loadingD != null){
         this.loadingD.close();
       }
-      this.removePendingTx();      
-    } catch (error) {
+      }
+      //inside try connection
+      } catch (error) {
       //console.log(error);
     }
-    
   }
 
   async checkServer(){
     let load;
     let index = 0;
-    Promise.resolve().then(() => { 
-      load = this._dialog.openLoadingDialog();  
+    Promise.resolve().then(() => {
+      load = this._dialog.openLoadingDialog();
     });
     while (index < this.configFile.servers.length) {
       try {
@@ -317,7 +264,7 @@ export class BitcoinAccountService{
     this.account = this.getAccount();
     console.log("this.account",this.account);
     if(localStorage.getItem('accBTC')){
-      
+
       await this.setAccount(this.account);
       await this.getAccountsBalances();
 
@@ -326,7 +273,7 @@ export class BitcoinAccountService{
         await this.setData();
       }
     }
-    
+
   }
 
   getPendingTx(){
@@ -357,30 +304,30 @@ export class BitcoinAccountService{
         hash = bitcoin.crypto.sha256(script)
         reversedHash = new Buffer(hash.reverse())
         scripthash  = reversedHash.toString('hex');
-        
+
         ecl = new ElectrumCli(this.config.port, this.config.url, 'tcp');
-        
+
         try {
-          await ecl.connect();  
+          await ecl.connect();
         } catch (error) {
           console.log("getAccountBalancesError",error);
-          
+
         }
-        
+
         ver = await ecl.server_version("1.8.12","1.4");
         prevBalance = await ecl.blockchainScripthash_getBalance(scripthash);
-        
+
         if(prevBalance == null){
           prevBalance = 0;
         }
-        
+
         storage[i].balance = prevBalance.confirmed;
-        
+
       }
       localStorage.setItem('btcAcc',JSON.stringify(storage));
     }
   }
-  
+
   addPendingTx(tx){
     this.pending.push(tx);
     if(localStorage.getItem('btcAcc')){
@@ -406,10 +353,10 @@ export class BitcoinAccountService{
     }
     this.interval = setInterval(async()=>{
       await this.setData();
-    },10000); 
-      
+    },10000);
+
   }
-  
+
   decodeFormat(tx){
     var result = {
         txid: tx.getId(),
@@ -421,12 +368,19 @@ export class BitcoinAccountService{
 
   decodeInput(tx){
       var result = [];
+
+
       tx.ins.forEach(function(input, n){
+        let pubKeyIn = '';
+          let chunksIn = bitcoin.script.decompile(input.script);
+          let hash = bitcoin.crypto.hash160(chunksIn[chunksIn.length - 1])
+          pubKeyIn = bitcoin.address.toBase58Check(hash, bitcoin.networks.bitcoin.pubKeyHash)
           var vin = {
               txid: input.hash.reverse().toString('hex'),
               n : input.index,
               script: bitcoin.script.toASM(input.script),
               sequence: input.sequence,
+              address: pubKeyIn
           }
           result.push(vin);
       })
@@ -481,7 +435,7 @@ export class BitcoinAccountService{
     var optionsFulldate = {weekday:"long",year:"numeric",month:"long", day:"numeric"};
     let strDate = dt.toLocaleDateString("i-default", optionsFulldate);
     fullDate = strDate + " " + time;
-    
+
     let countdown = this.moment(dt).fromNow()
     let obj = {
       date: date,
@@ -490,7 +444,7 @@ export class BitcoinAccountService{
       fullDate: fullDate,
       countdown: countdown
     }
-    
+
     return obj;
   }
   activateLoading(){

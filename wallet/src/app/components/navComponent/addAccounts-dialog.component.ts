@@ -3,7 +3,6 @@ import { Component, OnInit, Inject  } from '@angular/core'
 import {MdDialog} from '@angular/material';
 import {MdDialogRef} from '@angular/material';
 import {AddAccountDialogComponent} from './addAccount-dialog.component';
-import {BitcoinAddAccountDialogComponent} from './BitcoinAddAccount-dialog.component';
 
 @Component({
   selector: 'addAccounts-dialog',
@@ -21,10 +20,6 @@ export class AddAccountsDialogComponent implements OnInit {
       case 'ethereum':
         dialog = AddAccountDialogComponent
       break;
-
-      case 'bitcoin':
-        dialog = BitcoinAddAccountDialogComponent;
-        break;
     }
     this.dialogRef.close();
     let dialogRef = this.dialog.open(dialog, {

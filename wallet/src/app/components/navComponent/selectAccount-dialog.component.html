@@ -5,8 +5,6 @@
 <div class="extra radioDiv">
     <input type="radio" id="eth" name="sendType" value="Ethereum" [(ngModel)]="filts" />
     <label for="eth" class="black"><span><span></span></span>Ethereum</label>
-    <input type="radio" id="btc" name="sendType" value="Bitcoin" [(ngModel)]="filts" />
-    <label for="btc" class="black"><span><span></span></span>Bitcoin</label>
 </div>
 <div *ngIf="filts == 'Ethereum'">
     <div id="selectList" class="round scroll scrollbar">
@@ -20,19 +18,5 @@
     <div class="buttons">
         <button class="btn-black half" (click)="closeDialog()">Back</button>
         <button class="btn btn-inverse half right" (click)="selectAccount()">Select account</button>
-    </div>
-</div>
-<div *ngIf="filts == 'Bitcoin'">
-    <div id="selectList" class="round scroll scrollbar">
-        <ul>
-            <li *ngFor="let account of _btcWallet.wallet" [ngClass]="(selectedBTCAcc.address == account.address)? 'selected pointer' : 'pointer'" (click)="changeBTCSelected(account)">
-                <p class="title">{{account.name}}</p>
-                <p>{{account.address}}</p>
-            </li>
-        </ul>
-    </div>
-    <div class="buttons">
-        <button class="btn-black half" (click)="closeDialog()">Back</button>
-        <button class="btn btn-inverse half right" (click)="selectBTCAccount()">Select account</button>
     </div>
 </div>

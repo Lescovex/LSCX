@@ -24,9 +24,9 @@ export class AccountService{
   tokenInterval;
   apikey: string = "";
   loadingD;
-  
+
   constructor(private _wallet : WalletService, protected dialog: MdDialog, private _token : TokenService,private _web3: Web3, private router: Router, private _scan: EtherscanService){
-    
+
     Promise.resolve().then(() => {
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
@@ -49,7 +49,7 @@ export class AccountService{
           this.loadingD.close();
         });
       }
-      
+
     }
   }
 
@@ -64,7 +64,7 @@ export class AccountService{
     if('address' in this.account && typeof(this.account.address)!= "undefined"){
       clearInterval(this.interval)
       this.clearIntervalTokens();
-      
+
     }
     this.router.navigate(['/wallet/global']);
     this.account = account;
@@ -74,7 +74,7 @@ export class AccountService{
     await this.startIntervalData();
     this.newUpdateTokens = true;
     await this.setTokens();
-    
+
   }
 
   async refreshAccountData(){
@@ -88,7 +88,7 @@ export class AccountService{
       await this.setTokens();
 
   }
-  
+
   refreshAccount(){
     localStorage.removeItem('acc');
     this.getAccountData();
@@ -102,7 +102,7 @@ export class AccountService{
   getAccount(){
     let acc:any = {};
     if(localStorage.getItem('acc') &&  localStorage.getItem('acc')!= 'undefined'){
-      let addr = JSON.parse(localStorage.getItem('acc'));  
+      let addr = JSON.parse(localStorage.getItem('acc'));
       acc = this._wallet.getAccount(addr);
     }else if(this._wallet.wallet !== null && this._wallet.wallet.length >0){
       acc = this._wallet.wallet[0];
@@ -117,13 +117,13 @@ export class AccountService{
     let addr = this.account.address;
     let self= this;
     try {
-      self.account.balance = await this._web3.getBalance(addr);  
+      self.account.balance = await this._web3.getBalance(addr);
     } catch (error) {
       console.log(error);
       if(this.loadingD != null){
         this.loadingD.close();
       }
-      
+
     }
     let history;
     try {
@@ -134,7 +134,7 @@ export class AccountService{
         this.loadingD.close();
       }
     }
-    
+
     for(let i = 0; i<this.pending.length; i++){
       let result = history.findIndex(x => (x.hash).toLowerCase() == this.pending[i].hash.toLowerCase());
       let result2 = history.findIndex(x => x.nonce == this.pending[i].nonce && x.from.toLowerCase() == this.account.address.toLowerCase());
@@ -142,24 +142,27 @@ export class AccountService{
         history.unshift(this.pending[i]);
       }else{
         this.removePendingTx(i);
-      }    
+      }
     }
-    for(let i =0; i<history.length; i++){
-      let date = this.tm(history[i].timeStamp);
-      history[i].date = date;
+    if(typeof history != 'undefined'){
+      for(let i =0; i<history.length; i++){
+        let date = this.tm(history[i].timeStamp);
+        history[i].date = date;
+      }
+      this.account.history = await history;
+      this.updated=true;
     }
-    this.account.history = await history;
-    this.updated=true;
+
   }
-  
+
   async getAccountData(){
     this.account = this.getAccount();
-    
+
     if(Object.keys(this.account).length != 0){
       await this.getPendingTx();
       await this.setData();
       await this.setTokens();
-      
+
     }
   }
 
@@ -180,7 +183,7 @@ export class AccountService{
     this.tokens = [];
     this.updatedTokens =false;
     if('address' in this.account){
-      this.tokens = this.getTokensLocale(); 
+      this.tokens = this.getTokensLocale();
       await this.updateTokens();
     }
     this.updatedTokens = true;
@@ -193,7 +196,7 @@ export class AccountService{
       wallet[result].tokens = this.tokens;
     }
   }
-  
+
   addToken(token){
       if('tokens' in this.account){
         this.tokens.push(token);
@@ -217,7 +220,7 @@ export class AccountService{
   async updateTokens(){
     let self = this;
     let tokens : Array<any> = [];
-    
+
     for(let i = 0; i < tokens.length; i++){
       if(i==0) {
         this.newUpdateTokens=false;
@@ -239,11 +242,11 @@ export class AccountService{
         this.loadingD.close();
       }
     }
-  
+
     if(transfersError == null){
       let tkns : Array<any> = [];
       tkns = resultTokens.result;
-      
+
       if(tkns != null){
         for(let i = 0; i<tkns.length; i++){
           if(i==0) {
@@ -253,7 +256,7 @@ export class AccountService{
             return false;
           }
           if(tokens.findIndex(x=> x.contractAddress == tkns[i].contractAddress) == -1){
-            
+
             let token: any = {
               contractAddress :  tkns[i].contractAddress,
               tokenName:  tkns[i].tokenName,
@@ -262,18 +265,18 @@ export class AccountService{
               network : self._web3.network,
               deleted: false
             }
-        
+
             token = await self.updateTokenBalance(token);
-            
-            if(!isNaN(token.tokenDecimal) && token.tokenName != "" && token.tokenSymbol != ""){ 
+
+            if(!isNaN(token.tokenDecimal) && token.tokenName != "" && token.tokenSymbol != ""){
                 tokens.push(token);
             }
           }
         }
-    
+
           self.tokens = await tokens;
           self.saveAccountTokens();
-    
+
           if(this.loadingD != null){
             this.loadingD.close();
           }
@@ -282,24 +285,24 @@ export class AccountService{
   }
 
   async updateTokenBalance(token){
-    
+
     if(!('balance' in token) || !token.deleted){
       this._token.setToken(token.contractAddress);
       if(isNaN(token.tokenDecimal) || token.tokenDecimal == 0|| token.tokenName=="" || token.tokenSymbol==""){
         token.tokenName = await this._token.getName();
         token.tokenSymbol = await this._token.getSymbol();
         token.tokenDecimal = await this._token.getDecimal();
-      }      
+      }
       let exp = 10 ** token.tokenDecimal;
       let balance : any = await this._token.getBalanceOf(this.account.address);
       token.balance = balance.div(exp).toNumber();
-      
+
     }
-    
+
     return token;
   }
-  
-  
+
+
   getPendingTx(){
     this.pending=[];
     if(localStorage.getItem('ethAcc')){
@@ -310,7 +313,7 @@ export class AccountService{
       }
     }
   }
-  
+
   async addPendingTx(tx){
     tx.network = this._web3.network.chain;
     let pendings = this.pending.filter(x=> x.nonce != tx.nonce);
@@ -342,8 +345,8 @@ export class AccountService{
     await this.setData();
     this.interval = setInterval(async ()=>{
       await this.setData();
-    },3000); 
-      
+    },3000);
+
   }
 
   async startIntervalTokens(){

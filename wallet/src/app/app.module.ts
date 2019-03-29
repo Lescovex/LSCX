@@ -49,27 +49,23 @@ import { MarketActionComponent} from './components/market/marketWallet/market-ac
 import { BuySellPage } from './components/market/buySell/buy-sell.page';
 import { MarketHistoryPage } from './components/market/history/market-history.page';
 import { MarketListComponent } from './components/market/history/market-list.component';
-
+/*
 import { BitcoinWalletComponent } from "./components/walletBTC/wallet-btc.component";
 import { BitcoinGlobalPage } from "./components/walletBTC/global/btcglobal.page";
 import { BitcoinListComponent } from "./components/walletBTC/global/btclist.component";
 import { BitcoinSendPage } from "./components/walletBTC/send/btcsend.page";
 import { BitcoinReceivePage } from "./components/walletBTC/receive/btcreceive.page";
 import { BitcoinWsettingsPage } from "./components/walletBTC/wsettings/btcwsettings.page";
-
+*/
 import { SettingsComponent } from './components/settings/settings.component';
 
 /*Dialogs*/
 import { SelectAccountDialogComponent } from './components/navComponent/selectAccount-dialog.component';
 import { AddAccountDialogComponent } from './components/navComponent/addAccount-dialog.component';
 import { AddAccountsDialogComponent } from "./components/navComponent/addAccounts-dialog.component";
-import { BitcoinAddAccountDialogComponent } from "./components/navComponent/BitcoinAddAccount-dialog.component";
-import { BitcoinImportAccountDialogComponent } from "./components/navComponent/BitcoinImportAccount-dialog.component";
-import { BitcoinNewAccountDialogComponent } from "./components/navComponent/BitcoinNewAccount-dialog.component";
 import { NewAccountDialogComponent } from './components/navComponent/newAccount-dialog.component';
 import { ImportAccountDialogComponent } from './components/navComponent/importAccount-dialog.component';
 import { SendDialogComponent } from './components/dialogs/send-dialog.component';
-import { BitcoinSendDialogComponent } from "./components/dialogs/send-dialog-bitcoin.component";
 import { SendOrderDialogComponent } from './components/dialogs/send-order-dialog.component';
 import { SendMarketDialogComponent } from './components/dialogs/send-market-dialog.component';
 import { NetworkDialogComponent } from "./components/dialogs/network-dialog.component";
@@ -90,10 +86,6 @@ import { WithdrawTxDialog } from './components/holders/general/withdrawTx.compon
 import { WithdrawDialog } from './components/holders/general/withdraw-dialog.component';
 import { TikerDialogComponent } from './components/dialogs/tiker-dialog.component';
 import { OrderDialogComponent } from "./components/market/history/order-dialog.component";
-import { BitcoinDeleteComponent } from "./components/walletBTC/wsettings/btc-confirm-delete.component";
-import { BitcoinJSONDialogComponent } from "./components/walletBTC/wsettings/btc-json-dialog.component";
-import { BitcoinPrivateKeyDialogComponent } from "./components/walletBTC/wsettings/btc-privatekey-dialog.component";
-import { BitcoinChangeNameComponent } from "./components/walletBTC/wsettings/btcchange-name.component";
 import { WrapUnwrapDialogComponent } from "./components/dialogs/wrap-unwrap.component";
 import { SendWethDialogComponent } from "./components/dialogs/send-weth-dialog.component";
 
@@ -112,8 +104,7 @@ import { EtherscanService } from './services/etherscan.service';
 import { LSCXMarketService } from './services/LSCX-market.service';
 import { LSCXMarketStorageService } from './services/LSCX-marketStorage.service';
 import { CustomContractService } from './services/custom-contract.service';
-import { BitcoinAccountService } from "./services/account-bitcoin.service";
-import { BitcoinWalletService } from "./services/wallet-bitcoin.service";
+
 import { ZeroExService } from "./services/0x.service";
 
 /*Pipes*/
@@ -138,12 +129,6 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     DropdownPrefixes,
     ReceivePage,
     WsettingsPage,
-    BitcoinWalletComponent,
-    BitcoinGlobalPage,
-    BitcoinListComponent,
-    BitcoinSendPage,
-    BitcoinReceivePage,
-    BitcoinWsettingsPage,
     SettingsComponent,
     ConverterPipe,
     SeparateWordsPipe,
@@ -151,13 +136,9 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     ContractDialogComponent,
     AddAccountDialogComponent,
     AddAccountsDialogComponent,
-    BitcoinAddAccountDialogComponent,
-    BitcoinImportAccountDialogComponent,
-    BitcoinNewAccountDialogComponent,
     NewAccountDialogComponent,
     ImportAccountDialogComponent,
     SendDialogComponent,
-    BitcoinSendDialogComponent,
     SendOrderDialogComponent,
     SendMarketDialogComponent,
     DeleteComponent,
@@ -201,10 +182,7 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     WithdrawDialog,
     TikerDialogComponent,
     OrderDialogComponent,
-    BitcoinDeleteComponent,
-    BitcoinJSONDialogComponent,
-    BitcoinPrivateKeyDialogComponent,
-    BitcoinChangeNameComponent,
+
     WrapUnwrapDialogComponent,
     SendWethDialogComponent
   ],
@@ -228,13 +206,9 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     SelectAccountDialogComponent,
     AddAccountDialogComponent,
     AddAccountsDialogComponent,
-    BitcoinAddAccountDialogComponent,
-    BitcoinImportAccountDialogComponent,
-    BitcoinNewAccountDialogComponent,
     NewAccountDialogComponent,
     ImportAccountDialogComponent,
     SendDialogComponent,
-    BitcoinSendDialogComponent,
     SendOrderDialogComponent,
     SendMarketDialogComponent,
     DeleteComponent,
@@ -255,10 +229,6 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     NetworkDialogComponent,
     TikerDialogComponent,
     OrderDialogComponent,
-    BitcoinDeleteComponent,
-    BitcoinJSONDialogComponent,
-    BitcoinPrivateKeyDialogComponent,
-    BitcoinChangeNameComponent,
     WrapUnwrapDialogComponent,
     SendWethDialogComponent
   ],
@@ -277,8 +247,6 @@ import { InsuficientFundsDirective } from './validators/funds-validator.directiv
     LSCXMarketService,
     LSCXMarketStorageService,
     CustomContractService,
-    BitcoinAccountService,
-    BitcoinWalletService,
     ZeroExService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]

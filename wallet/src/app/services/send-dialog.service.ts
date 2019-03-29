@@ -5,7 +5,7 @@ import { MdDialog } from '@angular/material';
 import { SendDialogComponent } from '../components/dialogs/send-dialog.component';
 import { SendOrderDialogComponent } from '../components/dialogs/send-order-dialog.component';
 import { SendMarketDialogComponent } from '../components/dialogs/send-market-dialog.component';
-import { BitcoinSendDialogComponent } from "../components/dialogs/send-dialog-bitcoin.component";
+//import { BitcoinSendDialogComponent } from "../components/dialogs/send-dialog-bitcoin.component";
 
 @Injectable()
 export class SendDialogService{
@@ -110,7 +110,7 @@ export class SendDialogService{
             },
         });
     }
-
+/*
     openConfirmSendBitcoin(sender, receiver, amount){
         return this.dialog.open(BitcoinSendDialogComponent, {
             width: '660px',
@@ -122,4 +122,5 @@ export class SendDialogService{
             },
           });
       }
+      */
 }

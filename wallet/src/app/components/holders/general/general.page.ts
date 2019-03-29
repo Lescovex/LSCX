@@ -26,7 +26,7 @@ import { RawTx } from '../../../models/rawtx';
 })
 
 export class HoldersGeneralPage implements OnInit, OnDestroy {
-  
+
   protected LSCX_Addr;
   protected LSCX_Abi;
   protected LSCX_Contract;
@@ -41,14 +41,14 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
   protected interval;
 
   constructor(private _scan: EtherscanService, protected _account: AccountService, private _token: TokenService, private _web3: Web3, private _dialog: DialogService, public dialog: MdDialog, private sendDialogService: SendDialogService) {
-    Promise.resolve().then(() => { 
+    Promise.resolve().then(() => {
       this.loadingD = this.dialog.open(LoadingDialogComponent, {
         width: '660px',
         height: '150px',
         disableClose: true,
       });
     });
-    
+
   }
 
   ngOnInit() {
@@ -66,7 +66,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
         this.loadingD = this._dialog.openLoadingDialog();
       });
       if(this.interval != null){
-      
+
         await clearInterval(this.interval);
         this.interval = null;
       }
@@ -78,11 +78,11 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     this.nowNetwork = this._web3.network;
     if(this._web3.network.chain == 1  ){
       this.LSCX_Addr = "0x5bf5f85480848eB92AF31E610Cd65902bcF22648";
-      
+
     }
     if(this._web3.network.chain == 3){
       this.LSCX_Addr = "0xB2F524a6825F8986Ea6eE1e6908738CFF13c5B31";
-      
+
     }
     if(this._web3.network.chain == 42){
       this.LSCX_Addr = "0x4007625b68b57748b99d1418b1e17bfb3697c949";
@@ -92,7 +92,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
         this.LSCX_Contract = this._web3.web3.eth.contract(this.LSCX_Abi).at(this.LSCX_Addr);
     }
     await this.load();
-   
+
   }
   getAbi(){
     this.LSCX_Abi = require('../../../../assets/abi/LSCX_Holders.json');
@@ -102,18 +102,18 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     let amount = await this.getUserBalance();
     let decimals = 8;
     this.balance = amount / Math.pow(10,decimals);
-    
+
     let holded = await this.getHoldedOf();
-    
+
     this.holdedOf = holded / Math.pow(10, decimals);
 
     let contractBalance = await this.getContractBalance();
 
     let totalSupply = await this.getTotalSupply();
 
-    
+
     await this.getTime();
-    
+
     this.expected =  (holded * contractBalance)/totalSupply;
     if(this.loadingD != null){
       this.loadingD.close();
@@ -122,7 +122,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
   }
 
   async getTime(){
-    
+
     this.interval = setInterval(async ()=>{
       let tokenTx ;
       try {
@@ -130,7 +130,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       } catch (error) {
         console.log(error);
         await clearInterval(this.interval);
-        
+
       }
       let history;
       try {
@@ -138,9 +138,9 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       } catch (error) {
         console.log(error);
         await clearInterval(this.interval);
-        
+
       }
-      
+
       let lastTimestamp;
       let now;
       let nowTime;
@@ -149,15 +149,15 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       for (let i = 0; i < tokenTx.length; i++) {
         if(tokenTx[i].contractAddress == this.LSCX_Addr.toLowerCase()){
           lastTimestamp = tokenTx[i].timeStamp;
-        }  
-      }
-      
-      for (let j = 0; j < history.length; j++) {
-        if(history[j].to == this.LSCX_Addr.toLowerCase() && history[j].input == "0xc885bc58" && history[j].timeStamp > lastTimestamp){
-          lastTimestamp = history[j].timeStamp;        
         }
       }
-    
+
+      for (let j = 0; j < history.length; j++) {
+        if(history[j].to == this.LSCX_Addr.toLowerCase() && history[j].input == "0xc885bc58" && history[j].timeStamp > lastTimestamp){
+          lastTimestamp = history[j].timeStamp;
+        }
+      }
+
       now = new Date();
       nowTime = now.getTime();
       nowTime = nowTime/1000;
@@ -171,7 +171,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
         let string = days.toString();
 
         if(this.timeLeft < 0){
-          
+
           let amount = await this.getUserBalance();
           let decimals = 8;
           this.balance = amount / Math.pow(10,decimals);
@@ -180,9 +180,9 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
           let contractBalance = await this.getContractBalance();
           let totalSupply = await this.getTotalSupply();
           this.expected =  (holded * contractBalance)/totalSupply;
-          
+
           await clearInterval(this.interval);
-          
+
         }else{
           if(days > 1){
             this.timeLeft = parseInt(string);
@@ -207,7 +207,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     let self=this;
     try {
       return new Promise (function (resolve, reject) {
-        self.LSCX_Contract.balanceOf.call(self._account.account.address, function(err, res){  
+        self.LSCX_Contract.balanceOf.call(self._account.account.address, function(err, res){
           if (err) {
             reject(err);
           } else {
@@ -217,20 +217,19 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       });
     } catch (error) {
       console.log(error);
-      
+
       if(this.loadingD != null){
         this.loadingD.close();
         this.loadingD = null;
       }
     }
-    
   }
 
   getHoldTime(): Promise<number>{
     let self=this;
     try {
       return new Promise (function (resolve, reject) {
-        self.LSCX_Contract.holdTime.call(function(err, res){  
+        self.LSCX_Contract.holdTime.call(function(err, res){
           if (err) {
             reject(err);
           } else {
@@ -240,20 +239,20 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       });
     } catch (error) {
       console.log(error);
-      
+
       if(this.loadingD != null){
         this.loadingD.close();
         this.loadingD = null;
       }
     }
-    
+
   }
 
   getHoldedOf(): Promise<number>{
     let self=this;
     try {
       return new Promise (function (resolve, reject) {
-        self.LSCX_Contract.holdedOf.call(self._account.account.address,function(err, res){  
+        self.LSCX_Contract.holdedOf.call(self._account.account.address,function(err, res){
           if (err) {
             reject(err);
           } else {
@@ -263,20 +262,20 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       });
     } catch (error) {
       console.log(error);
-      
+
       if(this.loadingD != null){
         this.loadingD.close();
         this.loadingD = null;
       }
     }
-    
+
   }
 
   getContractBalance(): Promise<number>{
     let self=this;
     try {
       return new Promise (function (resolve, reject) {
-        self.LSCX_Contract.contractBalance.call(function(err, res){  
+        self.LSCX_Contract.contractBalance.call(function(err, res){
           if (err) {
             reject(err);
           } else {
@@ -286,20 +285,20 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       });
     } catch (error) {
       console.log(error);
-      
+
       if(this.loadingD != null){
         this.loadingD.close();
         this.loadingD = null;
       }
     }
-    
+
   }
-  
+
   getTotalSupply(): Promise<number>{
     let self = this;
     try {
       return new Promise (function (resolve, reject) {
-        self.LSCX_Contract.totalSupply.call(function(err, res){  
+        self.LSCX_Contract.totalSupply.call(function(err, res){
           if (err) {
             reject(err);
           } else {
@@ -309,13 +308,13 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       });
     } catch (error) {
       console.log(error);
-      
+
       if(this.loadingD != null){
         this.loadingD.close();
         this.loadingD = null;
       }
     }
-    
+
   }
 
   async withdraw(){
@@ -338,7 +337,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     this.loadingD.close();
     let dialogRef = this._dialog.openGasDialog(gasLimit, gasPrice);
     let result = await dialogRef.afterClosed().toPromise();
-    
+
     let options:any = null;
     if(typeof(result) != 'undefined'){
         options = JSON.parse(result);
@@ -348,7 +347,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       let tx =   new RawTx  (this._account,this.LSCX_Addr,new BigNumber(0),options.gasLimit, options.gasPrice, this._web3.network, withdrawData);
       this.sendDialogService.openConfirmSend(tx.tx, this.LSCX_Addr, 0, tx.gas, tx.cost,'withdraw');
     }
-    
+
   }
 
   withdrawReward():string{
@@ -358,8 +357,8 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
 
   async unsignedTx(contractAddr,txData, gLimit, gprice, amount?){
     let gasLimit = gLimit;
-    
-    
+
+
     let chainId;
     if(this._web3.network == 1){
       chainId = "0x1";
@@ -367,9 +366,9 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     if(this._web3.network == 3){
       chainId = "0x3";
     }
-    
+
     let acc = this._account.account;
-    
+
     let amountW = (typeof(amount) == "undefined")? 0 : amount;
     let gasPrice  = gprice;
     let nonce = await this._web3.getNonce(acc.address);
@@ -383,9 +382,9 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
       data: txData,
       chainId: chainId
     }
-  
+
     let tx= new EthTx(txParams);
-    
+
     let fees = gasLimit*gasPrice;
     let cost = 0;
     if(typeof(amount) == "undefined"){
@@ -397,6 +396,7 @@ export class HoldersGeneralPage implements OnInit, OnDestroy {
     return [tx, fees, cost, EthUtil.bufferToHex(tx.hash(true))]
 
   }
+
   serializeTx(tx,pass){
     let tx2= tx;
     let privateKey;

@@ -13,9 +13,14 @@
         <ul class="list round">
             <ng-container *ngFor="let transaction of items, index as j">
                 <li [ngClass]="((j+1)%2 == 0) ? 'even pointer' : 'odd pointer'" (click)="openExternal(transaction.format.txid)">
+                    <div class="inlineblock listWidth" mdTooltip="{{transaction.fullDate}}" mdTooltipPosition="right">
+                        <span class="block bold dateMonth grey">{{transaction.timestamp | date}}</span>
+                    </div>
+
+                    <!--
                     <a *ngIf="transaction.outputs[1]">
                         <div class="inlineblock listWidth" mdTooltip="{{transaction.fullDate}}" mdTooltipPosition="right">
-                            <span class="block bold dateMonth grey">{{transaction.month}}</span>
+                            <span class="block bold dateMonth grey">{{transaction.timestamp | date}}</span>
                             <span class="block dateDay">{{transaction.day}}</span>
                         </div>
                         <span class="listWidth2 bold grey topText"><img src="~icons/receive_icon.svg">  BTC received</span>
@@ -54,6 +59,7 @@
                         </div>
                     </a>
                 </li>
+            -->
             </ng-container>
         </ul>
     </ng-container>

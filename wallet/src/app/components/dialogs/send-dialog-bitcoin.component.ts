@@ -21,23 +21,23 @@ export class BitcoinSendDialogComponent{
     console.log("BitcoinSendDialogComponent constructor");
    }
   async sendTx(pass, data){
-    
+
     this.submited = true;
- 
+
     let self = this;
     let error = "";
     let title = "";
     let message = "";
 
     if (typeof(pass)==null || pass==""){
-      
+
       return false;
     }
-    
+
     let sender = data.sender;
     let receiver = data.receiver;
     let amount = data.amount * 100000000;
-    
+
     if(amount < 1){
       return false;
     }
@@ -45,12 +45,12 @@ export class BitcoinSendDialogComponent{
     let wallet = JSON.parse(localStorage.getItem('btcAcc'));
     let acc = wallet.find(x => (x.address).toLowerCase() === sender.toLowerCase());
     let item = acc.wif;
-    
+
     var bytes2  = CryptoJS.AES.decrypt(item.toString(),pass);
-    
-    
+
+
     try {
-      var wif = bytes2.toString(CryptoJS.enc.Utf8);  
+      var wif = bytes2.toString(CryptoJS.enc.Utf8);
     } catch (e) {
       error = e;
       this.submited = true;
@@ -58,23 +58,23 @@ export class BitcoinSendDialogComponent{
     }
     let btc = bitcoin.networks.bitcoin;
     const txb = new bitcoin.TransactionBuilder();
-    
+
     txb.setVersion(1)
-    
+
     const ecl = new ElectrumCli(this._account.config.port, this._account.config.url, 'tcp');
     await ecl.connect();
     const ver = await ecl.server_version("1.8.12","1.4");
 
     let keyPair;
     try {
-      keyPair = bitcoin.ECPair.fromWIF(wif);  
+      keyPair = bitcoin.ECPair.fromWIF(wif);
     } catch (error) {
       console.log("KeyPair err???", error);
       title = "Unable to complete transaction";
         message = "Something went wrong"
         error = "Invalid password";
         self.dialogRef.close();
-        
+
         let dialogRef = self.dialogService.openErrorDialog(title,message,error);
         return false;
     }
@@ -85,32 +85,40 @@ export class BitcoinSendDialogComponent{
     let scripthash  = reversedHash.toString('hex');
 
     let prevBalance = await ecl.blockchainScripthash_getBalance(scripthash)
-    
+
     if(prevBalance.confirmed >= amount){
       try{
-        
+
         let to = receiver;
         ecl.subscribe.on('blockchain.headers.subscribe', (v) => console.log(v))
         const unspent = await ecl.blockchainScripthash_listunspent(scripthash)
-        
-        
-        let sum=0;
-        let count=0;
+
+        let transactionFee = 1000;
+
+        let amountToKeep = (prevBalance.confirmed - amount) - transactionFee;
+        let amountToSend = (prevBalance.confirmed - amountToKeep)-transactionFee;
+        console.log("Keep",amountToKeep);
+        console.log("Send", amountToSend)
+
+        let sum = 0;
+        let count = 0;
         while(sum < amount){
           for (let i = 0; i < unspent.length; i++) {
-            
             txb.addInput(unspent[i].tx_hash, unspent[i].tx_pos);
-            
             count++;
             sum =  sum + unspent[i].value;
           }
         }
-        
-        if(prevBalance.confirmed > amount){
-          txb.addOutput(sender, prevBalance.confirmed - amount);
-        }else{
-          txb.addOutput(to, amount);
+
+        try {
+          txb.addOutput(to, amountToSend);
+        } catch (error) {
+          console.log(error)
         }
+        if(prevBalance.confirmed > amount){
+          txb.addOutput(sender, amountToKeep);
+        }
+        console.log("txb before sign",txb)
         if(count > 0){
           let j = 0
           while(j < count){
@@ -118,11 +126,10 @@ export class BitcoinSendDialogComponent{
             j++;
           }
         }
-    
+        console.log("txb after sign",txb)
         let txString = txb.build().toHex();
-        
+        console.log("transactionString",txString)
         let sendResult = await ecl.blockchainTransaction_broadcast(txString);
-
         this.router.navigate(['/btcwallet/btcglobal']);
       }catch(e){
         title = "Unable to complete transaction";
@@ -138,12 +145,12 @@ export class BitcoinSendDialogComponent{
       self.dialogRef.close();
       let dialogRef = self.dialogService.openErrorDialog(title,message,error);
       dialogRef.afterClosed().subscribe(result=>{
-        
+
           this.router.navigate(['/btcwallet/btcglobal']);
-        
+
     })
     }
-    
+
 
     self.dialogRef.close();
 

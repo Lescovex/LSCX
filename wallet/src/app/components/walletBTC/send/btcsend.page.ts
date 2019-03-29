@@ -21,7 +21,7 @@ var CryptoJS = require("crypto-js");
 })
 
 export class BitcoinSendPage implements OnInit {
-  
+
   addr: string = "";
   privatek: string = "";
   receiverAddr: string = "";
@@ -36,24 +36,24 @@ export class BitcoinSendPage implements OnInit {
   show: boolean = false;
   message: string = "see password";
   amountErr;
-  
+
   err;
   constructor(public dialogService: DialogService, private _wallet : BitcoinWalletService, private _account: BitcoinAccountService, private sendDialogService: SendDialogService) {
- 
+
     this.senderAddr = this._account.account.address;
   }
 
   async ngOnInit() {
     try {
-      await this._account.getAccountsBalances();  
+      await this._account.getAccountsBalances();
     } catch (error) {
       this.err = "This service is not available";
-      console.log(error); 
+      console.log(error);
     }
   }
 
   async createBitcoinTx(sender, receiver, value){
-    
+    /*
       let getDecimals = this.decimalPlaces(value)
       if(getDecimals > 8){
         this.amountErr = "Amount can't have more than 8 decimals";
@@ -61,7 +61,7 @@ export class BitcoinSendPage implements OnInit {
       }else{
         this.amountErr = null;
       }
-      
+
       if(value >= this._account.account.balance){
         this.amountErr = "You don't have enough funds";
         return false;
@@ -82,15 +82,16 @@ export class BitcoinSendPage implements OnInit {
         console.log("before confirm send bitcoin dialog")
         this.sendDialogService.openConfirmSendBitcoin(sender, receiver, value);
       }
+      */
   }
   decimalPlaces(num) {
     var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) { return 0; }
     return Math.max(
          0,
-        
+
          (match[1] ? match[1].length : 0)
-        
+
          - (match[2] ? +match[2] : 0));
   }
 

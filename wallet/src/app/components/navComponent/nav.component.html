@@ -33,17 +33,19 @@
     </div>
     <span class="title-button-left">Contracts</span>
 </button>
-<button class="link" routerLink="/btcwallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #btcwallet="routerLinkActive">
-    <div>
-        <img *ngIf="btcwallet.isActive == true" src="~icons/wallet_icon.svg" alt="wallet_icon">
-        <img *ngIf="btcwallet.isActive == false" src="~icons/wallet_inactive_icon.svg" alt="wallet_icon">
-    </div>
-    <span class="title-button-left">Bitcoin Wallet</span>
-</button>
+<!--
+    <button class="link" routerLink="/btcwallet" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #btcwallet="routerLinkActive">
+        <div>
+            <img *ngIf="btcwallet.isActive == true" src="~icons/wallet_icon.svg" alt="wallet_icon">
+            <img *ngIf="btcwallet.isActive == false" src="~icons/wallet_inactive_icon.svg" alt="wallet_icon">
+        </div>
+        <span class="title-button-left">Bitcoin Wallet</span>
+    </button>
+-->
 <button class="link" routerLink="/general-settings" [disabled]="_web3. infuraKey == '' || _scan.apikey == ''" routerLinkActive="active" #settings="routerLinkActive">
     <div>
         <img *ngIf="settings.isActive" src="~icons/generalsettings_icon.svg" alt="settings_icon">
-        <img *ngIf="!settings.isActive" src="~icons/generalsettings_inactive_icon.svg" alt="settings_icon">        
+        <img *ngIf="!settings.isActive" src="~icons/generalsettings_inactive_icon.svg" alt="settings_icon">
     </div>
     <span class="title-button-left">General Settings</span>
 </button>

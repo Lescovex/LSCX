@@ -1,8 +1,8 @@
 import { Component } from '@angular/core'
 
 /*Services*/
-import { BitcoinWalletService } from '../../services/wallet-bitcoin.service'
-import { BitcoinAccountService } from '../../services/account-bitcoin.service'
+//import { BitcoinWalletService } from '../../services/wallet-bitcoin.service'
+//import { BitcoinAccountService } from '../../services/account-bitcoin.service'
 import { DialogService } from '../../services/dialog.service'
 
 /*Dialog*/
@@ -23,18 +23,20 @@ export class BitcoinImportAccountDialogComponent{
   importType= "keystore";
   submited : boolean = false;
 
-  constructor(public dialogRef: MdDialogRef<BitcoinImportAccountDialogComponent>, private _wallet: BitcoinWalletService,
-               private _account: BitcoinAccountService, public dialog: MdDialog, private dialogService: DialogService,  private router: Router) {
-
+  constructor(public dialogRef: MdDialogRef<BitcoinImportAccountDialogComponent>,
+               public dialog: MdDialog, private dialogService: DialogService,  private router: Router) {
+/*
     if(_wallet.wallet == null ){
       this.nameAccount= "Account 1"
     }else{
       this.nameAccount = "Account "+(_wallet.wallet.length+1);
     }
+    */
   }
 
- 
+
   async importAccount(name, input, pass, pass2) {
+    /*
     this.submited = true;
     let error:string = "";
     let dialog = this.dialog;
@@ -42,18 +44,18 @@ export class BitcoinImportAccountDialogComponent{
     let account = this._account;
     let address;
     let importType = this.importType
-    
+
     if(this.checkPass(pass, pass2) == false || this.checkInput(input) == false){
       return false
     }
-   
+
     try{
       wallet.importAccountWIF(name, input, pass);
-      
-      
+
+
       account.getAccountData();
-      
-      
+
+
     }catch(e){
       error=(e.name=="SyntaxError")? "Json interface has wrong format": e.message;
     }
@@ -64,8 +66,9 @@ export class BitcoinImportAccountDialogComponent{
     this.dialogRef.afterClosed().subscribe(async result=>{
       this.router.navigate(['/btcwallet/btcglobal']);
     });
+    */
   }
- 
+
   checkPass(pass, pass2): boolean{
     if(pass != pass2){
       return false

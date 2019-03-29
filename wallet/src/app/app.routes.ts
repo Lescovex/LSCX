@@ -25,12 +25,6 @@ import { MarketWalletPage } from './components/market/marketWallet/market-wallet
 import { BuySellPage } from './components/market/buySell/buy-sell.page';
 import { MarketHistoryPage } from './components/market/history/market-history.page';
 
-import { BitcoinWalletComponent } from "./components/walletBTC/wallet-btc.component";
-import { BitcoinGlobalPage } from "./components/walletBTC/global/btcglobal.page";
-import { BitcoinSendPage } from "./components/walletBTC/send/btcsend.page";
-import { BitcoinReceivePage } from "./components/walletBTC/receive/btcreceive.page";
-import { BitcoinWsettingsPage } from "./components/walletBTC/wsettings/btcwsettings.page";
-
 import { SettingsComponent } from './components/settings/settings.component'
 
 const routes: Routes = [
@@ -71,15 +65,6 @@ const routes: Routes = [
       { path: 'buy-sell', component: BuySellPage },
       { path: 'market-wallet', component: MarketWalletPage },
       { path: 'history', component: MarketHistoryPage }
-    ]
-  },
-  { path: 'btcwallet', component: BitcoinWalletComponent,
-    children: [
-      { path: '', redirectTo: 'btcglobal', pathMatch: 'full' },
-      { path: 'btcglobal', component: BitcoinGlobalPage },
-      { path: 'btcsend', component: BitcoinSendPage },
-      { path: 'btcreceive', component: BitcoinReceivePage },
-      { path: 'btcwsettings', component: BitcoinWsettingsPage }
     ]
   },
   { path: 'general-settings', component: SettingsComponent },

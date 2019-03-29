@@ -4,8 +4,8 @@ import { MdButtonModule } from '@angular/material';
 
 import { MdDialog } from '@angular/material';
 import { MdDialogRef } from '@angular/material';
-import { BitcoinNewAccountDialogComponent } from './BitcoinNewAccount-dialog.component';
-import { BitcoinImportAccountDialogComponent } from './BitcoinImportAccount-dialog.component';
+//import { BitcoinNewAccountDialogComponent } from './BitcoinNewAccount-dialog.component';
+//import { BitcoinImportAccountDialogComponent } from './BitcoinImportAccount-dialog.component';
 
 @Component({
   selector: 'BitcoinAddAccount-dialog',
@@ -21,10 +21,10 @@ export class BitcoinAddAccountDialogComponent implements OnInit {
     let dialog : any;
     switch(type){
       case 'import':
-        dialog = BitcoinImportAccountDialogComponent
+        //dialog = BitcoinImportAccountDialogComponent
       break;
       case 'new':
-        dialog = BitcoinNewAccountDialogComponent;
+        //dialog = BitcoinNewAccountDialogComponent;
         break;
     }
     this.dialogRef.close();
