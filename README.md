@@ -40,7 +40,7 @@ Publish tokens in the global market
 
 
 
-# Cooming Soon
+# Coming Soon
 
 Blockchain Certification Authority
 
